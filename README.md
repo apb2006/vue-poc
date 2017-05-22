@@ -1,2 +1,6 @@
 # vue-poc
-Playground for vue.js experiments
+
+A test of using `vue.js` as UI
+Includes:
+* material design (using `vuetify`)
+* ace editor

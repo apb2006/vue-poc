@@ -1,0 +1,9 @@
+<package xmlns="http://cxan.org/ns/package" id="dotml">
+    <abstract>vue-poc test of vue.js. </abstract>
+    <author id="abunce">Andy Bunce</author>
+    <maintainer id="abunce">Andy Bunce</maintainer>
+    <home></home>
+    <category id="libs">Library</category>
+    <tag>vue</tag>
+    <tag>basex</tag>
+</package>
