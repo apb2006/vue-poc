@@ -54,7 +54,8 @@ const app = new Vue({
   router,
   data:function(){return {
     q:"",
-    sidebar:false,
+    drawer:true,
+    mini: false,
     items: [{
       href: '/',
       router: true,

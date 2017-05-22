@@ -1,8 +1,9 @@
 <!DOCTYPE html>
 <template id="edit">
- <v-container fluid>
+<v-container fluid>
+ <v-layout row wrap>
+<v-flex xs12>
 <v-toolbar class="green">
-  <v-toolbar-side-icon></v-toolbar-side-icon>
   <v-toolbar-title>
     <v-btn @click.native="showfiles()" small icon><v-icon>folder</v-icon></v-btn>
 <span >{{ name }}</span> <v-chip small class="primary white--text">{{ mode }}</v-chip>
@@ -84,11 +85,15 @@
     </v-card-row>
   </v-card>
 </v-dialog>
-    <div v-if="!busy" style="height:70vh">
+</v-flex>
+<v-flex xs12 style="height:70vh" v-if="!busy" fill-height>
+  
     <vue-ace editor-id="editorA" :content="contentA" :mode="mode" :wrap="wrap"
 v-on:change-content="changeContentA" 
 v-on:annotation="annotation"></vue-ace>
-  </div>
+  
+  </v-flex>
+</v-layout>
 
  </v-container>
 </template>

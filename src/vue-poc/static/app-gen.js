@@ -1,8 +1,9 @@
 const Edit=Vue.extend({
   template: `
- <v-container fluid="">
+<v-container fluid="">
+ <v-layout row="" wrap="">
+<v-flex xs12="">
 <v-toolbar class="green">
-  <v-toolbar-side-icon></v-toolbar-side-icon>
   <v-toolbar-title>
     <v-btn @click.native="showfiles()" small="" icon=""><v-icon>folder</v-icon></v-btn>
 <span>{{ name }}</span> <v-chip small="" class="primary white--text">{{ mode }}</v-chip>
@@ -84,9 +85,13 @@ const Edit=Vue.extend({
     </v-card-row>
   </v-card>
 </v-dialog>
-    <div v-if="!busy" style="height:70vh">
+</v-flex>
+<v-flex xs12="" style="height:70vh" v-if="!busy" fill-height="">
+  
     <vue-ace editor-id="editorA" :content="contentA" :mode="mode" :wrap="wrap" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
-  </div>
+  
+  </v-flex>
+</v-layout>
 
  </v-container>
 `,
@@ -287,16 +292,16 @@ const Files=Vue.extend({
 );
 const Home=Vue.extend({
   template: `
-<v-row class="ma-5">
-<v-col xs4="">
+<v-layout class="ma-5">
+<v-flex xs4="">
 <v-card hover="" raised="">
   <v-card-row height="200px" class="pa-5 green lighten-1">
     <div class="display-1 white--text text-xs-center">VUE-POC</div>
     v0.0.1
   </v-card-row>
 </v-card>
-</v-col>
-<v-col xs4="">
+</v-flex>
+<v-flex xs4="">
   <p>This is a experiment in using <code>vue.js</code>.</p>
   <ul>
   <li><a href="https://vuetifyjs.com/" target="new">vuetifyjs</a></li>
@@ -305,19 +310,19 @@ const Home=Vue.extend({
 <li><a href="https://github.com/beautify-web/js-beautify">js-beautify</a></li>
 
   </ul>
-</v-col>
+</v-flex>
 <v-btn floating="floating">
   <v-icon>add</v-icon>
 </v-btn>
  <my-component>REPLACED</my-component>
-</v-row>
+</v-layout>
 `}
 
 );
 const Options=Vue.extend({  
   template: `
-<v-row>
-<v-col xs2="">
+<v-layout>
+<v-flex xs2="">
 <v-card class="blue darken-4 white--text">
   <v-card-row height="200px">
     <v-card-title>
@@ -334,24 +339,24 @@ const Options=Vue.extend({
     </v-btn>
   </v-card-row>
 </v-card>
-</v-col>
+</v-flex>
 
-<v-col xs6="">
+<v-flex xs6="">
        <v-text-field name="url" label="Image location" :required="true" :full-width="false"></v-text-field>
-</v-col>
+</v-flex>
 
-<v-col xs4="">
+<v-flex xs4="">
    <v-card-row img="music.jpg" height="300px"></v-card-row>
   <v-btn block="" primary="" @click.native="snackbar = true" dark="">Show Snackbar</v-btn>
  <v-btn class="white--text" @click.native="snackbar = true">Snackbar?</v-btn>
-</v-col>
+</v-flex>
 <v-snackbar v-model="snackbar">
     Hello, I'm a snackbar
     <v-btn flat="" class="pink--text" @click.native="snackbar = false">
          <v-icon>highlight_off</v-icon>
     </v-btn>
   </v-snackbar>
-  </v-row>
+  </v-layout>
 `,
   data: function(){
     return {
@@ -364,19 +369,19 @@ const Options=Vue.extend({
 const People=Vue.extend({
   template: `
  <v-container fluid="">
-  <v-row>Look at all the people who work here!
+  <v-layout>Look at all the people who work here!
   <v-btn light="" default="" v-on:click.native="reverseMessage">Reverse Message</v-btn>
   <p>{{ message }}</p>
  
-  </v-row>
-  <v-row>
-  <v-col xs5="">
+  </v-layout>
+  <v-layout>
+  <v-flex xs5="">
    <v-card-row img="music.jpg" height="300px"></v-card-row>
-  </v-col>
-  <v-col xs5="">
+  </v-flex>
+  <v-flex xs5="">
   <v-card-row img="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" height="300px"></v-card-row>
-  </v-col>
-  </v-row>
+  </v-flex>
+  </v-layout>
  </v-container>
 `,
   data:  function(){
@@ -567,7 +572,8 @@ const app = new Vue({
   router,
   data:function(){return {
     q:"",
-    sidebar:false,
+    drawer:true,
+    mini: false,
     items: [{
       href: '/',
       router: true,

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="options">
-<v-row >
-<v-col xs2>
+<v-layout >
+<v-flex xs2>
 <v-card class="blue darken-4 white--text">
   <v-card-row height="200px">
     <v-card-title>
@@ -18,27 +18,27 @@
     </v-btn>
   </v-card-row>
 </v-card>
-</v-col>
+</v-flex>
 
-<v-col xs6>
+<v-flex xs6>
        <v-text-field
             name="url"
             label="Image location" :required=true :full-width=false
        ></v-text-field>
-</v-col>
+</v-flex>
 
-<v-col xs4>
+<v-flex xs4>
    <v-card-row img="music.jpg" height="300px"></v-card-row>
   <v-btn block primary @click.native="snackbar = true" dark>Show Snackbar</v-btn>
  <v-btn class="white--text"  @click.native="snackbar = true">Snackbar?</v-btn>
-</v-col>
+</v-flex>
 <v-snackbar   v-model="snackbar">
     Hello, I'm a snackbar
     <v-btn flat class="pink--text" @click.native="snackbar = false">
          <v-icon>highlight_off</v-icon>
     </v-btn>
   </v-snackbar>
-  </v-row>
+  </v-layout>
 </template>
 
 <script>{  

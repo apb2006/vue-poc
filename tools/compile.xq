@@ -20,7 +20,7 @@ declare function local:process($doc)
 {
 let $tempNode:= Document:getElementsByTagName($doc,"template")=>list:get(xs:int(0))
 let $template:= Node:getInnerHTML($tempNode)
-let $id:= Element:getAttribute($tempNode,"id")
+let $id  := Element:getAttribute($tempNode,"id")
 let $name:=functx:capitalize-first($id)=>trace("ID")
 
 let $script:= Document:getElementsByTagName($doc,"script")=>list:get(xs:int(0))
@@ -30,7 +30,7 @@ let $s:= Node:getInnerHTML($script)=>replace('[''"]#' || $id || '[''"]','`' ||$t
 let $js:= ``[const `{$name}`=Vue.extend(`{$s}`
 );
 ]``
-return if($id="") then () else $js
+return if(empty($id)) then () else $js
 };
 
 declare function functx:capitalize-first
