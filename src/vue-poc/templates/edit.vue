@@ -102,7 +102,7 @@ v-on:annotation="annotation"></vue-ace>
   template: '#edit',
   data () {
     return {
-      contentA: 'declare function local:query($q as xs:string)\n{\n<json   type="object" >}',
+      contentA: 'declare function local:query($q as xs:string)\n { \n <json   type="object" > }',
       mode:'xquery',
       url:'',
       name:'',

@@ -97,7 +97,7 @@ const Edit=Vue.extend({
 `,
   data () {
     return {
-      contentA: 'declare function local:query($q as xs:string)\n{\n<json   type="object" >}',
+      contentA: 'declare function local:query($q as xs:string)\n { \n <json   type="object" > }',
       mode:'xquery',
       url:'',
       name:'',
@@ -618,9 +618,7 @@ const app = new Vue({
 }]
   }},
   methods: {
-      openSidebar() {
-          this.sidebar = !this.sidebar;
-      },
+      
       search(){
         this.$router.push({path: 'search',query: { q: this.q }})
       }

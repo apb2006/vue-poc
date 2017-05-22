@@ -100,9 +100,7 @@ const app = new Vue({
 }]
   }},
   methods: {
-      openSidebar() {
-          this.sidebar = !this.sidebar;
-      },
+      
       search(){
         this.$router.push({path: 'search',query: { q: this.q }})
       }
