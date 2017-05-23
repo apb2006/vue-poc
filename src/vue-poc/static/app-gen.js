@@ -425,19 +425,20 @@ const Select=Vue.extend({
     </v-card-title>
   </v-card-row>
   <v-card-text>
-    <v-card-row> 
-    <v-col xs6="">
+    <v-layout>
+     
+    <v-flex xs6="">
     <p>some text</p>
     <multiselect v-model="value" :options="options" @search-change="asyncFind" :loading="isLoading" placeholder="select one"></multiselect>
     <pre>{{$data.value }}</pre>
-    </v-col>
+    </v-flex>
 
-    <v-col xs6="">
+    <v-flex xs6="">
     <p>multi select</p>
     <multiselect v-model="value2" :options="options" multiple="" placeholder="Select many"></multiselect>
     <pre>{{$data.value2 }}</pre>
-    </v-col>
-   </v-card-row>
+    </v-flex>
+   </v-layout>
 </v-card-text>
 <v-card>
  </v-card></v-card></v-container>
