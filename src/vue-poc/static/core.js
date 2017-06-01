@@ -8,21 +8,14 @@ const HTTP = axios.create({
 });
 const axios_json={ headers: {accept: 'application/json'}};
 
-
-function acetype(mime){
-  const mimemap={
-      "text/xml":"xml",
-      "application/xml":"xml",
-      "application/xquery":"xquery",
-      "text/ecmascript":"javascript",
-      "text/html":"html"
-  };
-  var r=mimemap[mime]
-  return r?r:"text"
+Vue.config.errorHandler = function (err, vm, info) {
+  // handle error
+  // `info` is a Vue-specific error info, e.g. which lifecycle hook
+  console.error(err, vm, info);
+  alert("vue error");
 };
-
 Vue.component('my-component', {
-  template: '<div>A custom component!</div>',
+  template: '<div>A custom <v-chip>component!</v-chip></div>',
     created:function(){
       console.log("my-component");
     },  
@@ -40,6 +33,8 @@ const router = new VueRouter({
     { path: '/options', component: Options,meta:{title:"Options"} },
     { path: '/select', component: Select,meta:{title:"Select"} },
     { path: '/search', component: Search,meta:{title:"Search"} },
+    { path: '/tabs', component: Tabs,meta:{title:"tab test"} },
+    { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
     { path: '/stepper', component: Stepper,meta:{title:"Stepper"} },
     { path: '/files', component: Files,meta:{title:"Files"} } 
@@ -54,7 +49,9 @@ const app = new Vue({
   router,
   data:function(){return {
     q:"",
+    user:{},
     drawer:true,
+    title:"my title",
     mini: false,
     items: [{
       href: '/',
@@ -91,13 +88,23 @@ const app = new Vue({
       router: true,
       title: 'options',
       icon: 'domain'
- 
+  }, {
+    href: 'tabs',
+    router: true,
+    title: 'tabs',
+    icon: 'switch_camera'
+  }, {
+    href: 'login',
+    router: true,
+    title: 'login',
+    icon: 'account_balance' 
 }, {
   href: 'stepper',
   router: true,
   title: 'stepper',
-  icon: 'picture_in_picture'
+  icon: 'touch_app'
 }]
+  
   }},
   methods: {
       

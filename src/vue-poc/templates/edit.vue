@@ -7,7 +7,7 @@
   <v-toolbar-title>
     <v-btn @click.native="showfiles()" small icon><v-icon>folder</v-icon></v-btn>
 <span >{{ name }}</span> <v-chip small class="primary white--text">{{ mode }}</v-chip>
- 
+   {{dirty}}
   </v-toolbar-title>
   <v-toolbar-items>
    <v-btn dark icon @click.native="acecmd('outline')">
@@ -32,12 +32,12 @@
       <v-icon>keyboard</v-icon>
     </v-btn>
    <v-btn dark icon @click.native="save()">
-      <v-icon>cloud_upload</v-icon>
+      <v-icon>file_upload</v-icon>
     </v-btn>
     <v-btn dark icon @click.native="beautify()">
       <v-icon>format_align_center</v-icon>
     </v-btn>
-    <v-btn dark icon @click.native="d2 = true">
+    <v-btn dark icon @click.native="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
     <v-menu bottom origin="top right" transition="v-scale-transition">
@@ -48,22 +48,22 @@
           <v-list>
             <v-list-item>
               <v-list-tile>
-                <v-list-tile-title @click="fetch('vue-poc/vue-poc.xqm')">load xquery</v-list-tile-title>
+                <v-list-tile-title @click="fetch('/vue-poc/vue-poc.xqm')">load xquery</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
             <v-list-item>
               <v-list-tile>
-                <v-list-tile-title  @click="fetch('vue-poc/data/vue-poc/ch4d1.xml')">load xml</v-list-tile-title>
+                <v-list-tile-title  @click="fetch('/vue-poc/data/vue-poc/ch4d1.xml')">load xml</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
             <v-list-item>
               <v-list-tile>
-                <v-list-tile-title  @click="fetch('vue-poc/static/app.js')">load js</v-list-tile-title>
+                <v-list-tile-title  @click="fetch('/vue-poc/static/app.js')">load js</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
           <v-list-item>
               <v-list-tile>
-                <v-list-tile-title  @click="fetch('vue-poc/static/app.html')">load html</v-list-tile-title>
+                <v-list-tile-title  @click="fetch('/vue-poc/static/app.html')">load html</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
           </v-list>
@@ -80,8 +80,8 @@
       <v-card-text>clear text.</v-card-text>
     </v-card-row>
     <v-card-row actions>
-      <v-btn class="green--text darken-1" flat="flat" @click.native="clearDialog = false">Cancel</v-btn>
-      <v-btn class="green--text darken-1" flat="flat" @click.native="reset()">Ok</v-btn>
+      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
+      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
     </v-card-row>
   </v-card>
 </v-dialog>
@@ -110,16 +110,29 @@ v-on:annotation="annotation"></vue-ace>
       wrap:false,
       busy:false,
       clearDialog:false,
-      annotations:null
+      annotations:null,
+      dirty:false,
+      mimemap:{
+          "text/xml":"xml",
+          "application/xml":"xml",
+          "application/xquery":"xquery",
+          "text/ecmascript":"javascript",
+          "text/html":"html"
+      }
     }
   },
   methods: {
-    reset () {
-        this.contentA = 'reset content for Editor A'
+    reset (ok) {
+        if(ok){
+          this.contentA = 'reset content for Editor A'
+          this.dirty=false
+        }
+        this.clearDialog=false
     },
     changeContentA (val) {
         if (this.contentA !== val) {
         this.contentA = val
+        this.dirty=true
       }
     },
     // load from url
@@ -128,20 +141,20 @@ v-on:annotation="annotation"></vue-ace>
       HTTP.get("raw?url="+url,axios_json)
       .then(r=>{
         //console.log(r)
-        var a=acetype(r.data.mimetype)
-        this.mode=a
+        this.mode=this.acetype(r.data.mimetype)
         this.contentA=r.data.data
         var a=url.split("/")
         this.url=url
         this.name=a.pop()
         this.path=a
         this.busy=false
+        this.dirty=false
         //alert(mode)
         })
         .catch(error=> {
           console.log(error);
           this.busy=false
-          alert("Get query error"+url)
+          alert("Get query error:\n"+url)
         });
       
     },
@@ -179,12 +192,31 @@ v-on:annotation="annotation"></vue-ace>
     },
     annotation(counts){
       this.annotations=counts
-    }
+    },
+    acetype(mime){
+      var r=this.mimemap[mime]
+      return r?r:"text"
+    },
+    leaving(event) {
+      event.returnValue = "event seems to need to be set";
+      //debugger;
+      console.log("Leaving...");
+      if(this.dirty)event.preventDefault();
+  }
   },
-  created:function(){
+  created(){
+    //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
+    document.addEventListener('beforeunload', this.leaving);
     var url=this.$route.query.url
     console.log("Edit: ",url)
     if(url) this.fetch(url)
+  },
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    if(this.dirty && confirm("unsaved changes will be lost"))this.dirty=false;
+    next(!this.dirty);
   }
 }
 </script>

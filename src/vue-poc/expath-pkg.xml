@@ -1,8 +1,8 @@
 <package xmlns="http://expath.org/ns/pkg" name="http://expkg-zone58.github.io/ex-dotml"
-	abbrev="vue-poc" version="0.0.1" spec="1.0">
+	abbrev="vue-poc" version="0.0.2" spec="1.0">
 	<title>vue-poc test of vue.js.</title>
 	 <dependency name="ace" version="1.2.6" />
-	  <dependency name="vuetify" version="0.12.0" />
+	  <dependency name="vuetify" version="0.12.2" />
 	  <dependency name="vue" version="2.3.3" />
 	  <dependency name="vue-router" version="2.5.3" />
 	  <dependency name="google-material" version="0.0.0" />
@@ -10,5 +10,6 @@
 	  <dependency name="axios" version="0.16.1" />
 	  <dependency name="qs" version="6.4.0" />
 	  <dependency name="vue-multiselect" version="2.0.0-beta.14" />
-	   <dependency name="lodash" version="4.13.1" />        
+	   <dependency name="lodash" version="4.13.1" />  
+	     <dependency name="localforage" version="1.5.0" />       
 </package>

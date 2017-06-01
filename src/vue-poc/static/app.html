@@ -9,7 +9,7 @@
 <title>Vue Router Test</title>
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
 <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
-<link href="https://unpkg.com/vuetify@0.12.0/dist/vuetify.min.css" rel="stylesheet" type="text/css">
+<link href="https://unpkg.com/vuetify@0.12.2/dist/vuetify.min.css" rel="stylesheet" type="text/css">
 <link href="https://unpkg.com/vue-multiselect@2.0.0-beta.15/dist/vue-multiselect.min.css"  rel="stylesheet" type="text/css">
 
 <link href="/vue-poc/ui/app.css" rel="stylesheet" type="text/css">
@@ -19,7 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.5.3/vue-router.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.4.0/qs.js"></script>
-<script src="https://unpkg.com/vuetify@0.12.0/dist/vuetify.min.js"></script>
+<script src="https://unpkg.com/vuetify@0.12.2/dist/vuetify.min.js"></script>
 <script src="https://unpkg.com/vue-multiselect@2.0.0-beta.15/dist/vue-multiselect.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js"></script>
@@ -27,21 +27,21 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify-css.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify-html.js"></script>
-
+<script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.5.0/localforage.js"></script>
 <script src="https://cdn.jsdelivr.net/lodash/4.13.1/lodash.js"></script>
 <script src="/vue-poc/ui/vue-ace.js"></script>
 </head>
 <body>
 <v-app id="app" >
- <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer">
+ <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer"    class="grey lighten-4 pb-0">
   <v-list class="pa-0">
         <v-list-item>
           <v-list-tile avatar tag="div">
             <v-list-tile-avatar>
-              <img src="https://randomuser.me/api/portraits/men/85.jpg" />
+              <img src="/vue-poc/ui/quodatum.gif" />
             </v-list-tile-avatar>
             <v-list-tile-content>
-              <v-list-tile-title>Random name</v-list-tile-title>
+              <v-list-tile-title>Vue PoC</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
               <v-btn icon @click.native.stop="mini = !mini">
@@ -69,9 +69,10 @@
         </v-list-item>
       </v-list>
  </v-navigation-drawer>
+ 
  <v-toolbar class="blue" >
   <v-toolbar-side-icon @click.native.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
-  <v-toolbar-title class="hidden-sm-and-down">Vue PoC</v-toolbar-title>
+  <v-toolbar-title class="hidden-sm-and-down">{{title}}</v-toolbar-title>
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.native.enter="search"></v-text-field>

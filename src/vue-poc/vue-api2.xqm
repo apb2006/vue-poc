@@ -73,7 +73,7 @@ declare
 %output:method("json")   
 function vue-api:file($url as xs:string)   
 {
-   let $path := vue-api:web( $url)=>trace("path ")
+   let $path := vue-api:web( $url)=>trace("vue-api:web ")
 
    
    return if( file:exists($path))then 
@@ -86,6 +86,8 @@ function vue-api:file($url as xs:string)
                         return <_ type="object">
                         <name>{$f/@name/string()}</name>
                         <icon>folder</icon>
+                         <modified>{$f/@last-modified/string()}</modified>
+                         <size type="number">{$f/@size/string()}</size>
                         </_>
                         }
                         </folders>
@@ -95,6 +97,8 @@ function vue-api:file($url as xs:string)
                         return <_ type="object">
                         <name>{$f/@name/string()}</name>
                          <icon>insert_drive_file</icon>
+                          <modified>{$f/@last-modified/string()}</modified>
+                         <size type="number">{$f/@size/string()}</size>
                         </_>
                         }
                         </files>
@@ -105,12 +109,18 @@ function vue-api:file($url as xs:string)
 
 (:~
  : resolve path relative to basex webpath
- : file("fred")=>C:\Program Files (x86)\BaseX\webapp\fred
+ : file("/fred")=>C:\Program Files (x86)\BaseX\webapp\fred
  :)
-declare function vue-api:web($file)
+declare function vue-api:web($file as xs:string)
 as xs:string
 {
-  file:resolve-path($file,db:system()/globaloptions/webpath/fn:concat(.,"/"))
+  let $file:=if(starts-with($file,"/")) then 
+                substring($file,2) 
+            else 
+                error(xs:QName('vue-api:badpath'),"leading slash")
+                 
+  let $webroot:=db:system()/globaloptions/webpath/concat(.,"/")
+  return file:resolve-path($file,$webroot)
 };
 
 (:~ 

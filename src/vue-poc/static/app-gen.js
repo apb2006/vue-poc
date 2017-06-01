@@ -1,4 +1,5 @@
-const Edit=Vue.extend({
+// generated 2017-06-01T12:41:01.376+01:00
+const Edit=Vue.extend({
   template: `
 <v-container fluid="">
  <v-layout row="" wrap="">
@@ -7,7 +8,7 @@ const Edit=Vue.extend({
   <v-toolbar-title>
     <v-btn @click.native="showfiles()" small="" icon=""><v-icon>folder</v-icon></v-btn>
 <span>{{ name }}</span> <v-chip small="" class="primary white--text">{{ mode }}</v-chip>
- 
+   {{dirty}}
   </v-toolbar-title>
   <v-toolbar-items>
    <v-btn dark="" icon="" @click.native="acecmd('outline')">
@@ -32,12 +33,12 @@ const Edit=Vue.extend({
       <v-icon>keyboard</v-icon>
     </v-btn>
    <v-btn dark="" icon="" @click.native="save()">
-      <v-icon>cloud_upload</v-icon>
+      <v-icon>file_upload</v-icon>
     </v-btn>
     <v-btn dark="" icon="" @click.native="beautify()">
       <v-icon>format_align_center</v-icon>
     </v-btn>
-    <v-btn dark="" icon="" @click.native="d2 = true">
+    <v-btn dark="" icon="" @click.native="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
     <v-menu bottom="" origin="top right" transition="v-scale-transition">
@@ -48,22 +49,22 @@ const Edit=Vue.extend({
           <v-list>
             <v-list-item>
               <v-list-tile>
-                <v-list-tile-title @click="fetch('vue-poc/vue-poc.xqm')">load xquery</v-list-tile-title>
+                <v-list-tile-title @click="fetch('/vue-poc/vue-poc.xqm')">load xquery</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
             <v-list-item>
               <v-list-tile>
-                <v-list-tile-title @click="fetch('vue-poc/data/vue-poc/ch4d1.xml')">load xml</v-list-tile-title>
+                <v-list-tile-title @click="fetch('/vue-poc/data/vue-poc/ch4d1.xml')">load xml</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
             <v-list-item>
               <v-list-tile>
-                <v-list-tile-title @click="fetch('vue-poc/static/app.js')">load js</v-list-tile-title>
+                <v-list-tile-title @click="fetch('/vue-poc/static/app.js')">load js</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
           <v-list-item>
               <v-list-tile>
-                <v-list-tile-title @click="fetch('vue-poc/static/app.html')">load html</v-list-tile-title>
+                <v-list-tile-title @click="fetch('/vue-poc/static/app.html')">load html</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
           </v-list>
@@ -80,8 +81,8 @@ const Edit=Vue.extend({
       <v-card-text>clear text.</v-card-text>
     </v-card-row>
     <v-card-row actions="">
-      <v-btn class="green--text darken-1" flat="flat" @click.native="clearDialog = false">Cancel</v-btn>
-      <v-btn class="green--text darken-1" flat="flat" @click.native="reset()">Ok</v-btn>
+      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
+      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
     </v-card-row>
   </v-card>
 </v-dialog>
@@ -105,16 +106,29 @@ const Edit=Vue.extend({
       wrap:false,
       busy:false,
       clearDialog:false,
-      annotations:null
+      annotations:null,
+      dirty:false,
+      mimemap:{
+          "text/xml":"xml",
+          "application/xml":"xml",
+          "application/xquery":"xquery",
+          "text/ecmascript":"javascript",
+          "text/html":"html"
+      }
     }
   },
   methods: {
-    reset () {
-        this.contentA = 'reset content for Editor A'
+    reset (ok) {
+        if(ok){
+          this.contentA = 'reset content for Editor A'
+          this.dirty=false
+        }
+        this.clearDialog=false
     },
     changeContentA (val) {
         if (this.contentA !== val) {
         this.contentA = val
+        this.dirty=true
       }
     },
     // load from url
@@ -123,20 +137,20 @@ const Edit=Vue.extend({
       HTTP.get("raw?url="+url,axios_json)
       .then(r=>{
         //console.log(r)
-        var a=acetype(r.data.mimetype)
-        this.mode=a
+        this.mode=this.acetype(r.data.mimetype)
         this.contentA=r.data.data
         var a=url.split("/")
         this.url=url
         this.name=a.pop()
         this.path=a
         this.busy=false
+        this.dirty=false
         //alert(mode)
         })
         .catch(error=> {
           console.log(error);
           this.busy=false
-          alert("Get query error"+url)
+          alert("Get query error:\n"+url)
         });
       
     },
@@ -174,12 +188,31 @@ const Edit=Vue.extend({
     },
     annotation(counts){
       this.annotations=counts
-    }
+    },
+    acetype(mime){
+      var r=this.mimemap[mime]
+      return r?r:"text"
+    },
+    leaving(event) {
+      event.returnValue = "event seems to need to be set";
+      //debugger;
+      console.log("Leaving...");
+      if(this.dirty)event.preventDefault();
+  }
   },
-  created:function(){
+  created(){
+    //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
+    document.addEventListener('beforeunload', this.leaving);
     var url=this.$route.query.url
     console.log("Edit: ",url)
     if(url) this.fetch(url)
+  },
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    if(this.dirty && confirm("unsaved changes will be lost"))this.dirty=false;
+    next(!this.dirty);
   }
 }
 
@@ -193,31 +226,32 @@ const Files=Vue.extend({
 <v-menu offset-y="">
   <v-btn primary="" icon="" dark="" slot="activator"><v-icon>folder</v-icon></v-btn>
   <v-list>
-    <v-list-item v-for="item in items" :key="item">
+    <v-list-item v-for="item in crumbs" :key="item">
       <v-list-tile>
         <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
       </v-list-tile>
     </v-list-item>
   </v-list>
 </v-menu>
-    <v-toolbar-title>URL: <v-chip class="primary white--text" @click="root()">{{ url }}</v-chip></v-toolbar-title>
+    <v-toolbar-title>{{ url }}</v-toolbar-title>
     <v-spacer></v-spacer>
-    <v-icon class="mr-4">search</v-icon>
+      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" dark="" @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
   </v-toolbar>
-  <v-list two-line="" subheader="">
+  <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+  <v-list v-if="!busy" two-line="" subheader="">
     <v-subheader inset="">Folders</v-subheader>
     <v-list-item v-for="item in folders" v-bind:key="item.name">
       <v-list-tile avatar="">
-        <v-list-tile-avatar>
+        <v-list-tile-avatar @click="folder(item.name)">
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
-        <v-list-tile-content>
-          <v-list-tile-title @dblclick="folder(item.name)">{{ item.name }}</v-list-tile-title>
-          <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
+        <v-list-tile-content @click="folder(item.name)">
+          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+          <v-list-tile-sub-title>modified: {{ item.modified }} size: {{ item.size }}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
-          <v-btn icon="" ripple="">
+          <v-btn icon="" ripple="" @click.native="info(item.name)">
             <v-icon class="grey--text text--lighten-1">info</v-icon>
           </v-btn>
         </v-list-tile-action>
@@ -231,8 +265,8 @@ const Files=Vue.extend({
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
         <v-list-tile-content>
-          <v-list-tile-title @dblclick="click(item.name)">{{ item.name }}</v-list-tile-title>
-          <v-list-tile-sub-title>{{ item.subtitle }}</v-list-tile-sub-title>
+          <v-list-tile-title @click="file(item.name)">{{ item.name }}</v-list-tile-title>
+           <v-list-tile-sub-title>modified: {{ item.modified }} size: {{ item.size }}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
           <v-btn icon="" ripple="">
@@ -246,44 +280,67 @@ const Files=Vue.extend({
  </v-container>
 `,
   data:  function(){
-    return {url: ".",
+    return { 
+            crumbs:[],
             folders:[],
             files:[],
-            items:["root"]
+            items:["root"],
+            q:"",
+            busy:false
     }
   },
   methods:{
-    click (val) {
+    file (val) {
    // with query, resulting in /register?plan=private
-      router.push({ path: 'edit', query: { url: this.url+"/" +val }})
+      router.push({ path: 'edit', query: { url: this.url+"/"+val  }})
     },
     folder (val) {
-      this.url+="/"+ val
+      this.crumbs.push(val )
       this.$router.push({  query: { url: this.url }})
       this.load(this.url)
     },
     load(url){
+      this.busy=true
       HTTP.get("file?url="+url,axios_json)
       .then(r=>{
         console.log(r)
         this.folders=r.data.folders
         this.files=r.data.files
+        this.busy=false
         })
         .catch(error=> {
           console.log(error);
+          this.busy=false
           alert("Get query error"+url)
         });
       
     },
     root(){
-      this.url="."
+      this.crumbs=[]
       this.$router.push({  query: { url: this.url }})
       this.load(this.url)
+    },
+    filter(){
+      console.log("TODO")
+    },
+    info(){
+      alert("info")
     }
+  },
+  computed: {
+    url:  {
+      get: function () {
+      return  '/'+ this.crumbs.join("/") ;  
+    },
+    set: function(newValue){
+     // alert("set"+newValue)
+     this.crumbs=newValue.split("/").filter((a)=>a.length>0)
+    }
+      }
   },
   created:function(){
     var url=this.$route.query.url
-    this.url=url?url:".";
+    this.url=url?url:"/";
     console.log("files: ",this.$route.query.url)
     this.load(this.url)
   }
@@ -317,6 +374,45 @@ const Home=Vue.extend({
  <my-component>REPLACED</my-component>
 </v-layout>
 `}
+
+);
+const Login=Vue.extend({
+  template: `
+<v-card class="grey lighten-4 elevation-0">
+    <v-card-row class="green darken-1">
+      <v-card-title>
+        <span class="white--text">Login</span>
+      </v-card-title>
+    </v-card-row>
+   
+     <v-card-row>
+      <v-text-field name="input-name" label="Enter your name" hint="name??" v-model="name" required=""></v-text-field>
+     </v-card-row>
+  
+    <v-card-row>    
+         <v-text-field name="input-password" label="Enter your password" hint="Enter your password" v-model="password" :append-icon="e1 ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (e1 = !e1)" :type="e1 ? 'password' : 'text'" required=""></v-text-field>      
+    </v-card-row>
+        
+    <v-divider></v-divider>
+    <v-card-row actions="" class="blue-grey darken-1 mt-0">
+       <v-btn primary="" @click.native="go()">Continue</v-btn>
+       <v-spacer></v-spacer>
+    </v-card-row>
+</v-card>
+`,
+    data () {
+      return {
+        e1: true,
+        name:'',
+        password: ''
+      }
+    },
+    methods:{
+      go () {
+        alert("not yet")
+      }
+    }
+  }
 
 );
 const Options=Vue.extend({  
@@ -517,6 +613,49 @@ const Stepper=Vue.extend({
 }
 
 );
+const Tabs=Vue.extend({
+  template: `
+  <v-tabs id="mobile-tabs-6" scroll-bars="" light="">
+    <v-card class="primary white--text">
+      <v-card-text>
+        <v-card-row>
+          <v-btn icon="" light="">
+            <v-icon>menu</v-icon>
+          </v-btn>
+          <v-card-title>Page Title</v-card-title>
+          <v-btn icon="" light="">
+            <v-icon>search</v-icon>
+          </v-btn>
+          <v-btn icon="" light="">
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </v-card-row>
+      </v-card-text>
+    </v-card>
+    <v-tabs-bar slot="activators">
+      <v-tabs-slider></v-tabs-slider>
+      <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
+       Item {{ i }}
+        <v-btn icon="" class="pink--text">
+              <v-icon>favorite</v-icon>
+            </v-btn>
+      </v-tabs-item>
+    </v-tabs-bar>
+    <v-tabs-content v-for="i in 13" :key="i" :id="'mobile-tabs-6-' + i">
+      <v-card flat="">
+        <v-card-text>{{ text }}</v-card-text>
+      </v-card>
+    </v-tabs-content>
+</v-tabs>
+`,
+    data () {
+      return {
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+      }
+    }
+  }
+
+);
 // base -----------------------
 const HTTP = axios.create({
   baseURL: "/vue-poc/api/",
@@ -527,21 +666,14 @@ const HTTP = axios.create({
 });
 const axios_json={ headers: {accept: 'application/json'}};
 
-
-function acetype(mime){
-  const mimemap={
-      "text/xml":"xml",
-      "application/xml":"xml",
-      "application/xquery":"xquery",
-      "text/ecmascript":"javascript",
-      "text/html":"html"
-  };
-  var r=mimemap[mime]
-  return r?r:"text"
+Vue.config.errorHandler = function (err, vm, info) {
+  // handle error
+  // `info` is a Vue-specific error info, e.g. which lifecycle hook
+  console.error(err, vm, info);
+  alert("vue error");
 };
-
 Vue.component('my-component', {
-  template: '<div>A custom component!</div>',
+  template: '<div>A custom <v-chip>component!</v-chip></div>',
     created:function(){
       console.log("my-component");
     },  
@@ -559,6 +691,8 @@ const router = new VueRouter({
     { path: '/options', component: Options,meta:{title:"Options"} },
     { path: '/select', component: Select,meta:{title:"Select"} },
     { path: '/search', component: Search,meta:{title:"Search"} },
+    { path: '/tabs', component: Tabs,meta:{title:"tab test"} },
+    { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
     { path: '/stepper', component: Stepper,meta:{title:"Stepper"} },
     { path: '/files', component: Files,meta:{title:"Files"} } 
@@ -573,7 +707,9 @@ const app = new Vue({
   router,
   data:function(){return {
     q:"",
+    user:{},
     drawer:true,
+    title:"my title",
     mini: false,
     items: [{
       href: '/',
@@ -610,13 +746,23 @@ const app = new Vue({
       router: true,
       title: 'options',
       icon: 'domain'
- 
+  }, {
+    href: 'tabs',
+    router: true,
+    title: 'tabs',
+    icon: 'switch_camera'
+  }, {
+    href: 'login',
+    router: true,
+    title: 'login',
+    icon: 'account_balance' 
 }, {
   href: 'stepper',
   router: true,
   title: 'stepper',
-  icon: 'picture_in_picture'
+  icon: 'touch_app'
 }]
+  
   }},
   methods: {
       
