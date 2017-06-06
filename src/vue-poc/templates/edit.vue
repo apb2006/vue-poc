@@ -5,60 +5,91 @@
 <v-flex xs12>
 <v-toolbar class="green">
   <v-toolbar-title>
-    <v-btn @click.native="showfiles()" small icon><v-icon>folder</v-icon></v-btn>
-<span >{{ name }}</span> <v-chip small class="primary white--text">{{ mode }}</v-chip>
-   {{dirty}}
+    <v-btn @click.native="showfiles()" small icon  v-tooltip:top="{ html: path.join('/') }">
+    <v-icon>folder</v-icon></v-btn>
+<span >{{ name }}</span>
+<v-chip v-if="dirty" label small class="red white--text">*</v-chip>
+<v-chip  v-if="!dirty" label small class="green white--text">.</v-chip>
+ <v-chip small class="primary white--text">{{ mode }}</v-chip>
+       
   </v-toolbar-title>
   <v-toolbar-items>
+     <v-chip   @click.native="acecmd('goToNextError')"
+          v-tooltip:right="{ html: 'Annotations: Errors,Warning and Info' }"
+           >
+          <v-avatar>
+              <v-icon right >navigate_next</v-icon>
+           </v-avatar>         
+          <v-avatar   class="red " small>{{annotations && annotations.error}}</v-avatar>
+          <v-avatar  class="yellow ">{{annotations && annotations.warning}}</v-avatar>
+          <v-avatar  class="green ">{{annotations && annotations.info}}</v-avatar>
+          </v-chip>
    <v-btn dark icon @click.native="acecmd('outline')">
       <v-icon>star</v-icon>
     </v-btn>
-  <v-btn dark icon @click.native="acecmd('goToPreviousError')" >
-      <v-icon>navigate_before</v-icon>
-    </v-btn>
-<v-btn dark icon @click.native="acecmd('goToNextError')">
-      <v-icon>navigate_next</v-icon>
-    </v-btn>
+
+  
    <v-btn dark icon @click.native="acecmd('foldall')">
       <v-icon>vertical_align_center</v-icon>
     </v-btn>
- <v-btn dark icon @click.native="acecmd('showSettingsMenu')">
-      <v-icon>settings</v-icon>
-    </v-btn>
-<v-btn dark icon @click.native="wrap=!wrap">
+    
+    <v-btn dark icon @click.native="wrap=!wrap">
       <v-icon>wrap_text</v-icon>
     </v-btn>
-<v-btn dark icon @click.native="acecmd('showKeyboardShortcuts')">
-      <v-icon>keyboard</v-icon>
-    </v-btn>
+    
    <v-btn dark icon @click.native="save()">
       <v-icon>file_upload</v-icon>
     </v-btn>
+    
     <v-btn dark icon @click.native="beautify()">
       <v-icon>format_align_center</v-icon>
     </v-btn>
     <v-btn dark icon @click.native="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
-    <v-menu bottom origin="top right" transition="v-scale-transition">
+        <v-menu left  transition="v-fade-transition">
+        <v-btn dark icon slot="activator">
+          <v-icon>help</v-icon>
+        </v-btn>     
+        <v-list>
+          <v-list-item @click="acecmd('showSettingsMenu')">
+            <v-list-tile avatar >
+               <v-list-tile-avatar>
+              <v-icon >settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title >Show settings</v-list-tile-title>
+            </v-list-tile>
+          </v-list-item>
+          
+          <v-list-item  @click="acecmd('showKeyboardShortcuts')">            
+            <v-list-tile avatar>
+              <v-list-tile-avatar>
+              <v-icon >keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title  >Show keyboard commands</v-list-tile-title>
+            </v-list-tile>
+          </v-list-item>
+          </v-list>
+       </v-menu>
+    <v-menu left  transition="v-fade-transition">
       <v-btn dark icon slot="activator">
         <v-icon>more_vert</v-icon>
       </v-btn>
      
           <v-list>
-            <v-list-item>
+            <v-list-item @click="fetch('/vue-poc/vue-poc.xqm')">
               <v-list-tile>
-                <v-list-tile-title @click="fetch('/vue-poc/vue-poc.xqm')">load xquery</v-list-tile-title>
+                <v-list-tile-title >load xquery</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
-            <v-list-item>
+            <v-list-item  @click="fetch('/vue-poc/data/vue-poc/ch4d1.xml')">
               <v-list-tile>
-                <v-list-tile-title  @click="fetch('/vue-poc/data/vue-poc/ch4d1.xml')">load xml</v-list-tile-title>
+                <v-list-tile-title >load xml</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
-            <v-list-item>
+            <v-list-item  @click="fetch('/vue-poc/static/app-gen.js')">
               <v-list-tile>
-                <v-list-tile-title  @click="fetch('/vue-poc/static/app.js')">load js</v-list-tile-title>
+                <v-list-tile-title >load js</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
           <v-list-item>
@@ -99,10 +130,11 @@ v-on:annotation="annotation"></vue-ace>
 </template>
 
 <script>{
-  template: '#edit',
   data () {
     return {
-      contentA: 'declare function local:query($q as xs:string)\n { \n <json   type="object" > }',
+      contentA: `declare function local:query($q as xs:string)
+{ <json type="object"/> 
+};`,
       mode:'xquery',
       url:'',
       name:'',
@@ -117,7 +149,8 @@ v-on:annotation="annotation"></vue-ace>
           "application/xml":"xml",
           "application/xquery":"xquery",
           "text/ecmascript":"javascript",
-          "text/html":"html"
+          "text/html":"html",
+          "text/css":"css"
       }
     }
   },
@@ -192,6 +225,7 @@ v-on:annotation="annotation"></vue-ace>
     },
     annotation(counts){
       this.annotations=counts
+      console.log("annotations: ",counts)
     },
     acetype(mime){
       var r=this.mimemap[mime]

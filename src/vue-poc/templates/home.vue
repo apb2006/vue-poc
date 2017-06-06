@@ -26,5 +26,5 @@
 </v-layout>
 </template>
 <script>{
-  template: '#home'}
+}
 </script>

@@ -46,3 +46,11 @@ declare function html5:selector()
   =>Selector:attrValEq("type", "text/x-template")
   =>Selector:toMatcher()
 };
+
+(:~ 
+ :write file
+ :)
+declare function html5:write-text($text as xs:string,$file as xs:string)
+{
+file:write-text($file,$text)
+};

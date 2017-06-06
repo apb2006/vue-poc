@@ -6,7 +6,6 @@
 </template>
 
 <script>{
-  template: '#search',
   data:  function(){
     return {
       message: 'Hello Vue.js!',

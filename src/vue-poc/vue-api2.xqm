@@ -30,6 +30,43 @@ function vue-api:test-select($q )
             </items>
   </json>
 };
+
+(:~
+ : get status
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/status")
+%rest:produces("application/json")
+%output:method("json")   
+function vue-api:status( )   
+{
+let $user:=user:current()
+let $detail:=user:list-details($user)
+return  <json   type="object" >
+            <user>{$user}</user>
+            <permission>{$detail/@permission/string()}</permission>
+  </json>
+};
+
+(:~
+ : do a thumbnail
+ :)
+declare
+%rest:POST %rest:path("/vue-poc/api/thumbnail")
+%rest:form-param("url", "{$url}")
+%rest:form-param("task", "{$task}")
+%rest:produces("application/json")
+%output:method("json")   
+function vue-api:thumbnail($url,$task )   
+{
+ let $x:=fn:parse-xml($task)=>fn:trace("task: ")
+ return <json   type="object" >
+            <items type="array">
+            {(1 to 100)!(<_>A{.}</_>)}              
+            </items>
+  </json>
+};
+
 (:~
  : Returns wadl.
  :)

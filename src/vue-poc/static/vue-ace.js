@@ -2,7 +2,13 @@
 //https://jsfiddle.net/bc_rikko/gbpw2q9x/3/
 Vue.component('vue-ace', {
     template: '<div :id="editorId" style="width: 100%; height: 100%;"></div>',
-  props: ['editorId', 'content', 'mode', 'theme','wrap','readOnly'],
+  props: ['editorId', 
+          'content',
+          'mode', 
+          'theme',
+          'wrap',
+          'readOnly'
+          ],
   data () {
     return {
       editor: Object,
@@ -45,6 +51,12 @@ Vue.component('vue-ace', {
     const mode = this.mode || 'text'
     const theme = this.theme || 'github'
     const wrap = this.wrap || false
+
+    const aceSettings={
+          snippets:true,
+          basicAutocompletion:true,
+          liveAutocompletion:true}
+    
     const readOnly = this.readOnly || false
     ace.config.set("workerPath", "/vue-poc/ui/ace-workers") 
     this.editor = window.ace.edit(this.editorId)
@@ -58,9 +70,9 @@ Vue.component('vue-ace', {
     session.setUseWrapMode(wrap)
     this.editor.setTheme(`ace/theme/${theme}`)
     this.editor.setOptions({ readOnly:this.readOnly,
-                        enableSnippets : true,
-                        enableBasicAutocompletion : true,
-                        enableLiveAutocompletion : true
+                        enableSnippets : aceSettings.snippets,
+                        enableBasicAutocompletion : aceSettings.basicAutocompletion,
+                        enableLiveAutocompletion : aceSettings.liveAutocompletion
                         });
     this.editor.commands.addCommand({
       name: "showKeyboardShortcuts",

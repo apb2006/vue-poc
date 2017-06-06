@@ -24,10 +24,9 @@ let $id  := Element:getAttribute($tempNode,"id")
 let $name:=functx:capitalize-first($id)=>trace("ID")
 
 let $script:= html5:getElementFirstByTagName($doc,"script")
-let $tempfix:=replace($template,"\$","\\\$")
-let $s:= Node:getInnerHTML($script)=>replace('[''"]#' || $id || '[''"]','`' ||$tempfix ||'`')
-
-let $js:= ``[const `{$name}`=Vue.extend(`{$s}`
+let $script:= Node:getInnerHTML($script)=>substring-after("{")
+let $js:= ``[const `{$name}`=Vue.extend({template:` `{$template}` `,
+`{$script}`
 );
 ]``
 return if(empty($id)) then () else $js

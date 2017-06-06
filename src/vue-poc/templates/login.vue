@@ -39,7 +39,6 @@
 </template>
 
 <script>{
-  template: '#login',
     data () {
       return {
         e1: true,
@@ -49,8 +48,13 @@
     },
     methods:{
       go () {
-        alert("not yet")
-      }
+       HTTP.post("login-check",axios_json)
+      .then(r=>{
+        alert("loh")
+      }).catch(error=> {
+        alert("err")
+      })
     }
   }
+}
 </script>

@@ -18,7 +18,6 @@
 </template>
 
 <script>{
-  template: '#people',
   data:  function(){
     return {message: 'Hello Vue.js!'}
   },

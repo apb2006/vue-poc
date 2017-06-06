@@ -30,7 +30,7 @@
         </v-list-tile-avatar>
         <v-list-tile-content  @click="folder(item.name)">
           <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-          <v-list-tile-sub-title>modified: {{ item.modified }} size: {{ item.size }}</v-list-tile-sub-title>
+          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | any}}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
           <v-btn icon ripple @click.native="info(item.name)">
@@ -48,7 +48,7 @@
         </v-list-tile-avatar>
         <v-list-tile-content>
           <v-list-tile-title @click="file(item.name)">{{ item.name }}</v-list-tile-title>
-           <v-list-tile-sub-title>modified: {{ item.modified }} size: {{ item.size }}</v-list-tile-sub-title>
+           <v-list-tile-sub-title>modified: {{ formatDate(item.modified) }} size: {{ readablizeBytes(item.size) }}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
           <v-btn icon ripple>
@@ -63,7 +63,6 @@
 </template>
 
 <script>{
-  template: '#files',
   data:  function(){
     return { 
             crumbs:[],
@@ -110,7 +109,14 @@
     },
     info(){
       alert("info")
-    }
+    },
+    readablizeBytes(v){
+      return Vue.filter('readablizeBytes')(v)
+      },
+      formatDate(v){
+      return Vue.filter('formatDate')(v)
+      }
+    
   },
   computed: {
     url:  {

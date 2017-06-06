@@ -31,7 +31,6 @@
 </template>
 
 <script>{
-  template: '#select',
   components: { multiselect: VueMultiselect.Multiselect}, 
   data: function(){
       return {

@@ -42,7 +42,6 @@
 </template>
 
 <script>{  
-  template: '#options',
   data: function(){
     return {
         snackbar:false
