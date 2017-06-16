@@ -23,9 +23,9 @@
               label="Enter your password"
               hint="Enter your password"
               v-model="password"
-              :append-icon="e1 ? 'visibility' : 'visibility_off'"
-              :append-icon-cb="() => (e1 = !e1)"
-              :type="e1 ? 'password' : 'text'"
+              :append-icon="hidepass ? 'visibility' : 'visibility_off'"
+              :append-icon-cb="() => (hidepass = !hidepass)"
+              :type="hidepass ? 'password' : 'text'"
               required
             ></v-text-field>      
     </v-card-row>
@@ -41,15 +41,27 @@
 <script>{
     data () {
       return {
-        e1: true,
+        hidepass: true,
         name:'',
         password: ''
       }
     },
     methods:{
       go () {
-       HTTP.post("login-check",axios_json)
+       this.hidepass=true
+       var data=Qs.stringify(
+           {
+             username: this.name, //gave the values directly for testing
+             password: this.password,
+             client_id: 'user-client'
+             })
+       HTTP.post("login-check", data,
+         {
+   headers: { 
+     "Content-Type": "application/x-www-form-urlencoded"
+   }})
       .then(r=>{
+        console.log(r)
         alert("loh")
       }).catch(error=> {
         alert("err")

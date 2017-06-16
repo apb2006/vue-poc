@@ -11,10 +11,12 @@ const HTTP = axios.create({
 });
 const axios_json={ headers: {accept: 'application/json'}};
 
+// Filters:
 //Define the date time format filter
 Vue.filter("formatDate", function(date) {
     return moment(date).format("MMMM D, YYYY")
 });
+
 Vue.filter('readablizeBytes', function (bytes,decimals) {
   if(bytes == 0) return '0 Bytes';
   var k = 1000,
@@ -25,6 +27,25 @@ Vue.filter('readablizeBytes', function (bytes,decimals) {
 });
 Vue.filter("any", function(any) {
   return "ANY"
+});
+/**
+ * Vue filter to round the decimal to the given place.
+ * http://jsfiddle.net/bryan_k/3ova17y9/
+ *
+ * @param {String} value    The value string.
+ * @param {Number} decimals The number of decimal places.
+ */
+Vue.filter('round', function(value, decimals) {
+  if(!value) {
+    value = 0;
+  }
+
+  if(!decimals) {
+    decimals = 0;
+  }
+
+  value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+  return value;
 });
 
 Vue.config.errorHandler = function (err, vm, info) {
@@ -48,7 +69,7 @@ const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
   routes: [
-    { path: '/', component: Home },
+    { path: '/', component: Home,meta:{title:"Home"} },
     { path: '/people', component: People ,meta:{title:"People"}},
     { path: '/options', component: Options,meta:{title:"Options"} },
     { path: '/select', component: Select,meta:{title:"Select"} },
@@ -56,8 +77,11 @@ const router = new VueRouter({
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
-    { path: '/stepper', component: Stepper,meta:{title:"Stepper"} },
-    { path: '/files', component: Files,meta:{title:"Files"} } 
+    { path: '/thumbnail', component: Thumbnail,meta:{title:"Thumbnail generator"} },
+    { path: '/files', component: Files,meta:{title:"Files"} },
+    { path: '/ping', component: Ping,meta:{title:"Ping"} },
+    { path: '/settings', component: Settings,meta:{title:"Settings"} },
+    { path: '/extension', component: Extension,meta:{title:"Xform"} }
   ],
 });
 router.afterEach(function(route) {
@@ -88,7 +112,7 @@ const app = new Vue({
     q:"",
     status:{},
     drawer:true,
-    title:"my title2",
+    title:"@TODO title",
     mini: false,
     items: [{
       href: '/',
@@ -136,10 +160,25 @@ const app = new Vue({
     title: 'login',
     icon: 'account_balance' 
 }, {
-  href: 'stepper',
+  href: 'ping',
   router: true,
-  title: 'stepper',
-  icon: 'touch_app'
+  title: 'ping',
+  icon: 'update'
+},{
+  href: 'thumbnail',
+  router: true,
+  title: 'thumbnail',
+  icon: 'touch_app'    
+},{
+  href: 'settings',
+  router: true,
+  title: 'settings',
+  icon: 'settings'
+},{
+  href: 'extension',
+  router: true,
+  title: 'extension',
+  icon: 'extension'    
 }]
   
   }},

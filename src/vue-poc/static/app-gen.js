@@ -1,4 +1,4 @@
-// generated 2017-06-04T17:31:45.572+01:00
+// generated 2017-06-16T23:13:22.444+01:00
 const Edit=Vue.extend({template:` 
 <v-container fluid="">
  <v-layout row="" wrap="">
@@ -93,6 +93,11 @@
           <v-list-item>
               <v-list-tile>
                 <v-list-tile-title @click="fetch('/vue-poc/static/app.html')">load html</v-list-tile-title>
+              </v-list-tile>
+            </v-list-item>
+             <v-list-item>
+              <v-list-tile>
+                <v-list-tile-title @click="fetch('/vue-poc/static/app.css')">load css</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
           </v-list>
@@ -250,6 +255,48 @@
 }
 
 );
+const Extension=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-layout>
+ 
+  <table>
+   <tbody><tr v-for="(item, row) in grid">
+    <td v-for="(cell,col) in item" style="width:3em;" @click="click(row,col)">{{cell}}</td>
+   </tr>
+  </tbody></table>
+  </v-layout>
+   
+   <a href="http://homepages.cwi.nl/~steven/Talks/2017/06-10-iot/game-demo.html">demo</a>
+ </v-container>
+ `,
+
+  data:  function(){
+    return {grid: [
+      [1,5,8,12],
+      [2,6,9,13],
+      [3,7,10,14],
+      [4,null,11,15] 
+    ],
+    empty:[3,1]
+    }
+  },
+  methods: {
+    click: function (row,col) {
+      var g=this.grid
+      var h=g[row][col]
+      g[row][col]=null
+      g[this.empty[0]][this.empty[1]]=h
+      var e=[row,col]
+      this.empty=e
+      this.grid= g
+      console.log("click",this.grid,e)
+      this.$forceUpdate()
+    }
+  }
+}
+
+
+);
 const Files=Vue.extend({template:` 
  <v-container fluid="">
 
@@ -280,7 +327,7 @@ const Files=Vue.extend({template:`
         </v-list-tile-avatar>
         <v-list-tile-content @click="folder(item.name)">
           <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | any}}</v-list-tile-sub-title>
+          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
           <v-btn icon="" ripple="" @click.native="info(item.name)">
@@ -404,6 +451,7 @@ const Home=Vue.extend({template:`
   <li><a href="https://github.com/monterail/vue-multiselect">vue-multiselect</a></li>
 <li><a href="https://github.com/sagalbot/vue-select"><s>vue-select</s></a></li>
 <li><a href="https://github.com/beautify-web/js-beautify">js-beautify</a></li>
+<li><a href="http://localhost:8984/doc/#/data/app/vue-poc">doc</a></li>
 
   </ul>
 </v-flex>
@@ -430,7 +478,7 @@ const Login=Vue.extend({template:`
      </v-card-row>
   
     <v-card-row>    
-         <v-text-field name="input-password" label="Enter your password" hint="Enter your password" v-model="password" :append-icon="e1 ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (e1 = !e1)" :type="e1 ? 'password' : 'text'" required=""></v-text-field>      
+         <v-text-field name="input-password" label="Enter your password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required=""></v-text-field>      
     </v-card-row>
         
     <v-divider></v-divider>
@@ -443,15 +491,27 @@ const Login=Vue.extend({template:`
 
     data () {
       return {
-        e1: true,
+        hidepass: true,
         name:'',
         password: ''
       }
     },
     methods:{
       go () {
-       HTTP.post("login-check",axios_json)
+       this.hidepass=true
+       var data=Qs.stringify(
+           {
+             username: this.name, //gave the values directly for testing
+             password: this.password,
+             client_id: 'user-client'
+             })
+       HTTP.post("login-check", data,
+         {
+   headers: { 
+     "Content-Type": "application/x-www-form-urlencoded"
+   }})
       .then(r=>{
+        console.log(r)
         alert("loh")
       }).catch(error=> {
         alert("err")
@@ -538,6 +598,131 @@ const People=Vue.extend({template:`
 
 
 );
+const Ping=Vue.extend({template:` 
+ <v-container fluid="">
+ <p>Simple performance measure. Read or increment a database value.</p>
+  <h2>Counter:{{counter}}</h2>
+  <table class="table">
+      <thead> 
+        <tr>
+          <th>Option</th>
+          <th>Repeat</th>
+          <th>Last</th>
+          <th>Count</th>
+          <th>Median</th>
+          <th>Avg</th>
+          
+          <th>min</th>
+          <th>max</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      
+          <tr>
+              <td>
+                   <v-btn dark="" @click.native="get()">Get count</v-btn>
+               </td>
+               <td>
+     <v-checkbox v-model="repeat.get" dark=""></v-checkbox>
+        </td>    
+              <td>
+                  <span>{{getValues.last}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.count}}</span>
+              </td>   
+              <td>
+                  <span>{{getValues.median}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.avg | round(2)}}</span>
+              </td>
+            
+              <td>
+                  <span>{{getValues.min}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.max}}</span>
+              </td>
+          </tr>
+            <tr>
+          <td>
+             <v-btn dark="" @click.native="update()">Update count</v-btn>
+          </td>
+          
+          <td>
+           <v-checkbox v-model="repeat.post" dark=""></v-checkbox>
+          </td>
+           <td class="col-md-1">
+                        <span>{{postValues.last}}</span>
+                    </td>
+          <td class="col-md-1">
+            <span>{{postValues.count}}</span>
+          </td>
+          <td class="col-md-1">
+                        <span>{{postValues.median}}</span>
+           </td>
+           
+          <td class="col-md-1">
+            <span>{{postValues.avg | round(2)}}</span>
+          </td>
+          
+         
+          <td class="col-md-1">
+                        <span>{{postValues.min}}</span>
+          </td>
+          <td class="col-md-1">
+              <span>{{postValues.max}}</span>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+ </v-container>
+ `,
+
+  data:  function(){
+    return {
+      getValues: new perfStat(),
+      postValues: new perfStat(),
+      repeat:{get:false,post:false},
+      counter:0
+      }
+  },
+  methods:{
+    update () {
+       var _start = performance.now();
+      HTTP.post("ping",axios_json)
+      .then(r=>{
+        var elapsed=Math.floor(performance.now() - _start);
+        this.counter=r.data
+        Object.assign(this.postValues,this.postValues.log(elapsed))
+        if(this.repeat.post){
+          this.update(); //does this leak??
+        }
+      })
+    },
+    
+    get(){
+     var _start = performance.now();
+     HTTP.get("ping",axios_json)
+     .then(r=>{
+       var elapsed=Math.floor(performance.now() - _start);
+       this.counter=r.data
+       Object.assign(this.getValues,this.getValues.log(elapsed))
+       this.$forceUpdate()
+        if(this.repeat.get){
+          this.get(); //does this leak??
+        }
+     })
+    }
+  },
+  computed: {
+   
+  }
+}
+
+);
 const Search=Vue.extend({template:` 
  <v-container fluid="">
  <v-text-field label="Search..." v-model="q"></v-text-field>
@@ -617,67 +802,99 @@ const Select=Vue.extend({template:`
 
 
 );
-const Stepper=Vue.extend({template:` 
- <v-container fluid="">
- <v-stepper v-model="step" non-linear="">
-  <v-stepper-header>
-      <v-stepper-step step="1" :complete="step > 1">Select image location</v-stepper-step>
-      <v-divider></v-divider>
-      <v-stepper-step step="2" :complete="step > 2">Set thumbnail details</v-stepper-step>
-      <v-divider></v-divider>
-      <v-stepper-step step="3">Result</v-stepper-step>
-    </v-stepper-header>
-  
-  <v-stepper-content step="1" non-linear="">
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required=""></v-text-field>
-    </v-card>
-        <v-btn primary="" @click.native="step = 2">Next</v-btn>
-  </v-stepper-content>
-  
-  <v-stepper-content step="2" non-linear="">
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    <vue-ace editor-id="editorA" :content="taskxml" mode="xml" wrap="true" v-on:change-content="onChange"></vue-ace>
-		</v-card>
-   
-    <v-btn flat="" @click.native="step -= 1">Back</v-btn>
-     <v-btn primary="" @click.native="step = 3">Next</v-btn>
-  </v-stepper-content>
+const Settings=Vue.extend({template:` 
+  <v-layout row="">
+    <v-flex xs12="" sm6="" offset-sm3="">
+      <v-card>
 
-  <v-stepper-content step="3" non-linear="">
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    output todo
-    </v-card>
-
-     <v-btn flat="" @click.native="step -= 1">Back</v-btn>
-     <v-btn primary="" @click.native="go()">go</v-btn>
-  </v-stepper-content>
-</v-stepper>
- </v-container>
+        <v-list two-line="" subheader="">
+          <v-subheader>Ace editor settings</v-subheader>
+          <v-list-item>
+            <v-list-tile avatar="">
+              <v-list-tile-action>
+                <v-checkbox v-model="ace.notifications"></v-checkbox>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Notifications</v-list-tile-title>
+                <v-list-tile-sub-title>Allow notifications</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-item>
+          <v-list-item>
+            <v-list-tile avatar="">
+              <v-list-tile-action>
+                <v-checkbox v-model="ace.sound"></v-checkbox>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Sound</v-list-tile-title>
+                <v-list-tile-sub-title>Hangouts message</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-item>
+          <v-list-item>
+            <v-list-tile avatar="">
+              <v-list-tile-action>
+                <v-checkbox v-model="ace.video"></v-checkbox>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Video sounds</v-list-tile-title>
+                <v-list-tile-sub-title>Hangouts vidoe call</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-item>
+          <v-list-item>
+            <v-list-tile avatar="">
+              <v-list-tile-action>
+                <v-checkbox v-model="ace.invites"></v-checkbox>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title>Invites</v-list-tile-title>
+                <v-list-tile-sub-title>Notify when receiving invites</v-list-tile-sub-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-item>
+        </v-list>
+      </v-card>
+    </v-flex>
+  </v-layout>
  `,
 
-  data(){
+  data () {
     return {
-      image:"http://images.metmuseum.org/CRDImages/ep/original/DT46.jpg",
-      step: 0,
-      taskxml:"<task></task>"
-      }
+      ace: {
+      notifications: false,
+      sound: false,
+      video: false,
+      invites: false
+    }
+    }
   },
-  methods:{
-    onChange (val) {
-      if (this.taskxml !== val) this.taskxml = val;
-      },
-    go(){
-        alert("post")
-        HTTP.post("thumbnail",Qs.stringify({task: this.taskxml,url:this.image}))
-        .then(function(r){
-          console.log(r)
-       alert("not yet:"+r);
-     })
-      }
+  created: function () {
+    // `this` points to the vm instance
+    console.log('created: ')
+    localforage.getItem('ace').then((value) => {
+      console.log('oh say can you see, ' + value);
+      this.ace=value || this.ace
+    }).catch((err) => {
+      console.log('the rockets red glare has blinded me');
+    });
+  },
+  updated: function () {
+    // `this` points to the vm instance
+    console.log('updated: ')
+    localforage.setItem('ace', this.ace).then((value) => {
+      console.log('woot! we saved ' + value);
+    }).catch((err) => {
+      console.log('he\'s dead, jim!');
+    });
+  },
+  methods: {
+    reverseMessage: function () {
+      alert("unused")
+    }
   }
-
 }
+
 
 );
 const Tabs=Vue.extend({template:` 
@@ -723,6 +940,73 @@ const Tabs=Vue.extend({template:`
   }
 
 );
+const Thumbnail=Vue.extend({template:` 
+ <v-container fluid="">
+ <v-stepper v-model="step" non-linear="">
+  <v-stepper-header>
+      <v-stepper-step step="1" :complete="step > 1">Select image location</v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step step="2" :complete="step > 2">Set thumbnail details</v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step step="3">Result</v-stepper-step>
+    </v-stepper-header>
+  
+  <v-stepper-content step="1" non-linear="">
+    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
+    <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required=""></v-text-field>
+    </v-card>
+        <v-btn primary="" @click.native="step = 2">Next</v-btn>
+  </v-stepper-content>
+  
+  <v-stepper-content step="2" non-linear="">
+    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
+    <vue-ace editor-id="editorA" :content="taskxml" mode="xml" wrap="true" v-on:change-content="onChange"></vue-ace>
+		</v-card>
+   
+    <v-btn flat="" @click.native="step -= 1">Back</v-btn>
+    <v-btn primary="" @click.native="validate()">Validate</v-btn>
+     <v-btn primary="" @click.native="step = 3">Next</v-btn>  
+  </v-stepper-content>
+
+  <v-stepper-content step="3" non-linear="">
+    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
+    output todo
+    </v-card>
+
+     <v-btn flat="" @click.native="step -= 1">Back</v-btn>
+     <v-btn primary="" @click.native="go()">go</v-btn>
+  </v-stepper-content>
+</v-stepper>
+ </v-container>
+ `,
+
+  data(){
+    return {
+      image:"http://images.metmuseum.org/CRDImages/ep/original/DT46.jpg",
+      step: 0,
+      taskxml:"<task></task>"
+      }
+  },
+  methods:{
+    onChange (val) {
+      if (this.taskxml !== val) this.taskxml = val;
+      },
+    validate(){
+        alert
+      },
+    go(){
+        alert("post")
+        HTTP.post("thumbnail",Qs.stringify({task: this.taskxml,url:this.image}))
+        .then(function(r){
+          console.log(r)
+       alert("not yet:"+r);
+     })
+      }
+  }
+
+}
+
+);
 // base -----------------------
 localforage.config({
   name: 'vuepoc'
@@ -736,10 +1020,12 @@ const HTTP = axios.create({
 });
 const axios_json={ headers: {accept: 'application/json'}};
 
+// Filters:
 //Define the date time format filter
 Vue.filter("formatDate", function(date) {
     return moment(date).format("MMMM D, YYYY")
 });
+
 Vue.filter('readablizeBytes', function (bytes,decimals) {
   if(bytes == 0) return '0 Bytes';
   var k = 1000,
@@ -750,6 +1036,25 @@ Vue.filter('readablizeBytes', function (bytes,decimals) {
 });
 Vue.filter("any", function(any) {
   return "ANY"
+});
+/**
+ * Vue filter to round the decimal to the given place.
+ * http://jsfiddle.net/bryan_k/3ova17y9/
+ *
+ * @param {String} value    The value string.
+ * @param {Number} decimals The number of decimal places.
+ */
+Vue.filter('round', function(value, decimals) {
+  if(!value) {
+    value = 0;
+  }
+
+  if(!decimals) {
+    decimals = 0;
+  }
+
+  value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
+  return value;
 });
 
 Vue.config.errorHandler = function (err, vm, info) {
@@ -773,7 +1078,7 @@ const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
   routes: [
-    { path: '/', component: Home },
+    { path: '/', component: Home,meta:{title:"Home"} },
     { path: '/people', component: People ,meta:{title:"People"}},
     { path: '/options', component: Options,meta:{title:"Options"} },
     { path: '/select', component: Select,meta:{title:"Select"} },
@@ -781,8 +1086,11 @@ const router = new VueRouter({
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
-    { path: '/stepper', component: Stepper,meta:{title:"Stepper"} },
-    { path: '/files', component: Files,meta:{title:"Files"} } 
+    { path: '/thumbnail', component: Thumbnail,meta:{title:"Thumbnail generator"} },
+    { path: '/files', component: Files,meta:{title:"Files"} },
+    { path: '/ping', component: Ping,meta:{title:"Ping"} },
+    { path: '/settings', component: Settings,meta:{title:"Settings"} },
+    { path: '/extension', component: Extension,meta:{title:"Xform"} }
   ],
 });
 router.afterEach(function(route) {
@@ -813,7 +1121,7 @@ const app = new Vue({
     q:"",
     status:{},
     drawer:true,
-    title:"my title2",
+    title:"@TODO title",
     mini: false,
     items: [{
       href: '/',
@@ -861,10 +1169,25 @@ const app = new Vue({
     title: 'login',
     icon: 'account_balance' 
 }, {
-  href: 'stepper',
+  href: 'ping',
   router: true,
-  title: 'stepper',
-  icon: 'touch_app'
+  title: 'ping',
+  icon: 'update'
+},{
+  href: 'thumbnail',
+  router: true,
+  title: 'thumbnail',
+  icon: 'touch_app'    
+},{
+  href: 'settings',
+  router: true,
+  title: 'settings',
+  icon: 'settings'
+},{
+  href: 'extension',
+  router: true,
+  title: 'extension',
+  icon: 'extension'    
 }]
   
   }},

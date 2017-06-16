@@ -16,6 +16,7 @@
   <li><a href="https://github.com/monterail/vue-multiselect">vue-multiselect</a></li>
 <li><a href="https://github.com/sagalbot/vue-select"><s>vue-select</s></a></li>
 <li><a href="https://github.com/beautify-web/js-beautify">js-beautify</a></li>
+<li><a href="http://localhost:8984/doc/#/data/app/vue-poc">doc</a></li>
 
   </ul>
 </v-flex>

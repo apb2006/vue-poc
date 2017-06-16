@@ -30,7 +30,7 @@
         </v-list-tile-avatar>
         <v-list-tile-content  @click="folder(item.name)">
           <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | any}}</v-list-tile-sub-title>
+          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
           <v-btn icon ripple @click.native="info(item.name)">

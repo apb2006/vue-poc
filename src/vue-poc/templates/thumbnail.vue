@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<template id="stepper">
+<template id="thumbnail">
  <v-container fluid>
  <v-stepper v-model="step" non-linear>
   <v-stepper-header>
@@ -31,7 +31,8 @@
 		</v-card>
    
     <v-btn flat @click.native="step -= 1">Back</v-btn>
-     <v-btn primary @click.native="step = 3">Next</v-btn>
+    <v-btn primary @click.native="validate()">Validate</v-btn>
+     <v-btn primary @click.native="step = 3">Next</v-btn>  
   </v-stepper-content>
 
   <v-stepper-content step="3" non-linear>
@@ -57,6 +58,9 @@
   methods:{
     onChange (val) {
       if (this.taskxml !== val) this.taskxml = val;
+      },
+    validate(){
+        alert
       },
     go(){
         alert("post")

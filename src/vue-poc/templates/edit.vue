@@ -97,6 +97,11 @@
                 <v-list-tile-title  @click="fetch('/vue-poc/static/app.html')">load html</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
+             <v-list-item>
+              <v-list-tile>
+                <v-list-tile-title  @click="fetch('/vue-poc/static/app.css')">load css</v-list-tile-title>
+              </v-list-tile>
+            </v-list-item>
           </v-list>
       </v-menu>
     </v-toolbar-items>

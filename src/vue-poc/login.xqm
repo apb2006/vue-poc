@@ -20,23 +20,21 @@ declare variable $vue-login:SESSION-VALUE := Session:get($vue-login:SESSION-KEY)
  :)
 declare
   %rest:path("/vue-poc/api/login-check")
-  %rest:query-param("name", "{$name}")
-  %rest:query-param("pass", "{$pass}")
-  %rest:query-param("redirect", "{$path}")
+  %rest:form-param("username", "{$name}")
+  %rest:form-param("password", "{$pass}")
 function vue-login:login(
   $name  as xs:string,
-  $pass  as xs:string,
-  $path  as xs:string?
+  $pass  as xs:string
 ) as element(rest:response) {
   try {
     user:check($name, $pass),
     if(false() and user:list-details($name)/@permission ) then (
-      vue-login:reject($name, 'Admin credentials required.', $path)
+      vue-login:reject($name, 'Admin credentials required.', "$path")
     ) else (
-      vue-login:accept($name, $pass, $path)
+      vue-login:accept($name, $pass, "$path")
     )
   } catch user:* {
-    vue-login:reject($name, 'Please check your login data.', $path)
+    vue-login:reject($name, 'Please check your login data.', "$path")
   }
 };
 
