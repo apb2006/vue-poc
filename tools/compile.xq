@@ -11,6 +11,7 @@ declare namespace Node="java:ch.digitalfondue.jfiveparse.Node";
 declare namespace functx = "http://www.functx.com";
 declare variable $SRC:="C:/Users/andy/git/vue-poc/src/vue-poc/templates/";
 declare variable $CORE:="C:/Users/andy/git/vue-poc/src/vue-poc/static/core.js";
+declare variable $FILTERS:="C:/Users/andy/git/vue-poc/src/vue-poc/static/filters.js";
 declare variable $DEST:="C:/Users/andy/git/vue-poc/src/vue-poc/static/app-gen.js";
 
 (:~ 
@@ -42,4 +43,7 @@ let $files:= fw:directory-list($SRC,map{"include-filter":".*\.vue"})
              //c:file/@name/resolve-uri(.,base-uri(.))
 let $docs:=$files!(fetch:text(.)=>html5:doc()=>local:process())
 let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;"
-return file:write-text($DEST,string-join(($comment,$docs,fetch:text($CORE))))
+return file:write-text($DEST,string-join(($comment,
+                                         fetch:text($FILTERS),
+                                         $docs,
+                                         fetch:text($CORE))))

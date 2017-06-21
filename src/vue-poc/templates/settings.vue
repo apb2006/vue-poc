@@ -9,47 +9,37 @@
           <v-list-item>
             <v-list-tile avatar>
               <v-list-tile-action>
-                <v-checkbox v-model="ace.notifications"></v-checkbox>
+                <v-checkbox v-model="ace.enableSnippets"></v-checkbox>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title>Notifications</v-list-tile-title>
-                <v-list-tile-sub-title>Allow notifications</v-list-tile-sub-title>
+                <v-list-tile-title>enableSnippets</v-list-tile-title>
+                <v-list-tile-sub-title>Allow snippets</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list-item>
           <v-list-item>
             <v-list-tile avatar>
               <v-list-tile-action>
-                <v-checkbox v-model="ace.sound"></v-checkbox>
+                <v-checkbox v-model="ace.enableBasicAutocompletion"></v-checkbox>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title>Sound</v-list-tile-title>
-                <v-list-tile-sub-title>Hangouts message</v-list-tile-sub-title>
+                <v-list-tile-title>enableBasicAutocompletion</v-list-tile-title>
+                <v-list-tile-sub-title>enableBasicAutocompletion</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list-item>
           <v-list-item>
             <v-list-tile avatar>
               <v-list-tile-action>
-                <v-checkbox v-model="ace.video"></v-checkbox>
+                <v-checkbox v-model="ace.enableLiveAutocompletion"></v-checkbox>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title>Video sounds</v-list-tile-title>
-                <v-list-tile-sub-title>Hangouts vidoe call</v-list-tile-sub-title>
+                <v-list-tile-title>enableLiveAutocompletion</v-list-tile-title>
+                <v-list-tile-sub-title>enableLiveAutocompletion</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
           </v-list-item>
-          <v-list-item>
-            <v-list-tile avatar>
-              <v-list-tile-action>
-                <v-checkbox v-model="ace.invites"></v-checkbox>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>Invites</v-list-tile-title>
-                <v-list-tile-sub-title>Notify when receiving invites</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list-item>
+ 
         </v-list>
       </v-card>
     </v-flex>
@@ -60,10 +50,9 @@
   data () {
     return {
       ace: {
-      notifications: false,
-      sound: false,
-      video: false,
-      invites: false
+        enableSnippets: true,
+        enableBasicAutocompletion: true,
+        enableLiveAutocompletion: true
     }
     }
   },

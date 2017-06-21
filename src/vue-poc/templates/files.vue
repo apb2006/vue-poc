@@ -3,37 +3,38 @@
  <v-container fluid>
 
 <v-card>
-  <v-toolbar class="green">
-<v-menu offset-y>
-  <v-btn primary icon dark slot="activator"><v-icon >folder</v-icon></v-btn>
-  <v-list>
-    <v-list-item v-for="item in crumbs" :key="item">
-      <v-list-tile>
-        <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
-      </v-list-tile>
-    </v-list-item>
-  </v-list>
-</v-menu>
+  <v-app-bar>
+		<v-menu offset-y>
+		  <v-btn  icon dark slot="activator"><v-icon >folder</v-icon></v-btn>
+		  <v-list>
+		    <v-list-item v-for="item in crumbs" :key="item">
+		      <v-list-tile>
+		        <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
+		      </v-list-tile>
+		    </v-list-item>
+		  </v-list>
+		</v-menu>
     <v-toolbar-title>{{ url }}</v-toolbar-title>
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line dark @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
-  </v-toolbar>
+  </v-app-bar>
+  
   <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
   <v-list v-if="!busy" two-line subheader>
     <v-subheader inset>Folders</v-subheader>
-    <v-list-item v-for="item in folders" v-bind:key="item.name" >
+    <v-list-item v-for="item in folders" v-bind:key="item.name" @click="folder(item.name)">
       <v-list-tile avatar >
-        <v-list-tile-avatar  @click="folder(item.name)">
+        <v-list-tile-avatar  >
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
-        <v-list-tile-content  @click="folder(item.name)">
+        <v-list-tile-content  >
           <v-list-tile-title>{{ item.name }}</v-list-tile-title>
           <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
-          <v-btn icon ripple @click.native="info(item.name)">
+          <v-btn icon ripple @click.native.stop="info(item.name)">
             <v-icon class="grey--text text--lighten-1">info</v-icon>
           </v-btn>
         </v-list-tile-action>
@@ -41,23 +42,25 @@
     </v-list-item>
     <v-divider inset></v-divider>
     <v-subheader inset>Files</v-subheader>
-    <v-list-item v-for="item in files" v-bind:key="item.name">
+    <v-list-item v-for="item in files" v-bind:key="item.name" @click="file(item.name)">
       <v-list-tile>
         <v-list-tile-avatar>
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
         <v-list-tile-content>
-          <v-list-tile-title @click="file(item.name)">{{ item.name }}</v-list-tile-title>
+          <v-list-tile-title >{{ item.name }}</v-list-tile-title>
            <v-list-tile-sub-title>modified: {{ formatDate(item.modified) }} size: {{ readablizeBytes(item.size) }}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
-          <v-btn icon ripple>
+          <v-btn icon ripple @click.native.stop="info(item.name)">
             <v-icon class="grey--text text--lighten-1">info</v-icon>
           </v-btn>
         </v-list-tile-action>
       </v-list-tile>
     </v-list-item>
   </v-list>
+    <v-navigation-drawer right light temporary v-model="infodraw"
+      >Some info here {{selected}}</v-navigation-drawer>
 </v-card>
  </v-container>
 </template>
@@ -70,7 +73,9 @@
             files:[],
             items:["root"],
             q:"",
-            busy:false
+            busy:false,
+            infodraw:false,
+            selected:""
     }
   },
   methods:{
@@ -107,8 +112,9 @@
     filter(){
       console.log("TODO")
     },
-    info(){
-      alert("info")
+    info(sel){
+      this.selected=sel
+      this.infodraw=true
     },
     readablizeBytes(v){
       return Vue.filter('readablizeBytes')(v)

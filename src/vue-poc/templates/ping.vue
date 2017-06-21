@@ -10,11 +10,12 @@
           <th >Repeat</th>
           <th >Last</th>
           <th >Count</th>
-          <th >Median</th>
+         
           <th >Avg</th>
           
           <th >min</th>
           <th >max</th>
+           <th >Median</th>
         </tr>
       </thead>
       <tbody>
@@ -33,9 +34,7 @@
               <td>
                   <span >{{getValues.count}}</span>
               </td>   
-              <td>
-                  <span >{{getValues.median}}</span>
-              </td>
+            
               <td>
                   <span >{{getValues.avg | round(2)}}</span>
               </td>
@@ -45,6 +44,9 @@
               </td>
               <td>
                   <span >{{getValues.max}}</span>
+              </td>
+                <td>
+                  <span >{{getValues.median}}</span>
               </td>
           </tr>
             <tr>
@@ -88,7 +90,7 @@
       getValues: new perfStat(),
       postValues: new perfStat(),
       repeat:{get:false,post:false},
-      counter:0
+      counter:null
       }
   },
   methods:{

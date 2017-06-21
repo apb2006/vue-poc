@@ -15,14 +15,14 @@
 <link href="/vue-poc/ui/app.css" rel="stylesheet" type="text/css">
 <link rel="shortcut icon" href="/vue-poc/ui/icon.png"/>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.3/vue.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.3.4/vue.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.5.3/vue-router.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.4.0/qs.js"></script>
 <script src="https://unpkg.com/vuetify@0.12.7/dist/vuetify.min.js"></script>
 <script src="https://unpkg.com/vue-multiselect@2.0.0-beta.15/dist/vue-multiselect.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ace.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.6/ext-language_tools.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.7/ace.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.7/ext-language_tools.js"></script>
 
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify-css.js"></script>
@@ -73,13 +73,15 @@
       </v-list>
  </v-navigation-drawer>
  
- <v-toolbar class="blue" >
+ <v-toolbar class="green lighten-1" >
   <v-toolbar-side-icon @click.native.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.native.enter="search"></v-text-field>
+   <v-avatar>
    {{status.user}}
+   </v-avatar>
 </v-toolbar>
  <main>    
       <transition name="fade" mode="out-in">

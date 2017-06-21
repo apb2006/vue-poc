@@ -1,28 +1,42 @@
 <!DOCTYPE html>
 <template id="edit">
 <v-container fluid>
- <v-layout row wrap>
-<v-flex xs12>
-<v-toolbar class="green">
-  <v-toolbar-title>
-    <v-btn @click.native="showfiles()" small icon  v-tooltip:top="{ html: path.join('/') }">
-    <v-icon>folder</v-icon></v-btn>
-<span >{{ name }}</span>
-<v-chip v-if="dirty" label small class="red white--text">*</v-chip>
-<v-chip  v-if="!dirty" label small class="green white--text">.</v-chip>
- <v-chip small class="primary white--text">{{ mode }}</v-chip>
-       
+      <v-snackbar top error  v-model="snackbar">
+      {{ message }}
+      <v-btn flat  @click.native="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
+    </v-snackbar>
+<v-card>
+
+ <v-app-bar>
+<v-menu offset-y>
+  <v-btn primary icon dark slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon >folder</v-icon></v-btn>
+  <v-list>
+    <v-list-item v-for="item in path" :key="item">
+      <v-list-tile>
+        <v-list-tile-title @click="showfiles()">{{ item }}</v-list-tile-title>
+      </v-list-tile>
+    </v-list-item>
+  </v-list>
+</v-menu>
+
+  <v-toolbar-title >
+      <span >{{ name }}</span>
   </v-toolbar-title>
   <v-toolbar-items>
+  <span v-tooltip:top="{ html: 'Changed?' }">
+  <v-chip v-if="dirty" label small class="red white--text">*</v-chip>
+<v-chip  v-if="!dirty" label small class="green white--text">.</v-chip>
+</span>
+ <v-chip small  v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
      <v-chip   @click.native="acecmd('goToNextError')"
-          v-tooltip:right="{ html: 'Annotations: Errors,Warning and Info' }"
+          v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }"
            >
-          <v-avatar>
-              <v-icon right >navigate_next</v-icon>
-           </v-avatar>         
-          <v-avatar   class="red " small>{{annotations && annotations.error}}</v-avatar>
-          <v-avatar  class="yellow ">{{annotations && annotations.warning}}</v-avatar>
           <v-avatar  class="green ">{{annotations && annotations.info}}</v-avatar>
+          <v-avatar  class="yellow ">{{annotations && annotations.warning}}</v-avatar>        
+          <v-avatar   class="red " small>{{annotations && annotations.error}}</v-avatar>    
+           <v-avatar>
+              <v-icon black >navigate_next</v-icon>
+           </v-avatar>
           </v-chip>
    <v-btn dark icon @click.native="acecmd('outline')">
       <v-icon>star</v-icon>
@@ -77,38 +91,26 @@
       </v-btn>
      
           <v-list>
-            <v-list-item @click="fetch('/vue-poc/vue-poc.xqm')">
+            <v-list-item >
               <v-list-tile>
-                <v-list-tile-title >load xquery</v-list-tile-title>
+                <v-list-tile-title >unused</v-list-tile-title>
               </v-list-tile>
             </v-list-item>
-            <v-list-item  @click="fetch('/vue-poc/data/vue-poc/ch4d1.xml')">
-              <v-list-tile>
-                <v-list-tile-title >load xml</v-list-tile-title>
-              </v-list-tile>
-            </v-list-item>
-            <v-list-item  @click="fetch('/vue-poc/static/app-gen.js')">
-              <v-list-tile>
-                <v-list-tile-title >load js</v-list-tile-title>
-              </v-list-tile>
-            </v-list-item>
-          <v-list-item>
-              <v-list-tile>
-                <v-list-tile-title  @click="fetch('/vue-poc/static/app.html')">load html</v-list-tile-title>
-              </v-list-tile>
-            </v-list-item>
-             <v-list-item>
-              <v-list-tile>
-                <v-list-tile-title  @click="fetch('/vue-poc/static/app.css')">load css</v-list-tile-title>
-              </v-list-tile>
-            </v-list-item>
+            
           </v-list>
       </v-menu>
     </v-toolbar-items>
-        </v-toolbar>
+ </v-app-bar>
    <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
-   <v-dialog v-model="clearDialog" >
-  <v-card>
+
+
+<v-flex xs12 style="height:70vh" v-if="!busy" fill-height>
+  
+    <vue-ace editor-id="editorA" :content="contentA" :mode="mode" :wrap="wrap"
+v-on:change-content="changeContentA" 
+v-on:annotation="annotation"></vue-ace>
+  
+ <v-dialog v-model="clearDialog" >
     <v-card-row>
       <v-card-title>Clear?</v-card-title>
     </v-card-row>
@@ -121,16 +123,8 @@
     </v-card-row>
   </v-card>
 </v-dialog>
-</v-flex>
-<v-flex xs12 style="height:70vh" v-if="!busy" fill-height>
+</v-card>
   
-    <vue-ace editor-id="editorA" :content="contentA" :mode="mode" :wrap="wrap"
-v-on:change-content="changeContentA" 
-v-on:annotation="annotation"></vue-ace>
-  
-  </v-flex>
-</v-layout>
-
  </v-container>
 </template>
 
@@ -144,16 +138,20 @@ v-on:annotation="annotation"></vue-ace>
       url:'',
       name:'',
       path:[],
+      mimetype:"",
       wrap:false,
       busy:false,
       clearDialog:false,
       annotations:null,
       dirty:false,
+      snackbar:false,
+      message:"Cant do that",
       mimemap:{
           "text/xml":"xml",
           "application/xml":"xml",
           "application/xquery":"xquery",
           "text/ecmascript":"javascript",
+          "application/sparql-query":"sparql",
           "text/html":"html",
           "text/css":"css"
       }
@@ -176,9 +174,10 @@ v-on:annotation="annotation"></vue-ace>
     // load from url
     fetch(url){
       this.busy=true
-      HTTP.get("raw?url="+url,axios_json)
+      HTTP.get("edit?url="+url,axios_json)
       .then(r=>{
         //console.log(r)
+        this.mimetype=r.data.mimetype
         this.mode=this.acetype(r.data.mimetype)
         this.contentA=r.data.data
         var a=url.split("/")
@@ -223,7 +222,8 @@ v-on:annotation="annotation"></vue-ace>
          a=css_beautify(a, { indent_size: 2 })
          break;     
       default:
-        alert("beaut: " + this.mode)
+        this.message="No beautify yet for "+this.mode
+        this.snackbar=true
      } 
       this.contentA=a
       this.busy=false

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
-<template id="extension">
+<template id="puzzle">
  <v-container fluid>
+  <a href="http://homepages.cwi.nl/~steven/Talks/2017/06-10-iot/game-demo.html">demo</a>
   <v-layout >
  
   <table>
@@ -9,8 +10,6 @@
    </tr>
   </table>
   </v-layout>
-   
-   <a href="http://homepages.cwi.nl/~steven/Talks/2017/06-10-iot/game-demo.html">demo</a>
  </v-container>
 </template>
 

@@ -11,42 +11,7 @@ const HTTP = axios.create({
 });
 const axios_json={ headers: {accept: 'application/json'}};
 
-// Filters:
-//Define the date time format filter
-Vue.filter("formatDate", function(date) {
-    return moment(date).format("MMMM D, YYYY")
-});
 
-Vue.filter('readablizeBytes', function (bytes,decimals) {
-  if(bytes == 0) return '0 Bytes';
-  var k = 1000,
-      dm = decimals || 2,
-      sizes = ['Bytes', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB'],
-      i = Math.floor(Math.log(bytes) / Math.log(k));
-  return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
-});
-Vue.filter("any", function(any) {
-  return "ANY"
-});
-/**
- * Vue filter to round the decimal to the given place.
- * http://jsfiddle.net/bryan_k/3ova17y9/
- *
- * @param {String} value    The value string.
- * @param {Number} decimals The number of decimal places.
- */
-Vue.filter('round', function(value, decimals) {
-  if(!value) {
-    value = 0;
-  }
-
-  if(!decimals) {
-    decimals = 0;
-  }
-
-  value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
-  return value;
-});
 
 Vue.config.errorHandler = function (err, vm, info) {
   // handle error
@@ -78,10 +43,14 @@ const router = new VueRouter({
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
     { path: '/thumbnail', component: Thumbnail,meta:{title:"Thumbnail generator"} },
-    { path: '/files', component: Files,meta:{title:"Files"} },
+    { path: '/files', component: Files,meta:{title:"File system"} },
+    { path: '/files', component: Files,meta:{title:"File system"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
     { path: '/settings', component: Settings,meta:{title:"Settings"} },
-    { path: '/extension', component: Extension,meta:{title:"Xform"} }
+    { path: '/history', component: History,meta:{title:"File History"} },
+    { path: '/puzzle', component: Puzzle,meta:{title:"Jigsaw"} },
+    { path: '/eval', component: Eval,meta:{title:"Evaluate XQuery"} },
+    { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
 });
 router.afterEach(function(route) {
@@ -112,75 +81,23 @@ const app = new Vue({
     q:"",
     status:{},
     drawer:true,
-    title:"@TODO title",
     mini: false,
-    items: [{
-      href: '/',
-      router: true,
-      title: 'Home',
-      icon: 'home'    
-    }, {
-      href: 'files',
-      router: true,
-      title: 'files',
-      icon: 'folder' 
-    }, {
-      href: 'edit',
-      router: true,
-      title: 'edit',
-      icon: 'mode_edit'    
-    }, {
-      href: 'search',
-      router: true,
-      title: 'search',
-      icon: 'search'
-  }, {
-      href: 'people',
-      router: true,
-      title: 'People',
-      icon: 'person'      
-   }, {
-      href: 'select',
-      router: true,
-      title: 'select',
-      icon: 'extension'
-  }, {
-      href: 'options',
-      router: true,
-      title: 'options',
-      icon: 'domain'
-  }, {
-    href: 'tabs',
-    router: true,
-    title: 'tabs',
-    icon: 'switch_camera'
-  }, {
-    href: 'login',
-    router: true,
-    title: 'login',
-    icon: 'account_balance' 
-}, {
-  href: 'ping',
-  router: true,
-  title: 'ping',
-  icon: 'update'
-},{
-  href: 'thumbnail',
-  router: true,
-  title: 'thumbnail',
-  icon: 'touch_app'    
-},{
-  href: 'settings',
-  router: true,
-  title: 'settings',
-  icon: 'settings'
-},{
-  href: 'extension',
-  router: true,
-  title: 'extension',
-  icon: 'extension'    
-}]
-  
+    items: [
+      {href: '/',title: 'Home', icon: 'home'    }, 
+      {href: 'files', title: 'File system',icon: 'folder' },
+      {href: 'edit',title: 'edit',icon: 'mode_edit'},
+      {href: 'history',title: 'history',icon: 'history'},
+      {href: 'eval',title: 'Evaluate',icon: 'cake'}, 
+      {href: 'people',title: 'People',icon: 'person'}, 
+      {href: 'select',title: 'select',icon: 'extension'},
+      {href: 'puzzle',title: 'Puzzle',icon: 'extension'}, 
+      {href: 'options',title: 'options',icon: 'domain'}, 
+      {href: 'tabs',title: 'tabs',icon: 'switch_camera'}, 
+      {href: 'ping',title: 'ping',icon: 'update'},
+      {href: 'thumbnail',title: 'thumbnail',icon: 'touch_app'},
+      {href: 'settings',title: 'settings',icon: 'settings'  }
+]
+
   }},
   methods: {
       

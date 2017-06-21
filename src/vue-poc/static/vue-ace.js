@@ -13,8 +13,14 @@ Vue.component('vue-ace', {
     return {
       editor: Object,
       beforeContent: '',
-      annots:{error:0,warning:0,info:0} 
-    }
+      aceSettings:{
+          enableSnippets:true,
+          enableBasicAutocompletion:true,
+          enableLiveAutocompletion:true},
+      annots:{
+        error:0,warning:0,info:0
+        } 
+      }
   },
   watch: {
     'content' (value) {
@@ -32,13 +38,15 @@ Vue.component('vue-ace', {
   }
   },
   methods:{
+
     command(cmd){
       //alert("fold")
       var cm = this.editor.commands
       //console.log(cm.commands)
      cm.exec(cmd, this.editor)
     },
-    set(){
+    
+    testAnnotations(){
     this.editor.getSession().setAnnotations([{
       row: 1,
       column: 0,
@@ -47,15 +55,13 @@ Vue.component('vue-ace', {
     }]);
     }
   },
+  
   mounted () {
     const mode = this.mode || 'text'
     const theme = this.theme || 'github'
     const wrap = this.wrap || false
 
-    const aceSettings={
-          snippets:true,
-          basicAutocompletion:true,
-          liveAutocompletion:true}
+    const aceSettings=this.aceSettings
     
     const readOnly = this.readOnly || false
     ace.config.set("workerPath", "/vue-poc/ui/ace-workers") 
@@ -70,9 +76,11 @@ Vue.component('vue-ace', {
     session.setUseWrapMode(wrap)
     this.editor.setTheme(`ace/theme/${theme}`)
     this.editor.setOptions({ readOnly:this.readOnly,
-                        enableSnippets : aceSettings.snippets,
-                        enableBasicAutocompletion : aceSettings.basicAutocompletion,
-                        enableLiveAutocompletion : aceSettings.liveAutocompletion
+                        enableSnippets : aceSettings.enableSnippets,
+                        enableBasicAutocompletion : aceSettings.enableBasicAutocompletion,
+                        enableLiveAutocompletion : aceSettings.enableLiveAutocompletion,
+                        tabSize: 2,
+                        useSoftTabs: true
                         });
     this.editor.commands.addCommand({
       name: "showKeyboardShortcuts",
