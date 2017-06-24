@@ -1,12 +1,15 @@
 <!DOCTYPE html>
 <template id="login">
 <v-card class="grey lighten-4 elevation-0">
+
     <v-card-row class="green darken-1">
       <v-card-title>
         <span class="white--text">Login</span>
       </v-card-title>
     </v-card-row>
-   
+    <v-alert error v-bind:value="showMessage">
+      {{message}}
+    </v-alert>
      <v-card-row>
       <v-text-field
               name="input-name"
@@ -43,28 +46,35 @@
       return {
         hidepass: true,
         name:'',
-        password: ''
+        password: '',
+        redirect: this.$route.query.redirect,
+        message:"",
+        showMessage:false
       }
     },
     methods:{
       go () {
        this.hidepass=true
+       this.showMessage=false
        var data=Qs.stringify(
            {
              username: this.name, //gave the values directly for testing
              password: this.password,
-             client_id: 'user-client'
+             redirect: this.redirect
              })
-       HTTP.post("login-check", data,
-         {
-   headers: { 
-     "Content-Type": "application/x-www-form-urlencoded"
-   }})
+       HTTP.post("login-check", data)
       .then(r=>{
-        console.log(r)
-        alert("loh")
+        console.log("login",r.data)
+        if(r.data.status){
+          this.$auth.role="admin"
+          this.$router.replace(this.redirect)
+        }else{
+          this.message=r.data.message
+          this.showMessage=true;
+        }
+          
       }).catch(error=> {
-        alert("err")
+        alert("err login")
       })
     }
   }

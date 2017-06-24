@@ -11,7 +11,7 @@
    <v-card-row img="resources/music.jpg" height="300px"></v-card-row>
   </v-flex>
   <v-flex xs1>
-  <v-card-row img="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" height="60px"></v-card-row>
+  <v-card-row :img="img" height="60px"></v-card-row>
   </v-flex>
   </v-layout>
  </v-container>

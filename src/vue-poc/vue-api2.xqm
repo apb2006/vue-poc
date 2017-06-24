@@ -5,13 +5,13 @@
  :)
 module namespace vue-api = 'quodatum:vue.api';
 import module namespace rest = "http://exquery.org/ns/restxq";
-
+import module namespace session = "http://basex.org/modules/session";
 import module namespace fw="quodatum:file.walker";
 import module namespace mt = 'quodatum.data.mimetype' at "lib/mimetype.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
 declare namespace wadl="http://wadl.dev.java.net/2009/02";
-declare variable $vue-api:index:=file:base-dir() || 'static/' || "app.html";
+
 
 
 (:~
@@ -45,27 +45,11 @@ let $detail:=user:list-details($user)
 return  <json   type="object" >
             <user>{$user}</user>
             <permission>{$detail/@permission/string()}</permission>
+            <session>{session:id()}</session>
+            <created>{session:created()}</created>
   </json>
 };
 
-(:~
- : do a thumbnail
- :)
-declare
-%rest:POST %rest:path("/vue-poc/api/thumbnail")
-%rest:form-param("url", "{$url}")
-%rest:form-param("task", "{$task}")
-%rest:produces("application/json")
-%output:method("json")   
-function vue-api:thumbnail($url,$task )   
-{
- let $x:=fn:parse-xml($task)=>fn:trace("task: ")
- return <json   type="object" >
-            <items type="array">
-            {(1 to 100)!(<_>A{.}</_>)}              
-            </items>
-  </json>
-};
 
 (:~
  : history list 
@@ -138,6 +122,7 @@ declare
 function vue-api:edit-post($url as xs:string,$data)   
 {
   let $path := vue-api:web( $url)=>trace("path ")
+  let $data:=trace($data)
    return if( file:exists($path))then 
              let $type:=mt:type($path)
              let $fetch:=mt:fetch-fn($type("treat-as"))

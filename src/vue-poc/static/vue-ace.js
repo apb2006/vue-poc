@@ -1,9 +1,8 @@
 // ace editor for vue.js
 //https://jsfiddle.net/bc_rikko/gbpw2q9x/3/
 Vue.component('vue-ace', {
-    template: '<div :id="editorId" style="width: 100%; height: 100%;"></div>',
-  props: ['editorId', 
-          'content',
+    template: '<div  style="width: 100%; height: 100%;"></div>',
+  props: [ 'content',
           'mode', 
           'theme',
           'wrap',
@@ -65,7 +64,7 @@ Vue.component('vue-ace', {
     
     const readOnly = this.readOnly || false
     ace.config.set("workerPath", "/vue-poc/ui/ace-workers") 
-    this.editor = window.ace.edit(this.editorId)
+    this.editor = window.ace.edit(this.$el)
     
     this.editor.$blockScrolling = Infinity
     this.editor.setValue(this.content, 1)

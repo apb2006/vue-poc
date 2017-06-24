@@ -100,29 +100,31 @@
           </v-list>
       </v-menu>
     </v-toolbar-items>
+     <v-dialog v-model="clearDialog" >
+       <v-card>
+		    <v-card-row>
+		      <v-card-title>Clear?</v-card-title>
+		    </v-card-row>
+		    <v-card-row>
+		      <v-card-text>clear text.</v-card-text>
+		    </v-card-row>
+		    <v-card-row actions>
+		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
+		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
+		    </v-card-row>
+		    </v-card>
+		</v-dialog>
  </v-app-bar>
    <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
 
 
 <v-flex xs12 style="height:70vh" v-if="!busy" fill-height>
   
-    <vue-ace editor-id="editorA" :content="contentA" :mode="mode" :wrap="wrap"
+    <vue-ace  :content="contentA" :mode="mode" :wrap="wrap"
 v-on:change-content="changeContentA" 
 v-on:annotation="annotation"></vue-ace>
-  
- <v-dialog v-model="clearDialog" >
-    <v-card-row>
-      <v-card-title>Clear?</v-card-title>
-    </v-card-row>
-    <v-card-row>
-      <v-card-text>clear text.</v-card-text>
-    </v-card-row>
-    <v-card-row actions>
-      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
-      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
-    </v-card-row>
-  </v-card>
-</v-dialog>
+ </v-flex> 
+
 </v-card>
   
  </v-container>
@@ -153,6 +155,7 @@ v-on:annotation="annotation"></vue-ace>
           "text/ecmascript":"javascript",
           "application/sparql-query":"sparql",
           "text/html":"html",
+          "text/turtle":"turtle",
           "text/css":"css"
       }
     }
@@ -202,7 +205,17 @@ v-on:annotation="annotation"></vue-ace>
       Events.$emit('eventFired',"foldall");
     },
     save(){
-      alert("TODO save: "+this.path.join("/"));
+      alert("TODO save: "+this.url);
+      var data=Qs.stringify(
+          {
+            url: this.url, //gave the values directly for testing
+            data: this.contentA
+            })
+      HTTP.post("edit", data,{
+  headers: { "Content-Type": "application/x-www-form-urlencoded"}
+      }).then(r=>{
+        alert("AAA")
+      })
     },
     showfiles(){
            router.push({ path: 'files', query: { url: this.path.join("/") }})

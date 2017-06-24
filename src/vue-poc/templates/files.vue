@@ -4,17 +4,18 @@
 
 <v-card>
   <v-app-bar>
-		<v-menu offset-y>
-		  <v-btn  icon dark slot="activator"><v-icon >folder</v-icon></v-btn>
-		  <v-list>
-		    <v-list-item v-for="item in crumbs" :key="item">
-		      <v-list-tile>
-		        <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
-		      </v-list-tile>
-		    </v-list-item>
-		  </v-list>
-		</v-menu>
+	   <v-menu >
+      <v-btn  icon dark slot="activator"><v-icon >folder</v-icon></v-btn>
+      <v-list>
+        <v-list-item v-for="item in crumbs" :key="item">
+          <v-list-tile>
+            <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <v-toolbar-title>{{ url }}</v-toolbar-title>
+   
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line dark @keyup.native.enter="filter"></v-text-field>

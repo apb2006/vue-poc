@@ -80,7 +80,7 @@
    <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.native.enter="search"></v-text-field>
    <v-avatar>
-   {{status.user}}
+   {{$auth.name}}
    </v-avatar>
 </v-toolbar>
  <main>    

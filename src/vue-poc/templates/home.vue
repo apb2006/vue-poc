@@ -12,7 +12,7 @@
 <v-flex xs4>
   <p>This is a experiment in using <code>vue.js</code>.</p>
   <ul>
-  <li><a href="https://vuetifyjs.com/" target="new">vuetifyjs</a></li>
+  <li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
   <li><a href="https://github.com/monterail/vue-multiselect" target="new">vue-multiselect</a></li>
 <li><a href="https://github.com/sagalbot/vue-select" target="new"><s>vue-select</s></a></li>
 <li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
@@ -23,7 +23,7 @@
 <v-btn floating="floating">
   <v-icon>add</v-icon>
 </v-btn>
- <my-component>REPLACED</my-component>
+ <my-component href="/dba">REPLACED</my-component>
 </v-layout>
 </template>
 <script>{

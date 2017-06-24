@@ -1,4 +1,4 @@
-// generated 2017-06-21T16:59:58.292+01:00
+// generated 2017-06-24T12:17:19.685+01:00
 /**
  * vue filters
  */
@@ -78,7 +78,7 @@ const Edit=Vue.extend({template:`
       <span>{{ name }}</span>
   </v-toolbar-title>
   <v-toolbar-items>
-  <span v-tooltip:top="{ html: 'Change' }">
+  <span v-tooltip:top="{ html: 'Changed?' }">
   <v-chip v-if="dirty" label="" small="" class="red white--text">*</v-chip>
 <v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
 </span>
@@ -153,28 +153,30 @@ const Edit=Vue.extend({template:`
           </v-list>
       </v-menu>
     </v-toolbar-items>
+     <v-dialog v-model="clearDialog">
+       <v-card>
+		    <v-card-row>
+		      <v-card-title>Clear?</v-card-title>
+		    </v-card-row>
+		    <v-card-row>
+		      <v-card-text>clear text.</v-card-text>
+		    </v-card-row>
+		    <v-card-row actions="">
+		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
+		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
+		    </v-card-row>
+		    </v-card>
+		</v-dialog>
  </v-app-bar>
    <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
 
 
 <v-flex xs12="" style="height:70vh" v-if="!busy" fill-height="">
   
-    <vue-ace editor-id="editorA" :content="contentA" :mode="mode" :wrap="wrap" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
-  
- <v-dialog v-model="clearDialog">
-    <v-card-row>
-      <v-card-title>Clear?</v-card-title>
-    </v-card-row>
-    <v-card-row>
-      <v-card-text>clear text.</v-card-text>
-    </v-card-row>
-    <v-card-row actions="">
-      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
-      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
-    </v-card-row>
-  </v-dialog></v-flex></v-card>
+    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
+ </v-flex> 
 
-
+</v-card>
   
  </v-container>
  `,
@@ -203,6 +205,7 @@ const Edit=Vue.extend({template:`
           "text/ecmascript":"javascript",
           "application/sparql-query":"sparql",
           "text/html":"html",
+          "text/turtle":"turtle",
           "text/css":"css"
       }
     }
@@ -252,7 +255,17 @@ const Edit=Vue.extend({template:`
       Events.$emit('eventFired',"foldall");
     },
     save(){
-      alert("TODO save: "+this.path.join("/"));
+      alert("TODO save: "+this.url);
+      var data=Qs.stringify(
+          {
+            url: this.url, //gave the values directly for testing
+            data: this.contentA
+            })
+      HTTP.post("edit", data,{
+  headers: { "Content-Type": "application/x-www-form-urlencoded"}
+      }).then(r=>{
+        alert("AAA")
+      })
     },
     showfiles(){
            router.push({ path: 'files', query: { url: this.path.join("/") }})
@@ -312,20 +325,59 @@ const Edit=Vue.extend({template:`
 );
 const Eval=Vue.extend({template:` 
  <v-container fluid="">
-  <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-  <vue-ace editor-id="editorA" :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange"></vue-ace>
+  <v-card class="grey lighten-1 z-depth-1 mb-5">
+  <v-card-row>
+  <v-btn @click.native="run()">Run</v-btn>
+    <v-btn @click.native="submit()">Submit</v-btn>
+  </v-card-row>
+  <v-card-row height="200px">
+  <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange"></vue-ace>
+   </v-card-row>
     </v-card>
+        <v-alert error="" v-bind:value="showError">
+      {{result}}
+    </v-alert>
+     <v-card v-if="show">
+      <v-card-row height="200px">
+        <vue-ace :content="result" mode="text" wrap="true" read-only="true"></vue-ace> 
+       </v-card-row>  
+     </v-card>
  </v-container>
  `,
 
   data:  function(){
     return {
-      xq: '(:~ do something :)'
+      xq: '(: type your XQuery :)\n',
+      result:'',
+      elapsed:null,
+      show:false,
+      showError:false
       }
   },
   methods:{
-    onChange(){
-      console.log("go")
+    onChange(val){
+      if (this.xq !== val) {
+        this.xq = val
+      }
+    },
+    
+    run(){
+      var data={xq:this.xq}
+      this.showError=this.show=false
+      HTTP.post("eval/execute",Qs.stringify(data))
+      .then(r=>{
+        this.result=r.data.result
+        this.show=true
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.response.data
+        this.showError=true;
+
+      });
+    },
+    submit(){
+      alert("submit")
     }
   },
   created:function(){
@@ -339,17 +391,18 @@ const Files=Vue.extend({template:`
 
 <v-card>
   <v-app-bar>
-		<v-menu offset-y="">
-		  <v-btn icon="" dark="" slot="activator"><v-icon>folder</v-icon></v-btn>
-		  <v-list>
-		    <v-list-item v-for="item in crumbs" :key="item">
-		      <v-list-tile>
-		        <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
-		      </v-list-tile>
-		    </v-list-item>
-		  </v-list>
-		</v-menu>
+	   <v-menu>
+      <v-btn icon="" dark="" slot="activator"><v-icon>folder</v-icon></v-btn>
+      <v-list>
+        <v-list-item v-for="item in crumbs" :key="item">
+          <v-list-tile>
+            <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
+          </v-list-tile>
+        </v-list-item>
+      </v-list>
+    </v-menu>
     <v-toolbar-title>{{ url }}</v-toolbar-title>
+   
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" dark="" @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
@@ -535,7 +588,7 @@ const Home=Vue.extend({template:`
 <v-flex xs4="">
   <p>This is a experiment in using <code>vue.js</code>.</p>
   <ul>
-  <li><a href="https://vuetifyjs.com/" target="new">vuetifyjs</a></li>
+  <li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
   <li><a href="https://github.com/monterail/vue-multiselect" target="new">vue-multiselect</a></li>
 <li><a href="https://github.com/sagalbot/vue-select" target="new"><s>vue-select</s></a></li>
 <li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
@@ -546,21 +599,64 @@ const Home=Vue.extend({template:`
 <v-btn floating="floating">
   <v-icon>add</v-icon>
 </v-btn>
- <my-component>REPLACED</my-component>
+ <my-component href="/dba">REPLACED</my-component>
 </v-layout>
  `,
 
 }
 
 );
+const Job=Vue.extend({template:` 
+ <v-container fluid="">
+ <h1>JOBS</h1>
+ <nav-apb :items="items"></nav-apb>
+ </v-container>
+ `,
+
+  data:  function(){
+    return {
+      message: 'Hello Vue.js!',
+      q:this.$route.query.q,
+      items:[
+        {href: '/',text: 'Home', icon: 'home'    }, 
+        
+        {href: 'files', text: 'File system',icon: 'folder' },
+        {href: 'edit',text: 'edit',icon: 'mode_edit'},
+        {href: 'history',text: 'history',icon: 'history'},
+        
+        {href: 'eval',text: 'Evaluate',icon: 'cake'},      
+        {href: 'tasks',text: 'Tasks',icon: 'build'}, 
+        {href: 'jobs',text: 'Jobs',icon: 'print'}, 
+        
+        {href: 'logs',text: 'Server logs',icon: 'dns'},
+        {href: 'people',text: 'People',icon: 'person'}, 
+        {href: 'select',text: 'select',icon: 'extension'},
+        {href: 'puzzle',text: 'Puzzle',icon: 'extension'}, 
+        {href: 'options',text: 'options',icon: 'domain'}, 
+        {href: 'tabs',text: 'tabs',icon: 'switch_camera'}, 
+        {href: 'ping',text: 'ping',icon: 'update'},
+        {href: 'thumbnail',text: 'thumbnail',icon: 'touch_app'},
+        {href: 'settings',text: 'settings',icon: 'settings'  }
+      ]
+      }
+  },
+  created:function(){
+    console.log("Serch",this.$route.query.q)
+  }
+}
+
+);
 const Login=Vue.extend({template:` 
 <v-card class="grey lighten-4 elevation-0">
+
     <v-card-row class="green darken-1">
       <v-card-title>
         <span class="white--text">Login</span>
       </v-card-title>
     </v-card-row>
-   
+    <v-alert error="" v-bind:value="showMessage">
+      {{message}}
+    </v-alert>
      <v-card-row>
       <v-text-field name="input-name" label="Enter your name" hint="name??" v-model="name" required=""></v-text-field>
      </v-card-row>
@@ -581,30 +677,54 @@ const Login=Vue.extend({template:`
       return {
         hidepass: true,
         name:'',
-        password: ''
+        password: '',
+        redirect: this.$route.query.redirect,
+        message:"",
+        showMessage:false
       }
     },
     methods:{
       go () {
        this.hidepass=true
+       this.showMessage=false
        var data=Qs.stringify(
            {
              username: this.name, //gave the values directly for testing
              password: this.password,
-             client_id: 'user-client'
+             redirect: this.redirect
              })
-       HTTP.post("login-check", data,
-         {
-   headers: { 
-     "Content-Type": "application/x-www-form-urlencoded"
-   }})
+       HTTP.post("login-check", data)
       .then(r=>{
-        console.log(r)
-        alert("loh")
+        console.log("login",r.data)
+        if(r.data.status){
+          this.$auth.role="admin"
+          this.$router.replace(this.redirect)
+        }else{
+          this.message=r.data.message
+          this.showMessage=true;
+        }
+          
       }).catch(error=> {
-        alert("err")
+        alert("err login")
       })
     }
+  }
+}
+
+);
+const Log=Vue.extend({template:` 
+ <v-container fluid="">
+  <h1>LOGS</h1>
+</v-container> `,
+
+  data:  function(){
+    return {
+      message: 'Hello Vue.js!',
+      q:this.$route.query.q
+      }
+  },
+  created:function(){
+    console.log("Serch",this.$route.query.q)
   }
 }
 
@@ -668,7 +788,7 @@ const People=Vue.extend({template:`
    <v-card-row img="resources/music.jpg" height="300px"></v-card-row>
   </v-flex>
   <v-flex xs1="">
-  <v-card-row img="data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg==" height="60px"></v-card-row>
+  <v-card-row :img="img" height="60px"></v-card-row>
   </v-flex>
   </v-layout>
  </v-container>
@@ -823,7 +943,19 @@ const Puzzle=Vue.extend({template:`
  
   <table>
    <tbody><tr v-for="(item, row) in grid">
-    <td v-for="(cell,col) in item" style="width:3em;" @click="click(row,col)">{{cell}}</td>
+    <td v-for="(cell,col) in item" style="width:3em;">
+    <v-btn @click.native="click(row,col)" :disabled="disabled(row,col)">{{cell}}</v-btn>
+    </td>
+   </tr>
+  </tbody></table>
+   <br>
+   <table>
+   <tbody><tr v-for="(item, row) in grid">
+    <td v-for="(cell,col) in item" style="width:50px;height:50px;">
+    <v-btn @click.native="click(row,col)" :disabled="disabled(row,col)">
+    <img :src="src(row,col)" style="width:50px;height:50px;">
+</v-btn>
+    </td>
    </tr>
   </tbody></table>
   </v-layout>
@@ -837,11 +969,12 @@ const Puzzle=Vue.extend({template:`
       [3,7,10,14],
       [4,null,11,15] 
     ],
-    empty:[3,1]
+    empty:[3,1],
+    tiles:[{data:""}]
     }
   },
   methods: {
-    click: function (row,col) {
+    click(row,col) {
       var g=this.grid
       var h=g[row][col]
       g[row][col]=null
@@ -851,7 +984,31 @@ const Puzzle=Vue.extend({template:`
       this.grid= g
       console.log("click",this.grid,e)
       this.$forceUpdate()
+    },
+    disabled(row,col){
+      var ok=(row==this.empty[0]) && (col==this.empty[1]-1 ||col==this.empty[1]+1) 
+      ok=ok || (col==this.empty[1]) && (row==this.empty[0]-1 ||row==this.empty[0]+1);
+      return !ok 
+    },
+    gettiles(){
+      HTTP.get("thumbnail/images")
+      .then(r=>{
+        this.tiles=r.data.items
+        this.$forceUpdate()
+        })
+      
+    },
+    src(row,col){
+      var v=this.grid[row][col]
+      var d=""
+      if(typeof this.tiles[v] !== 'undefined') d=this.tiles[v].data 
+      
+      return "data:image/jpeg;base64,"+d 
     }
+   
+  },
+  created(){
+    this.gettiles()
   }
 }
 
@@ -1063,6 +1220,24 @@ const Tabs=Vue.extend({template:`
   }
 
 );
+const Task=Vue.extend({template:` 
+ <v-container fluid="">
+  <h1>Tasks</h1>
+ </v-container>
+ `,
+
+  data:  function(){
+    return {
+      message: 'Hello Vue.js!',
+      q:this.$route.query.q
+      }
+  },
+  created:function(){
+    console.log("Serch",this.$route.query.q)
+  }
+}
+
+);
 const Thumbnail=Vue.extend({template:` 
  <v-container fluid="">
  <v-stepper v-model="step" non-linear="">
@@ -1115,7 +1290,9 @@ const Thumbnail=Vue.extend({template:`
       if (this.taskxml !== val) this.taskxml = val;
       },
     validate(){
-        alert
+        alert("validate")
+        HTTP.post("thumbnail/validate",Qs.stringify({task: this.taskxml}))
+        .then(r=>{alert("gg")})
       },
     go(){
         alert("post")
@@ -1143,8 +1320,15 @@ const HTTP = axios.create({
 });
 const axios_json={ headers: {accept: 'application/json'}};
 
-
-
+const Auth={
+    name:"guest",
+    role:null,
+    install: function(Vue){
+        Object.defineProperty(Vue.prototype, '$auth', {
+          get () { return Auth }
+      })  }
+};
+Vue.use(Auth);
 Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
@@ -1153,12 +1337,83 @@ Vue.config.errorHandler = function (err, vm, info) {
 };
 
 Vue.component('my-component', {
-  template: '<div>A custom <v-chip>component!</v-chip></div>',
+  
+  props: ['href'],
+  template: '<a :href="href" :target="href" > {{href}}<v-icon>link</v-icon></a>',
     created:function(){
       console.log("my-component");
     },  
 });
 
+Vue.component('nav-apb', {
+  
+  props: ['items'],
+  template:` 
+<v-list dense>
+<template v-for="(item, i) in items">
+  <v-layout
+    row
+    v-if="item.heading"
+    align-center
+    :key="i"
+  > 
+    <v-flex xs6>
+      <v-subheader v-if="item.heading">
+        {{ item.heading }}
+      </v-subheader>
+    </v-flex>
+    <v-flex xs6 class="text-xs-center">
+      <a href="#!" class="body-2 black--text">EDIT</a>
+    </v-flex>
+  </v-layout>
+  <v-list-group v-else-if="item.children" v-model="item.model" no-action>
+    <v-list-item slot="item">
+      <v-list-tile :href="item.href" router ripple>
+        <v-list-tile-action>
+          <v-icon>{{ item.model ? item.icon : item['icon-alt'] }}</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>
+            {{ item.text }}
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list-item>
+    <v-list-item
+      v-for="(child, i) in item.children"
+      :key="i"
+    >
+      <v-list-tile>
+        <v-list-tile-action v-if="child.icon">
+          <v-icon>{{ child.icon }}</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>
+            {{ child.text }}
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </v-list-item>
+  </v-list-group>
+  <v-list-item v-else>
+    <v-list-tile :href="item.href" router ripple>
+      <v-list-tile-action>
+        <v-icon>{{ item.icon }}</v-icon>
+      </v-list-tile-action>
+      <v-list-tile-content>
+        <v-list-tile-title>
+          {{ item.text }}
+        </v-list-tile-title>
+      </v-list-tile-content>
+    </v-list-tile>
+  </v-list-item>
+</template>
+</v-list>`,
+   created:function(){
+      console.log("my-component");
+    }
+    });
+      
 var Events = new Vue({});
 
 
@@ -1182,6 +1437,9 @@ const router = new VueRouter({
     { path: '/history', component: History,meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle,meta:{title:"Jigsaw"} },
     { path: '/eval', component: Eval,meta:{title:"Evaluate XQuery"} },
+    { path: '/logs', component: Log,meta:{title:"Server logs"} },
+    { path: '/tasks', component: Task,meta:{title:"Runnable tasks"} },
+    { path: '/jobs', component: Job,meta:{title:"Jobs"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
 });
@@ -1193,7 +1451,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if (true) {
+    if ("admin"==Auth.role) {
       next({
         path: '/login',
         query: { redirect: to.fullPath }
@@ -1216,10 +1474,16 @@ const app = new Vue({
     mini: false,
     items: [
       {href: '/',title: 'Home', icon: 'home'    }, 
+      
       {href: 'files', title: 'File system',icon: 'folder' },
       {href: 'edit',title: 'edit',icon: 'mode_edit'},
       {href: 'history',title: 'history',icon: 'history'},
-      {href: 'eval',title: 'Evaluate',icon: 'cake'}, 
+      
+      {href: 'eval',title: 'Evaluate',icon: 'cake'},      
+      {href: 'tasks',title: 'Tasks',icon: 'build'}, 
+      {href: 'jobs',title: 'Jobs',icon: 'print'}, 
+      
+      {href: 'logs',title: 'Server logs',icon: 'dns'},
       {href: 'people',title: 'People',icon: 'person'}, 
       {href: 'select',title: 'select',icon: 'extension'},
       {href: 'puzzle',title: 'Puzzle',icon: 'extension'}, 
@@ -1242,7 +1506,8 @@ const app = new Vue({
     HTTP.get("status")
     .then(r=>{
       console.log("status",r)
-      this.status=r.data
+      this.$auth.name=r.data.user
+      this.$forceUpdate()
     }) 
   },
   beforeDestroy(){

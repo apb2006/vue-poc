@@ -60,7 +60,9 @@
       if (this.taskxml !== val) this.taskxml = val;
       },
     validate(){
-        alert
+        alert("validate")
+        HTTP.post("thumbnail/validate",Qs.stringify({task: this.taskxml}))
+        .then(r=>{alert("gg")})
       },
     go(){
         alert("post")
