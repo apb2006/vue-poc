@@ -51,9 +51,10 @@ declare
   %rest:path("/vue-poc/api/logout")
 function vue-login:logout(
 ) as element(rest:response) {
+  session:close(),
   admin:write-log('vue-poc user was logged out: ' || $vue-login:SESSION-VALUE),
-  web:redirect("/vue-poc/login", map { 'name': $vue-login:SESSION-VALUE }),
-  session:delete($vue-login:SESSION-KEY)
+  web:redirect("/vue-poc/login", map { 'name': $vue-login:SESSION-VALUE })
+
 };
 
 (:~

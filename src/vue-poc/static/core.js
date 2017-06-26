@@ -12,8 +12,8 @@ const HTTP = axios.create({
 const axios_json={ headers: {accept: 'application/json'}};
 
 const Auth={
-    name:"guest",
-    role:null,
+    user:"guest",
+    permission:null,
     install: function(Vue){
         Object.defineProperty(Vue.prototype, '$auth', {
           get () { return Auth }
@@ -36,7 +36,7 @@ Vue.component('my-component', {
     },  
 });
 
-Vue.component('nav-apb', {
+Vue.component('nav-list', {
   
   props: ['items'],
   template:` 
@@ -60,13 +60,18 @@ Vue.component('nav-apb', {
   <v-list-group v-else-if="item.children" v-model="item.model" no-action>
     <v-list-item slot="item">
       <v-list-tile :href="item.href" router ripple>
-        <v-list-tile-action>
-          <v-icon>{{ item.model ? item.icon : item['icon-alt'] }}</v-icon>
+       <v-list-tile-action>
+          <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
-        <v-list-tile-content>
           <v-list-tile-title>
             {{ item.text }}
           </v-list-tile-title>
+          <v-spacer></v-spacer>
+        <v-list-tile-action>
+          <v-icon>{{ item.model ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+        
         </v-list-tile-content>
       </v-list-tile>
     </v-list-item>
@@ -74,7 +79,7 @@ Vue.component('nav-apb', {
       v-for="(child, i) in item.children"
       :key="i"
     >
-      <v-list-tile>
+      <v-list-tile :href="child.href" router ripple>
         <v-list-tile-action v-if="child.icon">
           <v-icon>{{ child.icon }}</v-icon>
         </v-list-tile-action>
@@ -142,7 +147,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if ("admin"==Auth.role) {
+    if ("admin"==Auth.permission) {
       next({
         path: '/login',
         query: { redirect: to.fullPath }
@@ -163,41 +168,62 @@ const app = new Vue({
     status:{},
     drawer:true,
     mini: false,
-    items: [
-      {href: '/',title: 'Home', icon: 'home'    }, 
-      
-      {href: 'files', title: 'File system',icon: 'folder' },
-      {href: 'edit',title: 'edit',icon: 'mode_edit'},
-      {href: 'history',title: 'history',icon: 'history'},
-      
-      {href: 'eval',title: 'Evaluate',icon: 'cake'},      
-      {href: 'tasks',title: 'Tasks',icon: 'build'}, 
-      {href: 'jobs',title: 'Jobs',icon: 'print'}, 
-      
-      {href: 'logs',title: 'Server logs',icon: 'dns'},
-      {href: 'people',title: 'People',icon: 'person'}, 
-      {href: 'select',title: 'select',icon: 'extension'},
-      {href: 'puzzle',title: 'Puzzle',icon: 'extension'}, 
-      {href: 'options',title: 'options',icon: 'domain'}, 
-      {href: 'tabs',title: 'tabs',icon: 'switch_camera'}, 
-      {href: 'ping',title: 'ping',icon: 'update'},
-      {href: 'thumbnail',title: 'thumbnail',icon: 'touch_app'},
-      {href: 'settings',title: 'settings',icon: 'settings'  }
-]
+    items:[
+      {href: '/',text: 'Home', icon: 'home'    }, 
+      {
+        icon: 'folder_open',
+        text: 'Collections' ,
+        model: false,
+        children: [
+      {href: 'files', text: 'File system',icon: 'folder' },
+      {href: 'edit',text: 'edit',icon: 'mode_edit'},
+      {href: 'history',text: 'history',icon: 'history'},
+      ]},
+      {
+        icon: 'directions_run',
+        text: 'Actions' ,
+        model: false,
+        children: [
+      {href: 'eval',text: 'Evaluate',icon: 'cake'},      
+      {href: 'tasks',text: 'Tasks',icon: 'build'}, 
+      {href: 'jobs',text: 'Jobs',icon: 'print'},
+      {href: 'logs',text: 'Server logs',icon: 'dns'}
+      ]},
+      {
+        icon: 'more_horiz',
+        text: 'More' ,
+        model: false,
+        children: [
+      {href: 'people',text: 'People',icon: 'person'}, 
+      {href: 'select',text: 'select',icon: 'extension'},
+      {href: 'puzzle',text: 'Puzzle',icon: 'extension'}, 
+      {href: 'options',text: 'options',icon: 'domain'}, 
+      {href: 'tabs',text: 'tabs',icon: 'switch_camera'}, 
+      {href: 'ping',text: 'ping',icon: 'update'},
+      {href: 'thumbnail',text: 'thumbnail',icon: 'touch_app'}
+      ]},
+      {href: 'settings',text: 'settings',icon: 'settings'  }
+    ]
 
   }},
   methods: {
       
       search(){
         this.$router.push({path: 'search',query: { q: this.q }})
+      },
+      logout(){
+        HTTP.get("logout").then(r=>{
+          alert("logout")
+        })
+       
       }
   },
   created(){
     console.log("create-----------")
     HTTP.get("status")
     .then(r=>{
-      console.log("status",r)
-      this.$auth.name=r.data.user
+      console.log("status",r.data)
+      Object.assign(Auth,r.data)
       this.$forceUpdate()
     }) 
   },

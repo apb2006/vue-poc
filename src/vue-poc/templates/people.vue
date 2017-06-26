@@ -4,8 +4,14 @@
   <v-layout >Look at all the people who work here!
   <v-btn light default v-on:click.native="reverseMessage">Reverse Message</v-btn>
   <p>{{ message }}</p>
- 
+   <v-btn light default v-on:click.native="logout">logout</v-btn>
   </v-layout>
+  <v-card>
+  <v-layout >
+  <v-flex  xs5>created:{{$auth.created}}</v-flex>
+   <v-flex  xs5>session:{{$auth.session}}</v-flex>
+  </v-layout>
+  </v-card>
   <v-layout>
   <v-flex xs5>
    <v-card-row img="resources/music.jpg" height="300px"></v-card-row>
@@ -25,8 +31,11 @@
       }
   },
   methods: {
-    reverseMessage: function () {
+    reverseMessage() {
       this.message = this.message.split('').reverse().join('')
+    },
+    logout(){
+      alert("TODU")
     }
   }
 }

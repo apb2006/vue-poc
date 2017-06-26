@@ -54,23 +54,7 @@
           </v-list-tile>
         </v-list-item>
       </v-list>
-      <v-list class="pt-0" dense>
-        <v-divider></v-divider>
-        <v-list-item v-for="item in items" :key="item">
-        
-          <v-list-tile :href="item.href" router ripple>
-          
-            <v-list-tile-action>
-              <v-icon>{{ item.icon }}</v-icon>
-            </v-list-tile-action>
-            <v-list-tile-content>
-              <v-list-tile-title >{{ item.title }}</v-list-tile-title>
-            </v-list-tile-content>
-           
-          </v-list-tile>
-          
-        </v-list-item>
-      </v-list>
+    <nav-list  :items="items"></nav-list>
  </v-navigation-drawer>
  
  <v-toolbar class="green lighten-1" >
@@ -79,9 +63,23 @@
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.native.enter="search"></v-text-field>
-   <v-avatar>
-   {{$auth.name}}
-   </v-avatar>
+   <v-menu left  transition="v-fade-transition">
+      <v-btn dark icon slot="activator">
+        {{$auth.user}}
+      </v-btn>
+     
+          <v-list>
+            <v-list-item @click="logout()">
+              <v-list-tile>
+                <v-list-tile-title >logout</v-list-tile-title>
+              </v-list-tile>
+               <v-list-tile>
+                <v-list-tile-title >permission: {{$auth.permission}}</v-list-tile-title>
+              </v-list-tile>
+            </v-list-item>
+            
+          </v-list>
+      </v-menu>
 </v-toolbar>
  <main>    
       <transition name="fade" mode="out-in">

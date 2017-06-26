@@ -59,7 +59,7 @@
   created: function () {
     // `this` points to the vm instance
     console.log('created: ')
-    localforage.getItem('ace').then((value) => {
+    localforage.getItem('settings/ace').then((value) => {
       console.log('oh say can you see, ' + value);
       this.ace=value || this.ace
     }).catch((err) => {
@@ -69,7 +69,7 @@
   updated: function () {
     // `this` points to the vm instance
     console.log('updated: ')
-    localforage.setItem('ace', this.ace).then((value) => {
+    localforage.setItem('settings/ace', this.ace).then((value) => {
       console.log('woot! we saved ' + value);
     }).catch((err) => {
       console.log('he\'s dead, jim!');

@@ -1,4 +1,4 @@
-// generated 2017-06-24T12:17:19.685+01:00
+// generated 2017-06-26T17:16:36.47+01:00
 /**
  * vue filters
  */
@@ -326,21 +326,43 @@ const Edit=Vue.extend({template:`
 const Eval=Vue.extend({template:` 
  <v-container fluid="">
   <v-card class="grey lighten-1 z-depth-1 mb-5">
+  
   <v-card-row>
   <v-btn @click.native="run()">Run</v-btn>
     <v-btn @click.native="submit()">Submit</v-btn>
   </v-card-row>
+  
   <v-card-row height="200px">
   <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange"></vue-ace>
    </v-card-row>
+   
     </v-card>
-        <v-alert error="" v-bind:value="showError">
+    
+   <v-alert error="" v-bind:value="showError">
       {{result}}
     </v-alert>
-     <v-card v-if="show">
+    
+     <v-card v-if="show" class="grey lighten-1 z-depth-1 mb-5">
+      
       <v-card-row height="200px">
         <vue-ace :content="result" mode="text" wrap="true" read-only="true"></vue-ace> 
-       </v-card-row>  
+       </v-card-row>
+        <v-card-row actions="">
+        
+         <v-chip class="green white--text">
+        <v-avatar class="green darken-4">{{elapsed}}</v-avatar>
+         Elapsed:
+      </v-chip>
+      
+      <v-chip class="green white--text">  
+        <v-avatar class="green darken-4">{{jobId}}</v-avatar>
+         JobId:
+      </v-chip>
+      
+        <v-spacer></v-spacer>
+      <v-btn flat="" class="green--text darken-1">@TODO</v-btn>
+    </v-card-row>
+           
      </v-card>
  </v-container>
  `,
@@ -351,7 +373,8 @@ const Eval=Vue.extend({template:`
       result:'',
       elapsed:null,
       show:false,
-      showError:false
+      showError:false,
+      jobId:null
       }
   },
   methods:{
@@ -364,9 +387,12 @@ const Eval=Vue.extend({template:`
     run(){
       var data={xq:this.xq}
       this.showError=this.show=false
+      var _start = performance.now();
       HTTP.post("eval/execute",Qs.stringify(data))
       .then(r=>{
+        this.elapsed=Math.floor(performance.now() - _start);
         this.result=r.data.result
+        this.jobId=null
         this.show=true
       })
       .catch(r=> {
@@ -375,13 +401,29 @@ const Eval=Vue.extend({template:`
         this.showError=true;
 
       });
+      localforage.setItem('eval/xq', this.xq)
     },
     submit(){
-      alert("submit")
+      var data={xq:this.xq}
+      this.showError=this.show=false
+      var _start = performance.now();
+      HTTP.post("eval/submit",Qs.stringify(data))
+      .then(r=>{
+        this.elapsed=Math.floor(performance.now() - _start);
+        this.result=this.jobId=r.data.job
+        this.show=true
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.jobId=r.response.job
+        this.showError=true;
+
+      });
     }
   },
+  
   created:function(){
-    console.log("notfound",this.$route.query.q)
+      localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
   }
 }
 
@@ -390,9 +432,9 @@ const Files=Vue.extend({template:`
  <v-container fluid="">
 
 <v-card>
-  <v-app-bar>
-	   <v-menu>
-      <v-btn icon="" dark="" slot="activator"><v-icon>folder</v-icon></v-btn>
+<v-card-row class="green white--text">
+          <v-menu bottom="" right="">
+           <v-btn icon="" dark="" slot="activator"><v-icon>folder</v-icon></v-btn>
       <v-list>
         <v-list-item v-for="item in crumbs" :key="item">
           <v-list-tile>
@@ -401,12 +443,14 @@ const Files=Vue.extend({template:`
         </v-list-item>
       </v-list>
     </v-menu>
+  
+	
     <v-toolbar-title>{{ url }}</v-toolbar-title>
    
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" dark="" @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
-  </v-app-bar>
+  </v-card-row>
   
   <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
   <v-list v-if="!busy" two-line="" subheader="">
@@ -609,39 +653,24 @@ const Home=Vue.extend({template:`
 const Job=Vue.extend({template:` 
  <v-container fluid="">
  <h1>JOBS</h1>
- <nav-apb :items="items"></nav-apb>
+
  </v-container>
  `,
 
   data:  function(){
     return {
       message: 'Hello Vue.js!',
-      q:this.$route.query.q,
-      items:[
-        {href: '/',text: 'Home', icon: 'home'    }, 
-        
-        {href: 'files', text: 'File system',icon: 'folder' },
-        {href: 'edit',text: 'edit',icon: 'mode_edit'},
-        {href: 'history',text: 'history',icon: 'history'},
-        
-        {href: 'eval',text: 'Evaluate',icon: 'cake'},      
-        {href: 'tasks',text: 'Tasks',icon: 'build'}, 
-        {href: 'jobs',text: 'Jobs',icon: 'print'}, 
-        
-        {href: 'logs',text: 'Server logs',icon: 'dns'},
-        {href: 'people',text: 'People',icon: 'person'}, 
-        {href: 'select',text: 'select',icon: 'extension'},
-        {href: 'puzzle',text: 'Puzzle',icon: 'extension'}, 
-        {href: 'options',text: 'options',icon: 'domain'}, 
-        {href: 'tabs',text: 'tabs',icon: 'switch_camera'}, 
-        {href: 'ping',text: 'ping',icon: 'update'},
-        {href: 'thumbnail',text: 'thumbnail',icon: 'touch_app'},
-        {href: 'settings',text: 'settings',icon: 'settings'  }
-      ]
+      jobs:[]
+      
       }
   },
-  created:function(){
-    console.log("Serch",this.$route.query.q)
+  methods:{
+    getJobs(){
+    alert("get jobs")
+    }
+  },
+  created(){
+    this.getJobs()
   }
 }
 
@@ -781,8 +810,14 @@ const People=Vue.extend({template:`
   <v-layout>Look at all the people who work here!
   <v-btn light="" default="" v-on:click.native="reverseMessage">Reverse Message</v-btn>
   <p>{{ message }}</p>
- 
+   <v-btn light="" default="" v-on:click.native="logout">logout</v-btn>
   </v-layout>
+  <v-card>
+  <v-layout>
+  <v-flex xs5="">created:{{$auth.created}}</v-flex>
+   <v-flex xs5="">session:{{$auth.session}}</v-flex>
+  </v-layout>
+  </v-card>
   <v-layout>
   <v-flex xs5="">
    <v-card-row img="resources/music.jpg" height="300px"></v-card-row>
@@ -801,8 +836,11 @@ const People=Vue.extend({template:`
       }
   },
   methods: {
-    reverseMessage: function () {
+    reverseMessage() {
       this.message = this.message.split('').reverse().join('')
+    },
+    logout(){
+      alert("TODU")
     }
   }
 }
@@ -1152,7 +1190,7 @@ const Settings=Vue.extend({template:`
   created: function () {
     // `this` points to the vm instance
     console.log('created: ')
-    localforage.getItem('ace').then((value) => {
+    localforage.getItem('settings/ace').then((value) => {
       console.log('oh say can you see, ' + value);
       this.ace=value || this.ace
     }).catch((err) => {
@@ -1162,7 +1200,7 @@ const Settings=Vue.extend({template:`
   updated: function () {
     // `this` points to the vm instance
     console.log('updated: ')
-    localforage.setItem('ace', this.ace).then((value) => {
+    localforage.setItem('settings/ace', this.ace).then((value) => {
       console.log('woot! we saved ' + value);
     }).catch((err) => {
       console.log('he\'s dead, jim!');
@@ -1321,8 +1359,8 @@ const HTTP = axios.create({
 const axios_json={ headers: {accept: 'application/json'}};
 
 const Auth={
-    name:"guest",
-    role:null,
+    user:"guest",
+    permission:null,
     install: function(Vue){
         Object.defineProperty(Vue.prototype, '$auth', {
           get () { return Auth }
@@ -1345,7 +1383,7 @@ Vue.component('my-component', {
     },  
 });
 
-Vue.component('nav-apb', {
+Vue.component('nav-list', {
   
   props: ['items'],
   template:` 
@@ -1369,13 +1407,18 @@ Vue.component('nav-apb', {
   <v-list-group v-else-if="item.children" v-model="item.model" no-action>
     <v-list-item slot="item">
       <v-list-tile :href="item.href" router ripple>
-        <v-list-tile-action>
-          <v-icon>{{ item.model ? item.icon : item['icon-alt'] }}</v-icon>
+       <v-list-tile-action>
+          <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
-        <v-list-tile-content>
           <v-list-tile-title>
             {{ item.text }}
           </v-list-tile-title>
+          <v-spacer></v-spacer>
+        <v-list-tile-action>
+          <v-icon>{{ item.model ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+        
         </v-list-tile-content>
       </v-list-tile>
     </v-list-item>
@@ -1383,7 +1426,7 @@ Vue.component('nav-apb', {
       v-for="(child, i) in item.children"
       :key="i"
     >
-      <v-list-tile>
+      <v-list-tile :href="child.href" router ripple>
         <v-list-tile-action v-if="child.icon">
           <v-icon>{{ child.icon }}</v-icon>
         </v-list-tile-action>
@@ -1451,7 +1494,7 @@ router.beforeEach((to, from, next) => {
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if ("admin"==Auth.role) {
+    if ("admin"==Auth.permission) {
       next({
         path: '/login',
         query: { redirect: to.fullPath }
@@ -1472,41 +1515,62 @@ const app = new Vue({
     status:{},
     drawer:true,
     mini: false,
-    items: [
-      {href: '/',title: 'Home', icon: 'home'    }, 
-      
-      {href: 'files', title: 'File system',icon: 'folder' },
-      {href: 'edit',title: 'edit',icon: 'mode_edit'},
-      {href: 'history',title: 'history',icon: 'history'},
-      
-      {href: 'eval',title: 'Evaluate',icon: 'cake'},      
-      {href: 'tasks',title: 'Tasks',icon: 'build'}, 
-      {href: 'jobs',title: 'Jobs',icon: 'print'}, 
-      
-      {href: 'logs',title: 'Server logs',icon: 'dns'},
-      {href: 'people',title: 'People',icon: 'person'}, 
-      {href: 'select',title: 'select',icon: 'extension'},
-      {href: 'puzzle',title: 'Puzzle',icon: 'extension'}, 
-      {href: 'options',title: 'options',icon: 'domain'}, 
-      {href: 'tabs',title: 'tabs',icon: 'switch_camera'}, 
-      {href: 'ping',title: 'ping',icon: 'update'},
-      {href: 'thumbnail',title: 'thumbnail',icon: 'touch_app'},
-      {href: 'settings',title: 'settings',icon: 'settings'  }
-]
+    items:[
+      {href: '/',text: 'Home', icon: 'home'    }, 
+      {
+        icon: 'folder_open',
+        text: 'Collections' ,
+        model: false,
+        children: [
+      {href: 'files', text: 'File system',icon: 'folder' },
+      {href: 'edit',text: 'edit',icon: 'mode_edit'},
+      {href: 'history',text: 'history',icon: 'history'},
+      ]},
+      {
+        icon: 'directions_run',
+        text: 'Actions' ,
+        model: false,
+        children: [
+      {href: 'eval',text: 'Evaluate',icon: 'cake'},      
+      {href: 'tasks',text: 'Tasks',icon: 'build'}, 
+      {href: 'jobs',text: 'Jobs',icon: 'print'},
+      {href: 'logs',text: 'Server logs',icon: 'dns'}
+      ]},
+      {
+        icon: 'more_horiz',
+        text: 'More' ,
+        model: false,
+        children: [
+      {href: 'people',text: 'People',icon: 'person'}, 
+      {href: 'select',text: 'select',icon: 'extension'},
+      {href: 'puzzle',text: 'Puzzle',icon: 'extension'}, 
+      {href: 'options',text: 'options',icon: 'domain'}, 
+      {href: 'tabs',text: 'tabs',icon: 'switch_camera'}, 
+      {href: 'ping',text: 'ping',icon: 'update'},
+      {href: 'thumbnail',text: 'thumbnail',icon: 'touch_app'}
+      ]},
+      {href: 'settings',text: 'settings',icon: 'settings'  }
+    ]
 
   }},
   methods: {
       
       search(){
         this.$router.push({path: 'search',query: { q: this.q }})
+      },
+      logout(){
+        HTTP.get("logout").then(r=>{
+          alert("logout")
+        })
+       
       }
   },
   created(){
     console.log("create-----------")
     HTTP.get("status")
     .then(r=>{
-      console.log("status",r)
-      this.$auth.name=r.data.user
+      console.log("status",r.data)
+      Object.assign(Auth,r.data)
       this.$forceUpdate()
     }) 
   },

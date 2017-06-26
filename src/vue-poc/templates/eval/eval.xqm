@@ -24,3 +24,20 @@ function vue-api:eval($xq )
   </json>
 };
 
+(:~
+ : submit a simple job
+ :)
+declare
+%rest:POST %rest:path("/vue-poc/api/eval/submit")
+%rest:form-param("xq", "{$xq}")
+%output:method("json")   
+function vue-api:submit($xq )   
+{
+ let $x:=fn:trace($xq,"submit: ")
+ let $bindings:=map{}
+ let $opts:=map{"cache":true()}
+ let $r:=jobs:eval($xq,$bindings,$opts)
+ return <json   type="object" >
+            <job>{$r}</job>
+  </json>
+};

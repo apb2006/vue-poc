@@ -3,9 +3,9 @@
  <v-container fluid>
 
 <v-card>
-  <v-app-bar>
-	   <v-menu >
-      <v-btn  icon dark slot="activator"><v-icon >folder</v-icon></v-btn>
+<v-card-row class="green white--text">
+          <v-menu bottom right>
+           <v-btn  icon dark slot="activator"><v-icon >folder</v-icon></v-btn>
       <v-list>
         <v-list-item v-for="item in crumbs" :key="item">
           <v-list-tile>
@@ -14,13 +14,15 @@
         </v-list-item>
       </v-list>
     </v-menu>
+  
+	
     <v-toolbar-title>{{ url }}</v-toolbar-title>
    
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line dark @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
-  </v-app-bar>
+  </v-card-row>
   
   <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
   <v-list v-if="!busy" two-line subheader>

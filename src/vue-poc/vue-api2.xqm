@@ -66,6 +66,7 @@ function vue-api:history( )
  '/vue-poc/static/app-gen.js',
  '/vue-poc/static/app.html',
  '/vue-poc/static/app.css',
+ '/vue-poc/logo.svg',
  '/vue-poc/static/resources/sparql.rq',
   '/vue-poc/static/resources/turtle.ttl'
  )

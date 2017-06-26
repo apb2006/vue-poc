@@ -4,7 +4,7 @@
  : @author Andy Bunce may-2017
  :)
 module namespace vue-poc = 'quodatum:vue.poc';
-declare variable $vue-poc:index:=file:base-dir() || 'static/' || "app.html";
+declare variable $vue-poc:index:=resolve-uri ('static/' || "app.html",fn:static-base-uri() );
 
 (:~
  : Redirects to the start page.
@@ -43,11 +43,27 @@ function vue-poc:file(
 
 declare function vue-poc:get-file($file)
 {
-  let $path := file:base-dir() || 'static/' || $file
+  let $path := resolve-uri( 'static/' || $file,static-base-uri())
   let $path:=if(file:exists($path))then $path else $vue-poc:index
        
   return (
     web:response-header(map { 'media-type': web:content-type($path) }),
     file:read-binary($path)
   )
+};
+
+declare function vue-poc:get-filex($file)
+{
+  let $path := resolve-uri( 'static/' || $file,static-base-uri())
+
+       
+  return 
+    
+    try{
+    (web:response-header(map { 'media-type': web:content-type($path) }),
+    fetch:binary($path))
+    }catch * {
+      (web:response-header(map { 'media-type': web:content-type($vue-poc:index) }),
+    fetch:binary($vue-poc:index))
+    }
 };
