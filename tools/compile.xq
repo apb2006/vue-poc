@@ -9,28 +9,40 @@ declare namespace Element="java:ch.digitalfondue.jfiveparse.Element";
 declare namespace Node="java:ch.digitalfondue.jfiveparse.Node";
 
 declare namespace functx = "http://www.functx.com";
-declare variable $SRC:="C:/Users/andy/git/vue-poc/src/vue-poc/templates/";
-declare variable $CORE:="C:/Users/andy/git/vue-poc/src/vue-poc/static/core.js";
-declare variable $FILTERS:="C:/Users/andy/git/vue-poc/src/vue-poc/static/filters.js";
-declare variable $DEST:="C:/Users/andy/git/vue-poc/src/vue-poc/static/app-gen.js";
+declare variable $PROJ:="C:/Users/andy/git/vue-poc/src/vue-poc/";
+declare variable $FEATURES:="features/"=>file:resolve-path($PROJ);
+declare variable $COMPONENTS:="components/"=>file:resolve-path($PROJ);
+declare variable $CORE:="components/core.js"=>file:resolve-path($PROJ);
+declare variable $FILTERS:="components/filters.js"=>file:resolve-path($PROJ);
+declare variable $DEST:="static/app-gen.js"=>file:resolve-path($PROJ);
 
 (:~ 
  : generate javascript vue call from vue files in source folder and core.js
  :)
-declare function local:process($doc)
+declare function local:feature($doc,$isComp as xs:boolean)
 {
-let $tempNode:= html5:getElementFirstByTagName($doc,"template")
-let $template:= Node:getInnerHTML($tempNode)
-let $id  := Element:getAttribute($tempNode,"id")
-let $name:=functx:capitalize-first($id)=>trace("ID")
+let $p:=local:vue-parse($doc)
+let $script:= $p?script=>substring-after("{")
 
-let $script:= html5:getElementFirstByTagName($doc,"script")
-let $script:= Node:getInnerHTML($script)=>substring-after("{")
-let $js:= ``[const `{$name}`=Vue.extend({template:` `{$template}` `,
-`{$script}`
-);
-]``
-return if(empty($id)) then () else $js
+return if(empty($p?id)) then 
+           () 
+       else 
+             ``[const `{functx:capitalize-first($p?id)}`=Vue.extend({template:` `{$p?template}` `,
+      `{$script}`
+      );
+      ]``
+};
+
+declare function local:vue-parse($doc)
+as map(*)
+{
+  let $tempNode:= html5:getElementFirstByTagName($doc,"template")
+  let $template:= Node:getInnerHTML($tempNode)
+  let $id  := Element:getAttribute($tempNode,"id")=>trace("ID")
+
+  let $script:= html5:getElementFirstByTagName($doc,"script")
+  let $script:= Node:getInnerHTML($script)
+  return map{"id":$id,"template":$template,"script":$script}
 };
 
 declare function functx:capitalize-first
@@ -39,11 +51,16 @@ declare function functx:capitalize-first
    concat(upper-case(substring($arg,1,1)), substring($arg,2))
 };
 
-let $files:= fw:directory-list($SRC,map{"include-filter":".*\.vue"})
+let $files:= fw:directory-list($FEATURES,map{"include-filter":".*\.vue"})
              //c:file/@name/resolve-uri(.,base-uri(.))
-let $docs:=$files!(fetch:text(.)=>html5:doc()=>local:process())
+let $feats:=$files!(fetch:text(.)=>html5:doc()=>local:feature(false()))
+
+let $files:= fw:directory-list($COMPONENTS,map{"include-filter":".*\.vue"})
+             //c:file/@name/resolve-uri(.,base-uri(.))
+let $comps:=$files!(fetch:text(.)=>html5:doc()=>local:feature(true()))
+
 let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;"
 return file:write-text($DEST,string-join(($comment,
                                          fetch:text($FILTERS),
-                                         $docs,
+                                         $feats,
                                          fetch:text($CORE))))

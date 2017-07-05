@@ -41,3 +41,28 @@ function vue-api:submit($xq )
             <job>{$r}</job>
   </json>
 };
+
+(:~
+ : imports
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/eval/imports")
+%output:method("json")   
+function vue-api:imports( )   
+{
+let $n:='import module namespace fw="quodatum:file.walker";'
+ return <json   type="array" >
+            <_>{$n}</_>
+  </json>
+};
+
+declare 
+%rest:POST %rest:path('/vue-poc/api/eval/result/{$id}') 
+%output:method("json") 
+function vue-api:result($id) 
+{
+  let $r:=jobs:result($id)
+   return <json   type="object" >
+            <result>{util:display($r)}</result>
+  </json>
+};

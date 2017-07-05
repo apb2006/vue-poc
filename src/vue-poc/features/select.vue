@@ -2,12 +2,11 @@
 <template id="select">
  <v-container fluid>
 <v-card>
-  <v-card-row class="green darken-1">
-    <v-card-title>
+
+    <v-card-title class="green darken-1">
       <span class="white--text">Selection</span>
       
     </v-card-title>
-  </v-card-row>
   <v-card-text>
     <v-layout>
      

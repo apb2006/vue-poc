@@ -7,15 +7,13 @@
     </v-snackbar>
 <v-card>
 
- <v-app-bar>
-<v-menu offset-y>
+<v-toolbar class="grey lighten-2 black--text">
+<v-menu >
   <v-btn primary icon dark slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon >folder</v-icon></v-btn>
   <v-list>
-    <v-list-item v-for="item in path" :key="item">
-      <v-list-tile>
-        <v-list-tile-title @click="showfiles()">{{ item }}</v-list-tile-title>
+      <v-list-tile  v-for="item in path" :key="item" @click="showfiles()">
+        <v-list-tile-title >{{ item }}</v-list-tile-title>
       </v-list-tile>
-    </v-list-item>
   </v-list>
 </v-menu>
 
@@ -66,23 +64,19 @@
           <v-icon>help</v-icon>
         </v-btn>     
         <v-list>
-          <v-list-item @click="acecmd('showSettingsMenu')">
-            <v-list-tile avatar >
+            <v-list-tile @click="acecmd('showSettingsMenu')" avatar >
                <v-list-tile-avatar>
               <v-icon >settings</v-icon>
             </v-list-tile-avatar>
               <v-list-tile-title >Show settings</v-list-tile-title>
             </v-list-tile>
-          </v-list-item>
-          
-          <v-list-item  @click="acecmd('showKeyboardShortcuts')">            
-            <v-list-tile avatar>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
               <v-list-tile-avatar>
               <v-icon >keyboard</v-icon>
             </v-list-tile-avatar>
               <v-list-tile-title  >Show keyboard commands</v-list-tile-title>
             </v-list-tile>
-          </v-list-item>
           </v-list>
        </v-menu>
     <v-menu left  transition="v-fade-transition">
@@ -91,40 +85,34 @@
       </v-btn>
      
           <v-list>
-            <v-list-item >
               <v-list-tile>
                 <v-list-tile-title >unused</v-list-tile-title>
-              </v-list-tile>
-            </v-list-item>
-            
+              </v-list-tile>           
           </v-list>
+          
       </v-menu>
     </v-toolbar-items>
      <v-dialog v-model="clearDialog" >
        <v-card>
-		    <v-card-row>
 		      <v-card-title>Clear?</v-card-title>
-		    </v-card-row>
-		    <v-card-row>
 		      <v-card-text>clear text.</v-card-text>
-		    </v-card-row>
-		    <v-card-row actions>
+		    <v-card-actions>
 		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
 		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
-		    </v-card-row>
+		    </v-card-actions>
 		    </v-card>
 		</v-dialog>
- </v-app-bar>
+ </v-toolbar>
    <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
 
-
-<v-flex xs12 style="height:70vh" v-if="!busy" fill-height>
+<v-card-text v-if="!busy">
+<v-flex xs12 style="height:70vh"  fill-height>
   
     <vue-ace  :content="contentA" :mode="mode" :wrap="wrap"
 v-on:change-content="changeContentA" 
 v-on:annotation="annotation"></vue-ace>
  </v-flex> 
-
+</v-card-text>
 </v-card>
   
  </v-container>
@@ -156,7 +144,8 @@ v-on:annotation="annotation"></vue-ace>
           "application/sparql-query":"sparql",
           "text/html":"html",
           "text/turtle":"turtle",
-          "text/css":"css"
+          "text/css":"css",
+          "image/svg+xml":"svg"
       }
     }
   },
@@ -225,6 +214,7 @@ v-on:annotation="annotation"></vue-ace>
       var a=this.contentA
       switch(this.mode) {
       case "html":
+      case "svg":  
       case "xml":  
           a=html_beautify(a, { indent_size: 3 ,indent_inner_html:true})
           break;

@@ -14,10 +14,10 @@
   </v-card>
   <v-layout>
   <v-flex xs5>
-   <v-card-row img="resources/music.jpg" height="300px"></v-card-row>
+   <v-card-media src="resources/music.jpg" height="300px"></v-card-media>
   </v-flex>
   <v-flex xs1>
-  <v-card-row :img="img" height="60px"></v-card-row>
+  <v-card-media :src="img" height="60px"></v-card-media>
   </v-flex>
   </v-layout>
  </v-container>

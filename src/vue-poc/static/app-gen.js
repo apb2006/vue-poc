@@ -1,4 +1,4 @@
-// generated 2017-06-26T17:16:36.47+01:00
+// generated 2017-07-05T23:03:36.134+01:00
 /**
  * vue filters
  */
@@ -42,7 +42,7 @@ Vue.filter('round', function(value, decimals) {
  Not found
  </v-container>
  `,
-
+      
   data:  function(){
     return {
       message: 'bad route!'
@@ -53,410 +53,35 @@ Vue.filter('round', function(value, decimals) {
   }
 }
 
-);
-const Edit=Vue.extend({template:` 
-<v-container fluid="">
-      <v-snackbar top="" error="" v-model="snackbar">
-      {{ message }}
-      <v-btn flat="" @click.native="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
-    </v-snackbar>
-<v-card>
-
- <v-app-bar>
-<v-menu offset-y="">
-  <v-btn primary="" icon="" dark="" slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon>folder</v-icon></v-btn>
-  <v-list>
-    <v-list-item v-for="item in path" :key="item">
-      <v-list-tile>
-        <v-list-tile-title @click="showfiles()">{{ item }}</v-list-tile-title>
-      </v-list-tile>
-    </v-list-item>
-  </v-list>
-</v-menu>
-
-  <v-toolbar-title>
-      <span>{{ name }}</span>
-  </v-toolbar-title>
-  <v-toolbar-items>
-  <span v-tooltip:top="{ html: 'Changed?' }">
-  <v-chip v-if="dirty" label="" small="" class="red white--text">*</v-chip>
-<v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
-</span>
- <v-chip small="" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
-     <v-chip @click.native="acecmd('goToNextError')" v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }">
-          <v-avatar class="green ">{{annotations &amp;&amp; annotations.info}}</v-avatar>
-          <v-avatar class="yellow ">{{annotations &amp;&amp; annotations.warning}}</v-avatar>        
-          <v-avatar class="red " small="">{{annotations &amp;&amp; annotations.error}}</v-avatar>    
-           <v-avatar>
-              <v-icon black="">navigate_next</v-icon>
-           </v-avatar>
-          </v-chip>
-   <v-btn dark="" icon="" @click.native="acecmd('outline')">
-      <v-icon>star</v-icon>
-    </v-btn>
-
-  
-   <v-btn dark="" icon="" @click.native="acecmd('foldall')">
-      <v-icon>vertical_align_center</v-icon>
-    </v-btn>
-    
-    <v-btn dark="" icon="" @click.native="wrap=!wrap">
-      <v-icon>wrap_text</v-icon>
-    </v-btn>
-    
-   <v-btn dark="" icon="" @click.native="save()">
-      <v-icon>file_upload</v-icon>
-    </v-btn>
-    
-    <v-btn dark="" icon="" @click.native="beautify()">
-      <v-icon>format_align_center</v-icon>
-    </v-btn>
-    <v-btn dark="" icon="" @click.native="clearDialog = true">
-      <v-icon>delete</v-icon>
-    </v-btn>
-        <v-menu left="" transition="v-fade-transition">
-        <v-btn dark="" icon="" slot="activator">
-          <v-icon>help</v-icon>
-        </v-btn>     
-        <v-list>
-          <v-list-item @click="acecmd('showSettingsMenu')">
-            <v-list-tile avatar="">
-               <v-list-tile-avatar>
-              <v-icon>settings</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title>Show settings</v-list-tile-title>
-            </v-list-tile>
-          </v-list-item>
-          
-          <v-list-item @click="acecmd('showKeyboardShortcuts')">            
-            <v-list-tile avatar="">
-              <v-list-tile-avatar>
-              <v-icon>keyboard</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title>Show keyboard commands</v-list-tile-title>
-            </v-list-tile>
-          </v-list-item>
-          </v-list>
-       </v-menu>
-    <v-menu left="" transition="v-fade-transition">
-      <v-btn dark="" icon="" slot="activator">
-        <v-icon>more_vert</v-icon>
-      </v-btn>
-     
-          <v-list>
-            <v-list-item>
-              <v-list-tile>
-                <v-list-tile-title>unused</v-list-tile-title>
-              </v-list-tile>
-            </v-list-item>
-            
-          </v-list>
-      </v-menu>
-    </v-toolbar-items>
-     <v-dialog v-model="clearDialog">
-       <v-card>
-		    <v-card-row>
-		      <v-card-title>Clear?</v-card-title>
-		    </v-card-row>
-		    <v-card-row>
-		      <v-card-text>clear text.</v-card-text>
-		    </v-card-row>
-		    <v-card-row actions="">
-		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
-		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
-		    </v-card-row>
-		    </v-card>
-		</v-dialog>
- </v-app-bar>
-   <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-
-
-<v-flex xs12="" style="height:70vh" v-if="!busy" fill-height="">
-  
-    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
- </v-flex> 
-
-</v-card>
-  
- </v-container>
- `,
-
-  data () {
-    return {
-      contentA: `declare function local:query($q as xs:string)
-{ <json type="object"/> 
-};`,
-      mode:'xquery',
-      url:'',
-      name:'',
-      path:[],
-      mimetype:"",
-      wrap:false,
-      busy:false,
-      clearDialog:false,
-      annotations:null,
-      dirty:false,
-      snackbar:false,
-      message:"Cant do that",
-      mimemap:{
-          "text/xml":"xml",
-          "application/xml":"xml",
-          "application/xquery":"xquery",
-          "text/ecmascript":"javascript",
-          "application/sparql-query":"sparql",
-          "text/html":"html",
-          "text/turtle":"turtle",
-          "text/css":"css"
-      }
-    }
-  },
-  methods: {
-    reset (ok) {
-        if(ok){
-          this.contentA = 'reset content for Editor A'
-          this.dirty=false
-        }
-        this.clearDialog=false
-    },
-    changeContentA (val) {
-        if (this.contentA !== val) {
-        this.contentA = val
-        this.dirty=true
-      }
-    },
-    // load from url
-    fetch(url){
-      this.busy=true
-      HTTP.get("edit?url="+url,axios_json)
-      .then(r=>{
-        //console.log(r)
-        this.mimetype=r.data.mimetype
-        this.mode=this.acetype(r.data.mimetype)
-        this.contentA=r.data.data
-        var a=url.split("/")
-        this.url=url
-        this.name=a.pop()
-        this.path=a
-        this.busy=false
-        this.dirty=false
-        //alert(mode)
-        })
-        .catch(error=> {
-          console.log(error);
-          this.busy=false
-          alert("Get query error:\n"+url)
-        });
-      
-    },
-    acecmd(cmd){
-      Events.$emit('eventFired',cmd);
-    },
-    fold(){
-      Events.$emit('eventFired',"foldall");
-    },
-    save(){
-      alert("TODO save: "+this.url);
-      var data=Qs.stringify(
-          {
-            url: this.url, //gave the values directly for testing
-            data: this.contentA
-            })
-      HTTP.post("edit", data,{
-  headers: { "Content-Type": "application/x-www-form-urlencoded"}
-      }).then(r=>{
-        alert("AAA")
-      })
-    },
-    showfiles(){
-           router.push({ path: 'files', query: { url: this.path.join("/") }})
-    },
-    beautify(){
-      this.busy=true
-      var a=this.contentA
-      switch(this.mode) {
-      case "html":
-      case "xml":  
-          a=html_beautify(a, { indent_size: 3 ,indent_inner_html:true})
-          break;
-      case "javascript":
-           a=js_beautify(a, { indent_size: 2 })
-          break;
-      case "css":
-         a=css_beautify(a, { indent_size: 2 })
-         break;     
-      default:
-        this.message="No beautify yet for "+this.mode
-        this.snackbar=true
-     } 
-      this.contentA=a
-      this.busy=false
-    },
-    annotation(counts){
-      this.annotations=counts
-      console.log("annotations: ",counts)
-    },
-    acetype(mime){
-      var r=this.mimemap[mime]
-      return r?r:"text"
-    },
-    leaving(event) {
-      event.returnValue = "event seems to need to be set";
-      //debugger;
-      console.log("Leaving...");
-      if(this.dirty)event.preventDefault();
-  }
-  },
-  created(){
-    //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
-    document.addEventListener('beforeunload', this.leaving);
-    var url=this.$route.query.url
-    console.log("Edit: ",url)
-    if(url) this.fetch(url)
-  },
-  beforeRouteLeave (to, from, next) {
-    // called when the route that renders this component is about to
-    // be navigated away from.
-    // has access to `this` component instance.
-    if(this.dirty && confirm("unsaved changes will be lost"))this.dirty=false;
-    next(!this.dirty);
-  }
-}
-
-);
-const Eval=Vue.extend({template:` 
+      );
+      const Files=Vue.extend({template:` 
  <v-container fluid="">
-  <v-card class="grey lighten-1 z-depth-1 mb-5">
-  
-  <v-card-row>
-  <v-btn @click.native="run()">Run</v-btn>
-    <v-btn @click.native="submit()">Submit</v-btn>
-  </v-card-row>
-  
-  <v-card-row height="200px">
-  <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange"></vue-ace>
-   </v-card-row>
-   
-    </v-card>
-    
-   <v-alert error="" v-bind:value="showError">
-      {{result}}
-    </v-alert>
-    
-     <v-card v-if="show" class="grey lighten-1 z-depth-1 mb-5">
-      
-      <v-card-row height="200px">
-        <vue-ace :content="result" mode="text" wrap="true" read-only="true"></vue-ace> 
-       </v-card-row>
-        <v-card-row actions="">
-        
-         <v-chip class="green white--text">
-        <v-avatar class="green darken-4">{{elapsed}}</v-avatar>
-         Elapsed:
-      </v-chip>
-      
-      <v-chip class="green white--text">  
-        <v-avatar class="green darken-4">{{jobId}}</v-avatar>
-         JobId:
-      </v-chip>
-      
-        <v-spacer></v-spacer>
-      <v-btn flat="" class="green--text darken-1">@TODO</v-btn>
-    </v-card-row>
-           
-     </v-card>
- </v-container>
- `,
-
-  data:  function(){
-    return {
-      xq: '(: type your XQuery :)\n',
-      result:'',
-      elapsed:null,
-      show:false,
-      showError:false,
-      jobId:null
-      }
-  },
-  methods:{
-    onChange(val){
-      if (this.xq !== val) {
-        this.xq = val
-      }
-    },
-    
-    run(){
-      var data={xq:this.xq}
-      this.showError=this.show=false
-      var _start = performance.now();
-      HTTP.post("eval/execute",Qs.stringify(data))
-      .then(r=>{
-        this.elapsed=Math.floor(performance.now() - _start);
-        this.result=r.data.result
-        this.jobId=null
-        this.show=true
-      })
-      .catch(r=> {
-        console.log("error",r)
-        this.result=r.response.data
-        this.showError=true;
-
-      });
-      localforage.setItem('eval/xq', this.xq)
-    },
-    submit(){
-      var data={xq:this.xq}
-      this.showError=this.show=false
-      var _start = performance.now();
-      HTTP.post("eval/submit",Qs.stringify(data))
-      .then(r=>{
-        this.elapsed=Math.floor(performance.now() - _start);
-        this.result=this.jobId=r.data.job
-        this.show=true
-      })
-      .catch(r=> {
-        console.log("error",r)
-        this.jobId=r.response.job
-        this.showError=true;
-
-      });
-    }
-  },
-  
-  created:function(){
-      localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
-  }
-}
-
-);
-const Files=Vue.extend({template:` 
- <v-container fluid="">
-
+ 
 <v-card>
-<v-card-row class="green white--text">
-          <v-menu bottom="" right="">
+<v-toolbar>
+      <v-menu bottom="" right="">
            <v-btn icon="" dark="" slot="activator"><v-icon>folder</v-icon></v-btn>
       <v-list>
-        <v-list-item v-for="item in crumbs" :key="item">
-          <v-list-tile>
+        <template v-for="item in crumbs">
+          <v-list-tile :key="item">
             <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
           </v-list-tile>
-        </v-list-item>
+        </template>
       </v-list>
     </v-menu>
-  
-	
     <v-toolbar-title>{{ url }}</v-toolbar-title>
    
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" dark="" @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
-  </v-card-row>
+ </v-toolbar>
+
   
   <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
   <v-list v-if="!busy" two-line="" subheader="">
     <v-subheader inset="">Folders</v-subheader>
-    <v-list-item v-for="item in folders" v-bind:key="item.name" @click="folder(item.name)">
-      <v-list-tile avatar="">
+    <template v-for="item in folders">  
+      <v-list-tile v-bind:key="item.name" @click="folder(item.name)" avatar="">
         <v-list-tile-avatar>
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
@@ -470,11 +95,12 @@ const Files=Vue.extend({template:`
           </v-btn>
         </v-list-tile-action>
       </v-list-tile>
-    </v-list-item>
+    </template>
+    
     <v-divider inset=""></v-divider>
     <v-subheader inset="">Files</v-subheader>
-    <v-list-item v-for="item in files" v-bind:key="item.name" @click="file(item.name)">
-      <v-list-tile>
+     <template v-for="item in folders">  
+      <v-list-tile v-bind:key="item.name" @click="file(item.name)">
         <v-list-tile-avatar>
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
@@ -488,13 +114,15 @@ const Files=Vue.extend({template:`
           </v-btn>
         </v-list-tile-action>
       </v-list-tile>
-    </v-list-item>
+    </template>
   </v-list>
-    <v-navigation-drawer right="" light="" temporary="" v-model="infodraw">Some info here {{selected}}</v-navigation-drawer>
+    <v-navigation-drawer right="" light="" temporary="" v-model="infodraw"> <v-card> <v-card-title class="green white--text">
+Some info here {{selected}} </v-card-title> <v-card-text> blah blah </v-card-text> </v-card>
+      </v-navigation-drawer>
 </v-card>
  </v-container>
  `,
-
+      
   data:  function(){
     return { 
             crumbs:[],
@@ -572,27 +200,25 @@ const Files=Vue.extend({template:`
   }
 }
 
-);
-const History=Vue.extend({template:` 
+      );
+      const History=Vue.extend({template:` 
  <v-container fluid="">
- <v-list>
-          <v-list-item v-for="item in items" v-bind:key="item.title" @click="doEdit(item.url)">
-            <v-list-tile avatar="">
+    <v-list>
+            <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item.url)" avatar="">
               <v-list-tile-action>
                 <v-icon v-if="item.icon" class="pink--text">star</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title v-text="item.url"></v-list-tile-title>
+                <v-list-tile-title @click="doEdit(item.url)" v-text="item.url"></v-list-tile-title>
               </v-list-tile-content>
               <v-list-tile-avatar>
                 <img v-bind:src="item.avatar">
               </v-list-tile-avatar>
             </v-list-tile>
-          </v-list-item>
-        </v-list>
+   </v-list>
  </v-container>
  `,
-
+      
   data:  function(){
     return {
       message: 'Hello Vue.js!',
@@ -618,55 +244,494 @@ const History=Vue.extend({template:`
   }
 }
 
-);
-const Home=Vue.extend({template:` 
-<v-layout class="ma-5">
-<v-flex xs4="">
-<v-card hover="" raised="">
-  <v-card-row height="200px" class="pa-5 green lighten-1">
-    <div class="display-1 white--text text-xs-center">VUE-POC</div>
-    v0.0.2
-  </v-card-row>
-</v-card>
-</v-flex>
-<v-flex xs4="">
-  <p>This is a experiment in using <code>vue.js</code>.</p>
-  <ul>
-  <li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
-  <li><a href="https://github.com/monterail/vue-multiselect" target="new">vue-multiselect</a></li>
-<li><a href="https://github.com/sagalbot/vue-select" target="new"><s>vue-select</s></a></li>
-<li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
-<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
-<li><a href="/dba" target="new">DBA app</a></li>
-  </ul>
-</v-flex>
-<v-btn floating="floating">
-  <v-icon>add</v-icon>
-</v-btn>
- <my-component href="/dba">REPLACED</my-component>
-</v-layout>
- `,
+      );
+      const Edit=Vue.extend({template:` 
+<v-container fluid="">
+      <v-snackbar top="" error="" v-model="snackbar">
+      {{ message }}
+      <v-btn flat="" @click.native="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
+    </v-snackbar>
+<v-card>
 
+<v-toolbar class="grey lighten-2 black--text">
+<v-menu>
+  <v-btn primary="" icon="" dark="" slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon>folder</v-icon></v-btn>
+  <v-list>
+      <v-list-tile v-for="item in path" :key="item" @click="showfiles()">
+        <v-list-tile-title>{{ item }}</v-list-tile-title>
+      </v-list-tile>
+  </v-list>
+</v-menu>
+
+  <v-toolbar-title>
+      <span>{{ name }}</span>
+  </v-toolbar-title>
+  <v-toolbar-items>
+  <span v-tooltip:top="{ html: 'Changed?' }">
+  <v-chip v-if="dirty" label="" small="" class="red white--text">*</v-chip>
+<v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
+</span>
+ <v-chip small="" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
+     <v-chip @click.native="acecmd('goToNextError')" v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }">
+          <v-avatar class="green ">{{annotations &amp;&amp; annotations.info}}</v-avatar>
+          <v-avatar class="yellow ">{{annotations &amp;&amp; annotations.warning}}</v-avatar>        
+          <v-avatar class="red " small="">{{annotations &amp;&amp; annotations.error}}</v-avatar>    
+           <v-avatar>
+              <v-icon black="">navigate_next</v-icon>
+           </v-avatar>
+          </v-chip>
+   <v-btn dark="" icon="" @click.native="acecmd('outline')">
+      <v-icon>star</v-icon>
+    </v-btn>
+
+  
+   <v-btn dark="" icon="" @click.native="acecmd('foldall')">
+      <v-icon>vertical_align_center</v-icon>
+    </v-btn>
+    
+    <v-btn dark="" icon="" @click.native="wrap=!wrap">
+      <v-icon>wrap_text</v-icon>
+    </v-btn>
+    
+   <v-btn dark="" icon="" @click.native="save()">
+      <v-icon>file_upload</v-icon>
+    </v-btn>
+    
+    <v-btn dark="" icon="" @click.native="beautify()">
+      <v-icon>format_align_center</v-icon>
+    </v-btn>
+    <v-btn dark="" icon="" @click.native="clearDialog = true">
+      <v-icon>delete</v-icon>
+    </v-btn>
+        <v-menu left="" transition="v-fade-transition">
+        <v-btn dark="" icon="" slot="activator">
+          <v-icon>help</v-icon>
+        </v-btn>     
+        <v-list>
+            <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
+               <v-list-tile-avatar>
+              <v-icon>settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title>Show settings</v-list-tile-title>
+            </v-list-tile>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
+              <v-list-tile-avatar>
+              <v-icon>keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title>Show keyboard commands</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+       </v-menu>
+    <v-menu left="" transition="v-fade-transition">
+      <v-btn dark="" icon="" slot="activator">
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+     
+          <v-list>
+              <v-list-tile>
+                <v-list-tile-title>unused</v-list-tile-title>
+              </v-list-tile>           
+          </v-list>
+          
+      </v-menu>
+    </v-toolbar-items>
+     <v-dialog v-model="clearDialog">
+       <v-card>
+		      <v-card-title>Clear?</v-card-title>
+		      <v-card-text>clear text.</v-card-text>
+		    <v-card-actions>
+		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
+		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
+		    </v-card-actions>
+		    </v-card>
+		</v-dialog>
+ </v-toolbar>
+   <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+
+<v-card-text v-if="!busy">
+<v-flex xs12="" style="height:70vh" fill-height="">
+  
+    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
+ </v-flex> 
+</v-card-text>
+</v-card>
+  
+ </v-container>
+ `,
+      
+  data () {
+    return {
+      contentA: `declare function local:query($q as xs:string)
+{ <json type="object"/> 
+};`,
+      mode:'xquery',
+      url:'',
+      name:'',
+      path:[],
+      mimetype:"",
+      wrap:false,
+      busy:false,
+      clearDialog:false,
+      annotations:null,
+      dirty:false,
+      snackbar:false,
+      message:"Cant do that",
+      mimemap:{
+          "text/xml":"xml",
+          "application/xml":"xml",
+          "application/xquery":"xquery",
+          "text/ecmascript":"javascript",
+          "application/sparql-query":"sparql",
+          "text/html":"html",
+          "text/turtle":"turtle",
+          "text/css":"css",
+          "image/svg+xml":"svg"
+      }
+    }
+  },
+  methods: {
+    reset (ok) {
+        if(ok){
+          this.contentA = 'reset content for Editor A'
+          this.dirty=false
+        }
+        this.clearDialog=false
+    },
+    changeContentA (val) {
+        if (this.contentA !== val) {
+        this.contentA = val
+        this.dirty=true
+      }
+    },
+    // load from url
+    fetch(url){
+      this.busy=true
+      HTTP.get("edit?url="+url,axios_json)
+      .then(r=>{
+        //console.log(r)
+        this.mimetype=r.data.mimetype
+        this.mode=this.acetype(r.data.mimetype)
+        this.contentA=r.data.data
+        var a=url.split("/")
+        this.url=url
+        this.name=a.pop()
+        this.path=a
+        this.busy=false
+        this.dirty=false
+        //alert(mode)
+        })
+        .catch(error=> {
+          console.log(error);
+          this.busy=false
+          alert("Get query error:\n"+url)
+        });
+      
+    },
+    acecmd(cmd){
+      Events.$emit('eventFired',cmd);
+    },
+    fold(){
+      Events.$emit('eventFired',"foldall");
+    },
+    save(){
+      alert("TODO save: "+this.url);
+      var data=Qs.stringify(
+          {
+            url: this.url, //gave the values directly for testing
+            data: this.contentA
+            })
+      HTTP.post("edit", data,{
+  headers: { "Content-Type": "application/x-www-form-urlencoded"}
+      }).then(r=>{
+        alert("AAA")
+      })
+    },
+    showfiles(){
+           router.push({ path: 'files', query: { url: this.path.join("/") }})
+    },
+    beautify(){
+      this.busy=true
+      var a=this.contentA
+      switch(this.mode) {
+      case "html":
+      case "svg":  
+      case "xml":  
+          a=html_beautify(a, { indent_size: 3 ,indent_inner_html:true})
+          break;
+      case "javascript":
+           a=js_beautify(a, { indent_size: 2 })
+          break;
+      case "css":
+         a=css_beautify(a, { indent_size: 2 })
+         break;     
+      default:
+        this.message="No beautify yet for "+this.mode
+        this.snackbar=true
+     } 
+      this.contentA=a
+      this.busy=false
+    },
+    annotation(counts){
+      this.annotations=counts
+      console.log("annotations: ",counts)
+    },
+    acetype(mime){
+      var r=this.mimemap[mime]
+      return r?r:"text"
+    },
+    leaving(event) {
+      event.returnValue = "event seems to need to be set";
+      //debugger;
+      console.log("Leaving...");
+      if(this.dirty)event.preventDefault();
+  }
+  },
+  created(){
+    //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
+    document.addEventListener('beforeunload', this.leaving);
+    var url=this.$route.query.url
+    console.log("Edit: ",url)
+    if(url) this.fetch(url)
+  },
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    if(this.dirty && confirm("unsaved changes will be lost"))this.dirty=false;
+    next(!this.dirty);
+  }
 }
 
-);
-const Job=Vue.extend({template:` 
+      );
+      const Eval=Vue.extend({template:` 
  <v-container fluid="">
- <h1>JOBS</h1>
+  <v-card class="grey lighten-1 z-depth-1 mb-5">
+  
+
+ 
+     <v-app-bar>
+      <v-btn @click.native="run()">Run</v-btn>
+    <v-btn @click.native="submit()">
+    <v-icon>play_circle_outline</v-icon>
+    Submit</v-btn>
+    <v-btn-dropdown v-bind:options="dropdown_font" max-height="auto" overflow=""></v-btn-dropdown>
+   </v-app-bar>
+
+  
+  <v-card-text>
+  <v-flex xs12="" style="height:200px" fill-height="">
+  <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange"></vue-ace>
+    </v-flex>
+   </v-card-text>
+    <v-alert error="" v-bind:value="showError">
+      {{result}}
+    </v-alert>
+     <v-card-actions v-if="show">
+       
+        JobId:
+      <v-chip class="green white--text">{{jobId}}</v-chip>
+       <v-progress-circular v-if="waiting" indeterminate="" class="primary--text"></v-progress-circular>
+         Elapsed:
+         <v-chip class="green white--text">{{elapsed}}</v-chip>
+        <v-spacer></v-spacer>
+      <v-btn flat="" class="green--text darken-1">@TODO</v-btn>
+    </v-card-actions>
+     <v-card-text v-if="show">
+     <v-flex xs12="" style="height:200px" fill-height="">
+        <vue-ace :content="result" mode="text" wrap="true" read-only="true"></vue-ace>
+        </v-flex> 
+       </v-card-text>
+    </v-card>
 
  </v-container>
  `,
-
+      
   data:  function(){
     return {
-      message: 'Hello Vue.js!',
-      jobs:[]
+      xq: '(: type your XQuery :)\n',
+      result:'',
+      elapsed:null,
+      show:false,
+      showError:false,
+      jobId:null,
+      waiting:false,
+      start:null,
+      dropdown_font: [
+        { text: 'Arial' },
+        { text: 'Calibri' },
+        { text: 'Courier' },
+        { text: 'Verdana' }
+      ]
+      }
+  },
+  methods:{
+    onChange(val){
+      if (this.xq !== val) {
+        this.xq = val
+      }
+    },
+    
+    run(){
+      var data={xq:this.xq}
+      this.showError=this.show=false
+      this.start = performance.now();
+      HTTP.post("eval/execute",Qs.stringify(data))
+      .then(r=>{
+        this.elapsed=Math.floor(performance.now() - this.start);
+        this.result=r.data.result
+        this.jobId=null
+        this.show=true
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.response.data
+        this.showError=true;
+
+      });
+      localforage.setItem('eval/xq', this.xq)
+    },
+    submit(){
+      var data={xq:this.xq}
+      this.showError=this.show=false
+      this.start = performance.now();
+      HTTP.post("eval/submit",Qs.stringify(data))
+      .then(r=>{
+        this.elapsed=Math.floor(performance.now() - this.start);
+        this.result=this.jobId=r.data.job
+        this.show=true
+        this.pollState()
+        
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.jobId=r.response.job
+        this.showError=true;
+
+      });
+    },
+    pollState(){
+      this.waiting=true;
+      HTTP.get("job/"+this.jobId)
+      .then(r=>{
+        this.waiting=r.data.state!="cached";
+        this.elapsed=Math.floor(performance.now() - this.start);
+         if(this.waiting) {
+           setTimeout(()=>{ this.pollState() }, 5000);
+         }else{
+           this.getResult()
+         }
+      })
+    },
+    getResult(){
+       HTTP.post("eval/result/"+this.jobId)
+       .then(r=>{
+         this.result=r.data.result
+         this.jobId=null
+         this.show=true
+       })
+    }
+  },
+  
+  created:function(){
+      localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
+  }
+}
+
+      );
+      const Home=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 green lighten-1">
+<div class="display-1 white--text text-xs-center">VUE-POC</div>
+v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
+<p>
+	This is a experiment in using
+	<code>vue.js</code>
+	.
+</p>
+<ul>
+	<li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
+	<li><a href="https://github.com/monterail/vue-multiselect" target="new">vue-multiselect</a></li>
+	<li><a href="https://github.com/sagalbot/vue-select" target="new"><s>vue-select</s></a></li>
+	<li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
+	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
+	<li><a href="/dba" target="new">DBA app</a></li>
+</ul>
+</v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <my-component href="/dba">REPLACED</my-component> </v-layout>  `,
       
+  }
+
+      );
+      const Job=Vue.extend({template:` 
+  <v-card>
+   <v-toolbar class="green white--text">
+       <v-btn light="" icon="" :loading="loading" @click.native="getJobs()" :disabled="loading">
+    <v-icon>refresh</v-icon>
+    </v-btn>
+    
+     <v-btn @click.native="stop()" :disabled="noSelection">Stop</v-btn>
+    
+      <v-spacer></v-spacer>
+      <v-text-field append-icon="search" label="Search" single-line="" hide-details="" v-model="search"></v-text-field>
+     
+    </v-toolbar>
+  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No Jobs currently running">
+    <template slot="items" scope="props">
+    <td>
+        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
+      </td>
+      <td>{{ props.item.id }}</td>
+      <td class="text-xs-right">{{ props.item.state }}</td>
+      <td class="text-xs-right">{{ props.item.duration }}</td>
+      <td class="text-xs-right">{{ props.item.type }}</td>
+      <td class="text-xs-right">{{ props.item.user }}</td>
+       <td><code>{{ props.item.text }}</code></td>
+    </template>
+  </v-data-table>
+ </v-card>
+ `,
+      
+  data:  function(){
+    return {
+      headers: [
+        {
+          text: 'Job id',
+          left: true,
+          value: 'id'
+        },
+        { text: 'State', value: 'state' },
+        { text: 'Duration', value: 'duration' },
+        { text: 'Type', value: 'type' },
+        { text: 'User', value: 'user' },
+        { text: 'Query', value: 'text' }
+      ],
+      items:[        
+      ],
+      selected:[],
+      search:"",
+      loading:false
       }
   },
   methods:{
     getJobs(){
-    alert("get jobs")
+      this.loading=true;
+	    HTTP.get("job")
+	    .then(r=>{
+	       this.loading=false
+	       this.items=r.data
+	       setTimeout(()=>{ this.getJobs() }, 10000);
+	    })
+	   
+    },
+    stop(){
+      var s=this.selected.map((j)=>{return j.id}).join(",")
+      console.log("AAA",this.selected)
+      alert(s)
+    }
+  },
+  computed: {
+    // a computed getter
+    noSelection: function () {
+      // `this` points to the vm instance
+      return this.selected.length==0
     }
   },
   created(){
@@ -674,34 +739,32 @@ const Job=Vue.extend({template:`
   }
 }
 
-);
-const Login=Vue.extend({template:` 
+      );
+      const Login=Vue.extend({template:` 
 <v-card class="grey lighten-4 elevation-0">
 
-    <v-card-row class="green darken-1">
-      <v-card-title>
+      <v-card-title class="green darken-1">
         <span class="white--text">Login</span>
       </v-card-title>
-    </v-card-row>
     <v-alert error="" v-bind:value="showMessage">
       {{message}}
     </v-alert>
-     <v-card-row>
+     <v-card-actions>
       <v-text-field name="input-name" label="Enter your name" hint="name??" v-model="name" required=""></v-text-field>
-     </v-card-row>
+     </v-card-actions>
   
-    <v-card-row>    
+    <v-card-actions>    
          <v-text-field name="input-password" label="Enter your password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required=""></v-text-field>      
-    </v-card-row>
+    </v-card-actions>
         
     <v-divider></v-divider>
-    <v-card-row actions="" class="blue-grey darken-1 mt-0">
+    <v-card-actions class="blue-grey darken-1 mt-0">
        <v-btn primary="" @click.native="go()">Continue</v-btn>
        <v-spacer></v-spacer>
-    </v-card-row>
+    </v-card-actions>
 </v-card>
  `,
-
+      
     data () {
       return {
         hidepass: true,
@@ -740,12 +803,12 @@ const Login=Vue.extend({template:`
   }
 }
 
-);
-const Log=Vue.extend({template:` 
+      );
+      const Log=Vue.extend({template:` 
  <v-container fluid="">
   <h1>LOGS</h1>
 </v-container> `,
-
+      
   data:  function(){
     return {
       message: 'Hello Vue.js!',
@@ -757,25 +820,23 @@ const Log=Vue.extend({template:`
   }
 }
 
-);
-const Options=Vue.extend({template:` 
+      );
+      const Options=Vue.extend({template:` 
 <v-layout>
 <v-flex xs2="">
 <v-card class="blue darken-4 white--text">
-  <v-card-row height="200px">
-    <v-card-title>
+    <v-card-title height="200px">
       Featured Event: <br>
       May 24, 2016 <br>
       7-11pm
     </v-card-title>
-  </v-card-row>
- <v-card-row actions="">
+ <v-card-actions>
     <v-btn flat="" class="white--text" @click.native="snackbar = true">Add to <br>Calendar</v-btn>
     <v-spacer></v-spacer>
     <v-btn icon="" dark="" @click.native="snackbar = true">
       <v-icon>event</v-icon>
     </v-btn>
-  </v-card-row>
+  </v-card-actions>
 </v-card>
 </v-flex>
 
@@ -784,7 +845,7 @@ const Options=Vue.extend({template:`
 </v-flex>
 
 <v-flex xs4="">
-   <v-card-row img="music.jpg" height="300px"></v-card-row>
+   <v-card-media img="music.jpg" height="300px"></v-card-media>
   <v-btn block="" primary="" @click.native="snackbar = true" dark="">Show Snackbar</v-btn>
  <v-btn class="white--text" @click.native="snackbar = true">Snackbar?</v-btn>
 </v-flex>
@@ -796,7 +857,7 @@ const Options=Vue.extend({template:`
   </v-snackbar>
   </v-layout>
  `,
-  
+        
   data: function(){
     return {
         snackbar:false
@@ -804,8 +865,8 @@ const Options=Vue.extend({template:`
   }
     }
 
-);
-const People=Vue.extend({template:` 
+      );
+      const People=Vue.extend({template:` 
  <v-container fluid="">
   <v-layout>Look at all the people who work here!
   <v-btn light="" default="" v-on:click.native="reverseMessage">Reverse Message</v-btn>
@@ -820,15 +881,15 @@ const People=Vue.extend({template:`
   </v-card>
   <v-layout>
   <v-flex xs5="">
-   <v-card-row img="resources/music.jpg" height="300px"></v-card-row>
+   <v-card-media src="resources/music.jpg" height="300px"></v-card-media>
   </v-flex>
   <v-flex xs1="">
-  <v-card-row :img="img" height="60px"></v-card-row>
+  <v-card-media :src="img" height="60px"></v-card-media>
   </v-flex>
   </v-layout>
  </v-container>
  `,
-
+      
   data:  function(){
     return {
       message: 'Hello Vue.js!',
@@ -846,8 +907,8 @@ const People=Vue.extend({template:`
 }
 
 
-);
-const Ping=Vue.extend({template:` 
+      );
+      const Ping=Vue.extend({template:` 
  <v-container fluid="">
  <p>Simple performance measure. Read or increment a database value.</p>
   <h2>Counter:{{counter}}</h2>
@@ -931,7 +992,7 @@ const Ping=Vue.extend({template:`
     </table>
  </v-container>
  `,
-
+      
   data:  function(){
     return {
       getValues: new perfStat(),
@@ -973,8 +1034,8 @@ const Ping=Vue.extend({template:`
   }
 }
 
-);
-const Puzzle=Vue.extend({template:` 
+      );
+      const Puzzle=Vue.extend({template:` 
  <v-container fluid="">
   <a href="http://homepages.cwi.nl/~steven/Talks/2017/06-10-iot/game-demo.html">demo</a>
   <v-layout>
@@ -999,7 +1060,7 @@ const Puzzle=Vue.extend({template:`
   </v-layout>
  </v-container>
  `,
-
+      
   data:  function(){
     return {grid: [
       [1,5,8,12],
@@ -1051,13 +1112,13 @@ const Puzzle=Vue.extend({template:`
 }
 
 
-);
-const Search=Vue.extend({template:` 
+      );
+      const Search=Vue.extend({template:` 
  <v-container fluid="">
  <v-text-field label="Search..." v-model="q"></v-text-field>
  </v-container>
  `,
-
+      
   data:  function(){
     return {
       message: 'Hello Vue.js!',
@@ -1069,16 +1130,15 @@ const Search=Vue.extend({template:`
   }
 }
 
-);
-const Select=Vue.extend({template:` 
+      );
+      const Select=Vue.extend({template:` 
  <v-container fluid="">
 <v-card>
-  <v-card-row class="green darken-1">
-    <v-card-title>
+
+    <v-card-title class="green darken-1">
       <span class="white--text">Selection</span>
       
     </v-card-title>
-  </v-card-row>
   <v-card-text>
     <v-layout>
      
@@ -1098,7 +1158,7 @@ const Select=Vue.extend({template:`
 <v-card>
  </v-card></v-card></v-container>
  `,
-
+      
   components: { multiselect: VueMultiselect.Multiselect}, 
   data: function(){
       return {
@@ -1130,15 +1190,15 @@ const Select=Vue.extend({template:`
 }
 
 
-);
-const Settings=Vue.extend({template:` 
+      );
+      const Settings=Vue.extend({template:` 
   <v-layout row="">
     <v-flex xs12="" sm6="" offset-sm3="">
       <v-card>
 
         <v-list two-line="" subheader="">
           <v-subheader>Ace editor settings</v-subheader>
-          <v-list-item>
+   
             <v-list-tile avatar="">
               <v-list-tile-action>
                 <v-checkbox v-model="ace.enableSnippets"></v-checkbox>
@@ -1148,8 +1208,7 @@ const Settings=Vue.extend({template:`
                 <v-list-tile-sub-title>Allow snippets</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
-          </v-list-item>
-          <v-list-item>
+    
             <v-list-tile avatar="">
               <v-list-tile-action>
                 <v-checkbox v-model="ace.enableBasicAutocompletion"></v-checkbox>
@@ -1159,8 +1218,7 @@ const Settings=Vue.extend({template:`
                 <v-list-tile-sub-title>enableBasicAutocompletion</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
-          </v-list-item>
-          <v-list-item>
+         
             <v-list-tile avatar="">
               <v-list-tile-action>
                 <v-checkbox v-model="ace.enableLiveAutocompletion"></v-checkbox>
@@ -1170,14 +1228,13 @@ const Settings=Vue.extend({template:`
                 <v-list-tile-sub-title>enableLiveAutocompletion</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
-          </v-list-item>
  
         </v-list>
       </v-card>
     </v-flex>
   </v-layout>
  `,
-
+      
   data () {
     return {
       ace: {
@@ -1214,12 +1271,11 @@ const Settings=Vue.extend({template:`
 }
 
 
-);
-const Tabs=Vue.extend({template:` 
+      );
+      const Tabs=Vue.extend({template:` 
   <v-tabs id="mobile-tabs-6" scroll-bars="" light="">
     <v-card class="primary white--text">
-      <v-card-text>
-        <v-card-row>
+      <v-card-actions>
           <v-btn icon="" light="">
             <v-icon>menu</v-icon>
           </v-btn>
@@ -1230,8 +1286,7 @@ const Tabs=Vue.extend({template:`
           <v-btn icon="" light="">
             <v-icon>more_vert</v-icon>
           </v-btn>
-        </v-card-row>
-      </v-card-text>
+        </v-card-actions>
     </v-card>
     <v-tabs-bar slot="activators">
       <v-tabs-slider></v-tabs-slider>
@@ -1249,7 +1304,7 @@ const Tabs=Vue.extend({template:`
     </v-tabs-content>
 </v-tabs>
  `,
-
+      
     data () {
       return {
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
@@ -1257,13 +1312,13 @@ const Tabs=Vue.extend({template:`
     }
   }
 
-);
-const Task=Vue.extend({template:` 
+      );
+      const Task=Vue.extend({template:` 
  <v-container fluid="">
   <h1>Tasks</h1>
  </v-container>
  `,
-
+      
   data:  function(){
     return {
       message: 'Hello Vue.js!',
@@ -1275,8 +1330,8 @@ const Task=Vue.extend({template:`
   }
 }
 
-);
-const Thumbnail=Vue.extend({template:` 
+      );
+      const Thumbnail=Vue.extend({template:` 
  <v-container fluid="">
  <v-stepper v-model="step" non-linear="">
   <v-stepper-header>
@@ -1315,7 +1370,7 @@ const Thumbnail=Vue.extend({template:`
 </v-stepper>
  </v-container>
  `,
-
+      
   data(){
     return {
       image:"http://images.metmuseum.org/CRDImages/ep/original/DT46.jpg",
@@ -1344,8 +1399,8 @@ const Thumbnail=Vue.extend({template:`
 
 }
 
-);
-// base -----------------------
+      );
+      // base -----------------------
 localforage.config({
   name: 'vuepoc'
 });
@@ -1405,8 +1460,8 @@ Vue.component('nav-list', {
     </v-flex>
   </v-layout>
   <v-list-group v-else-if="item.children" v-model="item.model" no-action>
-    <v-list-item slot="item">
-      <v-list-tile :href="item.href" router ripple>
+
+      <v-list-tile slot="item" :href="item.href" router ripple>
        <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
@@ -1421,12 +1476,9 @@ Vue.component('nav-list', {
         
         </v-list-tile-content>
       </v-list-tile>
-    </v-list-item>
-    <v-list-item
-      v-for="(child, i) in item.children"
-      :key="i"
-    >
-      <v-list-tile :href="child.href" router ripple>
+      
+    <template  v-for="(child, i) in item.children">
+      <v-list-tile  :key="i" :href="child.href" router ripple>
         <v-list-tile-action v-if="child.icon">
           <v-icon>{{ child.icon }}</v-icon>
         </v-list-tile-action>
@@ -1436,10 +1488,10 @@ Vue.component('nav-list', {
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-    </v-list-item>
+    </template>
   </v-list-group>
-  <v-list-item v-else>
-    <v-list-tile :href="item.href" router ripple>
+
+    <v-list-tile v-else :href="item.href" router ripple>
       <v-list-tile-action>
         <v-icon>{{ item.icon }}</v-icon>
       </v-list-tile-action>
@@ -1449,7 +1501,6 @@ Vue.component('nav-list', {
         </v-list-tile-title>
       </v-list-tile-content>
     </v-list-tile>
-  </v-list-item>
 </template>
 </v-list>`,
    created:function(){
@@ -1525,16 +1576,16 @@ const app = new Vue({
       {href: 'files', text: 'File system',icon: 'folder' },
       {href: 'edit',text: 'edit',icon: 'mode_edit'},
       {href: 'history',text: 'history',icon: 'history'},
+      {href: 'logs',text: 'Server logs',icon: 'dns'}
       ]},
       {
         icon: 'directions_run',
         text: 'Actions' ,
         model: false,
         children: [
-      {href: 'eval',text: 'Evaluate',icon: 'cake'},      
-      {href: 'tasks',text: 'Tasks',icon: 'build'}, 
-      {href: 'jobs',text: 'Jobs',icon: 'print'},
-      {href: 'logs',text: 'Server logs',icon: 'dns'}
+      {href: 'eval',text: 'Evaluate',icon: 'play_circle_outline'},      
+      {href: 'jobs',text: 'Jobs',icon: 'dashboard'},
+      {href: 'tasks',text: 'Tasks',icon: 'history'}, 
       ]},
       {
         icon: 'more_horiz',

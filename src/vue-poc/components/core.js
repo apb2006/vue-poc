@@ -58,8 +58,8 @@ Vue.component('nav-list', {
     </v-flex>
   </v-layout>
   <v-list-group v-else-if="item.children" v-model="item.model" no-action>
-    <v-list-item slot="item">
-      <v-list-tile :href="item.href" router ripple>
+
+      <v-list-tile slot="item" :href="item.href" router ripple>
        <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
@@ -74,12 +74,9 @@ Vue.component('nav-list', {
         
         </v-list-tile-content>
       </v-list-tile>
-    </v-list-item>
-    <v-list-item
-      v-for="(child, i) in item.children"
-      :key="i"
-    >
-      <v-list-tile :href="child.href" router ripple>
+      
+    <template  v-for="(child, i) in item.children">
+      <v-list-tile  :key="i" :href="child.href" router ripple>
         <v-list-tile-action v-if="child.icon">
           <v-icon>{{ child.icon }}</v-icon>
         </v-list-tile-action>
@@ -89,10 +86,10 @@ Vue.component('nav-list', {
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
-    </v-list-item>
+    </template>
   </v-list-group>
-  <v-list-item v-else>
-    <v-list-tile :href="item.href" router ripple>
+
+    <v-list-tile v-else :href="item.href" router ripple>
       <v-list-tile-action>
         <v-icon>{{ item.icon }}</v-icon>
       </v-list-tile-action>
@@ -102,7 +99,6 @@ Vue.component('nav-list', {
         </v-list-tile-title>
       </v-list-tile-content>
     </v-list-tile>
-  </v-list-item>
 </template>
 </v-list>`,
    created:function(){
@@ -178,16 +174,16 @@ const app = new Vue({
       {href: 'files', text: 'File system',icon: 'folder' },
       {href: 'edit',text: 'edit',icon: 'mode_edit'},
       {href: 'history',text: 'history',icon: 'history'},
+      {href: 'logs',text: 'Server logs',icon: 'dns'}
       ]},
       {
         icon: 'directions_run',
         text: 'Actions' ,
         model: false,
         children: [
-      {href: 'eval',text: 'Evaluate',icon: 'cake'},      
-      {href: 'tasks',text: 'Tasks',icon: 'build'}, 
-      {href: 'jobs',text: 'Jobs',icon: 'print'},
-      {href: 'logs',text: 'Server logs',icon: 'dns'}
+      {href: 'eval',text: 'Evaluate',icon: 'play_circle_outline'},      
+      {href: 'jobs',text: 'Jobs',icon: 'dashboard'},
+      {href: 'tasks',text: 'Tasks',icon: 'history'}, 
       ]},
       {
         icon: 'more_horiz',

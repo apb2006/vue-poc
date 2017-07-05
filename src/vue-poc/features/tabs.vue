@@ -2,8 +2,7 @@
 <template id="tabs">
   <v-tabs id="mobile-tabs-6" scroll-bars light>
     <v-card class="primary white--text">
-      <v-card-text>
-        <v-card-row>
+      <v-card-actions>
           <v-btn icon light>
             <v-icon>menu</v-icon>
           </v-btn>
@@ -14,8 +13,7 @@
           <v-btn icon light>
             <v-icon>more_vert</v-icon>
           </v-btn>
-        </v-card-row>
-      </v-card-text>
+        </v-card-actions>
     </v-card>
     <v-tabs-bar slot="activators">
       <v-tabs-slider></v-tabs-slider>

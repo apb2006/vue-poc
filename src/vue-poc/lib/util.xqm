@@ -15,14 +15,21 @@ import module namespace cons = 'vue-poc/cons' at 'cons.xqm';
  :)
 declare function util:query(
   $query    as xs:string?,
-  $context  as item()*
-) as xs:string {
-  let $limit := $cons:OPTION($cons:K-MAXCHARS)
+  $context  as item()*) 
+as xs:string {
   let $result := xquery:eval($query, map { '': $context }, util:query-options())
+  (: serialize more characters than requested, because limit represents number of bytes :)
+  return util:display($result)
+};
+
+declare function util:display(
+  $result as item()*)
+as xs:string 
+{
+  let $limit := $cons:OPTION($cons:K-MAXCHARS)
   (: serialize more characters than requested, because limit represents number of bytes :)
   return util:chop(serialize($result, map { 'limit': $limit * 2 + 1, 'method': 'basex' }), $limit)
 };
-
 (:~
  : Runs an updating query.
  : @param  $query  query string

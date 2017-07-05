@@ -2,15 +2,13 @@
 <template id="login">
 <v-card class="grey lighten-4 elevation-0">
 
-    <v-card-row class="green darken-1">
-      <v-card-title>
+      <v-card-title class="green darken-1">
         <span class="white--text">Login</span>
       </v-card-title>
-    </v-card-row>
     <v-alert error v-bind:value="showMessage">
       {{message}}
     </v-alert>
-     <v-card-row>
+     <v-card-actions>
       <v-text-field
               name="input-name"
               label="Enter your name"
@@ -18,9 +16,9 @@
               v-model="name"
               required
              ></v-text-field>
-     </v-card-row>
+     </v-card-actions>
   
-    <v-card-row>    
+    <v-card-actions>    
          <v-text-field
               name="input-password"
               label="Enter your password"
@@ -31,13 +29,13 @@
               :type="hidepass ? 'password' : 'text'"
               required
             ></v-text-field>      
-    </v-card-row>
+    </v-card-actions>
         
     <v-divider></v-divider>
-    <v-card-row actions class="blue-grey darken-1 mt-0">
+    <v-card-actions class="blue-grey darken-1 mt-0">
        <v-btn primary @click.native="go()">Continue</v-btn>
        <v-spacer></v-spacer>
-    </v-card-row>
+    </v-card-actions>
 </v-card>
 </template>
 

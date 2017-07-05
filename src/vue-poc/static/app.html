@@ -9,7 +9,7 @@
 <title>Vue Router Test</title>
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
 <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
-<link href="https://unpkg.com/vuetify@0.12.7/dist/vuetify.min.css" rel="stylesheet" type="text/css">
+<link href="https://unpkg.com/vuetify@0.13.0/dist/vuetify.min.css" rel="stylesheet" type="text/css">
 <link href="https://unpkg.com/vue-multiselect@2.0.0-beta.15/dist/vue-multiselect.min.css"  rel="stylesheet" type="text/css">
 
 <link href="/vue-poc/ui/app.css" rel="stylesheet" type="text/css">
@@ -19,7 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.5.3/vue-router.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.4.0/qs.js"></script>
-<script src="https://unpkg.com/vuetify@0.12.7/dist/vuetify.min.js"></script>
+<script src="https://unpkg.com/vuetify@0.13.0/dist/vuetify.min.js"></script>
 <script src="https://unpkg.com/vue-multiselect@2.0.0-beta.15/dist/vue-multiselect.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.7/ace.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.7/ext-language_tools.js"></script>
@@ -38,7 +38,7 @@
 <v-app id="app" >
  <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer"    class="grey lighten-4 pb-0">
   <v-list class="pa-0">
-        <v-list-item>
+
           <v-list-tile avatar tag="div">
             <v-list-tile-avatar>
               <img src="/vue-poc/ui/quodatum.gif" />
@@ -52,7 +52,7 @@
               </v-btn>
             </v-list-tile-action>
           </v-list-tile>
-        </v-list-item>
+
       </v-list>
     <nav-list  :items="items"></nav-list>
  </v-navigation-drawer>
@@ -69,14 +69,13 @@
       </v-btn>
      
           <v-list>
-            <v-list-item @click="logout()">
-              <v-list-tile>
+        
+              <v-list-tile @click="logout()">
                 <v-list-tile-title >logout</v-list-tile-title>
               </v-list-tile>
                <v-list-tile>
                 <v-list-tile-title >permission: {{$auth.permission}}</v-list-tile-title>
               </v-list-tile>
-            </v-list-item>
             
           </v-list>
       </v-menu>

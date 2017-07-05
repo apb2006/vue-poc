@@ -1,34 +1,33 @@
 <!DOCTYPE html>
 <template id="files">
  <v-container fluid>
-
+ 
 <v-card>
-<v-card-row class="green white--text">
-          <v-menu bottom right>
+<v-toolbar>
+      <v-menu bottom right>
            <v-btn  icon dark slot="activator"><v-icon >folder</v-icon></v-btn>
       <v-list>
-        <v-list-item v-for="item in crumbs" :key="item">
-          <v-list-tile>
+        <template v-for="item in crumbs">
+          <v-list-tile  :key="item">
             <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
           </v-list-tile>
-        </v-list-item>
+        </template>
       </v-list>
     </v-menu>
-  
-	
     <v-toolbar-title>{{ url }}</v-toolbar-title>
    
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line dark @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
-  </v-card-row>
+ </v-toolbar>
+
   
   <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
   <v-list v-if="!busy" two-line subheader>
     <v-subheader inset>Folders</v-subheader>
-    <v-list-item v-for="item in folders" v-bind:key="item.name" @click="folder(item.name)">
-      <v-list-tile avatar >
+    <template v-for="item in folders">  
+      <v-list-tile v-bind:key="item.name" @click="folder(item.name)" avatar >
         <v-list-tile-avatar  >
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
@@ -42,11 +41,12 @@
           </v-btn>
         </v-list-tile-action>
       </v-list-tile>
-    </v-list-item>
+    </template>
+    
     <v-divider inset></v-divider>
     <v-subheader inset>Files</v-subheader>
-    <v-list-item v-for="item in files" v-bind:key="item.name" @click="file(item.name)">
-      <v-list-tile>
+     <template v-for="item in folders">  
+      <v-list-tile v-bind:key="item.name" @click="file(item.name)">
         <v-list-tile-avatar>
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
@@ -60,10 +60,12 @@
           </v-btn>
         </v-list-tile-action>
       </v-list-tile>
-    </v-list-item>
+    </template>
   </v-list>
     <v-navigation-drawer right light temporary v-model="infodraw"
-      >Some info here {{selected}}</v-navigation-drawer>
+      > <v-card> <v-card-title class="green white--text">
+Some info here {{selected}} </v-card-title> <v-card-text> blah blah </v-card-text> </v-card>
+      </v-navigation-drawer>
 </v-card>
  </v-container>
 </template>

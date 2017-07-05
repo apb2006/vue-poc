@@ -1,22 +1,19 @@
 <!DOCTYPE html>
 <template id="history">
  <v-container fluid>
- <v-list>
-          <v-list-item v-for="item in items" v-bind:key="item.title"
-          @click="doEdit(item.url)">
-            <v-list-tile avatar>
+    <v-list>
+            <v-list-tile  v-for="item in items" v-bind:key="item.title" @click="doEdit(item.url)" avatar>
               <v-list-tile-action>
                 <v-icon v-if="item.icon" class="pink--text">star</v-icon>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title v-text="item.url"></v-list-tile-title>
+                <v-list-tile-title @click="doEdit(item.url)" v-text="item.url"></v-list-tile-title>
               </v-list-tile-content>
               <v-list-tile-avatar>
                 <img v-bind:src="item.avatar"/>
               </v-list-tile-avatar>
             </v-list-tile>
-          </v-list-item>
-        </v-list>
+   </v-list>
  </v-container>
 </template>
 
