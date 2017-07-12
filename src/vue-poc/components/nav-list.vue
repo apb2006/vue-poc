@@ -19,7 +19,7 @@
   </v-layout>
   <v-list-group v-else-if="item.children" v-model="item.model" no-action>
 
-      <v-list-tile :href="item.href" router ripple slot="item">
+      <v-list-tile :to="item.href"  ripple slot="item">
        <v-list-tile-action>
           <v-icon>{{ item.icon }}</v-icon>
         </v-list-tile-action>
@@ -34,11 +34,8 @@
         
         </v-list-tile-content>
       </v-list-tile>
-    <template
-      v-for="(child, i) in item.children"
-      :key="i"
-    >
-      <v-list-tile :href="child.href" router ripple>
+    <template v-for="(child, i) in item.children"     >
+      <v-list-tile :to="child.href"  :key="i" ripple>
         <v-list-tile-action v-if="child.icon">
           <v-icon>{{ child.icon }}</v-icon>
         </v-list-tile-action>
@@ -51,7 +48,7 @@
     </template>
   </v-list-group>
  
-    <v-list-tile v-else :href="item.href" router ripple>
+    <v-list-tile v-else :to="item.href"  ripple>
       <v-list-tile-action>
         <v-icon>{{ item.icon }}</v-icon>
       </v-list-tile-action>

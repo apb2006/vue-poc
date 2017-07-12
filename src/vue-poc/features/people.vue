@@ -5,6 +5,24 @@
   <v-btn light default v-on:click.native="reverseMessage">Reverse Message</v-btn>
   <p>{{ message }}</p>
    <v-btn light default v-on:click.native="logout">logout</v-btn>
+   <!-- 
+    <v-autocomplete :items="list" 
+    v-model="fieldValue" 
+    :search.sync="search"
+     label="Suburb" item-text="suburb" 
+    item-value="suburb" 
+    @selected="handleSelected"
+     strict="Unknown">
+<template slot="item" scope="data">
+      <v-list-tile-content>
+        <v-list-tile-title>{{data.item.suburb}}</v-list-tile-title>
+        <template v-if="!data.item.generatedItem">
+          <v-list-tile-sub-title>{{data.item.postcode}} - {{data.item.state}}</v-list-tile-sub-title>
+        </template>
+      </v-list-tile-content>
+    </template>
+</v-autocomplete>
+ -->
   </v-layout>
   <v-card>
   <v-layout >
@@ -20,6 +38,8 @@
   <v-card-media :src="img" height="60px"></v-card-media>
   </v-flex>
   </v-layout>
+  
+ 
  </v-container>
 </template>
 
@@ -27,8 +47,12 @@
   data:  function(){
     return {
       message: 'Hello Vue.js!',
+      fieldValue:"",
+      list:[],
+      search:"",
+      data:[],
       img:"data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAUAAAAFCAYAAACNbyblAAAAHElEQVQI12P4//8/w38GIAXDIBKE0DHxgljNBAAO9TXL0Y4OHwAAAABJRU5ErkJggg=="
-      }
+    }
   },
   methods: {
     reverseMessage() {
@@ -36,6 +60,9 @@
     },
     logout(){
       alert("TODU")
+    },
+    handleSelected(){
+      
     }
   }
 }

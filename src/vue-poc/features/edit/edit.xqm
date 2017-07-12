@@ -18,9 +18,10 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
 declare
 %rest:GET %rest:path("/vue-poc/api/edit")
 %rest:query-param("url", "{$url}")
+%rest:query-param("protocol", "{$protocol}")
 %rest:produces("application/json")
 %output:method("json")   
-function vue-api:edit-get($url as xs:string)   
+function vue-api:edit-get($url as xs:string,$protocol as xs:string)   
 {
   let $path := ufile:web( $url)=>trace("path ")
    return if( file:exists($path))then 

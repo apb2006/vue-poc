@@ -2,16 +2,13 @@
 <template id="history">
  <v-container fluid>
     <v-list>
-            <v-list-tile  v-for="item in items" v-bind:key="item.title" @click="doEdit(item.url)" avatar>
+            <v-list-tile  v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar>
               <v-list-tile-action>
-                <v-icon v-if="item.icon" class="pink--text">star</v-icon>
+               <v-chip v-text="item.mode">Example Chip</v-chip>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title @click="doEdit(item.url)" v-text="item.url"></v-list-tile-title>
+                <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
               </v-list-tile-content>
-              <v-list-tile-avatar>
-                <img v-bind:src="item.avatar"/>
-              </v-list-tile-avatar>
             </v-list-tile>
    </v-list>
  </v-container>
@@ -32,9 +29,9 @@
         console.log("items",this.items)
       });
     },
-    doEdit(url){
-      console.log("DD"+url)
-        router.push({ path: 'edit', query: { url: url  }})
+    doEdit(item){
+      console.log("history: ",item)
+        router.push({ path: 'edit', query: { url:item.url, mode:item.mode  }})
     }
   },
   created:function(){

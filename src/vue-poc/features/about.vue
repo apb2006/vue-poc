@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<template id="about"> <v-layout class="ma-5"> <v-flex
+<template id="home"> <v-layout class="ma-5"> <v-flex
 	xs4> <v-card hover raised> <v-card-title
 	height="200px" class="pa-5 green lighten-1">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>

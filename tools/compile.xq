@@ -26,7 +26,12 @@ let $script:= $p?script=>substring-after("{")
 
 return if(empty($p?id)) then 
            () 
-       else 
+       else if($isComp) then
+           ``[Vue.component('`{$p?id}`',{template:` `{$p?template}` `,
+      `{$script}`
+      );
+      ]``
+       else
              ``[const `{functx:capitalize-first($p?id)}`=Vue.extend({template:` `{$p?template}` `,
       `{$script}`
       );
@@ -61,6 +66,7 @@ let $comps:=$files!(fetch:text(.)=>html5:doc()=>local:feature(true()))
 
 let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;"
 return file:write-text($DEST,string-join(($comment,
+                                         $comps,
                                          fetch:text($FILTERS),
                                          $feats,
                                          fetch:text($CORE))))

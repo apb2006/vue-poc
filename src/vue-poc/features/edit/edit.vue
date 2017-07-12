@@ -11,8 +11,10 @@
 <v-menu >
   <v-btn primary icon dark slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon >folder</v-icon></v-btn>
   <v-list>
-      <v-list-tile  v-for="item in path" :key="item" @click="showfiles()">
+      <v-list-tile  v-for="item in path" :key="item">
+        <v-list-tile-content @click="showfiles()">
         <v-list-tile-title >{{ item }}</v-list-tile-title>
+        </v-list-tile-content>
       </v-list-tile>
   </v-list>
 </v-menu>
@@ -36,31 +38,31 @@
               <v-icon black >navigate_next</v-icon>
            </v-avatar>
           </v-chip>
-   <v-btn dark icon @click.native="acecmd('outline')">
+   <v-btn  icon @click.native="acecmd('outline')">
       <v-icon>star</v-icon>
     </v-btn>
 
   
-   <v-btn dark icon @click.native="acecmd('foldall')">
+   <v-btn  icon @click.native="acecmd('foldall')">
       <v-icon>vertical_align_center</v-icon>
     </v-btn>
     
-    <v-btn dark icon @click.native="wrap=!wrap">
+    <v-btn  icon @click.native="wrap=!wrap">
       <v-icon>wrap_text</v-icon>
     </v-btn>
     
-   <v-btn dark icon @click.native="save()">
+   <v-btn  icon @click.native="save()">
       <v-icon>file_upload</v-icon>
     </v-btn>
     
-    <v-btn dark icon @click.native="beautify()">
+    <v-btn  icon @click.native="beautify()">
       <v-icon>format_align_center</v-icon>
     </v-btn>
-    <v-btn dark icon @click.native="clearDialog = true">
+    <v-btn  icon @click.native="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
         <v-menu left  transition="v-fade-transition">
-        <v-btn dark icon slot="activator">
+        <v-btn  icon slot="activator">
           <v-icon>help</v-icon>
         </v-btn>     
         <v-list>
@@ -80,7 +82,7 @@
           </v-list>
        </v-menu>
     <v-menu left  transition="v-fade-transition">
-      <v-btn dark icon slot="activator">
+      <v-btn  icon slot="activator">
         <v-icon>more_vert</v-icon>
       </v-btn>
      
@@ -126,6 +128,7 @@ v-on:annotation="annotation"></vue-ace>
 };`,
       mode:'xquery',
       url:'',
+      protocol:'webfile',
       name:'',
       path:[],
       mimetype:"",
@@ -166,16 +169,17 @@ v-on:annotation="annotation"></vue-ace>
     // load from url
     fetch(url){
       this.busy=true
-      HTTP.get("edit?url="+url,axios_json)
+      var a=url.split("/")
+      this.url=url
+      this.name=a.pop()
+      this.path=a
+      HTTP.get("edit",{params: {url:url,protocol:this.protocol}})
       .then(r=>{
         //console.log(r)
         this.mimetype=r.data.mimetype
         this.mode=this.acetype(r.data.mimetype)
         this.contentA=r.data.data
-        var a=url.split("/")
-        this.url=url
-        this.name=a.pop()
-        this.path=a
+       
         this.busy=false
         this.dirty=false
         //alert(mode)
@@ -197,6 +201,7 @@ v-on:annotation="annotation"></vue-ace>
       alert("TODO save: "+this.url);
       var data=Qs.stringify(
           {
+            protocol:this.protocol,
             url: this.url, //gave the values directly for testing
             data: this.contentA
             })
@@ -249,6 +254,7 @@ v-on:annotation="annotation"></vue-ace>
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
     document.addEventListener('beforeunload', this.leaving);
+  this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
     var url=this.$route.query.url
     console.log("Edit: ",url)
     if(url) this.fetch(url)

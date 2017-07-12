@@ -1,17 +1,29 @@
 <!DOCTYPE html>
 <template id="eval">
  <v-container fluid>
-  <v-card class="grey lighten-1 z-depth-1 mb-5">
-  
+  <v-card >
 
- 
-     <v-app-bar>
+     <v-toolbar>
       <v-btn @click.native="run()">Run</v-btn>
     <v-btn @click.native="submit()">
     <v-icon>play_circle_outline</v-icon>
     Submit</v-btn>
-    <v-btn-dropdown v-bind:options="dropdown_font" max-height="auto" overflow></v-btn-dropdown>
-   </v-app-bar>
+    <v-spacer></v-spacer>
+     <v-btn @click.native="imports()">
+    <v-icon>play_circle_outline</v-icon>
+    Imports</v-btn>
+     <v-menu :nudge-width="100">
+          <v-toolbar-title slot="activator">
+            <span>{{font}}</span>
+            <v-icon >arrow_drop_down</v-icon>
+          </v-toolbar-title>
+          <v-list>
+            <v-list-tile v-for="item in dropdown_font" :key="item">
+              <v-list-tile-title v-text="item.text" @click="font=item.text"></v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+   </v-toolbar>
 
   
   <v-card-text   >
@@ -56,6 +68,7 @@
       jobId:null,
       waiting:false,
       start:null,
+      font:'Courier',
       dropdown_font: [
         { text: 'Arial' },
         { text: 'Calibri' },
@@ -129,6 +142,9 @@
          this.jobId=null
          this.show=true
        })
+    },
+    imports(){
+      alert("imports")
     }
   },
   

@@ -5,13 +5,11 @@
 <v-card>
 <v-toolbar>
       <v-menu bottom right>
-           <v-btn  icon dark slot="activator"><v-icon >folder</v-icon></v-btn>
+           <v-btn  icon  slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
       <v-list>
-        <template v-for="item in crumbs">
-          <v-list-tile  :key="item">
+          <v-list-tile v-for="item in crumbs" :key="item">
             <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
           </v-list-tile>
-        </template>
       </v-list>
     </v-menu>
     <v-toolbar-title>{{ url }}</v-toolbar-title>
@@ -26,12 +24,11 @@
   <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
   <v-list v-if="!busy" two-line subheader>
     <v-subheader inset>Folders</v-subheader>
-    <template v-for="item in folders">  
-      <v-list-tile v-bind:key="item.name" @click="folder(item.name)" avatar >
+      <v-list-tile v-for="item in folders" v-bind:key="item.name" @click="folder(item.name)" avatar >
         <v-list-tile-avatar  >
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
-        <v-list-tile-content  >
+        <v-list-tile-content  @click="folder(item.name)">
           <v-list-tile-title>{{ item.name }}</v-list-tile-title>
           <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
         </v-list-tile-content>
@@ -41,18 +38,16 @@
           </v-btn>
         </v-list-tile-action>
       </v-list-tile>
-    </template>
     
     <v-divider inset></v-divider>
-    <v-subheader inset>Files</v-subheader>
-     <template v-for="item in folders">  
-      <v-list-tile v-bind:key="item.name" @click="file(item.name)">
+    <v-subheader inset>Files</v-subheader> 
+      <v-list-tile v-for="item in files" v-bind:key="item.name" >
         <v-list-tile-avatar>
           <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
         </v-list-tile-avatar>
-        <v-list-tile-content>
+        <v-list-tile-content @click="file(item.name)">
           <v-list-tile-title >{{ item.name }}</v-list-tile-title>
-           <v-list-tile-sub-title>modified: {{ formatDate(item.modified) }} size: {{ readablizeBytes(item.size) }}</v-list-tile-sub-title>
+           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
         </v-list-tile-content>
         <v-list-tile-action>
           <v-btn icon ripple @click.native.stop="info(item.name)">
@@ -60,17 +55,25 @@
           </v-btn>
         </v-list-tile-action>
       </v-list-tile>
-    </template>
+
   </v-list>
-    <v-navigation-drawer right light temporary v-model="infodraw"
-      > <v-card> <v-card-title class="green white--text">
-Some info here {{selected}} </v-card-title> <v-card-text> blah blah </v-card-text> </v-card>
+    <v-navigation-drawer right light temporary v-model="showInfo">
+     <v-card> 
+       <v-toolbar class="green white--text">
+      <v-toolbar-title >{{selected}}</v-toolbar-title>
+      <v-spacer></v-spacer>    
+       <v-btn flat icon @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+    </v-toolbar>
+    <v-card-text> blah blah protocol: {{protocol}} </v-card-text> 
+</v-card>
       </v-navigation-drawer>
 </v-card>
  </v-container>
 </template>
 
 <script>{
+  
+  props:["protocol"],
   data:  function(){
     return { 
             crumbs:[],
@@ -79,25 +82,22 @@ Some info here {{selected}} </v-card-title> <v-card-text> blah blah </v-card-tex
             items:["root"],
             q:"",
             busy:false,
-            infodraw:false,
+            showInfo:false,
             selected:""
     }
   },
   methods:{
     file (val) {
    // with query, resulting in /register?plan=private
-      router.push({ path: 'edit', query: { url: this.url+"/"+val  }})
+      router.push({ path: 'edit', query: { url: this.url+"/"+val,protocol:this.protocol  }})
     },
     folder (val) {
       this.crumbs.push(val )
-      this.$router.push({  query: { url: this.url }})
-      this.load(this.url)
     },
     load(url){
       this.busy=true
-      HTTP.get("file?url="+url,axios_json)
+      HTTP.get("file",{params:{url:url,protocol:this.protocol}})
       .then(r=>{
-        console.log(r)
         this.folders=r.data.folders
         this.files=r.data.files
         this.busy=false
@@ -112,22 +112,15 @@ Some info here {{selected}} </v-card-title> <v-card-text> blah blah </v-card-tex
     root(){
       this.crumbs=[]
       this.$router.push({  query: { url: this.url }})
-      this.load(this.url)
     },
     filter(){
       console.log("TODO")
     },
     info(sel){
       this.selected=sel
-      this.infodraw=true
-    },
-    readablizeBytes(v){
-      return Vue.filter('readablizeBytes')(v)
-      },
-      formatDate(v){
-      return Vue.filter('formatDate')(v)
-      }
-    
+      this.showInfo=true
+    }
+  
   },
   computed: {
     url:  {
@@ -138,12 +131,24 @@ Some info here {{selected}} </v-card-title> <v-card-text> blah blah </v-card-tex
      // alert("set"+newValue)
      this.crumbs=newValue.split("/").filter((a)=>a.length>0)
     }
+      },
+   icon(){
+        return (this.protocol=="basexdb")?"account_balance":"folder"
+      }
+  },
+  watch:{
+    url(v){
+      this.$router.push({  query: { url: this.url }})
+      },
+      $route(v){
+        var url=this.$route.query.url
+        this.url=url?url:"/";
+        this.load(this.url) 
       }
   },
   created:function(){
     var url=this.$route.query.url
     this.url=url?url:"/";
-    console.log("files: ",this.$route.query.url)
     this.load(this.url)
   }
 }
