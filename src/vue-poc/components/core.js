@@ -54,6 +54,7 @@ const router = new VueRouter({
     { path: '/eval', component: Eval,meta:{title:"Evaluate XQuery"} },
     { path: '/logs', component: Log,meta:{title:"Server logs"} },
     { path: '/tasks', component: Task,meta:{title:"Runnable tasks"} },
+    { path: '/tasks/model', component: Model,meta:{title:"build model"} },
     { path: '/jobs', component: Job,meta:{title:"Jobs"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
@@ -94,42 +95,42 @@ const app = new Vue({
         text: 'Collections' ,
         model: false,
         children: [
-       {href: 'database', text: 'Databases',icon: 'account_balance' },
-       {href: 'files', text: 'File system',icon: 'folder' },
-      {href: 'edit',text: 'edit',icon: 'mode_edit'},
-      {href: 'history',text: 'history',icon: 'history'},
-      {href: 'logs',text: 'Server logs',icon: 'dns'}
+       {href: '/database', text: 'Databases',icon: 'account_balance' },
+       {href: '/files', text: 'File system',icon: 'folder' },
+      {href: '/edit',text: 'edit',icon: 'mode_edit'},
+      {href: '/history',text: 'history',icon: 'history'},
+      {href: '/logs',text: 'Server logs',icon: 'dns'}
       ]},
       {
         icon: 'directions_run',
         text: 'Actions' ,
         model: false,
         children: [
-      {href: 'eval',text: 'Query',icon: 'play_circle_outline'},      
-      {href: 'jobs',text: 'Running jobs',icon: 'dashboard'},
-      {href: 'tasks',text: 'Tasks',icon: 'history'}, 
+      {href: '/eval',text: 'Query',icon: 'play_circle_outline'},      
+      {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},
+      {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
       {
         icon: 'more_horiz',
         text: 'More' ,
         model: false,
         children: [
-      {href: 'people',text: 'People',icon: 'person'}, 
-      {href: 'select',text: 'select',icon: 'extension'},
-      {href: 'puzzle',text: 'Puzzle',icon: 'extension'}, 
-      {href: 'images',text: 'Images',icon: 'camera_roll'}, 
-      {href: 'tabs',text: 'tabs',icon: 'switch_camera'}, 
-      {href: 'ping',text: 'ping',icon: 'update'},
-      {href: 'thumbnail',text: 'thumbnail',icon: 'touch_app'}
+      {href: '/people',text: 'People',icon: 'person'}, 
+      {href: '/select',text: 'select',icon: 'extension'},
+      {href: '/puzzle',text: 'Puzzle',icon: 'extension'}, 
+      {href: '/images',text: 'Images',icon: 'camera_roll'}, 
+      {href: '/tabs',text: 'tabs',icon: 'switch_camera'}, 
+      {href: '/ping',text: 'ping',icon: 'update'},
+      {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
       ]},
-      {href: 'settings',text: 'settings',icon: 'settings'  }
+      {href: '/settings',text: 'settings',icon: 'settings'  }
     ]
 
   }},
   methods: {
       
       search(){
-        this.$router.push({path: 'search',query: { q: this.q }})
+        this.$router.push({path: '/search',query: { q: this.q }})
       },
       logout(){
         HTTP.get("logout").then(r=>{

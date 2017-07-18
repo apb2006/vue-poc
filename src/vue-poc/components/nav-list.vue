@@ -30,9 +30,7 @@
         <v-list-tile-action>
           <v-icon>{{ item.model ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
         </v-list-tile-action>
-        <v-list-tile-content>
-        
-        </v-list-tile-content>
+       
       </v-list-tile>
     <template v-for="(child, i) in item.children"     >
       <v-list-tile :to="child.href"  :key="i" ripple>

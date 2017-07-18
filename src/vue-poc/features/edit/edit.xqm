@@ -18,22 +18,16 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
 declare
 %rest:GET %rest:path("/vue-poc/api/edit")
 %rest:query-param("url", "{$url}")
-%rest:query-param("protocol", "{$protocol}")
+%rest:query-param("protocol", "{$protocol}","webfile")
 %rest:produces("application/json")
 %output:method("json")   
 function vue-api:edit-get($url as xs:string,$protocol as xs:string)   
 {
-  let $path := ufile:web( $url)=>trace("path ")
-   return if( file:exists($path))then 
-             let $type:=mt:type($path)
-             let $fetch:=mt:fetch-fn($type("treat-as"))
-             return <json type="object" >
-                        <url>{$url}</url>
-                        <mimetype>{$type?type}</mimetype>
-                        <data>{$fetch($path)}</data> 
-                     </json>
-          else 
-            error(xs:QName('vue-api:raw'),$path)
+  let $reader := map{
+      "webfile":vue-api:get-webfile#1,
+      "basexdb":vue-api:get-basexdb#1
+      }
+   return $reader($protocol)($url)
 };
 
 (:~
@@ -61,3 +55,39 @@ function vue-api:edit-post($url as xs:string,$data)
             error(xs:QName('vue-api:raw'),$path)
 };
 
+(:~
+ : Returns a file content.
+ :)
+declare function vue-api:get-webfile($url as xs:string)   
+as element(json)
+{
+  let $path := ufile:web( $url)=>trace("path ")
+   return if( file:exists($path))then 
+             let $type:=mt:type($path)
+             let $fetch:=mt:fetch-fn($type("treat-as"))
+             return <json type="object" >
+                        <url>{$url}</url>
+                        <mimetype>{$type?type}</mimetype>
+                        <data>{$fetch($path)}</data> 
+                     </json>
+          else 
+            error(xs:QName('vue-api:raw'),$url)
+};
+
+(:~
+ : Returns a file content.
+ :)
+declare function vue-api:get-basexdb($url as xs:string)
+as element(json)   
+{
+  if( doc-available($url))then 
+            
+             let $doc:=doc($url)
+             return <json type="object" >
+                        <url>{$url}</url>
+                        <mimetype>application/xml</mimetype>
+                        <data>{serialize($doc)}</data> 
+                     </json>
+          else 
+            error(xs:QName('vue-api:raw'),$url)
+};

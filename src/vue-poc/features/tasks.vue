@@ -2,6 +2,7 @@
 <template id="task">
  <v-container fluid>
   <h1>Tasks</h1>
+  <router-link to="tasks/model">model</router-link>
  </v-container>
 </template>
 

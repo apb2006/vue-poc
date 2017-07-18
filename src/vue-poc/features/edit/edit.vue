@@ -9,7 +9,7 @@
 
 <v-toolbar class="grey lighten-2 black--text">
 <v-menu >
-  <v-btn primary icon dark slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon >folder</v-icon></v-btn>
+  <v-btn primary icon dark slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon >{{icon}}</v-icon></v-btn>
   <v-list>
       <v-list-tile  v-for="item in path" :key="item">
         <v-list-tile-content @click="showfiles()">
@@ -70,14 +70,14 @@
                <v-list-tile-avatar>
               <v-icon >settings</v-icon>
             </v-list-tile-avatar>
-              <v-list-tile-title >Show settings</v-list-tile-title>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')" >Show settings</v-list-tile-title>
             </v-list-tile>
                       
             <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
               <v-list-tile-avatar>
               <v-icon >keyboard</v-icon>
             </v-list-tile-avatar>
-              <v-list-tile-title  >Show keyboard commands</v-list-tile-title>
+              <v-list-tile-title  @click="acecmd('showKeyboardShortcuts')" >Show keyboard commands</v-list-tile-title>
             </v-list-tile>
           </v-list>
        </v-menu>
@@ -212,7 +212,8 @@ v-on:annotation="annotation"></vue-ace>
       })
     },
     showfiles(){
-           router.push({ path: 'files', query: { url: this.path.join("/") }})
+          var target=this.protocol="basexdb"?"database":"files";
+           router.push({ path: target, query: { url: this.path.join("/"),protocol:this.protocol }})
     },
     beautify(){
       this.busy=true
@@ -250,6 +251,11 @@ v-on:annotation="annotation"></vue-ace>
       console.log("Leaving...");
       if(this.dirty)event.preventDefault();
   }
+  },
+  computed:{
+    icon(){
+      return (this.protocol=="basexdb")?"account_balance":"folder"
+    }
   },
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme

@@ -1,4 +1,4 @@
-// generated 2017-07-12T11:37:10.722+01:00
+// generated 2017-07-17T17:49:54.864+01:00
 Vue.component('my-component',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -36,9 +36,7 @@
         <v-list-tile-action>
           <v-icon>{{ item.model ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
         </v-list-tile-action>
-        <v-list-tile-content>
-        
-        </v-list-tile-content>
+       
       </v-list-tile>
     <template v-for="(child, i) in item.children">
       <v-list-tile :to="child.href" :key="i" ripple="">
@@ -157,7 +155,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
  <v-container fluid="">
  
 <v-card>
-<v-toolbar>
+<v-toolbar light="">
       <v-menu bottom="" right="">
            <v-btn icon="" slot="activator"><v-icon>{{icon}}</v-icon></v-btn>
       <v-list>
@@ -169,7 +167,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     <v-toolbar-title>{{ url }}</v-toolbar-title>
    
     <v-spacer></v-spacer>
-      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" dark="" @keyup.native.enter="filter"></v-text-field>
+      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
  </v-toolbar>
 
@@ -248,7 +246,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     load(url){
       this.busy=true
-      HTTP.get("file",{params:{url:url,protocol:this.protocol}})
+      HTTP.get("collection",{params:{url:url,protocol:this.protocol}})
       .then(r=>{
         this.folders=r.data.folders
         this.files=r.data.files
@@ -311,7 +309,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     <v-list>
             <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar="">
               <v-list-tile-action>
-               <v-chip v-text="item.mode">Example Chip</v-chip>
+               <v-chip v-text="item.protocol">Example Chip</v-chip>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
@@ -337,7 +335,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     doEdit(item){
       console.log("history: ",item)
-        router.push({ path: 'edit', query: { url:item.url, mode:item.mode  }})
+        router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
     }
   },
   created:function(){
@@ -357,7 +355,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 
 <v-toolbar class="grey lighten-2 black--text">
 <v-menu>
-  <v-btn primary="" icon="" dark="" slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon>folder</v-icon></v-btn>
+  <v-btn primary="" icon="" dark="" slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon>{{icon}}</v-icon></v-btn>
   <v-list>
       <v-list-tile v-for="item in path" :key="item">
         <v-list-tile-content @click="showfiles()">
@@ -416,14 +414,14 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
                <v-list-tile-avatar>
               <v-icon>settings</v-icon>
             </v-list-tile-avatar>
-              <v-list-tile-title>Show settings</v-list-tile-title>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')">Show settings</v-list-tile-title>
             </v-list-tile>
                       
             <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
               <v-list-tile-avatar>
               <v-icon>keyboard</v-icon>
             </v-list-tile-avatar>
-              <v-list-tile-title>Show keyboard commands</v-list-tile-title>
+              <v-list-tile-title @click="acecmd('showKeyboardShortcuts')">Show keyboard commands</v-list-tile-title>
             </v-list-tile>
           </v-list>
        </v-menu>
@@ -555,7 +553,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       })
     },
     showfiles(){
-           router.push({ path: 'files', query: { url: this.path.join("/") }})
+          var target=this.protocol="basexdb"?"database":"files";
+           router.push({ path: target, query: { url: this.path.join("/"),protocol:this.protocol }})
     },
     beautify(){
       this.busy=true
@@ -593,6 +592,11 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       console.log("Leaving...");
       if(this.dirty)event.preventDefault();
   }
+  },
+  computed:{
+    icon(){
+      return (this.protocol=="basexdb")?"account_balance":"folder"
+    }
   },
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
@@ -788,18 +792,31 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 
       <v-card>
         <v-card-actions>
-         <v-btn @click.native="page+=1">next</v-btn>
-         {{page}}
-          <v-btn @click.native="page-=1">back</v-btn>
-          
-          <v-spacer></v-spacer>
+        
+          <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" autocomplete=""></v-select>
+            <v-dialog persistent="" v-model="modal" lazy="" full-width="">
+          <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
+          <v-date-picker v-model="query.from" scrollable="" actions="">
+            <template scope="{ save, cancel }">
+              <v-card-actions>
+                <v-btn flat="" primary="" @click.native="cancel()">Cancel</v-btn>
+                <v-btn flat="" primary="" @click.native="save()">Save</v-btn>
+              </v-card-actions>
+            </template>
+          </v-date-picker>
+        </v-dialog>
+        <v-btn @click.native="clear()">Clear</v-btn>
+           <v-spacer></v-spacer>
+            <v-btn @click.native="query.page+=1">next</v-btn>
+         {{query.page}}
+          <v-btn @click.native="query.page-=1">back</v-btn>
         </v-card-actions>
         <v-container fluid="" grid-list-md="">
           <v-layout row="" wrap="">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
-              <v-card @click="selected()" class="grey lighten-2 pt-1">
+              <v-card @click="selected(image)" class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)" height="80px" :contain="true"></v-card-media>
-                 <v-card-actions v-tooltip:top="{ html: image.name }">
+                 <v-card-actions v-tooltip:top="{ html: image.id + ' '+image.name }">
               
                 <v-btn icon="" small="">
                   <v-icon>favorite</v-icon>
@@ -816,41 +833,72 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
             </v-flex>
           </v-layout>
         </v-container>
+          <v-navigation-drawer left="" light="" temporary="" v-model="showInfo">
+					     <v-card> 
+					       <v-toolbar class="green white--text">
+					      <v-toolbar-title>{{selitem.name}}</v-toolbar-title>
+					      <v-spacer></v-spacer>    
+					       <v-btn flat="" icon="" @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+					    </v-toolbar>
+					    <v-card-text> blah blah  </v-card-text> 
+					   </v-card>
+      </v-navigation-drawer>
       </v-card>
 
  `,
         
   data: () => ({
     images:[],
-    page:0
+    query:{page:0,  // current page
+           from:null,
+           keyword:null
+    }, 
+    modal:false, // showing datepicker
+    
+    keywords:[],
+    showInfo:false,
+    selitem:"TODO"
   }),
   methods:{
     src(item){
-     //return "https://unsplash.it/150/300?image="+Math.floor(Math.random() * 100) + 1
         return "data:image/jpeg;base64,"+item.data
     },
     getImages(){
-      HTTP.get("images/list?page="+this.page)
+      HTTP.get("images/list",{params:this.query})
       .then(r=>{
         this.images=r.data.items
-        })
-      
+        }) 
     },
-    selected(){
-      alert("not yet")
+    clear(){
+      this.query.from=null;
+      this.query.keyword=null;
+    },
+    selected(image){
+      this.selitem=image;
+      this.showInfo=true;
     }
+   
   },
   watch:{
-    page(v){
-      this.$router.push({  query: { page: this.page }})
+      "query":{
+        handler:function(v){
+          this.$router.push({  query: this.query })
+          },
+        deep:true
       },
       $route(v){
         this.getImages()
       }
   },
   created:function(){
-    this.page=this.$route.query.page || this.page
+    this.query.page=Number(this.$route.query.page) || this.query.page
+    this.query.keyword=this.$route.query.keyword || this.query.keyword
+    this.query.from=this.$route.query.from || this.query.from
     this.getImages()
+    HTTP.get("images/keywords")
+    .then(r=>{
+      this.keywords=r.data.items
+      }) 
   }
     }
 
@@ -1012,6 +1060,75 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   },
   created:function(){
     console.log("Serch",this.$route.query.q)
+  }
+}
+
+      );
+      const Model=Vue.extend({template:` 
+ <v-container fluid="">
+    <v-card>
+     <v-card-title class="blue accent-4">
+      <span class="white--text">Generate <code>model.gen.xqm</code></span>      
+    </v-card-title>
+    <v-card-text>
+      <v-container fluid="">
+        <v-layout row="" wrap="">
+          
+          <v-flex xs6="">
+            <v-text-field v-model="params.efolder" label="Folder containing model  definitions as xml"></v-text-field>
+          </v-flex>
+        
+          <v-flex xs6="">
+            <v-text-field v-model="params.target" label="Path to xqm file to generate"></v-text-field>
+          </v-flex>
+           <v-flex xs12="">
+            <code>{{code}}</code>
+          </v-flex>
+        </v-layout>
+  
+      </v-container>
+    </v-card-text>
+    <v-card-actions>
+      <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+     </v-card-actions>
+      <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
+      {{ snackbar.msg }}
+      <v-btn dark="" flat="" @click.native="snackbar.show = false">Close</v-btn>
+    </v-snackbar>
+  </v-card>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      params:{
+			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc/models",
+			      target:"C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm"
+			 },
+			waiting:false,
+			snackbar:{show:false,msg:"",context:"success"},
+    }
+  },
+  methods:{
+    submit(){
+      this.waiting=true
+      HTTP.post("tasks/model",Qs.stringify(this.params))
+      .then(r=>{
+        this.waiting=false      
+        this.snackbar={show:true,msg:r.data.msg,context:"success"}
+        console.log(r.data)
+      })
+      .catch(error=>{
+        this.waiting=false
+        this.snackbar={show:true,msg:"Problem",context:"error"}
+        console.log(error);
+      });
+   }
+  },
+  computed:{
+    code(){return 'import module namespace entity = "quodatum.models.generated" at "'+this.params.target+'";'}
   }
 }
 
@@ -1493,6 +1610,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       const Task=Vue.extend({template:` 
  <v-container fluid="">
   <h1>Tasks</h1>
+  <router-link to="tasks/model">model</router-link>
  </v-container>
  `,
       
@@ -1633,6 +1751,7 @@ const router = new VueRouter({
     { path: '/eval', component: Eval,meta:{title:"Evaluate XQuery"} },
     { path: '/logs', component: Log,meta:{title:"Server logs"} },
     { path: '/tasks', component: Task,meta:{title:"Runnable tasks"} },
+    { path: '/tasks/model', component: Model,meta:{title:"build model"} },
     { path: '/jobs', component: Job,meta:{title:"Jobs"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
@@ -1673,42 +1792,42 @@ const app = new Vue({
         text: 'Collections' ,
         model: false,
         children: [
-       {href: 'database', text: 'Databases',icon: 'account_balance' },
-       {href: 'files', text: 'File system',icon: 'folder' },
-      {href: 'edit',text: 'edit',icon: 'mode_edit'},
-      {href: 'history',text: 'history',icon: 'history'},
-      {href: 'logs',text: 'Server logs',icon: 'dns'}
+       {href: '/database', text: 'Databases',icon: 'account_balance' },
+       {href: '/files', text: 'File system',icon: 'folder' },
+      {href: '/edit',text: 'edit',icon: 'mode_edit'},
+      {href: '/history',text: 'history',icon: 'history'},
+      {href: '/logs',text: 'Server logs',icon: 'dns'}
       ]},
       {
         icon: 'directions_run',
         text: 'Actions' ,
         model: false,
         children: [
-      {href: 'eval',text: 'Query',icon: 'play_circle_outline'},      
-      {href: 'jobs',text: 'Running jobs',icon: 'dashboard'},
-      {href: 'tasks',text: 'Tasks',icon: 'history'}, 
+      {href: '/eval',text: 'Query',icon: 'play_circle_outline'},      
+      {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},
+      {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
       {
         icon: 'more_horiz',
         text: 'More' ,
         model: false,
         children: [
-      {href: 'people',text: 'People',icon: 'person'}, 
-      {href: 'select',text: 'select',icon: 'extension'},
-      {href: 'puzzle',text: 'Puzzle',icon: 'extension'}, 
-      {href: 'images',text: 'Images',icon: 'camera_roll'}, 
-      {href: 'tabs',text: 'tabs',icon: 'switch_camera'}, 
-      {href: 'ping',text: 'ping',icon: 'update'},
-      {href: 'thumbnail',text: 'thumbnail',icon: 'touch_app'}
+      {href: '/people',text: 'People',icon: 'person'}, 
+      {href: '/select',text: 'select',icon: 'extension'},
+      {href: '/puzzle',text: 'Puzzle',icon: 'extension'}, 
+      {href: '/images',text: 'Images',icon: 'camera_roll'}, 
+      {href: '/tabs',text: 'tabs',icon: 'switch_camera'}, 
+      {href: '/ping',text: 'ping',icon: 'update'},
+      {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
       ]},
-      {href: 'settings',text: 'settings',icon: 'settings'  }
+      {href: '/settings',text: 'settings',icon: 'settings'  }
     ]
 
   }},
   methods: {
       
       search(){
-        this.$router.push({path: 'search',query: { q: this.q }})
+        this.$router.push({path: '/search',query: { q: this.q }})
       },
       logout(){
         HTTP.get("logout").then(r=>{

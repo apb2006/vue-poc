@@ -1,5 +1,5 @@
 (:~
- : create app.js from vue files 
+ : create app-gen.js from vue files 
  :)
 import module namespace html5="text.html5" at "html5parse.xqm";
 import module namespace fw="quodatum:file.walker";

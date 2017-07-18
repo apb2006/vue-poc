@@ -4,7 +4,7 @@
     <v-list>
             <v-list-tile  v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar>
               <v-list-tile-action>
-               <v-chip v-text="item.mode">Example Chip</v-chip>
+               <v-chip v-text="item.protocol">Example Chip</v-chip>
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
@@ -31,7 +31,7 @@
     },
     doEdit(item){
       console.log("history: ",item)
-        router.push({ path: 'edit', query: { url:item.url, mode:item.mode  }})
+        router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
     }
   },
   created:function(){

@@ -3,7 +3,7 @@
  <v-container fluid>
  
 <v-card>
-<v-toolbar>
+<v-toolbar light>
       <v-menu bottom right>
            <v-btn  icon  slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
       <v-list>
@@ -16,7 +16,7 @@
    
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
-   hide-details single-line dark @keyup.native.enter="filter"></v-text-field>
+   hide-details single-line  @keyup.native.enter="filter"></v-text-field>
     <v-icon>view_module</v-icon>
  </v-toolbar>
 
@@ -96,7 +96,7 @@
     },
     load(url){
       this.busy=true
-      HTTP.get("file",{params:{url:url,protocol:this.protocol}})
+      HTTP.get("collection",{params:{url:url,protocol:this.protocol}})
       .then(r=>{
         this.folders=r.data.folders
         this.files=r.data.files

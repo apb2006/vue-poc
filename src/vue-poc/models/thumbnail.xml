@@ -1,15 +1,22 @@
 <entity name="thumbnail" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>an image.</description>
 	<namespace prefix="c"  uri="http://www.w3.org/ns/xproc-step"/>
-	<module prefix="cmpx" namespace="quodatum.cmpx" />
 	<fields>
+	<field name="id" type="xs:integer">
+      <description>Database Id.</description>
+      <xpath>db:node-id(.)</xpath>
+    </field>
 		<field name="name" type="xs:string">
 			<description>File name.</description>
-			<xpath>@name</xpath>
+			<xpath>file/@name</xpath>
 		</field>
+		<field name="path" type="xs:string">
+      <description>File path. e.g. Pictures/2012/2012-06-23/skating.jpg</description>
+      <xpath>file/@path</xpath>
+    </field>
 		<field name="size" type="xs:integer">
 			<description>file size.</description>
-			<xpath>@size</xpath>
+			<xpath>0</xpath>
 		</field>
 		
 	</fields>
@@ -17,6 +24,6 @@
         <view name="filter">name</view>
     </views>
 	<iconclass>fa fa-file</iconclass>
-	<data type="element(*)">doc("/vue-poc/pics.xml")//c:file</data>
+	<data type="element(image)">collection("/vue-poc/Pictures")/image</data>
 	
 </entity>
