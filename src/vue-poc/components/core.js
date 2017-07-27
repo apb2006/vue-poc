@@ -20,6 +20,38 @@ const Auth={
       })  }
 };
 Vue.use(Auth);
+
+// https://vuejs.org/v2/guide/state-management.html
+var settings = {
+    debug: true,
+    getItem (key) {
+      if (this.debug) console.log('getItem',key);
+      return new Promise((resolve, reject) => {
+        localforage.getItem(key)
+        .then((value) => {
+          console.log('GET setting', key,value);
+          resolve(value)
+        }).catch((err) => {
+          console.log('GET failed');
+          reject(err)
+      });
+      });
+    },
+    setItem (key,value,callback) {
+      if (this.debug) console.log('setItem',key,value);
+      return new Promise((resolve, reject) => {
+      localforage.setItem(key, value) 
+      .then((value) => {
+        console.log('SET ',key, value);
+        return new Promise((resolve, reject) => {resolve(value);})
+      }).catch((err) => {
+        console.log('set failed');
+        return new Promise((resolve, reject) => {reject(err);})
+      });
+    })
+    }
+  };
+
 Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
@@ -37,8 +69,9 @@ const router = new VueRouter({
   mode: 'history',
   routes: [
     { path: '/', component: Home,meta:{title:"Home"} },
-    { path: '/people', component: People ,meta:{title:"People"}},
+    { path: '/session', component: Session ,meta:{title:"Session"}},
     { path: '/images', component: Images,meta:{title:"Images"} },
+    { path: '/images/:id', name:"image",component: Image, props: true,meta:{title:"Image details"}},
     { path: '/select', component: Select,meta:{title:"Select"} },
     { path: '/search', component: Search,meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -55,7 +88,9 @@ const router = new VueRouter({
     { path: '/logs', component: Log,meta:{title:"Server logs"} },
     { path: '/tasks', component: Task,meta:{title:"Runnable tasks"} },
     { path: '/tasks/model', component: Model,meta:{title:"build model"} },
+    { path: '/tasks/xqdoc', component: Xqdoc,meta:{title:"build xqdoc"} },
     { path: '/jobs', component: Job,meta:{title:"Jobs"} },
+    { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
 });
@@ -98,8 +133,7 @@ const app = new Vue({
        {href: '/database', text: 'Databases',icon: 'account_balance' },
        {href: '/files', text: 'File system',icon: 'folder' },
       {href: '/edit',text: 'edit',icon: 'mode_edit'},
-      {href: '/history',text: 'history',icon: 'history'},
-      {href: '/logs',text: 'Server logs',icon: 'dns'}
+      {href: '/history',text: 'history',icon: 'history'}
       ]},
       {
         icon: 'directions_run',
@@ -110,17 +144,19 @@ const app = new Vue({
       {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
+      {href: '/logs',text: 'Server logs',icon: 'dns'},
       {
         icon: 'more_horiz',
         text: 'More' ,
         model: false,
         children: [
-      {href: '/people',text: 'People',icon: 'person'}, 
+      {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'}, 
       {href: '/images',text: 'Images',icon: 'camera_roll'}, 
       {href: '/tabs',text: 'tabs',icon: 'switch_camera'}, 
       {href: '/ping',text: 'ping',icon: 'update'},
+      {href: '/timeline',text: 'time line',icon: 'timelapse'},
       {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
       ]},
       {href: '/settings',text: 'settings',icon: 'settings'  }
@@ -128,7 +164,9 @@ const app = new Vue({
 
   }},
   methods: {
-      
+      session(){
+        this.$router.push({path: '/session'})
+      },
       search(){
         this.$router.push({path: '/search',query: { q: this.q }})
       },

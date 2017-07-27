@@ -59,14 +59,14 @@ as element(c:directory)
 declare function ufile:collection-next($url as xs:string)
 as map(*)
 {
- if(not(starts-with($url,"/")) or ends-with($url,"/")) then
+ if(not(starts-with($url,"/") and ends-with($url,"/"))) then
   error(xs:QName('ufile:badcollection'),$url)
  else 
  fold-left(
     uri-collection($url ),
     map{},
     function($acc,$this){
-      let $s:=substring-after($this ,$url || "/")
+      let $s:=substring-after($this ,$url )
       let $isDir:=contains($s,"/") 
       let $s:=if($isDir)then substring-before($s,"/")  else $s
       return map:merge((map:entry($s,if($isDir)then "directory" else "file"),$acc))

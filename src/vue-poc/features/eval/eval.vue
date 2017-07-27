@@ -18,7 +18,7 @@
             <v-icon >arrow_drop_down</v-icon>
           </v-toolbar-title>
           <v-list>
-            <v-list-tile v-for="item in dropdown_font" :key="item">
+            <v-list-tile v-for="item in dropdown_font" :key="item.text">
               <v-list-tile-title v-text="item.text" @click="font=item.text"></v-list-tile-title>
             </v-list-tile>
           </v-list>

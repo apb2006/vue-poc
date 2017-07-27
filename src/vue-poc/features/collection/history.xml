@@ -8,6 +8,7 @@
 	<entry mode="webfile" url='/vue-poc/static/resources/sparql.rq' />
 	<entry mode="webfile" url='/vue-poc/static/resources/turtle.ttl' />
 	<entry mode="webfile" url='/vue-poc/static/resources/task.xsd' />
+	 <entry mode="webfile" url='/vue-poc/static/resources/ark/ark.sch' />
 	<entry mode="basexdb" url='/abide/abide.xml' />
 	<entry mode="basexdb" url='/vue-poc' />
 </history>

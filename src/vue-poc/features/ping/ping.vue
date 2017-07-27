@@ -10,12 +10,10 @@
           <th >Repeat</th>
           <th >Last</th>
           <th >Count</th>
-         
           <th >Avg</th>
-          
           <th >min</th>
           <th >max</th>
-           <th >Median</th>
+          <th>Median</th>
         </tr>
       </thead>
       <tbody>
@@ -23,10 +21,10 @@
       
           <tr>
               <td>
-                   <v-btn dark    @click.native="get()" >Get count</v-btn>
+                   <v-btn     @click.native="get()" >Get count</v-btn>
                </td>
                <td>
-     <v-checkbox  v-model="repeat.get" dark></v-checkbox>
+     <v-checkbox  v-model="repeat.get" ></v-checkbox>
         </td>    
               <td>
                   <span >{{getValues.last}}</span>
@@ -49,13 +47,14 @@
                   <span >{{getValues.median}}</span>
               </td>
           </tr>
+          
             <tr>
           <td>
-             <v-btn dark   @click.native="update()" >Update count</v-btn>
+             <v-btn    @click.native="update()" >Update count</v-btn>
           </td>
           
           <td>
-           <v-checkbox  v-model="repeat.post" dark></v-checkbox>
+           <v-checkbox  v-model="repeat.post" ></v-checkbox>
           </td>
            <td class="col-md-1">
                         <span >{{postValues.last}}</span>
@@ -63,9 +62,7 @@
           <td class="col-md-1">
             <span >{{postValues.count}}</span>
           </td >
-          <td class="col-md-1">
-                        <span >{{postValues.median}}</span>
-           </td>
+        
            
           <td class="col-md-1">
             <span >{{postValues.avg | round(2)}}</span>
@@ -78,9 +75,13 @@
           <td class="col-md-1">
               <span >{{postValues.max}}</span>
           </td>
+            <td class="col-md-1">
+                        <span >{{postValues.median}}</span>
+           </td>
         </tr>
       </tbody>
     </table>
+    <v-btn @click="reset()">Reset</v-btn>
  </v-container>
 </template>
 
@@ -119,6 +120,10 @@
           this.get(); //does this leak??
         }
      })
+    },
+    reset(){
+      this.getValues.clear();
+      this.postValues.clear();
     }
   },
   computed: {

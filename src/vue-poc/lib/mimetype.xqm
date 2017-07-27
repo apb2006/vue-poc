@@ -43,7 +43,7 @@ let $type:= if($a="application/sparql-query") then
 declare function mt:base-ext($filepath as xs:string)
 {
   let $ext:=file:name($filepath)=>substring-after(".")
-  let $types:=map{"vue":".html"}
+  let $types:=map{"vue":".html","sch":".xml"}
   return if($types($ext)) then $types($ext) else $ext
 };
 

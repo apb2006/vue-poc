@@ -26,7 +26,7 @@ declare function sort($items as item()*
                      ,$fmap as map(*)
                      ,$sort as xs:string?)
 as item()*{
-  let $sort:=fn:normalize-space($sort)=>fn:trace("dice:sort")
+  let $sort:=fn:normalize-space($sort)
   let $ascending:=fn:not(fn:starts-with($sort,"-"))
   let $fld:=fn:substring($sort,if(fn:substring($sort,1,1)=("+","-")) then 2 else 1)
   return if(fn:not(map:contains($fmap, $fld))) then

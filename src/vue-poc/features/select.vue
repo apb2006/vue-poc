@@ -2,12 +2,15 @@
 <template id="select">
  <v-container fluid>
 <v-card>
-
-    <v-card-title class="green darken-1">
-      <span class="white--text">Selection</span>
-      
+    <v-toolbar class="green darken-1">
+    <v-card-title >
+      <span class="white--text">Selection</span>     
     </v-card-title>
-  <v-card-text>
+    <v-spacer></v-spacer>    
+       <v-btn  flat icon @click.native="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
+  </v-toolbar>
+  <v-layout>
+    <v-flex>
     <v-layout>
      
     <v-flex xs6>
@@ -24,6 +27,18 @@
     <pre>{{$data.value2 }}</pre>
     </v-flex>
    </v-layout>
+   </v-flex>
+   <v-flex v-if="showInfo" xs4>
+   <v-card flat> 
+       <v-card-actions >
+      <v-toolbar-title >test</v-toolbar-title>
+      <v-spacer></v-spacer>    
+       <v-btn flat icon @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+    </v-card-actions>
+    <v-card-text> blah blah protocol:  </v-card-text> 
+    </v-card>
+   </v-flex>
+   </v-layout>
 </v-card-text>
 <v-card>
  </v-container>
@@ -36,7 +51,8 @@
           value: null,
           value2: null,
           options: [],
-          isLoading: false
+          isLoading: false,
+          showInfo:true
       }
     },
     created:function(){

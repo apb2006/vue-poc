@@ -1,5 +1,8 @@
 <!DOCTYPE html>
-<template id="nav-list">
+<!-- 
+for nav drawer
+ -->
+<template id="qd-navlist">
  <v-list dense>
 <template v-for="(item, i) in items">
   <v-layout
@@ -62,10 +65,6 @@
 </template>
 
 <script>{
-  props: ['items'],
- 
-   created:function(){
-      console.log("nav-lst");
-    }
+  props: ['items']
 }
 </script>

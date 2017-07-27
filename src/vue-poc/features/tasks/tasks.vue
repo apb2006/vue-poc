@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <template id="task">
  <v-container fluid>
-  <h1>Tasks</h1>
+  <h3>Tasks</h3>
+  <ul>
+  <li>
   <router-link to="tasks/model">model</router-link>
+  </li>
+  <li>
+  <router-link to="tasks/xqdoc">xqdoc</router-link>
+  </li>
+  </ul>
  </v-container>
 </template>
 
@@ -12,9 +19,6 @@
       message: 'Hello Vue.js!',
       q:this.$route.query.q
       }
-  },
-  created:function(){
-    console.log("Serch",this.$route.query.q)
   }
 }
 </script>

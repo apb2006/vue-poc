@@ -54,29 +54,20 @@
     }
   },
   created: function () {
-    // `this` points to the vm instance
-    console.log('created: ')
-    localforage.getItem('settings/ace').then((value) => {
-      console.log('oh say can you see, ' + value);
-      this.ace=value || this.ace
-    }).catch((err) => {
-      console.log('the rockets red glare has blinded me');
-    });
+    settings.getItem('settings/ace')
+    .then((v)=>{
+      console.log("AAAA",v)
+      this.ace=v
+    })
+
   },
-  updated: function () {
-    // `this` points to the vm instance
-    console.log('updated: ')
-    localforage.setItem('settings/ace', this.ace).then((value) => {
-      console.log('woot! we saved ' + value);
-    }).catch((err) => {
-      console.log('he\'s dead, jim!');
-    });
-  },
-  methods: {
-    reverseMessage: function () {
-      alert("unused")
-    }
+  watch: {"ace":{
+    handler:function(v){
+      settings.setItem('settings/ace',this.ace)
+      },
+    deep:true
   }
+}
 }
 
 </script>

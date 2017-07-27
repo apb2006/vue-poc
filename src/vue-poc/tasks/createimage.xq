@@ -1,4 +1,7 @@
-(:~ generate image docs from meta docs 52 sec  :)
+(:~ 
+ : generate image docs from meta docs 52 sec 
+ : <metadata/> -> <image/> 
+ :)
 import module namespace metadata = 'expkg-zone58:image.metadata';
 
 for $meta in collection("/vue-poc/Pictures")/metadata

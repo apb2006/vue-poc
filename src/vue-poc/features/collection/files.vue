@@ -3,6 +3,7 @@
  <v-container fluid>
  
 <v-card>
+
 <v-toolbar light>
       <v-menu bottom right>
            <v-btn  icon  slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
@@ -17,56 +18,65 @@
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.native.enter="filter"></v-text-field>
+    <v-btn icon ripple @click="showInfo=!showInfo">
+            <v-icon >info</v-icon>
+          </v-btn>
+     <v-btn icon @click="alert('todo')">     
     <v-icon>view_module</v-icon>
+    </v-btn>
  </v-toolbar>
-
+ 
+  
   
   <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
-  <v-list v-if="!busy" two-line subheader>
-    <v-subheader inset>Folders</v-subheader>
-      <v-list-tile v-for="item in folders" v-bind:key="item.name" @click="folder(item.name)" avatar >
-        <v-list-tile-avatar  >
-          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
-        </v-list-tile-avatar>
-        <v-list-tile-content  @click="folder(item.name)">
-          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-btn icon ripple @click.native.stop="info(item.name)">
-            <v-icon class="grey--text text--lighten-1">info</v-icon>
-          </v-btn>
-        </v-list-tile-action>
-      </v-list-tile>
-    
-    <v-divider inset></v-divider>
-    <v-subheader inset>Files</v-subheader> 
-      <v-list-tile v-for="item in files" v-bind:key="item.name" >
-        <v-list-tile-avatar>
-          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
-        </v-list-tile-avatar>
-        <v-list-tile-content @click="file(item.name)">
-          <v-list-tile-title >{{ item.name }}</v-list-tile-title>
-           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
-        </v-list-tile-content>
-        <v-list-tile-action>
-          <v-btn icon ripple @click.native.stop="info(item.name)">
-            <v-icon class="grey--text text--lighten-1">info</v-icon>
-          </v-btn>
-        </v-list-tile-action>
-      </v-list-tile>
-
-  </v-list>
-    <v-navigation-drawer right light temporary v-model="showInfo">
-     <v-card> 
-       <v-toolbar class="green white--text">
-      <v-toolbar-title >{{selected}}</v-toolbar-title>
+  <v-layout>
+	  <v-flex>
+	  <v-list v-if="!busy" two-line subheader>
+	    <v-subheader inset>Folders</v-subheader>
+	      <v-list-tile v-for="item in folders" v-bind:key="item.name" @click="folder(item)" avatar >
+	        <v-list-tile-avatar  >
+	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
+	        </v-list-tile-avatar>
+	        <v-list-tile-content  >
+	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
+	        </v-list-tile-content>
+	        <v-list-tile-action>
+	          <v-btn icon ripple @click.native.stop="info(item.name)">
+	            <v-icon class="grey--text text--lighten-1">info</v-icon>
+	          </v-btn>
+	        </v-list-tile-action>
+	      </v-list-tile>
+	    
+	    <v-divider inset></v-divider>
+	    <v-subheader inset>Files</v-subheader> 
+	      <v-list-tile v-for="item in files" v-bind:key="item.name" >
+	        <v-list-tile-avatar>
+	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
+	        </v-list-tile-avatar>
+	        <v-list-tile-content @click="file(item.name)">
+	          <v-list-tile-title >{{ item.name }}</v-list-tile-title>
+	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
+	        </v-list-tile-content>
+	        <v-list-tile-action>
+	          <v-btn icon ripple @click.native.stop="info(item)">
+	            <v-icon class="grey--text text--lighten-1">info</v-icon>
+	          </v-btn>
+	        </v-list-tile-action>
+	      </v-list-tile>
+	  </v-list>
+	  </v-flex>
+	   <v-flex v-if="showInfo" xs4 grey lighten-3>
+   <v-card flat tile> 
+       <v-card-actions >
+      <v-card-title >test</v-card-title>
       <v-spacer></v-spacer>    
        <v-btn flat icon @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
-    </v-toolbar>
-    <v-card-text> blah blah protocol: {{protocol}} </v-card-text> 
-</v-card>
-      </v-navigation-drawer>
+    </v-card-actions>
+    <v-card-text> blah blah protocol:  </v-card-text> 
+    </v-card>
+   </v-flex>
+  </v-layout>
 </v-card>
  </v-container>
 </template>
@@ -76,14 +86,14 @@
   props:["protocol"],
   data:  function(){
     return { 
-            crumbs:[],
+            url:"", 
             folders:[],
             files:[],
             items:["root"],
             q:"",
             busy:false,
             showInfo:false,
-            selected:""
+            selected:null
     }
   },
   methods:{
@@ -91,8 +101,8 @@
    // with query, resulting in /register?plan=private
       router.push({ path: 'edit', query: { url: this.url+"/"+val,protocol:this.protocol  }})
     },
-    folder (val) {
-      this.crumbs.push(val )
+    folder (item) {
+      this.url=this.url+item.name+"/"
     },
     load(url){
       this.busy=true
@@ -110,30 +120,24 @@
       
     },
     root(){
-      this.crumbs=[]
       this.$router.push({  query: { url: this.url }})
     },
     filter(){
-      console.log("TODO")
+      console.log("TODO",this.q)
+      this.$router.push({  query: {url:this.url,q:this.q }})
     },
-    info(sel){
-      this.selected=sel
+    info(item){
+      this.selected=item
       this.showInfo=true
     }
   
   },
   computed: {
-    url:  {
-      get: function () {
-      return  '/'+ this.crumbs.join("/") ;  
-    },
-    set: function(newValue){
-     // alert("set"+newValue)
-     this.crumbs=newValue.split("/").filter((a)=>a.length>0)
-    }
-      },
    icon(){
         return (this.protocol=="basexdb")?"account_balance":"folder"
+      },
+   crumbs(){
+        return this.url.split("/").filter((a)=>a.length>0) 
       }
   },
   watch:{
@@ -149,6 +153,7 @@
   created:function(){
     var url=this.$route.query.url
     this.url=url?url:"/";
+    this.q=this.$route.query.q || this.q
     this.load(this.url)
   }
 }

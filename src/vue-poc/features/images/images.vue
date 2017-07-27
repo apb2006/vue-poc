@@ -49,8 +49,9 @@
               v-for="image in images"
               :key="image.name"
             >
-              <v-card   @click="selected(image)" class="grey lighten-2 pt-1">
-                <v-card-media :src="src(image)"  height="80px" :contain="true"></v-card-media>
+              <v-card   class="grey lighten-2 pt-1">
+                <v-card-media :src="src(image)"  @click="go(image)" 
+                height="80px" :contain="true"></v-card-media>
                  <v-card-actions  v-tooltip:top="{ html: image.id + ' '+image.name }">
               
                 <v-btn icon small>
@@ -60,7 +61,7 @@
                 <v-btn icon  small>
                   <v-icon>bookmark</v-icon>
                 </v-btn>
-                <v-btn icon  small>
+                <v-btn icon  small @click="selected(image)">
                   <v-icon>share</v-icon>
                 </v-btn>
               </v-card-actions>
@@ -112,6 +113,9 @@
     selected(image){
       this.selitem=image;
       this.showInfo=true;
+    },
+    go(image){
+      this.$router.push({ name: 'image', params: { id: image.id }})
     }
    
   },

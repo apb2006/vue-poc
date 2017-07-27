@@ -239,7 +239,7 @@ v-on:annotation="annotation"></vue-ace>
     },
     annotation(counts){
       this.annotations=counts
-      console.log("annotations: ",counts)
+      //console.log("annotations: ",counts)
     },
     acetype(mime){
       var r=this.mimemap[mime]
@@ -262,7 +262,6 @@ v-on:annotation="annotation"></vue-ace>
     document.addEventListener('beforeunload', this.leaving);
   this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
     var url=this.$route.query.url
-    console.log("Edit: ",url)
     if(url) this.fetch(url)
   },
   beforeRouteLeave (to, from, next) {

@@ -20,8 +20,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4>
 	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 	<li><a href="/dba" target="new">DBA app</a></li>
 </ul>
-</v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <my-component
-	href="/dba">REPLACED</my-component> </v-layout> </template>
+</v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link
+	href="/dba">REPLACED</qd-link> </v-layout> </template>
 <script>
   {
   }

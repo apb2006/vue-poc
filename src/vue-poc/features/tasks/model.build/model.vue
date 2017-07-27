@@ -2,9 +2,12 @@
 <template id="model">
  <v-container fluid>
     <v-card >
-     <v-card-title class="blue accent-4">
+    <v-toolbar class="orange darken-1">
+     <v-btn icon to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title >
       <span class="white--text">Generate <code>model.gen.xqm</code></span>      
     </v-card-title>
+    </v-toolbar>
     <v-card-text>
       <v-container fluid>
         <v-layout row wrap>
