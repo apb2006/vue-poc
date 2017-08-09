@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<template id="home"> <v-layout class="ma-5"> <v-flex
+<template id="about"> <v-layout class="ma-5"> <v-flex
 	xs4> <v-card hover raised> <v-card-title
 	height="200px" class="pa-5 green lighten-1">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
@@ -19,6 +19,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4>
 		target="new">js-beautify</a></li>
 	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 	<li><a href="/dba" target="new">DBA app</a></li>
+	 <li> <router-link to="database?url=%2Fvue-poc%2F">DB</router-link></li>
 </ul>
 </v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link
 	href="/dba">REPLACED</qd-link> </v-layout> </template>

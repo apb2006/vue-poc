@@ -1,13 +1,13 @@
 <!DOCTYPE html>
-<template id="model">
+<template id="vuecompile">
  <v-container fluid>
     <v-card >
     <v-toolbar class="orange darken-1">
      <v-btn icon to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title >
-      <span class="white--text">Generate <code>model.gen.xqm</code></span>      
+      <span class="white--text">compile</span>      
     </v-card-title>
-    <v-spacer></v-spacer>
+      <v-spacer></v-spacer>
      <v-btn primary @click.native="submit()"   :loading="waiting"
       :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
@@ -15,19 +15,14 @@
     </v-toolbar>
     <v-card-text>
       <v-container fluid>
-        <v-layout row wrap>
-          
+        <v-layout row wrap>   
           <v-flex xs6>
-            <v-text-field    v-model="params.efolder"
-              label="Folder containing model  definitions as xml"
+            <v-text-field    v-model="params.proj"
+              label="vue project to compile"
             ></v-text-field>
           </v-flex>
-        
-          <v-flex xs6>
-            <v-text-field v-model="params.target"
-              label="Path to xqm file to generate"  
-            ></v-text-field>
-          </v-flex>
+        </v-layout>
+         <v-layout row wrap>
            <v-flex xs12>
             <code>{{code}}</code>
           </v-flex>
@@ -35,7 +30,7 @@
   
       </v-container>
     </v-card-text>
- 
+   
       <v-snackbar    v-model="snackbar.show"
       :timeout="6000"
       :success="snackbar.context === 'success'"
@@ -52,8 +47,7 @@
   data:  function(){
     return {
       params:{
-			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc/models",
-			      target:"C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm"
+			      proj:"C:/Users/andy/git/vue-poc/src/vue-poc/"
 			 },
 			waiting:false,
 			snackbar:{show:false,msg:"",context:"success"},
@@ -62,7 +56,7 @@
   methods:{
     submit(){
       this.waiting=true
-      HTTP.post("tasks/model",Qs.stringify(this.params))
+      HTTP.post("tasks/vue-compile",Qs.stringify(this.params))
       .then(r=>{
         this.waiting=false      
         this.snackbar={show:true,msg:r.data.msg,context:"success"}
@@ -76,7 +70,7 @@
    }
   },
   computed:{
-    code(){return 'import module namespace entity = "quodatum.models.generated" at "'+this.params.target+'";'}
+    code(){return 'code here'}
   }
 }
 </script>

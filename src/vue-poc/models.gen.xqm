@@ -1,8 +1,9 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-07-27T13:03:06.371+01:00 
+ : auto generated from xml files in entities folder at: 2017-08-09T10:36:00.509+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
+declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
 declare variable $entity:list:=map { 
@@ -49,6 +50,49 @@ declare variable $entity:list:=map {
        
       "data": function() as element(entry)*
        { hof:top-k-by(admin:logs(), hof:id#1, 2)/string()!reverse(admin:logs(.,true())) },
+       
+       "views": map{ 
+       
+       }
+   },
+  "filehistory": map{
+     "name": "filehistory",
+     "description": "vue-poc file view events ",
+     "access": map{ 
+       "created": function($_ as element()) as xs:string {$_/@when },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "protocol": function($_ as element()) as xs:string {$_/h:file/@mode },
+       "url": function($_ as element()) as xs:string {$_/h:file/@url },
+       "user": function($_ as element()) as xs:string {$_/@user } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "created": function($_ as element()) as element(created)? {
+            (: xs:string :)
+                        fn:data($_/@when)!element created {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "protocol": function($_ as element()) as element(protocol)? {
+            (: xs:string :)
+                        fn:data($_/h:file/@mode)!element protocol {  .} 
+                 },
+           "url": function($_ as element()) as element(url)? {
+            (: xs:string :)
+                        fn:data($_/h:file/@url)!element url {  .} 
+                 },
+           "user": function($_ as element()) as element(user)? {
+            (: xs:string :)
+                        fn:data($_/@user)!element user {  .} 
+                 } },
+       
+      "data": function() as element(h:event)*
+       { doc("history.xml")/h:history/h:event },
        
        "views": map{ 
        

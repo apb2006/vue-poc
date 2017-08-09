@@ -21,6 +21,7 @@ const Auth={
 };
 Vue.use(Auth);
 
+// read and write settings 
 // https://vuejs.org/v2/guide/state-management.html
 var settings = {
     debug: true,
@@ -60,7 +61,7 @@ Vue.config.errorHandler = function (err, vm, info) {
 };
 
 
-      
+// used by vue-ace      
 var Events = new Vue({});
 
 
@@ -89,6 +90,7 @@ const router = new VueRouter({
     { path: '/tasks', component: Task,meta:{title:"Runnable tasks"} },
     { path: '/tasks/model', component: Model,meta:{title:"build model"} },
     { path: '/tasks/xqdoc', component: Xqdoc,meta:{title:"build xqdoc"} },
+    { path: '/tasks/vuecompile', component: Vuecompile,meta:{title:"vue compile"} },
     { path: '/jobs', component: Job,meta:{title:"Jobs"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
@@ -123,6 +125,7 @@ const app = new Vue({
     status:{},
     drawer:true,
     mini: false,
+    alert:{show:false,msg:"Hello"},
     items:[
       {href: '/',text: 'Home', icon: 'home'    }, 
       {
@@ -141,10 +144,25 @@ const app = new Vue({
         model: false,
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},      
-      {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
-      {href: '/logs',text: 'Server logs',icon: 'dns'},
+      {
+        icon: 'cast_connected',
+        text: 'Server' ,
+        model: false,
+        children: [
+          {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
+          {href: '/logs',text: 'Server logs',icon: 'dns'},
+          {href: '/ping',text: 'ping',icon: 'update'}
+      ]},
+      {
+        icon: 'camera_roll',
+        text: 'Images' ,
+        model: false,
+        children: [
+          {href: '/images',text: 'Collection',icon: 'photo_camera'},
+          {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
+          ]},
       {
         icon: 'more_horiz',
         text: 'More' ,
@@ -152,12 +170,9 @@ const app = new Vue({
         children: [
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'select',icon: 'extension'},
-      {href: '/puzzle',text: 'Puzzle',icon: 'extension'}, 
-      {href: '/images',text: 'Images',icon: 'camera_roll'}, 
+      {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
       {href: '/tabs',text: 'tabs',icon: 'switch_camera'}, 
-      {href: '/ping',text: 'ping',icon: 'update'},
-      {href: '/timeline',text: 'time line',icon: 'timelapse'},
-      {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
+      {href: '/timeline',text: 'time line',icon: 'timelapse'}
       ]},
       {href: '/settings',text: 'settings',icon: 'settings'  }
     ]
@@ -173,12 +188,28 @@ const app = new Vue({
       logout(){
         HTTP.get("logout").then(r=>{
           alert("logout")
-        })
-       
+        }) 
+      },
+      showAlert(msg){
+        this.alert.msg=msg
+        this.alert.show=true
       }
   },
   created(){
     console.log("create-----------")
+    // Add a response interceptor
+
+    HTTP.interceptors.response.use(
+    (response)=> {
+      // Do something with response data
+      return response;
+    },
+    (error) =>{
+      // Do something with response error
+      this.showAlert("http error:\n"+error.response.data)
+      return Promise.reject(error);
+    });
+    
     HTTP.get("status")
     .then(r=>{
       console.log("status",r.data)

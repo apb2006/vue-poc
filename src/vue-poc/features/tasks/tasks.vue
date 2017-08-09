@@ -9,6 +9,9 @@
   <li>
   <router-link to="tasks/xqdoc">xqdoc</router-link>
   </li>
+  <li>
+  <router-link to="tasks/vuecompile">vue compile</router-link>
+  </li>
   </ul>
  </v-container>
 </template>

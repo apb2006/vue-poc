@@ -7,6 +7,11 @@
      <v-card-title >
       <span class="white--text">Task: Generate <code>xqdoc</code></span>      
     </v-card-title>
+      <v-spacer></v-spacer>
+     <v-btn primary @click.native="submit()"   :loading="waiting"
+      :disabled="waiting">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
     </v-toolbar>
     <v-card-text>
       <v-container fluid>
@@ -28,18 +33,13 @@
   
       </v-container>
     </v-card-text>
-    <v-card-actions>
-      <v-btn primary @click.native="submit()"   :loading="waiting"
-      :disabled="waiting">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-     </v-card-actions>
+   
      
     <v-alert success v-model="alert.success">
-    {{alert.msg}}
+    {{alert.timestamp}}:{{alert.msg}}
     </v-alert>
      <v-alert error v-model="alert.error">
-    <code>{{alert.msg}}</code>
+    {{alert.timestamp}}:<code>{{alert.msg}}</code>
     </v-alert>
   </v-card>
   <code>{{code}}</code>
@@ -60,6 +60,7 @@
   methods:{
     submit(){
       this.waiting=true
+      this.alert={msg:"Loading..",success:false,error:false}
       HTTP.post("tasks/xqdoc",Qs.stringify(this.params))
       .then(r=>{
         this.waiting=false      

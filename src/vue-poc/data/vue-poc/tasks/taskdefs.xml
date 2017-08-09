@@ -1,0 +1,12 @@
+<tasks>
+<task name="xqdoc">
+<url>tasks/xqdoc</url>
+<description></description>
+</task>
+<task name="vue-compile">
+<url>tasks/vue-compile</url>
+</task>
+<task name="model-compile">
+<url>tasks/model</url>
+</task>
+</tasks>

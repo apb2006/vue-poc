@@ -1,4 +1,4 @@
-// generated 2017-07-27T21:30:55.726+01:00
+// generated 2017-08-09T10:37:44.029+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -45,7 +45,7 @@
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>
-            {{ child.text }}
+            &nbsp;{{ child.text }}
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
@@ -145,7 +145,7 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const Home=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 green lighten-1">
+      const About=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 green lighten-1">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
 v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <p>
@@ -160,6 +160,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	<li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
 	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 	<li><a href="/dba" target="new">DBA app</a></li>
+	 <li> <router-link to="database?url=%2Fvue-poc%2F">DB</router-link></li>
 </ul>
 </v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link href="/dba">REPLACED</qd-link> </v-layout>  `,
       
@@ -180,11 +181,11 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" v-bind:pagination.sync="pagination">
     <template slot="items" scope="props">
       <td class="text-xs-right">{{ props.item.time }}</td>
-      <td class="text-xs-right">{{ props.item.address }}</td>
       <td class="text-xs-right">{{ props.item.user }}</td>
       <td class="text-xs-right">{{ props.item.type }}</td>
       <td class="text-xs-right">{{ props.item.ms }}</td>
-       <td><code>{{ props.item.text }}</code></td>
+      <td><code>{{ props.item.text }}</code></td>
+       <td class="text-xs-right">{{ props.item.address }}</td>
     </template>
   </v-data-table>
  </v-card>
@@ -200,11 +201,11 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
           left: true,
           value: 'time'
         },
-        { text: 'address', value: 'address' },
         { text: 'user', value: 'user' },
         { text: 'Type', value: 'type' },
         { text: 'ms', value: 'ms' },
-        { text: 'text', value: 'text' }
+        { text: 'text', value: 'text' },
+        { text: 'address', value: 'address' },
       ],
       items:[],
       pagination:{sortBy: 'time',descending:true,rowsPerPage:25},
@@ -250,9 +251,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
    
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.native.enter="filter"></v-text-field>
-    <v-btn icon="" ripple="" @click="showInfo=!showInfo">
-            <v-icon>info</v-icon>
-          </v-btn>
+   
      <v-btn icon="" @click="alert('todo')">     
     <v-icon>view_module</v-icon>
     </v-btn>
@@ -274,7 +273,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon="" ripple="" @click.native.stop="info(item.name)">
+	          <v-btn icon="" ripple="" @click.native.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -300,12 +299,15 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	  </v-flex>
 	   <v-flex v-if="showInfo" xs4="" grey="" lighten-3="">
    <v-card flat="" tile=""> 
-       <v-card-actions>
-      <v-card-title>test</v-card-title>
+       <v-toolbar>
+      <v-card-title>{{selected.name}}</v-card-title>
       <v-spacer></v-spacer>    
        <v-btn flat="" icon="" @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
-    </v-card-actions>
-    <v-card-text> blah blah protocol:  </v-card-text> 
+    </v-toolbar>
+    <v-card-text> Things to do with  </v-card-text>
+    <v-card-actions> 
+           <v-btn flat="" @click="doit()"><v-icon>run</v-icon>run</v-btn>
+           </v-card-actions>
     </v-card>
    </v-flex>
   </v-layout>
@@ -360,6 +362,9 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     info(item){
       this.selected=item
       this.showInfo=true
+    },
+    doit(){
+      alert("doit")
     }
   
   },
@@ -852,12 +857,12 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 }
 
       );
-      const About=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 green lighten-1">
+      const Home=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 green lighten-1">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
 v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <p>
 	This is a experiment in using
-	<code>vue.js</code>
+	<code>vue.js</code> and vuetifyjs
 	.
 </p>
 <ul>
@@ -867,6 +872,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	<li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
 	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 	<li><a href="/dba" target="new">DBA app</a></li>
+	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
 </ul>
 </v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link href="/dba">REPLACED</qd-link> </v-layout>  `,
       
@@ -1633,11 +1639,15 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       const Model=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
-    <v-toolbar>
+    <v-toolbar class="orange darken-1">
      <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title class="blue accent-4">
+     <v-card-title>
       <span class="white--text">Generate <code>model.gen.xqm</code></span>      
     </v-card-title>
+    <v-spacer></v-spacer>
+     <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
     </v-toolbar>
     <v-card-text>
       <v-container fluid="">
@@ -1657,11 +1667,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   
       </v-container>
     </v-card-text>
-    <v-card-actions>
-      <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-     </v-card-actions>
+ 
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
       {{ snackbar.msg }}
       <v-btn dark="" flat="" @click.native="snackbar.show = false">Close</v-btn>
@@ -1712,6 +1718,9 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   <li>
   <router-link to="tasks/xqdoc">xqdoc</router-link>
   </li>
+  <li>
+  <router-link to="tasks/vuecompile">vue compile</router-link>
+  </li>
   </ul>
  </v-container>
  `,
@@ -1725,6 +1734,74 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 }
 
       );
+      const Vuecompile=Vue.extend({template:` 
+ <v-container fluid="">
+    <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+      <span class="white--text">compile</span>      
+    </v-card-title>
+      <v-spacer></v-spacer>
+     <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+    </v-toolbar>
+    <v-card-text>
+      <v-container fluid="">
+        <v-layout row="" wrap="">   
+          <v-flex xs6="">
+            <v-text-field v-model="params.proj" label="vue project to compile"></v-text-field>
+          </v-flex>
+        </v-layout>
+         <v-layout row="" wrap="">
+           <v-flex xs12="">
+            <code>{{code}}</code>
+          </v-flex>
+        </v-layout>
+  
+      </v-container>
+    </v-card-text>
+   
+      <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
+      {{ snackbar.msg }}
+      <v-btn dark="" flat="" @click.native="snackbar.show = false">Close</v-btn>
+    </v-snackbar>
+  </v-card>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      params:{
+			      proj:"C:/Users/andy/git/vue-poc/src/vue-poc/"
+			 },
+			waiting:false,
+			snackbar:{show:false,msg:"",context:"success"},
+    }
+  },
+  methods:{
+    submit(){
+      this.waiting=true
+      HTTP.post("tasks/vue-compile",Qs.stringify(this.params))
+      .then(r=>{
+        this.waiting=false      
+        this.snackbar={show:true,msg:r.data.msg,context:"success"}
+        console.log(r.data)
+      })
+      .catch(error=>{
+        this.waiting=false
+        this.snackbar={show:true,msg:"Problem",context:"error"}
+        console.log(error);
+      });
+   }
+  },
+  computed:{
+    code(){return 'code here'}
+  }
+}
+
+      );
       const Xqdoc=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
@@ -1733,6 +1810,10 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
      <v-card-title>
       <span class="white--text">Task: Generate <code>xqdoc</code></span>      
     </v-card-title>
+      <v-spacer></v-spacer>
+     <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
     </v-toolbar>
     <v-card-text>
       <v-container fluid="">
@@ -1750,17 +1831,13 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   
       </v-container>
     </v-card-text>
-    <v-card-actions>
-      <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-     </v-card-actions>
+   
      
     <v-alert success="" v-model="alert.success">
-    {{alert.msg}}
+    {{alert.timestamp}}:{{alert.msg}}
     </v-alert>
      <v-alert error="" v-model="alert.error">
-    <code>{{alert.msg}}</code>
+    {{alert.timestamp}}:<code>{{alert.msg}}</code>
     </v-alert>
   </v-card>
   <code>{{code}}</code>
@@ -1780,6 +1857,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   methods:{
     submit(){
       this.waiting=true
+      this.alert={msg:"Loading..",success:false,error:false}
       HTTP.post("tasks/xqdoc",Qs.stringify(this.params))
       .then(r=>{
         this.waiting=false      
@@ -1899,7 +1977,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       vueState: {
 
       data1: [
-        { id: 1, content: 'item 1', start: '2013-04-20' },
+        { id: 1, content: 'item 1', start: '2013-04-20 23:06:15.304' },
 	      { id: 2, content: 'item 2', start: '2013-04-14' },
 	      { id: 3, content: 'item 3', start: '2013-04-18' },
 	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19' },
@@ -1941,6 +2019,7 @@ const Auth={
 };
 Vue.use(Auth);
 
+// read and write settings 
 // https://vuejs.org/v2/guide/state-management.html
 var settings = {
     debug: true,
@@ -1980,7 +2059,7 @@ Vue.config.errorHandler = function (err, vm, info) {
 };
 
 
-      
+// used by vue-ace      
 var Events = new Vue({});
 
 
@@ -2009,6 +2088,7 @@ const router = new VueRouter({
     { path: '/tasks', component: Task,meta:{title:"Runnable tasks"} },
     { path: '/tasks/model', component: Model,meta:{title:"build model"} },
     { path: '/tasks/xqdoc', component: Xqdoc,meta:{title:"build xqdoc"} },
+    { path: '/tasks/vuecompile', component: Vuecompile,meta:{title:"vue compile"} },
     { path: '/jobs', component: Job,meta:{title:"Jobs"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
@@ -2043,6 +2123,7 @@ const app = new Vue({
     status:{},
     drawer:true,
     mini: false,
+    alert:{show:false,msg:"Hello"},
     items:[
       {href: '/',text: 'Home', icon: 'home'    }, 
       {
@@ -2061,10 +2142,25 @@ const app = new Vue({
         model: false,
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},      
-      {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
-      {href: '/logs',text: 'Server logs',icon: 'dns'},
+      {
+        icon: 'cast_connected',
+        text: 'Server' ,
+        model: false,
+        children: [
+          {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
+          {href: '/logs',text: 'Server logs',icon: 'dns'},
+          {href: '/ping',text: 'ping',icon: 'update'}
+      ]},
+      {
+        icon: 'camera_roll',
+        text: 'Images' ,
+        model: false,
+        children: [
+          {href: '/images',text: 'Collection',icon: 'photo_camera'},
+          {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
+          ]},
       {
         icon: 'more_horiz',
         text: 'More' ,
@@ -2072,12 +2168,9 @@ const app = new Vue({
         children: [
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'select',icon: 'extension'},
-      {href: '/puzzle',text: 'Puzzle',icon: 'extension'}, 
-      {href: '/images',text: 'Images',icon: 'camera_roll'}, 
+      {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
       {href: '/tabs',text: 'tabs',icon: 'switch_camera'}, 
-      {href: '/ping',text: 'ping',icon: 'update'},
-      {href: '/timeline',text: 'time line',icon: 'timelapse'},
-      {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
+      {href: '/timeline',text: 'time line',icon: 'timelapse'}
       ]},
       {href: '/settings',text: 'settings',icon: 'settings'  }
     ]
@@ -2093,12 +2186,28 @@ const app = new Vue({
       logout(){
         HTTP.get("logout").then(r=>{
           alert("logout")
-        })
-       
+        }) 
+      },
+      showAlert(msg){
+        this.alert.msg=msg
+        this.alert.show=true
       }
   },
   created(){
     console.log("create-----------")
+    // Add a response interceptor
+
+    HTTP.interceptors.response.use(
+    (response)=> {
+      // Do something with response data
+      return response;
+    },
+    (error) =>{
+      // Do something with response error
+      this.showAlert("http error:\n"+error.response.data)
+      return Promise.reject(error);
+    });
+    
     HTTP.get("status")
     .then(r=>{
       console.log("status",r.data)

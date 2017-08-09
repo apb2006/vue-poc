@@ -19,8 +19,7 @@ as element(wadl:resource)
 };
 let $xq:=doc($src)
 let $prefix:=$xq//xqdoc:namespace[@uri="http://exquery.org/ns/restxq"]/@prefix/string()
-let $paths:=$xq//xqdoc:functions/xqdoc:function/xqdoc:annotations/xqdoc:annotation[@name=$prefix || ":path"]
-let $funs:=$xq//xqdoc:functions/xqdoc:function[xqdoc:annotations/xqdoc:annotation/@name=$prefix || ":path"]
+let $paths:=$xq//xqdoc:functions/xqdoc:function/xqdoc:annotations/xqdoc:annotation[@name=$prefix || ":path"]/xqdoc:literal
 let $p2:=$paths=>distinct-values()=>sort()
 return <wadl:application>
 <wadl:resources base="http://localhost:8984/doc/app//graphxq/view/wadl">

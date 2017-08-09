@@ -6,8 +6,11 @@
 module namespace vue-api = 'quodatum:vue.api.collection';
 import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace ufile = 'vue-poc/file' at "../../lib/file.xqm";
-declare namespace c="http://www.w3.org/ns/xproc-step";
 
+import module namespace entity = 'quodatum.models.generated' at "../../models.gen.xqm";
+import module namespace dice = 'quodatum.web.dice/v4' at "../../lib/dice.xqm";
+import module namespace web = 'quodatum.web.utils4' at "../../lib/webutils.xqm";
+declare namespace c="http://www.w3.org/ns/xproc-step";
 
 (:~
  : history list 
@@ -18,15 +21,10 @@ declare
 %output:method("json")   
 function vue-api:history( )   
 {
- let $h:=doc("history.xml")/history/entry
- return <json   type="object" >
-            <items type="array">
-            {$h!(<_ type="object">
-            <url>{@url/string()}</url>
-            <protocol>{@mode/string()}</protocol>
-            </_>)}              
-            </items>
-  </json>
+ let $entity:=$entity:list("filehistory")
+  let $items:= $entity("data")()
+  let $d:=trace($items,"66666")
+ return dice:response($items,$entity,web:dice())
 };
 
 

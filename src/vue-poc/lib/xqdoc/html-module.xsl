@@ -2,50 +2,62 @@
 <xsl:stylesheet xmlns="http://www.w3.org/1999/xhtml"
 	xmlns:doc="http://www.xqdoc.org/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
-	exclude-result-prefixes="xs doc fn" version="2.0">
-	<!-- Standalone xqdoc:xqdoc transform -->
+	xmlns:qd="http://www.quodatum.com/ns/xsl" exclude-result-prefixes="xs doc fn"
+	version="2.0">
+	<!-- Standalone xqdoc:xqdoc transform 
+	mode"restxq"
+	-->
 	<xsl:param name="project" as="xs:string" />
 	<xsl:param name="source" as="xs:string" />
+	<xsl:param name="filename" as="xs:string" />
 	<xsl:param name="show-private" as="xs:boolean" select="false()" />
+	<xsl:param name="resources" as="xs:string" select="'../resources/'" />
 
-	<xsl:variable name="css" select="'../resources/base.css'" />
+	<xsl:variable name="index" select="'../index.html'" />
 	<xsl:variable name="vars"
 		select="//doc:variable[$show-private or not(doc:annotations/doc:annotation/@name='private')]" />
 	<xsl:variable name="funs"
 		select="//doc:function[$show-private or not(doc:annotations/doc:annotation/@name='private')]" />
 	<xsl:variable name="docuri"
 		select="//doc:xqdoc/doc:module/doc:uri/string()" />
+	<!-- uses RESTXQ namespace -->
+	<xsl:variable name="restxq"
+		select="//doc:namespace[@uri='http://exquery.org/ns/restxq']/@prefix/string()" />
 	<!-- generate module html // -->
 	<xsl:template match="//doc:xqdoc">
 		<html>
 			<head>
 				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 				<meta http-equiv="Generator"
-					content="xquerydoc - https://github.com/xquery/xquerydoc" />
+					content="xqdoc-r - https://github.com/quodatum/xqdoc-r" />
 
 				<title>
 					<xsl:value-of select="$docuri" />
 					- xqDoc
 				</title>
-				<link rel="stylesheet" type="text/css" href="../resources/page.css" />
-				<link rel="stylesheet" type="text/css" href="../resources/query.css" />
-				<link rel="stylesheet" type="text/css" href="{$css}" />
+				<link rel="shortcut icon" type="image/x-icon" href="{$resources}xqdoc.png" />
+				<link rel="stylesheet" type="text/css" href="{$resources}page.css" />
+				<link rel="stylesheet" type="text/css" href="{$resources}query.css" />
+				<link rel="stylesheet" type="text/css" href="{$resources}base.css" />
 
-				<link rel="stylesheet" type="text/css" href="../resources/prettify.css" />
+				<link rel="stylesheet" type="text/css" href="{$resources}prettify.css" />
 
-				<script src="../resources/prettify.js" type="text/javascript">&#160;</script>
-				<script src="../resources/lang-xq.js" type="text/javascript">&#160;</script>
+				<script src="{$resources}prettify.js" type="text/javascript">&#160;</script>
+				<script src="{$resources}lang-xq.js" type="text/javascript">&#160;</script>
 			</head>
 			<body class="home" id="top">
 				<div id="main">
 					<xsl:apply-templates select="doc:module" />
+
 					<xsl:call-template name="toc" />
 					<xsl:apply-templates select="doc:variables" />
 					<xsl:apply-templates select="doc:functions" />
 
 					<xsl:apply-templates select="doc:namespaces" />
+					<xsl:apply-templates select="doc:functions"
+						mode="restxq" />
 					<div>
-						<h3>Original Source Code</h3>
+						<h3 id="source">Original Source Code</h3>
 						<pre class="prettyprint lang-xq">
 							<xsl:value-of select="$source" />
 						</pre>
@@ -55,7 +67,13 @@
 					<div class="footer">
 						<p style="text-align:right">
 							<i>
-								<xsl:value-of select="()" />
+								<xsl:value-of select="$filename" />
+								<a href="xqdoc.xml" target="xqdoc">
+									xqdoc
+								</a>
+								<a href="xparse.xml" target="xparse">
+									xparse
+								</a>
 							</i>
 							|
 							generated at
@@ -73,17 +91,19 @@
 
 	<xsl:template match="doc:module">
 		<h1>
+			<xsl:value-of select="@type" />
+			module&#160;
 			<span class="namespace">
 				<xsl:value-of select="doc:uri" />
 			</span>
-			&#160;
-			<xsl:value-of select="@type" />
-			module
 		</h1>
 		<dl>
 			<xsl:apply-templates select="doc:comment/doc:description" />
 			<dt>Tags</dt>
 			<dd>
+				<xsl:if test="$restxq">
+					<span class="tag tag-success">RESTXQ</span>
+				</xsl:if>
 				<xsl:apply-templates
 					select="doc:comment/* except doc:comment/doc:description" />
 			</dd>
@@ -96,7 +116,7 @@
 				<a href="#namespaces">Namespaces</a>
 			</h3>
 			<p>The following namespaces are defined:</p>
-			<table style="float:none">
+			<table class="data" style="float:none">
 				<thead>
 					<tr>
 						<th>Prefix</th>
@@ -193,7 +213,7 @@
 				</a>
 			</h4>
 
-			<xsl:apply-templates select="$fun[1]/doc:comment/doc:description" />
+			<xsl:apply-templates select="$fun/doc:comment/doc:description[1]" />
 			<dt class="label">Signature</dt>
 			<dd>
 				<xsl:apply-templates select="$fun" mode="signature" />
@@ -201,7 +221,7 @@
 			<xsl:apply-templates select="$fun[1]/doc:parameters" />
 			<xsl:apply-templates select="$fun[1]/doc:return" />
 			<xsl:apply-templates select="$fun[1]/doc:comment/doc:error" />
-			<xsl:apply-templates select="$fun[1]/doc:annotations" />
+
 		</div>
 	</xsl:template>
 
@@ -230,6 +250,36 @@
 				<xsl:value-of select="doc:return/doc:type" />
 				<xsl:value-of select="doc:return/doc:type/@occurrence/string()" />
 			</code>
+		</div>
+		<xsl:apply-templates select="doc:annotations" />
+	</xsl:template>
+
+	<xsl:template match="doc:functions[doc:function]" mode="restxq">
+		<div id="restxq">
+			<h3>
+				<a href="#restxq">RestXQ</a>
+			</h3>
+			<xsl:for-each-group select="qd:restxq($funs)"
+				group-by="doc:literal/string()">
+				<xsl:sort select="current-grouping-key()" />
+				<xsl:variable name="id" select="current-grouping-key()" />
+				<div id="{$id}">
+					<h4>
+						<a href="#{ $id }">
+							<xsl:value-of select="$id" />
+						</a>
+					</h4>
+					<ul>
+					<xsl:for-each select="current-group()/../..">
+					 <li>
+					 <a href="#{ doc:name }"><xsl:value-of select="doc:name"/></a>
+					 </li>
+					</xsl:for-each>
+					</ul>
+					
+				</div>
+			</xsl:for-each-group>
+			<!-- <xsl:apply-templates select="doc:function" /> -->
 		</div>
 	</xsl:template>
 
@@ -282,30 +332,25 @@
 	</xsl:template>
 
 	<xsl:template match="doc:annotations">
-		<h4>Annotations</h4>
-		<table>
-			<thead>
+	<table class="data">
+	 <caption style="text-align: left;">Annotations</caption>
+	 <tbody>
+			<xsl:for-each select="doc:annotation">
 				<tr>
-					<th>Name</th>
-					<th>Type</th>
-					<th>Value</th>
+				<td>
+					<code class="function">
+						<xsl:text>%</xsl:text>
+						<xsl:value-of select="@name" />
+					</code>
+					</td>
+					<td>
+					<code class="arg">
+						<xsl:value-of select="doc:literal" />
+					</code>
+					</td>
 				</tr>
-			</thead>
-			<tbody>
-				<xsl:for-each select="doc:annotation">
-					<tr>
-						<td>
-							<xsl:value-of select="@name" />
-						</td>
-						<td>
-							<xsl:value-of select="doc:literal/@type" />
-						</td>
-						<td>
-							<xsl:value-of select="doc:literal" />
-						</td>
-					</tr>
-				</xsl:for-each>
-			</tbody>
+			</xsl:for-each>
+		</tbody>
 		</table>
 	</xsl:template>
 
@@ -376,14 +421,16 @@
 	<xsl:template name="toc">
 		<nav id="toc">
 			<div>
-				<a href="../#{$project}">&#8624;</a>
-				<span class="namespace">
-					<xsl:value-of select="$docuri" />
-				</span>
+				<a href="{$index}">
+					&#8624;
+					<xsl:value-of select="$project" />
+				</a>
 			</div>
 			<h2>
 				<a id="contents"></a>
-				Table of Contents
+				<span class="namespace">
+					<xsl:value-of select="$docuri" />
+				</span>
 			</h2>
 			<ol class="toc">
 				<li>
@@ -406,8 +453,7 @@
 									<li>
 										<a href="#{$id}">
 											<span class="secno">
-												2.
-												<xsl:value-of select="position()" />
+												<xsl:value-of select="concat('2.',position())" />
 											</span>
 											<span class="content">
 												<xsl:value-of select="$id" />
@@ -433,11 +479,19 @@
 									<li>
 										<a href="#{$id}">
 											<span class="secno">
-												3.
-												<xsl:value-of select="position()" />
+												<xsl:value-of select="concat('3.',position())" />
 											</span>
-											<span class="content">
+											<span class="content"
+												title="{string((current-group()//doc:description)[1])}">
 												<xsl:value-of select="$id" />
+												<xsl:if test="qd:restxq(current-group())">
+													<div class="tag tag-success" style="float:right"
+														title="RESTXQ: { qd:restxq(current-group())/doc:literal/string() }">R
+													</div>
+												</xsl:if>
+												<xsl:if test="qd:is-updating(current-group())">
+													<div class="tag tag-danger" title="Updating" style="float:right">U</div>
+												</xsl:if>
 											</span>
 										</a>
 									</li>
@@ -453,7 +507,53 @@
 						<span class="content">Namespaces</span>
 					</a>
 				</li>
+				<li>
+					<ol class="toc">
+						<li>
+							<a href="#restxq">
+								<span class="secno">5 </span>
+								<span class="content">Restxq</span>
+							</a>
+							<ol class="toc">
+								<xsl:for-each-group select="qd:restxq($funs)"
+									group-by="doc:literal/string()">
+									<xsl:sort select="current-grouping-key()" />
+									<xsl:variable name="id" select="current-grouping-key()" />
+									<li>
+										<a href="#{ current-grouping-key() }">
+											<span class="secno">
+												<xsl:value-of select="concat('5.',position())" />
+											</span>
+											<span class="content">
+												<xsl:value-of select="current-grouping-key()" />
+											</span>
+										</a>
+									</li>
+								</xsl:for-each-group>
+							</ol>
+						</li>
+					</ol>
+
+				</li>
 			</ol>
 		</nav>
 	</xsl:template>
+
+	<!-- annotation analysis -->
+	<xsl:function name="qd:restxq" as="element(doc:annotation)*">
+		<xsl:param name="fun" as="element(doc:function)*" />
+		<xsl:variable name="found"
+			select="$fun/doc:annotations/doc:annotation[@name=concat($restxq,':path')]" />
+		<xsl:message>
+			<xsl:copy-of select="$found" />
+		</xsl:message>
+		<xsl:sequence select="$found"></xsl:sequence>
+	</xsl:function>
+
+	<xsl:function name="qd:is-updating" as="xs:boolean">
+		<xsl:param name="fun" as="element(doc:function)*" />
+		<xsl:variable name="found"
+			select="$fun/doc:annotations/doc:annotation[@name='updating']" />
+		<xsl:sequence select="not(empty($found))" />
+	</xsl:function>
 </xsl:stylesheet>

@@ -18,9 +18,7 @@
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.native.enter="filter"></v-text-field>
-    <v-btn icon ripple @click="showInfo=!showInfo">
-            <v-icon >info</v-icon>
-          </v-btn>
+   
      <v-btn icon @click="alert('todo')">     
     <v-icon>view_module</v-icon>
     </v-btn>
@@ -42,7 +40,7 @@
 	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon ripple @click.native.stop="info(item.name)">
+	          <v-btn icon ripple @click.native.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -68,12 +66,15 @@
 	  </v-flex>
 	   <v-flex v-if="showInfo" xs4 grey lighten-3>
    <v-card flat tile> 
-       <v-card-actions >
-      <v-card-title >test</v-card-title>
+       <v-toolbar >
+      <v-card-title >{{selected.name}}</v-card-title>
       <v-spacer></v-spacer>    
        <v-btn flat icon @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
-    </v-card-actions>
-    <v-card-text> blah blah protocol:  </v-card-text> 
+    </v-toolbar>
+    <v-card-text> Things to do with  </v-card-text>
+    <v-card-actions> 
+           <v-btn flat @click="doit()"><v-icon>run</v-icon>run</v-btn>
+           </v-card-actions>
     </v-card>
    </v-flex>
   </v-layout>
@@ -129,6 +130,9 @@
     info(item){
       this.selected=item
       this.showInfo=true
+    },
+    doit(){
+      alert("doit")
     }
   
   },

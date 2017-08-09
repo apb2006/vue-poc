@@ -31,11 +31,11 @@
     >
     <template slot="items" scope="props">
       <td class="text-xs-right">{{ props.item.time }}</td>
-      <td class="text-xs-right">{{ props.item.address }}</td>
       <td class="text-xs-right">{{ props.item.user }}</td>
       <td class="text-xs-right">{{ props.item.type }}</td>
       <td class="text-xs-right">{{ props.item.ms }}</td>
-       <td ><code>{{ props.item.text }}</code></td>
+      <td ><code>{{ props.item.text }}</code></td>
+       <td class="text-xs-right">{{ props.item.address }}</td>
     </template>
   </v-data-table>
  </v-card>
@@ -52,11 +52,11 @@
           left: true,
           value: 'time'
         },
-        { text: 'address', value: 'address' },
         { text: 'user', value: 'user' },
         { text: 'Type', value: 'type' },
         { text: 'ms', value: 'ms' },
-        { text: 'text', value: 'text' }
+        { text: 'text', value: 'text' },
+        { text: 'address', value: 'address' },
       ],
       items:[],
       pagination:{sortBy: 'time',descending:true,rowsPerPage:25},

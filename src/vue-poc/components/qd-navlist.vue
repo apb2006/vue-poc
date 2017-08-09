@@ -42,7 +42,7 @@ for nav drawer
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>
-            {{ child.text }}
+            &nbsp;{{ child.text }}
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>

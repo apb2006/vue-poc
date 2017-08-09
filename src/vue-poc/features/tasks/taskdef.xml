@@ -1,0 +1,13 @@
+<tasks>
+	<task name="tasks/model">
+		<title>
+			Generate
+			<code>model.gen.xqm</code>
+		</title>
+		<description></description>
+		<params>
+			<param name="efolder">Folder containing model definitions as xml</param>
+			<param name="target">Path to xqm file to generate</param>
+		</params>
+	</task>
+</tasks>
