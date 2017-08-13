@@ -2,7 +2,7 @@
 <template id="log">
  <v-container fluid>
   <v-card >
-   <v-toolbar class="green white--text">
+   <v-toolbar light>
        <v-btn
       light icon
       :loading="loading"

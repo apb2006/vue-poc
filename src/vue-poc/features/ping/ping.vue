@@ -1,8 +1,15 @@
 <!DOCTYPE html>
 <template id="ping">
  <v-container fluid>
- <p>Simple performance measure. Read or increment a database value.</p>
-  <h2>Counter:{{counter}}</h2>
+ <v-card>
+ <v-toolbar light>
+ <v-toolbar-title>Simple performance measure</v-toolbar-title>
+ <v-spacer></v-spacer>
+ <v-btn @click="reset()">Reset</v-btn>
+ </v-toolbar>
+ <v-card-text>
+  <p>Read or increment a database value.</p>
+  <p>Counter:{{counter}}</p>
   <table class="table">
       <thead> 
         <tr>
@@ -81,7 +88,9 @@
         </tr>
       </tbody>
     </table>
-    <v-btn @click="reset()">Reset</v-btn>
+    </v-card-text>
+    </v-card>
+    
  </v-container>
 </template>
 

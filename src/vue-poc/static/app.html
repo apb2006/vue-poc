@@ -60,9 +60,9 @@
     <qd-navlist  :items="items"></qd-navlist>
  </v-navigation-drawer>
   
- <v-toolbar class="green lighten-1" >
+ <v-toolbar class="indigo" dark >
   <v-toolbar-side-icon @click.native.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
-  <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
+  <v-toolbar-title class="hidden-sm-and-down" >{{$route.meta.title}}</v-toolbar-title>
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.native.enter="search"></v-text-field>

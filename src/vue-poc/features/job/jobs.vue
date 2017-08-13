@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="job">
   <v-card >
-   <v-toolbar class="green white--text">
+   <v-toolbar light>
        <v-btn
       light icon
       :loading="loading"

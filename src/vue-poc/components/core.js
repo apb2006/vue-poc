@@ -93,6 +93,7 @@ const router = new VueRouter({
     { path: '/tasks/vuecompile', component: Vuecompile,meta:{title:"vue compile"} },
     { path: '/jobs', component: Job,meta:{title:"Jobs"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
+    { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
 });
@@ -135,7 +136,7 @@ const app = new Vue({
         children: [
        {href: '/database', text: 'Databases',icon: 'account_balance' },
        {href: '/files', text: 'File system',icon: 'folder' },
-      {href: '/edit',text: 'edit',icon: 'mode_edit'},
+      {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/history',text: 'history',icon: 'history'}
       ]},
       {
@@ -153,7 +154,7 @@ const app = new Vue({
         children: [
           {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
           {href: '/logs',text: 'Server logs',icon: 'dns'},
-          {href: '/ping',text: 'ping',icon: 'update'}
+          {href: '/ping',text: 'Ping',icon: 'update'}
       ]},
       {
         icon: 'camera_roll',
@@ -161,7 +162,7 @@ const app = new Vue({
         model: false,
         children: [
           {href: '/images',text: 'Collection',icon: 'photo_camera'},
-          {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
+          {href: '/thumbnail',text: 'Thumbnail',icon: 'touch_app'}
           ]},
       {
         icon: 'more_horiz',
@@ -169,12 +170,14 @@ const app = new Vue({
         model: false,
         children: [
       {href: '/session',text: 'Session',icon: 'person'}, 
-      {href: '/select',text: 'select',icon: 'extension'},
+      {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
-      {href: '/tabs',text: 'tabs',icon: 'switch_camera'}, 
-      {href: '/timeline',text: 'time line',icon: 'timelapse'}
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}, 
+      {href: '/timeline',text: 'Time line',icon: 'timelapse'}
       ]},
-      {href: '/settings',text: 'settings',icon: 'settings'  }
+      
+      {href: '/settings',text: 'Settings',icon: 'settings'  },
+      {href: '/about',text: 'About', icon: 'help'    }, 
     ]
 
   }},

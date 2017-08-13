@@ -1,4 +1,4 @@
-// generated 2017-08-09T10:37:44.029+01:00
+// generated 2017-08-13T11:45:59.085+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -145,7 +145,7 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const About=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 green lighten-1">
+      const About=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 indigo accent-3">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
 v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <p>
@@ -170,7 +170,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       const Log=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
-   <v-toolbar class="green white--text">
+   <v-toolbar light="">
        <v-btn light="" icon="" :loading="loading" @click="getItems()" :disabled="loading">
     <v-icon>refresh</v-icon>
     </v-btn>   
@@ -788,10 +788,9 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     
     run(){
-      var data={xq:this.xq}
       this.showError=this.show=false
       this.start = performance.now();
-      HTTP.post("eval/execute",Qs.stringify(data))
+      HTTP.post("eval/execute",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.result=r.data.result
@@ -857,7 +856,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 }
 
       );
-      const Home=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 green lighten-1">
+      const Home=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 indigo">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
 v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <p>
@@ -881,37 +880,78 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       );
       const Image=Vue.extend({template:` 
  <v-container fluid="">
- Image: {{id}}
+ Image: {{ id }}
+ doc <pre>{{ image &amp;&amp; image.doc }}</pre>
  </v-container>
  `,
         
-  props:["id"]
+  props:["id"],
+  data: ()=>( {
+    image:null
+  }),
+  created:function(){
+   var id=this._props.id
+   HTTP.get("images/list/"+id)
+   .then(r=>{
+     console.log(r.data)
+     this.image=r.data
+     })
+  }
     }
 
       );
       const Images=Vue.extend({template:` 
 
       <v-card>
-        <v-card-actions>
-        
-          <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" autocomplete=""></v-select>
-            <v-dialog persistent="" v-model="modal" lazy="" full-width="">
-          <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
+        <v-toolbar light="">
+    
+          <v-menu :close-on-content-click="false" v-model="showFilter" transition="scale-transition" offset-y="" full-width="">
+         <v-text-field slot="activator" name="input-1-3" style="width:30em;" label="Filter images" single-line="" prepend-icon="search" readonly="" :value="qtext"></v-text-field>
+         <v-card>
+         <v-card-title>
+          Set filter...
+          <v-spacer></v-spacer>
+          <v-btn @click="showFilter = false" icon=""><v-icon>close</v-icon></v-btn>
+          </v-card-title>
+        <v-card-text>
+    
+         <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" autocomplete=""></v-select>
+              <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
+             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
+         
           <v-date-picker v-model="query.from" scrollable="" actions="">
             <template scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat="" primary="" @click.native="cancel()">Cancel</v-btn>
-                <v-btn flat="" primary="" @click.native="save()">Save</v-btn>
+                <v-btn flat="" primary="" @click="cancel()">Cancel</v-btn>
+                <v-btn flat="" primary="" @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
           </v-date-picker>
-        </v-dialog>
-        <v-btn @click.native="clear()">Clear</v-btn>
-           <v-spacer></v-spacer>
-            <v-btn @click.native="query.page+=1">next</v-btn>
-         {{query.page}}
-          <v-btn @click.native="query.page-=1">back</v-btn>
+          </v-menu>
+        </v-card-text>
+        
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn @click="showFilter = false" primary="">Apply</v-btn>
         </v-card-actions>
+      </v-card>
+            </v-menu>
+        <v-btn @click="clear" icon="" v-tooltip:top="{ html: 'Clear search' }" :disabled="!(query.keyword || query.from)">
+            <v-icon>clear</v-icon>
+           </v-btn>
+            <v-progress-circular v-if="busy" indeterminate="" class="primary--text"></v-progress-circular>
+  
+           <v-spacer></v-spacer>
+            Page:{{ query.page+1 }}
+          <v-btn @click="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon="" primary="">
+           <v-icon>arrow_back</v-icon>
+           </v-btn>
+           <v-btn @click="query.page+=1" icon="" primary="">
+            <v-icon>arrow_forward</v-icon>
+           </v-btn>
+        </v-toolbar>
+
         <v-container fluid="" grid-list-md="">
           <v-layout row="" wrap="">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
@@ -939,7 +979,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 					       <v-toolbar class="green white--text">
 					      <v-toolbar-title>{{selitem.name}}</v-toolbar-title>
 					      <v-spacer></v-spacer>    
-					       <v-btn flat="" icon="" @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+					       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
 					    </v-toolbar>
 					    <v-card-text> blah blah  </v-card-text> 
 					   </v-card>
@@ -955,7 +995,9 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
            keyword:null
     }, 
     modal:false, // showing datepicker
-    
+    showFilter:false,
+    busy:false,
+    menu2:false,
     keywords:[],
     showInfo:false,
     selitem:"TODO"
@@ -965,14 +1007,17 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         return "data:image/jpeg;base64,"+item.data
     },
     getImages(){
+      this.busy=true
       HTTP.get("images/list",{params:this.query})
       .then(r=>{
+        this.busy=false
         this.images=r.data.items
         }) 
     },
     clear(){
       this.query.from=null;
       this.query.keyword=null;
+      this.query.page=0;
     },
     selected(image){
       this.selitem=image;
@@ -982,6 +1027,12 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       this.$router.push({ name: 'image', params: { id: image.id }})
     }
    
+  },
+  computed:{
+    qtext(){
+          var k=this.query.keyword,f=this.query.from
+          return (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")
+    }
   },
   watch:{
       "query":{
@@ -1009,7 +1060,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       );
       const Job=Vue.extend({template:` 
   <v-card>
-   <v-toolbar class="green white--text">
+   <v-toolbar light="">
        <v-btn light="" icon="" :loading="loading" @click.native="getJobs()" :disabled="loading">
     <v-icon>refresh</v-icon>
     </v-btn>
@@ -1153,8 +1204,15 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       );
       const Ping=Vue.extend({template:` 
  <v-container fluid="">
- <p>Simple performance measure. Read or increment a database value.</p>
-  <h2>Counter:{{counter}}</h2>
+ <v-card>
+ <v-toolbar light="">
+ <v-toolbar-title>Simple performance measure</v-toolbar-title>
+ <v-spacer></v-spacer>
+ <v-btn @click="reset()">Reset</v-btn>
+ </v-toolbar>
+ <v-card-text>
+  <p>Read or increment a database value.</p>
+  <p>Counter:{{counter}}</p>
   <table class="table">
       <thead> 
         <tr>
@@ -1233,7 +1291,9 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         </tr>
       </tbody>
     </table>
-    <v-btn @click="reset()">Reset</v-btn>
+    </v-card-text>
+    </v-card>
+    
  </v-container>
  `,
       
@@ -2091,6 +2151,7 @@ const router = new VueRouter({
     { path: '/tasks/vuecompile', component: Vuecompile,meta:{title:"vue compile"} },
     { path: '/jobs', component: Job,meta:{title:"Jobs"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
+    { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
 });
@@ -2133,7 +2194,7 @@ const app = new Vue({
         children: [
        {href: '/database', text: 'Databases',icon: 'account_balance' },
        {href: '/files', text: 'File system',icon: 'folder' },
-      {href: '/edit',text: 'edit',icon: 'mode_edit'},
+      {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/history',text: 'history',icon: 'history'}
       ]},
       {
@@ -2151,7 +2212,7 @@ const app = new Vue({
         children: [
           {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
           {href: '/logs',text: 'Server logs',icon: 'dns'},
-          {href: '/ping',text: 'ping',icon: 'update'}
+          {href: '/ping',text: 'Ping',icon: 'update'}
       ]},
       {
         icon: 'camera_roll',
@@ -2159,7 +2220,7 @@ const app = new Vue({
         model: false,
         children: [
           {href: '/images',text: 'Collection',icon: 'photo_camera'},
-          {href: '/thumbnail',text: 'thumbnail',icon: 'touch_app'}
+          {href: '/thumbnail',text: 'Thumbnail',icon: 'touch_app'}
           ]},
       {
         icon: 'more_horiz',
@@ -2167,12 +2228,14 @@ const app = new Vue({
         model: false,
         children: [
       {href: '/session',text: 'Session',icon: 'person'}, 
-      {href: '/select',text: 'select',icon: 'extension'},
+      {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
-      {href: '/tabs',text: 'tabs',icon: 'switch_camera'}, 
-      {href: '/timeline',text: 'time line',icon: 'timelapse'}
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}, 
+      {href: '/timeline',text: 'Time line',icon: 'timelapse'}
       ]},
-      {href: '/settings',text: 'settings',icon: 'settings'  }
+      
+      {href: '/settings',text: 'Settings',icon: 'settings'  },
+      {href: '/about',text: 'About', icon: 'help'    }, 
     ]
 
   }},

@@ -8,8 +8,29 @@ import module namespace fw="quodatum:file.walker";
 import module namespace entity = 'quodatum.models.generated' at "../../models.gen.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
-declare variable $vue-api:PICS:="c:\tmp\";
+declare variable $vue-api:IMAGEDIR:="P:/pictures/";
+declare variable $vue-api:THUMBDIR:="C:/tmp/";
 
+(:
+declare variable $vue-api:IMAGEDIR:="/mnt/sda1/pictures/";
+declare variable $vue-api:THUMBDIR:="/mnt/sda1/pictures/thumbs/";
+:)
+declare variable $vue-api:entity:=$entity:list("thumbnail");
+(:~
+ : do a thumbnail
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/images/list/{ $id }")
+%rest:produces("application/json")
+%output:method("json")   
+function vue-api:id( $id as xs:integer)   
+{
+ let $image:=db:open-id("vue-poc",$id)
+ return <json type="object" >
+    <doc>{ serialize($image) }</doc>
+     { vue-api:get-image($image) }
+  </json>
+};
 (:~
  : do a thumbnail
  :)
@@ -27,8 +48,7 @@ $keyword
 {
  let $a:=trace(($from,$keyword),"----------")
  let $rowsPerPage:=24
- let $entity:=$entity:list("thumbnail")
- let $images:=$entity("data")()
+ let $images:=$vue-api:entity("data")()
  let $images:=if($from)then  $images[datetaken ge $from] else $images
  let $images:=if($keyword)then  $images[keywords/keyword = $keyword] else $images
  let $images:=subsequence($images,1+$rowsPerPage*$page,$rowsPerPage)
@@ -37,7 +57,7 @@ $keyword
             <items type="array">{
             for $f in $images
             return <_ type="object">
-            {vue-api:get-image($f,$entity)} 
+            {vue-api:get-image($f)} 
             </_>
             }</items>
   </json>
@@ -63,14 +83,15 @@ return <json   type="object" >
   </json>
 };
 
-declare function vue-api:get-image($image as element(image),$entity)
+(:~ fields for image for json :)
+declare function vue-api:get-image($image as element(image))
 as element(*)*
 {
-let $id:=$entity?access?id($image)
-let $path:=$entity?access?path($image)
-let $name:=$entity?access?name($image)
-let $thumb:= $vue-api:PICS || $path
-let $thumb:=if(file:exists($thumb)) then $thumb else "C:\tmp\art.jpg"
+let $id:=$vue-api:entity?access?id($image)
+let $path:=$vue-api:entity?access?path($image)
+let $name:=$vue-api:entity?access?name($image)
+let $thumb:= $vue-api:THUMBDIR || $path
+let $thumb:=if(file:exists($thumb)) then $thumb else $vue-api:THUMBDIR || "missing.jpg"
 return   ( <id>{$id}</id>
           ,<name>{$name}</name>
          ,<data>{fetch:binary($thumb)}</data>

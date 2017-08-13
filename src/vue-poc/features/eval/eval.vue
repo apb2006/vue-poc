@@ -85,10 +85,9 @@
     },
     
     run(){
-      var data={xq:this.xq}
       this.showError=this.show=false
       this.start = performance.now();
-      HTTP.post("eval/execute",Qs.stringify(data))
+      HTTP.post("eval/execute",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.result=r.data.result

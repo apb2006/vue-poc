@@ -70,7 +70,7 @@ declare function vue:capitalize-first
  :)
 declare function vue:compile($proj as xs:string)
 {
-let $FEATURES:="features/"=>file:resolve-path($proj)
+let $FEATURES:="features/"=>file:resolve-path($proj=>trace("proj:"))
 let $COMPONENTS:="components/"=>file:resolve-path($proj)
 let $CORE:="components/core.js"=>file:resolve-path($proj)
 let $FILTERS:="components/filters.js"=>file:resolve-path($proj)

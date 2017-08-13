@@ -2,7 +2,7 @@
 	abbrev="vue-poc" version="0.0.4" spec="1.0">
 	<title>vue-poc test of vue.js.</title>
 	<dependency name="ace" version="1.2.7" />
-	<dependency name="vuetify" version="0.14.7" />
+	<dependency name="vuetify" version="0.14.8" />
 	<dependency name="vue" version="2.4.1" />
 	<dependency name="vue-router" version="2.5.3" />
 	<dependency name="google-material" version="0.0.0" />

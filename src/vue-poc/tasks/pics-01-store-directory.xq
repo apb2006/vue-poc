@@ -1,4 +1,5 @@
-(:~ create xml file list
+(:~ 
+: create xml file list by scanning $SRC and write to vue-poc 
 :)
 import module namespace fw="quodatum:file.walker";
 declare namespace c="http://www.w3.org/ns/xproc-step";
