@@ -37,12 +37,12 @@ for nav drawer
       </v-list-tile>
     <template v-for="(child, i) in item.children"     >
       <v-list-tile :to="child.href"  :key="i" ripple>
-        <v-list-tile-action v-if="child.icon">
-          <v-icon>{{ child.icon }}</v-icon>
+        <v-list-tile-action >
+          <v-icon></v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>
-            &nbsp;{{ child.text }}
+             <v-icon>{{ child.icon }}</v-icon>&nbsp;{{ child.text }}
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>

@@ -1,0 +1,14 @@
+<mimetypes xmlns="urn:quodatum:vue-poc.mimetypes">
+	<type name="xquery">
+		<mime type="application/xquery" ext="xq xqm" />
+	</type>
+	<type name="javascript">
+    <mime type="text/ecmascript" ext="js" />
+  </type>
+  <type name="xml">
+    <mime type="text/xml" ext="xml xsd" />
+  </type>
+  <type name="sparql">
+    <mime type="application/sparql-query" ext="rq" />
+  </type>
+</mimetypes>

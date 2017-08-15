@@ -55,8 +55,6 @@ declare function vue-poc:get-file($file)
 declare function vue-poc:get-filex($file)
 {
   let $path := resolve-uri( 'static/' || $file,static-base-uri())
-
-       
   return 
     
     try{

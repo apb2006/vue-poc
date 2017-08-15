@@ -9,8 +9,9 @@
     <v-spacer></v-spacer>    
        <v-btn  flat icon @click.native="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
   </v-toolbar>
-  <v-layout>
-    <v-flex>
+  <qd-panel :show="showInfo">
+  
+    <v-flex slot="body">
     <v-layout>
      
     <v-flex xs6>
@@ -28,8 +29,8 @@
     </v-flex>
    </v-layout>
    </v-flex>
-   <v-flex v-if="showInfo" xs4>
-   <v-card flat> 
+   
+   <v-card slot="aside" flat> 
        <v-card-actions >
       <v-toolbar-title >test</v-toolbar-title>
       <v-spacer></v-spacer>    
@@ -37,8 +38,8 @@
     </v-card-actions>
     <v-card-text> blah blah protocol:  </v-card-text> 
     </v-card>
-   </v-flex>
-   </v-layout>
+  </qd-panel>
+  
 </v-card-text>
 <v-card>
  </v-container>

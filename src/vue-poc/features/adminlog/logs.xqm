@@ -13,7 +13,7 @@ as element(json)
 {
   let $entity:=$entity:list("basexlog")
  let $items:=$entity("data")()
- let $items:=$items[. ne "[GET] http://localhost:8984/vue-poc/api/log"]
+ let $items:=$items[not(ends-with(. ,"/vue-poc/api/log"))]
  (: let $_:=admin:write-log("hello admin:write-log") :)
  return dice:response($items,$entity,web:dice())
 };

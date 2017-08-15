@@ -4,17 +4,11 @@
  : @author Andy Bunce may-2017
  :)
 module namespace vue-api = 'quodatum:vue.api.images';
+import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";
 import module namespace fw="quodatum:file.walker";
 import module namespace entity = 'quodatum.models.generated' at "../../models.gen.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
-declare variable $vue-api:IMAGEDIR:="P:/pictures/";
-declare variable $vue-api:THUMBDIR:="C:/tmp/";
-
-(:
-declare variable $vue-api:IMAGEDIR:="/mnt/sda1/pictures/";
-declare variable $vue-api:THUMBDIR:="/mnt/sda1/pictures/thumbs/";
-:)
 declare variable $vue-api:entity:=$entity:list("thumbnail");
 (:~
  : do a thumbnail
@@ -39,17 +33,18 @@ declare
 %rest:produces("application/json")
 %rest:query-param("page", "{$page}",0)
 %rest:query-param("from", "{$from}")
+%rest:query-param("until", "{$until}")
 %rest:query-param("keyword", "{$keyword}")
 %output:method("json")   
 function vue-api:list( $page as xs:integer,
-$from,
+$from,$until,
 $keyword
 )   
 {
- let $a:=trace(($from,$keyword),"----------")
  let $rowsPerPage:=24
  let $images:=$vue-api:entity("data")()
  let $images:=if($from)then  $images[datetaken ge $from] else $images
+ let $images:=if($until)then  $images[datetaken le $until] else $images
  let $images:=if($keyword)then  $images[keywords/keyword = $keyword] else $images
  let $images:=subsequence($images,1+$rowsPerPage*$page,$rowsPerPage)
  
@@ -90,8 +85,8 @@ as element(*)*
 let $id:=$vue-api:entity?access?id($image)
 let $path:=$vue-api:entity?access?path($image)
 let $name:=$vue-api:entity?access?name($image)
-let $thumb:= $vue-api:THUMBDIR || $path
-let $thumb:=if(file:exists($thumb)) then $thumb else $vue-api:THUMBDIR || "missing.jpg"
+let $thumb:= $cfg:THUMBDIR || $path
+let $thumb:=if(file:exists($thumb)) then $thumb else $cfg:THUMBDIR || "missing.jpg"
 return   ( <id>{$id}</id>
           ,<name>{$name}</name>
          ,<data>{fetch:binary($thumb)}</data>

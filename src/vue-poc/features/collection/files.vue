@@ -87,14 +87,14 @@
   props:["protocol"],
   data:  function(){
     return { 
-            url:"", 
-            folders:[],
-            files:[],
-            items:["root"],
-            q:"",
-            busy:false,
-            showInfo:false,
-            selected:null
+            url: "", 
+            folders: [],
+            files: [],
+            items: ["root"],
+            q: "",
+            busy: false,
+            showInfo: false,
+            selected: null
     }
   },
   methods:{

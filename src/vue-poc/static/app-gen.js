@@ -1,4 +1,4 @@
-// generated 2017-08-13T11:45:59.085+01:00
+// generated 2017-08-15T22:45:31.814+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -40,12 +40,12 @@
       </v-list-tile>
     <template v-for="(child, i) in item.children">
       <v-list-tile :to="child.href" :key="i" ripple="">
-        <v-list-tile-action v-if="child.icon">
-          <v-icon>{{ child.icon }}</v-icon>
+        <v-list-tile-action>
+          <v-icon></v-icon>
         </v-list-tile-action>
         <v-list-tile-content>
           <v-list-tile-title>
-            &nbsp;{{ child.text }}
+             <v-icon>{{ child.icon }}</v-icon>&nbsp;{{ child.text }}
           </v-list-tile-title>
         </v-list-tile-content>
       </v-list-tile>
@@ -68,6 +68,25 @@
  `,
       
   props: ['items']
+}
+
+      );
+      Vue.component('qd-panel',{template:` 
+ <v-layout>
+		<v-flex>
+		<slot name="body"></slot>
+		</v-flex>
+		
+		<v-flex v-if="show" xs4="" grey="" lighten-3="">
+		<slot name="aside"></slot>
+		</v-flex>
+</v-layout>
+ `,
+      
+  props: ['show'],
+  created:function(){
+      console.log("qd-panel");
+    }
 }
 
       );
@@ -147,7 +166,7 @@ Vue.filter('round', function(value, decimals) {
       );
       const About=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 indigo accent-3">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
-v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
+v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <p>
 	This is a experiment in using
 	<code>vue.js</code>
@@ -319,14 +338,14 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   props:["protocol"],
   data:  function(){
     return { 
-            url:"", 
-            folders:[],
-            files:[],
-            items:["root"],
-            q:"",
-            busy:false,
-            showInfo:false,
-            selected:null
+            url: "", 
+            folders: [],
+            files: [],
+            items: ["root"],
+            q: "",
+            busy: false,
+            showInfo: false,
+            selected: null
     }
   },
   methods:{
@@ -903,51 +922,20 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       const Images=Vue.extend({template:` 
 
       <v-card>
-        <v-toolbar light="">
-    
-          <v-menu :close-on-content-click="false" v-model="showFilter" transition="scale-transition" offset-y="" full-width="">
-         <v-text-field slot="activator" name="input-1-3" style="width:30em;" label="Filter images" single-line="" prepend-icon="search" readonly="" :value="qtext"></v-text-field>
-         <v-card>
-         <v-card-title>
-          Set filter...
-          <v-spacer></v-spacer>
-          <v-btn @click="showFilter = false" icon=""><v-icon>close</v-icon></v-btn>
-          </v-card-title>
-        <v-card-text>
-    
-         <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" autocomplete=""></v-select>
-              <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
-             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
-         
-          <v-date-picker v-model="query.from" scrollable="" actions="">
-            <template scope="{ save, cancel }">
-              <v-card-actions>
-                <v-btn flat="" primary="" @click="cancel()">Cancel</v-btn>
-                <v-btn flat="" primary="" @click="save()">Save</v-btn>
-              </v-card-actions>
-            </template>
-          </v-date-picker>
-          </v-menu>
-        </v-card-text>
-        
-        <v-card-actions>
-          <v-spacer></v-spacer>
-
-          <v-btn @click="showFilter = false" primary="">Apply</v-btn>
-        </v-card-actions>
-      </v-card>
-            </v-menu>
-        <v-btn @click="clear" icon="" v-tooltip:top="{ html: 'Clear search' }" :disabled="!(query.keyword || query.from)">
+      <v-toolbar class="green white--text">
+      <v-btn @click.stop="showFilter = true" icon=""><v-icon>search</v-icon></v-btn>
+        <v-toolbar-title>{{ qtext }}</v-toolbar-title>
+              
+        <v-btn @click="clear" icon="" v-tooltip:top="{ html: 'Clear search' }" v-if="query.keyword || query.from || query.until">
             <v-icon>clear</v-icon>
            </v-btn>
-            <v-progress-circular v-if="busy" indeterminate="" class="primary--text"></v-progress-circular>
-  
            <v-spacer></v-spacer>
+           <v-progress-circular v-if="busy" indeterminate="" class="primary--text"></v-progress-circular>
             Page:{{ query.page+1 }}
-          <v-btn @click="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon="" primary="">
+          <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon="" primary="">
            <v-icon>arrow_back</v-icon>
            </v-btn>
-           <v-btn @click="query.page+=1" icon="" primary="">
+           <v-btn @click.stop="query.page+=1" icon="" primary="">
             <v-icon>arrow_forward</v-icon>
            </v-btn>
         </v-toolbar>
@@ -957,7 +945,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
               <v-card class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)" @click="go(image)" height="80px" :contain="true"></v-card-media>
-                 <v-card-actions v-tooltip:top="{ html: image.id + ' '+image.name }">
+                 <v-card-actions v-tooltip:top="{ html:  ' '+image.path }">
               
                 <v-btn icon="" small="">
                   <v-icon>favorite</v-icon>
@@ -974,30 +962,82 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
             </v-flex>
           </v-layout>
         </v-container>
-          <v-navigation-drawer left="" light="" temporary="" v-model="showInfo">
-					     <v-card> 
-					       <v-toolbar class="green white--text">
-					      <v-toolbar-title>{{selitem.name}}</v-toolbar-title>
-					      <v-spacer></v-spacer>    
-					       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
-					    </v-toolbar>
-					    <v-card-text> blah blah  </v-card-text> 
-					   </v-card>
-      </v-navigation-drawer>
-      </v-card>
 
+ <v-navigation-drawer left="" persistent="" v-model="showFilter" :disable-route-watcher="true">
+         <v-card>
+          <v-toolbar class="green white--text">
+                <v-toolbar-title>Set filter...</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn @click="showFilter = false" icon=""><v-icon>close</v-icon></v-btn>
+          </v-toolbar>
+          
+        <v-card-text>    
+         <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" autocomplete=""></v-select>
+            <v-btn @click="query.keyword=null" :disabled="!query.keyword">
+               <v-icon>close</v-icon>Clear keyword
+             </v-btn> 
+          <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
+             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
+         
+          <v-date-picker v-model="query.from" scrollable="" actions="">
+            <template scope="{ save, cancel }">
+              <v-card-actions>
+                <v-btn flat="" primary="" @click="cancel()">Cancel</v-btn>
+                <v-btn flat="" primary="" @click="save()">Save</v-btn>
+              </v-card-actions>
+            </template>
+            
+         
+          </v-date-picker></v-menu>
+          
+           <v-menu lazy="" :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
+           
+            <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly=""></v-text-field>
+         
+          <v-date-picker v-model="query.until" scrollable="" actions="">
+            <template scope="{ save, cancel }">
+              <v-card-actions>
+                <v-btn flat="" primary="" @click="cancel()">Cancel</v-btn>
+                <v-btn flat="" primary="" @click="save()">Save</v-btn>
+              </v-card-actions>
+            </template>
+          </v-date-picker>
+          </v-menu>
+        </v-card-text>
+        
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn @click="showFilter = false" primary="">Apply</v-btn>
+        </v-card-actions>
+      </v-card>
+      </v-navigation-drawer>
+        <v-navigation-drawer left="" persistent="" v-model="showInfo" :disable-route-watcher="true">
+               <v-card> 
+                 <v-toolbar class="green white--text">
+                <v-toolbar-title>{{selitem.name}}</v-toolbar-title>
+                <v-spacer></v-spacer>    
+                 <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+              </v-toolbar>
+              <v-card-text> blah blah  </v-card-text> 
+             </v-card>
+      </v-navigation-drawer>
+      
+      </v-card>
+ 
  `,
         
   data: () => ({
     images:[],
     query:{page:0,  // current page
            from:null,
+           until:null,
            keyword:null
     }, 
-    modal:false, // showing datepicker
     showFilter:false,
     busy:false,
     menu2:false,
+    showUntil:false,
     keywords:[],
     showInfo:false,
     selitem:"TODO"
@@ -1016,6 +1056,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     clear(){
       this.query.from=null;
+      this.query.until=null;
       this.query.keyword=null;
       this.query.page=0;
     },
@@ -1030,8 +1071,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   },
   computed:{
     qtext(){
-          var k=this.query.keyword,f=this.query.from
-          return (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")
+          var k=this.query.keyword,f=this.query.from, u=this.query.until
+          return (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")+ (u?" until:" + u:"")
     }
   },
   watch:{
@@ -1046,14 +1087,20 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       }
   },
   created:function(){
+    console.log("create images")
     this.query.page=Number(this.$route.query.page) || this.query.page
     this.query.keyword=this.$route.query.keyword || this.query.keyword
     this.query.from=this.$route.query.from || this.query.from
+    this.query.until=this.$route.query.until || this.query.until
     this.getImages()
     HTTP.get("images/keywords")
     .then(r=>{
       this.keywords=r.data.items
       }) 
+  },
+  mounted:function(){
+    console.log("images mount")
+    
   }
     }
 
@@ -1449,8 +1496,9 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     <v-spacer></v-spacer>    
        <v-btn flat="" icon="" @click.native="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
   </v-toolbar>
-  <v-layout>
-    <v-flex>
+  <qd-panel :show="showInfo">
+  
+    <v-flex slot="body">
     <v-layout>
      
     <v-flex xs6="">
@@ -1466,8 +1514,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     </v-flex>
    </v-layout>
    </v-flex>
-   <v-flex v-if="showInfo" xs4="">
-   <v-card flat=""> 
+   
+   <v-card slot="aside" flat=""> 
        <v-card-actions>
       <v-toolbar-title>test</v-toolbar-title>
       <v-spacer></v-spacer>    
@@ -1475,8 +1523,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     </v-card-actions>
     <v-card-text> blah blah protocol:  </v-card-text> 
     </v-card>
-   </v-flex>
-   </v-layout>
+  </qd-panel>
+  
 
 <v-card>
  </v-card></v-card></v-container>

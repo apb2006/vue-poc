@@ -3,7 +3,7 @@
 	xs4> <v-card hover raised> <v-card-title
 	height="200px" class="pa-5 indigo accent-3">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
-v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4>
+v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4>
 <p>
 	This is a experiment in using
 	<code>vue.js</code>

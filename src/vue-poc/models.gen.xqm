@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-08-09T12:18:41.183+01:00 
+ : auto generated from xml files in entities folder at: 2017-08-13T22:21:05.468+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -92,7 +92,7 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(h:event)*
-       { doc("history.xml")/h:history/h:event },
+       { doc("history.xml")/h:history/h:event[h:file] },
        
        "views": map{ 
        
