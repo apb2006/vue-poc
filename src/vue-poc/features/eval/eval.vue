@@ -4,12 +4,12 @@
   <v-card >
 
      <v-toolbar>
-      <v-btn @click.native="run()">Run</v-btn>
-    <v-btn @click.native="submit()">
+      <v-btn @click="run()">Run</v-btn>
+    <v-btn @click="submit()">
     <v-icon>play_circle_outline</v-icon>
     Submit</v-btn>
     <v-spacer></v-spacer>
-     <v-btn @click.native="imports()">
+     <v-btn @click="imports()">
     <v-icon>play_circle_outline</v-icon>
     Imports</v-btn>
      <v-menu :nudge-width="100">

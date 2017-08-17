@@ -8,7 +8,7 @@
       <span class="white--text">Generate <code>model.gen.xqm</code></span>      
     </v-card-title>
     <v-spacer></v-spacer>
-     <v-btn primary @click.native="submit()"   :loading="waiting"
+     <v-btn primary @click="submit()"   :loading="waiting"
       :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
@@ -42,7 +42,7 @@
       :error="snackbar.context === 'error'"
     >
       {{ snackbar.msg }}
-      <v-btn dark flat @click.native="snackbar.show = false">Close</v-btn>
+      <v-btn dark flat @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
   </v-card>
  </v-container>

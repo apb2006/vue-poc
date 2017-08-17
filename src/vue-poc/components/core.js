@@ -194,7 +194,7 @@ const app = new Vue({
         }) 
       },
       showAlert(msg){
-        this.alert.msg=msg
+        this.alert.msg=moment().format("MMMM D, YYYY ")+msg
         this.alert.show=true
       }
   },

@@ -5,19 +5,19 @@
 <v-card>
 
 <v-toolbar light>
-      <v-menu bottom right>
-           <v-btn  icon  slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
-      <v-list>
-          <v-list-tile v-for="item in crumbs" :key="item">
-            <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
-          </v-list-tile>
-      </v-list>
-    </v-menu>
-    <v-toolbar-title>{{ url }}</v-toolbar-title>
-   
+    <v-btn icon :to="{query: { url: '/' }}">
+     <v-icon >{{icon}}</v-icon>
+     </v-btn>  
+    <v-toolbar-title>
+    <v-breadcrumbs>
+      <v-breadcrumbs-item v-for="item in crumbs" :key="item" :to="{ query: { url: '/' + item + '/' }}">
+    {{ item }}
+    </v-breadcrumbs-item>
+    </v-breadcrumbs>
+    </v-toolbar-title>
     <v-spacer></v-spacer>
       <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
-   hide-details single-line  @keyup.native.enter="filter"></v-text-field>
+   hide-details single-line  @keyup.enter="filter"></v-text-field>
    
      <v-btn icon @click="alert('todo')">     
     <v-icon>view_module</v-icon>
@@ -40,7 +40,7 @@
 	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon ripple @click.native.stop="info(item)">
+	          <v-btn icon ripple @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -57,7 +57,7 @@
 	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon ripple @click.native.stop="info(item)">
+	          <v-btn icon ripple @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -69,7 +69,7 @@
        <v-toolbar >
       <v-card-title >{{selected.name}}</v-card-title>
       <v-spacer></v-spacer>    
-       <v-btn flat icon @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+       <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-toolbar>
     <v-card-text> Things to do with  </v-card-text>
     <v-card-actions> 

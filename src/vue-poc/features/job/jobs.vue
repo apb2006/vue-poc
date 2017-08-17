@@ -5,14 +5,14 @@
        <v-btn
       light icon
       :loading="loading"
-      @click.native="getJobs()"
+      @click="getJobs()"
       :disabled="loading"
     >
     <v-icon>refresh</v-icon>
     </v-btn>
     
      <v-btn  
-      @click.native="stop()"
+      @click="stop()"
       :disabled="noSelection"
     >Stop</v-btn>
     

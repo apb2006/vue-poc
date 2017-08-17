@@ -14,7 +14,7 @@ declare variable $vue-api:entity:=$entity:list("thumbnail");
  : do a thumbnail
  :)
 declare
-%rest:GET %rest:path("/vue-poc/api/images/list/{ $id }")
+%rest:GET %rest:path("/vue-poc/api/images/list/{$id}")
 %rest:produces("application/json")
 %output:method("json")   
 function vue-api:id( $id as xs:integer)   
@@ -43,12 +43,15 @@ $keyword
 {
  let $rowsPerPage:=24
  let $images:=$vue-api:entity("data")()
+ let $images:=$images[not(@original)]
  let $images:=if($from)then  $images[datetaken ge $from] else $images
  let $images:=if($until)then  $images[datetaken le $until] else $images
  let $images:=if($keyword)then  $images[keywords/keyword = $keyword] else $images
+ let $total:=count($images)
  let $images:=subsequence($images,1+$rowsPerPage*$page,$rowsPerPage)
  
  return <json   type="object" >
+            <total type="number">{ $total }</total>
             <items type="array">{
             for $f in $images
             return <_ type="object">
@@ -88,10 +91,22 @@ let $name:=$vue-api:entity?access?name($image)
 let $thumb:= $cfg:THUMBDIR || $path
 let $thumb:=if(file:exists($thumb)) then $thumb else $cfg:THUMBDIR || "missing.jpg"
 return   ( <id>{$id}</id>
-          ,<name>{$name}</name>
+         ,<name>{$name}</name>
+         ,<path>{$path}</path>
          ,<data>{fetch:binary($thumb)}</data>
          ,<mime>{fetch:content-type($thumb)}</mime>)
 };
 
+declare 
+%rest:GET %rest:path("/vue-poc/api/images/list/{ $id }/image")
+function vue-api:rawimage($id as xs:integer)
+{
+  let $image as element(image):=db:open-id("vue-poc",$id)
+  let $path:=$cfg:IMAGEDIR || $vue-api:entity?access?path($image)
+  return (
+    web:response-header(map { 'media-type': web:content-type($path) }),
+    file:read-binary($path)
+  )
+  };
 
 

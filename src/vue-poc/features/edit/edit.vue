@@ -3,7 +3,7 @@
 <v-container fluid>
       <v-snackbar top error  v-model="snackbar">
       {{ message }}
-      <v-btn flat  @click.native="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
+      <v-btn flat  @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-snackbar>
 <v-card>
 
@@ -28,7 +28,7 @@
 <v-chip  v-if="!dirty" label small class="green white--text">.</v-chip>
 </span>
  <v-chip small  v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
-     <v-chip   @click.native="acecmd('goToNextError')"
+     <v-chip   @click="acecmd('goToNextError')"
           v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }"
            >
           <v-avatar  class="green ">{{annotations && annotations.info}}</v-avatar>
@@ -38,27 +38,27 @@
               <v-icon black >navigate_next</v-icon>
            </v-avatar>
           </v-chip>
-   <v-btn  icon @click.native="acecmd('outline')">
+   <v-btn  icon @click="acecmd('outline')">
       <v-icon>star</v-icon>
     </v-btn>
 
   
-   <v-btn  icon @click.native="acecmd('foldall')">
+   <v-btn  icon @click="acecmd('foldall')">
       <v-icon>vertical_align_center</v-icon>
     </v-btn>
     
-    <v-btn  icon @click.native="wrap=!wrap">
+    <v-btn  icon @click="wrap=!wrap">
       <v-icon>wrap_text</v-icon>
     </v-btn>
     
-   <v-btn  icon @click.native="save()">
+   <v-btn  icon @click="save()">
       <v-icon>file_upload</v-icon>
     </v-btn>
     
-    <v-btn  icon @click.native="beautify()">
+    <v-btn  icon @click="beautify()">
       <v-icon>format_align_center</v-icon>
     </v-btn>
-    <v-btn  icon @click.native="clearDialog = true">
+    <v-btn  icon @click="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
         <v-menu left  transition="v-fade-transition">
@@ -99,8 +99,8 @@
 		      <v-card-title>Clear?</v-card-title>
 		      <v-card-text>clear text.</v-card-text>
 		    <v-card-actions>
-		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
-		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
+		      <v-btn class="green--text darken-1" flat="flat" @click="reset(false)">Cancel</v-btn>
+		      <v-btn class="green--text darken-1" flat="flat" @click="reset(true)">Ok</v-btn>
 		    </v-card-actions>
 		    </v-card>
 		</v-dialog>

@@ -28,7 +28,7 @@
       
           <tr>
               <td>
-                   <v-btn     @click.native="get()" >Get count</v-btn>
+                   <v-btn     @click="get()" >Get count</v-btn>
                </td>
                <td>
      <v-checkbox  v-model="repeat.get" ></v-checkbox>
@@ -57,7 +57,7 @@
           
             <tr>
           <td>
-             <v-btn    @click.native="update()" >Update count</v-btn>
+             <v-btn    @click="update()" >Update count</v-btn>
           </td>
           
           <td>

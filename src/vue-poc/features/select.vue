@@ -7,7 +7,7 @@
       <span class="white--text">Selection</span>     
     </v-card-title>
     <v-spacer></v-spacer>    
-       <v-btn  flat icon @click.native="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
+       <v-btn  flat icon @click="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
   </v-toolbar>
   <qd-panel :show="showInfo">
   
@@ -34,7 +34,7 @@
        <v-card-actions >
       <v-toolbar-title >test</v-toolbar-title>
       <v-spacer></v-spacer>    
-       <v-btn flat icon @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+       <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-card-actions>
     <v-card-text> blah blah protocol:  </v-card-text> 
     </v-card>

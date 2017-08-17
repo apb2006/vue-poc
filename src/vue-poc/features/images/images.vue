@@ -14,7 +14,9 @@
         v-if="query.keyword || query.from || query.until">
             <v-icon>clear</v-icon>
            </v-btn>
+           <v-chip class="primary white--text">{{ total }}</v-chip>
            <v-spacer></v-spacer>
+
            <v-progress-circular v-if="busy" indeterminate class="primary--text"></v-progress-circular>
             Page:{{ query.page+1 }}
           <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon primary>
@@ -56,7 +58,7 @@
  <v-navigation-drawer left persistent v-model="showFilter" :disable-route-watcher="true">
          <v-card>
           <v-toolbar class="green white--text">
-                <v-toolbar-title >Set filter...</v-toolbar-title>
+                <v-toolbar-title >Show images with...</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn  @click="showFilter = false" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
@@ -159,7 +161,8 @@
            from:null,
            until:null,
            keyword:null
-    }, 
+    },
+    total:null,
     showFilter:false,
     busy:false,
     menu2:false,
@@ -174,10 +177,14 @@
     },
     getImages(){
       this.busy=true
+      var t0 = performance.now();
       HTTP.get("images/list",{params:this.query})
       .then(r=>{
         this.busy=false
+        this.total=r.data.total
         this.images=r.data.items
+        var t0 = performance.now()-t0;
+        console.log("Time: ",t0)
         }) 
     },
     clear(){
@@ -190,6 +197,12 @@
       this.selitem=image;
       this.showInfo=true;
     },
+    isChanged(vnew,vold){
+      if(vnew.keyword != vold.keyword) return true
+      if(vnew.from != vold.from) return true
+      if(vnew.until != vold.until) return true
+      return false
+    },
     go(image){
       this.$router.push({ name: 'image', params: { id: image.id }})
     }
@@ -198,12 +211,16 @@
   computed:{
     qtext(){
           var k=this.query.keyword,f=this.query.from, u=this.query.until
-          return (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")+ (u?" until:" + u:"")
+          var t= (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")+ (u?" until:" + u:"")
+          return t?t:"(All)"
     }
   },
   watch:{
       "query":{
-        handler:function(v){
+        handler:function(vnew,vold){
+          var b=this.isChanged(vnew,vold)
+          console.log("watch",b,vnew,vold)
+          if(b) this.query.page=0
           this.$router.push({  query: this.query })
           },
         deep:true

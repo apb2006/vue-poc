@@ -6,7 +6,7 @@
   <table>
    <tr v-for="(item, row) in grid">
     <td v-for="(cell,col) in item" style="width:3em;" >
-    <v-btn @click.native="click(row,col)" :disabled="disabled(row,col)">{{cell}}</v-btn>
+    <v-btn @click="click(row,col)" :disabled="disabled(row,col)">{{cell}}</v-btn>
     </td>
    </tr>
   </table>
@@ -14,7 +14,7 @@
    <table>
    <tr v-for="(item, row) in grid">
     <td v-for="(cell,col) in item" style="width:50px;height:50px;" >
-    <v-btn @click.native="click(row,col)" :disabled="disabled(row,col)">
+    <v-btn @click="click(row,col)" :disabled="disabled(row,col)">
     <img :src="src(row,col)" style="width:50px;height:50px;"/>
 </v-btn>
     </td>

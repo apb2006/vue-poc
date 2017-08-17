@@ -1,4 +1,4 @@
-// generated 2017-08-15T22:45:31.814+01:00
+// generated 2017-08-17T16:08:17.382+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -258,18 +258,18 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <v-card>
 
 <v-toolbar light="">
-      <v-menu bottom="" right="">
-           <v-btn icon="" slot="activator"><v-icon>{{icon}}</v-icon></v-btn>
-      <v-list>
-          <v-list-tile v-for="item in crumbs" :key="item">
-            <v-list-tile-title @click="root()">{{ item }}</v-list-tile-title>
-          </v-list-tile>
-      </v-list>
-    </v-menu>
-    <v-toolbar-title>{{ url }}</v-toolbar-title>
-   
+    <v-btn icon="" :to="{query: { url: '/' }}">
+     <v-icon>{{icon}}</v-icon>
+     </v-btn>  
+    <v-toolbar-title>
+    <v-breadcrumbs>
+      <v-breadcrumbs-item v-for="item in crumbs" :key="item" :to="{ query: { url: '/' + item + '/' }}">
+    {{ item }}
+    </v-breadcrumbs-item>
+    </v-breadcrumbs>
+    </v-toolbar-title>
     <v-spacer></v-spacer>
-      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.native.enter="filter"></v-text-field>
+      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="filter"></v-text-field>
    
      <v-btn icon="" @click="alert('todo')">     
     <v-icon>view_module</v-icon>
@@ -292,7 +292,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon="" ripple="" @click.native.stop="info(item)">
+	          <v-btn icon="" ripple="" @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -309,7 +309,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon="" ripple="" @click.native.stop="info(item)">
+	          <v-btn icon="" ripple="" @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -321,7 +321,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
        <v-toolbar>
       <v-card-title>{{selected.name}}</v-card-title>
       <v-spacer></v-spacer>    
-       <v-btn flat="" icon="" @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-toolbar>
     <v-card-text> Things to do with  </v-card-text>
     <v-card-actions> 
@@ -459,7 +459,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <v-container fluid="">
       <v-snackbar top="" error="" v-model="snackbar">
       {{ message }}
-      <v-btn flat="" @click.native="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
+      <v-btn flat="" @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-snackbar>
 <v-card>
 
@@ -484,7 +484,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
 </span>
  <v-chip small="" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
-     <v-chip @click.native="acecmd('goToNextError')" v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }">
+     <v-chip @click="acecmd('goToNextError')" v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }">
           <v-avatar class="green ">{{annotations &amp;&amp; annotations.info}}</v-avatar>
           <v-avatar class="yellow ">{{annotations &amp;&amp; annotations.warning}}</v-avatar>        
           <v-avatar class="red " small="">{{annotations &amp;&amp; annotations.error}}</v-avatar>    
@@ -492,27 +492,27 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
               <v-icon black="">navigate_next</v-icon>
            </v-avatar>
           </v-chip>
-   <v-btn icon="" @click.native="acecmd('outline')">
+   <v-btn icon="" @click="acecmd('outline')">
       <v-icon>star</v-icon>
     </v-btn>
 
   
-   <v-btn icon="" @click.native="acecmd('foldall')">
+   <v-btn icon="" @click="acecmd('foldall')">
       <v-icon>vertical_align_center</v-icon>
     </v-btn>
     
-    <v-btn icon="" @click.native="wrap=!wrap">
+    <v-btn icon="" @click="wrap=!wrap">
       <v-icon>wrap_text</v-icon>
     </v-btn>
     
-   <v-btn icon="" @click.native="save()">
+   <v-btn icon="" @click="save()">
       <v-icon>file_upload</v-icon>
     </v-btn>
     
-    <v-btn icon="" @click.native="beautify()">
+    <v-btn icon="" @click="beautify()">
       <v-icon>format_align_center</v-icon>
     </v-btn>
-    <v-btn icon="" @click.native="clearDialog = true">
+    <v-btn icon="" @click="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
         <v-menu left="" transition="v-fade-transition">
@@ -553,8 +553,8 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 		      <v-card-title>Clear?</v-card-title>
 		      <v-card-text>clear text.</v-card-text>
 		    <v-card-actions>
-		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(false)">Cancel</v-btn>
-		      <v-btn class="green--text darken-1" flat="flat" @click.native="reset(true)">Ok</v-btn>
+		      <v-btn class="green--text darken-1" flat="flat" @click="reset(false)">Cancel</v-btn>
+		      <v-btn class="green--text darken-1" flat="flat" @click="reset(true)">Ok</v-btn>
 		    </v-card-actions>
 		    </v-card>
 		</v-dialog>
@@ -730,12 +730,12 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   <v-card>
 
      <v-toolbar>
-      <v-btn @click.native="run()">Run</v-btn>
-    <v-btn @click.native="submit()">
+      <v-btn @click="run()">Run</v-btn>
+    <v-btn @click="submit()">
     <v-icon>play_circle_outline</v-icon>
     Submit</v-btn>
     <v-spacer></v-spacer>
-     <v-btn @click.native="imports()">
+     <v-btn @click="imports()">
     <v-icon>play_circle_outline</v-icon>
     Imports</v-btn>
      <v-menu :nudge-width="100">
@@ -899,21 +899,46 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       );
       const Image=Vue.extend({template:` 
  <v-container fluid="">
- Image: {{ id }}
- doc <pre>{{ image &amp;&amp; image.doc }}</pre>
+  <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+      <span class="white--text">Image: {{ id }}</span>      
+    </v-card-title>
+    <v-spacer></v-spacer> 
+    <a :href="path" :download="id +'.jpg'"><v-icon>file_download</v-icon></a>
+    </v-toolbar>
+    <v-card-text>
+ <v-layout>
+		 <v-flex xs5="">
+		<pre style="overflow:auto;">{{ image.doc }}</pre>
+		 </v-flex>
+		 
+		 <v-flex xs7="">
+		 <iframe :src="path" style="border:0;width:100%;height:100%;min-height:400px;">image</iframe>
+		 </v-flex>
+ </v-layout>
+ </v-card-text>
+ </v-card>
  </v-container>
  `,
         
   props:["id"],
   data: ()=>( {
-    image:null
+    image:{},
+    loaded:false
   }),
+  computed: {
+    path(){
+    return this.loaded?'/vue-poc/api/images/list/'+ this.id+ '/image':null
+    }
+},
   created:function(){
    var id=this._props.id
    HTTP.get("images/list/"+id)
    .then(r=>{
-     console.log(r.data)
      this.image=r.data
+     this.loaded=true
      })
   }
     }
@@ -929,7 +954,9 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         <v-btn @click="clear" icon="" v-tooltip:top="{ html: 'Clear search' }" v-if="query.keyword || query.from || query.until">
             <v-icon>clear</v-icon>
            </v-btn>
+           <v-chip class="primary white--text">{{ total }}</v-chip>
            <v-spacer></v-spacer>
+
            <v-progress-circular v-if="busy" indeterminate="" class="primary--text"></v-progress-circular>
             Page:{{ query.page+1 }}
           <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon="" primary="">
@@ -966,7 +993,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
  <v-navigation-drawer left="" persistent="" v-model="showFilter" :disable-route-watcher="true">
          <v-card>
           <v-toolbar class="green white--text">
-                <v-toolbar-title>Set filter...</v-toolbar-title>
+                <v-toolbar-title>Show images with...</v-toolbar-title>
           <v-spacer></v-spacer>
           <v-btn @click="showFilter = false" icon=""><v-icon>close</v-icon></v-btn>
           </v-toolbar>
@@ -1033,7 +1060,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
            from:null,
            until:null,
            keyword:null
-    }, 
+    },
+    total:null,
     showFilter:false,
     busy:false,
     menu2:false,
@@ -1048,10 +1076,14 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     getImages(){
       this.busy=true
+      var t0 = performance.now();
       HTTP.get("images/list",{params:this.query})
       .then(r=>{
         this.busy=false
+        this.total=r.data.total
         this.images=r.data.items
+        var t0 = performance.now()-t0;
+        console.log("Time: ",t0)
         }) 
     },
     clear(){
@@ -1064,6 +1096,12 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       this.selitem=image;
       this.showInfo=true;
     },
+    isChanged(vnew,vold){
+      if(vnew.keyword != vold.keyword) return true
+      if(vnew.from != vold.from) return true
+      if(vnew.until != vold.until) return true
+      return false
+    },
     go(image){
       this.$router.push({ name: 'image', params: { id: image.id }})
     }
@@ -1072,12 +1110,16 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   computed:{
     qtext(){
           var k=this.query.keyword,f=this.query.from, u=this.query.until
-          return (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")+ (u?" until:" + u:"")
+          var t= (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")+ (u?" until:" + u:"")
+          return t?t:"(All)"
     }
   },
   watch:{
       "query":{
-        handler:function(v){
+        handler:function(vnew,vold){
+          var b=this.isChanged(vnew,vold)
+          console.log("watch",b,vnew,vold)
+          if(b) this.query.page=0
           this.$router.push({  query: this.query })
           },
         deep:true
@@ -1108,11 +1150,11 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       const Job=Vue.extend({template:` 
   <v-card>
    <v-toolbar light="">
-       <v-btn light="" icon="" :loading="loading" @click.native="getJobs()" :disabled="loading">
+       <v-btn light="" icon="" :loading="loading" @click="getJobs()" :disabled="loading">
     <v-icon>refresh</v-icon>
     </v-btn>
     
-     <v-btn @click.native="stop()" :disabled="noSelection">Stop</v-btn>
+     <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
     
       <v-spacer></v-spacer>
       <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>
@@ -1204,7 +1246,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         
     <v-divider></v-divider>
     <v-card-actions class="blue-grey darken-1 mt-0">
-       <v-btn primary="" @click.native="go()">Continue</v-btn>
+       <v-btn primary="" @click="go()">Continue</v-btn>
        <v-spacer></v-spacer>
     </v-card-actions>
 </v-card>
@@ -1278,7 +1320,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       
           <tr>
               <td>
-                   <v-btn @click.native="get()">Get count</v-btn>
+                   <v-btn @click="get()">Get count</v-btn>
                </td>
                <td>
      <v-checkbox v-model="repeat.get"></v-checkbox>
@@ -1307,7 +1349,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
           
             <tr>
           <td>
-             <v-btn @click.native="update()">Update count</v-btn>
+             <v-btn @click="update()">Update count</v-btn>
           </td>
           
           <td>
@@ -1397,7 +1439,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   <table>
    <tbody><tr v-for="(item, row) in grid">
     <td v-for="(cell,col) in item" style="width:3em;">
-    <v-btn @click.native="click(row,col)" :disabled="disabled(row,col)">{{cell}}</v-btn>
+    <v-btn @click="click(row,col)" :disabled="disabled(row,col)">{{cell}}</v-btn>
     </td>
    </tr>
   </tbody></table>
@@ -1405,7 +1447,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
    <table>
    <tbody><tr v-for="(item, row) in grid">
     <td v-for="(cell,col) in item" style="width:50px;height:50px;">
-    <v-btn @click.native="click(row,col)" :disabled="disabled(row,col)">
+    <v-btn @click="click(row,col)" :disabled="disabled(row,col)">
     <img :src="src(row,col)" style="width:50px;height:50px;">
 </v-btn>
     </td>
@@ -1494,7 +1536,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       <span class="white--text">Selection</span>     
     </v-card-title>
     <v-spacer></v-spacer>    
-       <v-btn flat="" icon="" @click.native="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
+       <v-btn flat="" icon="" @click="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
   </v-toolbar>
   <qd-panel :show="showInfo">
   
@@ -1519,7 +1561,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
        <v-card-actions>
       <v-toolbar-title>test</v-toolbar-title>
       <v-spacer></v-spacer>    
-       <v-btn flat="" icon="" @click.native="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-card-actions>
     <v-card-text> blah blah protocol:  </v-card-text> 
     </v-card>
@@ -1753,7 +1795,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       <span class="white--text">Generate <code>model.gen.xqm</code></span>      
     </v-card-title>
     <v-spacer></v-spacer>
-     <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
+     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
     </v-toolbar>
@@ -1778,7 +1820,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
  
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
       {{ snackbar.msg }}
-      <v-btn dark="" flat="" @click.native="snackbar.show = false">Close</v-btn>
+      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
   </v-card>
  </v-container>
@@ -1851,7 +1893,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       <span class="white--text">compile</span>      
     </v-card-title>
       <v-spacer></v-spacer>
-     <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
+     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
     </v-toolbar>
@@ -1873,7 +1915,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
    
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
       {{ snackbar.msg }}
-      <v-btn dark="" flat="" @click.native="snackbar.show = false">Close</v-btn>
+      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
   </v-card>
  </v-container>
@@ -1919,7 +1961,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       <span class="white--text">Task: Generate <code>xqdoc</code></span>      
     </v-card-title>
       <v-spacer></v-spacer>
-     <v-btn primary="" @click.native="submit()" :loading="waiting" :disabled="waiting">
+     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
     </v-toolbar>
@@ -2008,7 +2050,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
     <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required=""></v-text-field>
     </v-card>
-        <v-btn primary="" @click.native="step = 2">Next</v-btn>
+        <v-btn primary="" @click="step = 2">Next</v-btn>
   </v-stepper-content>
   
   <v-stepper-content step="2" non-linear="">
@@ -2016,9 +2058,9 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     <vue-ace editor-id="editorA" :content="taskxml" mode="xml" wrap="true" v-on:change-content="onChange"></vue-ace>
 		</v-card>
    
-    <v-btn flat="" @click.native="step -= 1">Back</v-btn>
-    <v-btn primary="" @click.native="validate()">Validate</v-btn>
-     <v-btn primary="" @click.native="step = 3">Next</v-btn>  
+    <v-btn flat="" @click="step -= 1">Back</v-btn>
+    <v-btn primary="" @click="validate()">Validate</v-btn>
+     <v-btn primary="" @click="step = 3">Next</v-btn>  
   </v-stepper-content>
 
   <v-stepper-content step="3" non-linear="">
@@ -2026,8 +2068,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     output todo
     </v-card>
 
-     <v-btn flat="" @click.native="step -= 1">Back</v-btn>
-     <v-btn primary="" @click.native="go()">go</v-btn>
+     <v-btn flat="" @click="step -= 1">Back</v-btn>
+     <v-btn primary="" @click="go()">go</v-btn>
   </v-stepper-content>
 </v-stepper>
  </v-container>
@@ -2300,7 +2342,7 @@ const app = new Vue({
         }) 
       },
       showAlert(msg){
-        this.alert.msg=msg
+        this.alert.msg=moment().format("MMMM D, YYYY ")+msg
         this.alert.show=true
       }
   },

@@ -50,7 +50,7 @@
               <v-list-tile-title>Vue PoC</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon @click.native.stop="mini = !mini">
+              <v-btn icon @click.stop="mini = !mini">
                 <v-icon>chevron_left</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -61,11 +61,11 @@
  </v-navigation-drawer>
   
  <v-toolbar class="indigo" dark >
-  <v-toolbar-side-icon @click.native.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
+  <v-toolbar-side-icon @click.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down" >{{$route.meta.title}}</v-toolbar-title>
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q"
-   hide-details single-line dark @keyup.native.enter="search"></v-text-field>
+   hide-details single-line dark @keyup.enter="search"></v-text-field>
    <v-menu left  transition="v-fade-transition">
       <v-btn dark icon slot="activator">
         {{$auth.user}}
@@ -85,7 +85,7 @@
 </v-toolbar>
  <main> 
  <v-alert error value="true" dismissible v-model="alert.show">
-      <pre>{{ alert.msg }}</pre>
+      <pre style="overflow:auto;">{{ alert.msg }}</pre>
     </v-alert>   
       <transition name="fade" mode="out-in">
         <router-view class="view ma-3"></router-view>

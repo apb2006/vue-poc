@@ -20,7 +20,7 @@
               required
              ></v-text-field>
     </v-card>
-        <v-btn primary @click.native="step = 2">Next</v-btn>
+        <v-btn primary @click="step = 2">Next</v-btn>
   </v-stepper-content>
   
   <v-stepper-content step="2" non-linear>
@@ -30,9 +30,9 @@
 		></vue-ace>
 		</v-card>
    
-    <v-btn flat @click.native="step -= 1">Back</v-btn>
-    <v-btn primary @click.native="validate()">Validate</v-btn>
-     <v-btn primary @click.native="step = 3">Next</v-btn>  
+    <v-btn flat @click="step -= 1">Back</v-btn>
+    <v-btn primary @click="validate()">Validate</v-btn>
+     <v-btn primary @click="step = 3">Next</v-btn>  
   </v-stepper-content>
 
   <v-stepper-content step="3" non-linear>
@@ -40,8 +40,8 @@
     output todo
     </v-card>
 
-     <v-btn flat @click.native="step -= 1">Back</v-btn>
-     <v-btn primary @click.native="go()">go</v-btn>
+     <v-btn flat @click="step -= 1">Back</v-btn>
+     <v-btn primary @click="go()">go</v-btn>
   </v-stepper-content>
 </v-stepper>
  </v-container>
