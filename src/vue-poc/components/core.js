@@ -71,14 +71,16 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: Home,meta:{title:"Home"} },
     { path: '/session', component: Session ,meta:{title:"Session"}},
-    { path: '/images', component: Images,meta:{title:"Images"} },
-    { path: '/images/:id', name:"image",component: Image, props: true,meta:{title:"Image details"}},
-    { path: '/select', component: Select,meta:{title:"Select"} },
-    { path: '/search', component: Search,meta:{title:"Search"} },
+    { path: '/images/item', component: Images, meta:{title:"Images"} },
+    { path: '/images/report', name:"image-reports",component: Report, props: true, meta:{title: "Image report"}},
+    { path: '/images/item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
+    { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
+    { path: '/select', component: Select, meta:{title:"Select"} },
+    { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
-    { path: '/thumbnail', component: Thumbnail,meta:{title:"Thumbnail generator"} },
+   
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
@@ -161,8 +163,9 @@ const app = new Vue({
         text: 'Images' ,
         model: false,
         children: [
-          {href: '/images',text: 'Collection',icon: 'photo_camera'},
-          {href: '/thumbnail',text: 'Thumbnail',icon: 'touch_app'}
+          {href: '/images/item',text: 'Collection',icon: 'photo_camera'},
+          {href: '/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
+          {href: '/images/report',text: 'Image reports',icon: 'report'}
           ]},
       {
         icon: 'more_horiz',

@@ -29,6 +29,7 @@ function vue-api:id( $id as xs:integer)
  : do a thumbnail
  :)
 declare
+%rest:single
 %rest:GET %rest:path("/vue-poc/api/images/list")
 %rest:produces("application/json")
 %rest:query-param("page", "{$page}",0)

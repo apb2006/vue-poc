@@ -17,7 +17,7 @@
            <v-chip class="primary white--text">{{ total }}</v-chip>
            <v-spacer></v-spacer>
 
-           <v-progress-circular v-if="busy" indeterminate class="primary--text"></v-progress-circular>
+       
             Page:{{ query.page+1 }}
           <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon primary>
            <v-icon>arrow_back</v-icon>
@@ -26,8 +26,8 @@
             <v-icon>arrow_forward</v-icon>
            </v-btn>
         </v-toolbar>
-
-        <v-container fluid grid-list-md>
+        <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
+        <v-container v-if="!busy" fluid grid-list-md>
           <v-layout row wrap>
             <v-flex height="80px"
               xs2
@@ -183,8 +183,8 @@
         this.busy=false
         this.total=r.data.total
         this.images=r.data.items
-        var t0 = performance.now()-t0;
-        console.log("Time: ",t0)
+        var t1 = performance.now();
+        console.log("Time: ",t1 - t0)
         }) 
     },
     clear(){

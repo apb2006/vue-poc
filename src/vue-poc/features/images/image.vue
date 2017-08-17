@@ -9,9 +9,11 @@
     <v-toolbar class="orange darken-1">
      <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title >
-      <span class="white--text">Image: {{ id }}</span>      
+     <v-chip > {{ image.name }}</v-chip>   
     </v-card-title>
+     <span > {{ image.path }}</span>   
     <v-spacer></v-spacer> 
+      <span class="white--text">Image: {{ id }}</span>      
     <a :href="path" :download="id +'.jpg'"><v-icon>file_download</v-icon></a>
     </v-toolbar>
     <v-card-text>

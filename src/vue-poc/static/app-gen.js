@@ -1,4 +1,4 @@
-// generated 2017-08-17T16:08:17.382+01:00
+// generated 2017-08-17T23:58:25.476+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -903,9 +903,11 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     <v-toolbar class="orange darken-1">
      <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
-      <span class="white--text">Image: {{ id }}</span>      
+     <v-chip> {{ image.name }}</v-chip>   
     </v-card-title>
+     <span> {{ image.path }}</span>   
     <v-spacer></v-spacer> 
+      <span class="white--text">Image: {{ id }}</span>      
     <a :href="path" :download="id +'.jpg'"><v-icon>file_download</v-icon></a>
     </v-toolbar>
     <v-card-text>
@@ -957,7 +959,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
            <v-chip class="primary white--text">{{ total }}</v-chip>
            <v-spacer></v-spacer>
 
-           <v-progress-circular v-if="busy" indeterminate="" class="primary--text"></v-progress-circular>
+       
             Page:{{ query.page+1 }}
           <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon="" primary="">
            <v-icon>arrow_back</v-icon>
@@ -966,8 +968,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
             <v-icon>arrow_forward</v-icon>
            </v-btn>
         </v-toolbar>
-
-        <v-container fluid="" grid-list-md="">
+        <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+        <v-container v-if="!busy" fluid="" grid-list-md="">
           <v-layout row="" wrap="">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
               <v-card class="grey lighten-2 pt-1">
@@ -1082,8 +1084,8 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         this.busy=false
         this.total=r.data.total
         this.images=r.data.items
-        var t0 = performance.now()-t0;
-        console.log("Time: ",t0)
+        var t1 = performance.now();
+        console.log("Time: ",t1 - t0)
         }) 
     },
     clear(){
@@ -1144,6 +1146,29 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     console.log("images mount")
     
   }
+    }
+
+      );
+      const Report=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+     <v-chip>todo</v-chip>   
+    </v-card-title>
+   
+    <v-spacer></v-spacer> 
+  
+    </v-toolbar>
+    <v-card-text>
+body
+ </v-card-text>
+ </v-card>
+ </v-container>
+ `,
+        
+ 
     }
 
       );
@@ -2219,14 +2244,16 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: Home,meta:{title:"Home"} },
     { path: '/session', component: Session ,meta:{title:"Session"}},
-    { path: '/images', component: Images,meta:{title:"Images"} },
-    { path: '/images/:id', name:"image",component: Image, props: true,meta:{title:"Image details"}},
-    { path: '/select', component: Select,meta:{title:"Select"} },
-    { path: '/search', component: Search,meta:{title:"Search"} },
+    { path: '/images/item', component: Images, meta:{title:"Images"} },
+    { path: '/images/report', name:"image-reports",component: Report, props: true, meta:{title: "Image report"}},
+    { path: '/images/item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
+    { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
+    { path: '/select', component: Select, meta:{title:"Select"} },
+    { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
-    { path: '/thumbnail', component: Thumbnail,meta:{title:"Thumbnail generator"} },
+   
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
@@ -2309,8 +2336,9 @@ const app = new Vue({
         text: 'Images' ,
         model: false,
         children: [
-          {href: '/images',text: 'Collection',icon: 'photo_camera'},
-          {href: '/thumbnail',text: 'Thumbnail',icon: 'touch_app'}
+          {href: '/images/item',text: 'Collection',icon: 'photo_camera'},
+          {href: '/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
+          {href: '/images/report',text: 'Image reports',icon: 'report'}
           ]},
       {
         icon: 'more_horiz',
