@@ -1,4 +1,4 @@
-// generated 2017-08-17T23:58:25.476+01:00
+// generated 2017-08-19T22:16:40.597+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -316,20 +316,23 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	      </v-list-tile>
 	  </v-list>
 	  </v-flex>
-	   <v-flex v-if="showInfo" xs4="" grey="" lighten-3="">
+	
+  </v-layout>
+  
+    <v-navigation-drawer left="" persistent="" v-model="showInfo" :disable-route-watcher="true">
    <v-card flat="" tile=""> 
        <v-toolbar>
-      <v-card-title>{{selected.name}}</v-card-title>
+      <v-card-title>{{ selected &amp;&amp; selected.name }}</v-card-title>
       <v-spacer></v-spacer>    
        <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-toolbar>
     <v-card-text> Things to do with  </v-card-text>
     <v-card-actions> 
-           <v-btn flat="" @click="doit()"><v-icon>run</v-icon>run</v-btn>
+           <v-btn flat="" @click="invoke()"><v-icon>run</v-icon>run</v-btn>
            </v-card-actions>
     </v-card>
-   </v-flex>
-  </v-layout>
+   </v-navigation-drawer> 
+   
 </v-card>
  </v-container>
  `,
@@ -382,14 +385,20 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       this.selected=item
       this.showInfo=true
     },
-    doit(){
-      alert("doit")
+    invoke(){
+      HTTP.post("eval/invoke",Qs.stringify({path:this.url+this.selected.name}))
+      .then(r=>{
+        var job=r.data.job
+        console.log(r.data)
+         alert("job: "+job)
+         this.$router.push({ path: 'jobs', params: {job:job }})
+      })
     }
   
   },
   computed: {
    icon(){
-        return (this.protocol=="basexdb")?"account_balance":"folder"
+        return (this.protocol=="basexdb")?"developer_mode":"folder"
       },
    crumbs(){
         return this.url.split("/").filter((a)=>a.length>0) 
@@ -875,25 +884,52 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 }
 
       );
-      const Home=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 indigo">
+      const Home=Vue.extend({template:` 
+
+<v-card hover="" raised=""> 
+<v-card-title class="pa-5 indigo">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
-v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
+<v-spacer></v-spacer>
+  <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
+      <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
+        <v-icon>account_circle</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="green">
+        <v-icon>edit</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="indigo">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="red">
+        <v-icon>delete</v-icon>
+      </v-btn>
+    </v-speed-dial>
+ </v-card-title> 
+
+ <v-card-text>
+ 
 <p>
-	This is a experiment in using
-	<code>vue.js</code> and vuetifyjs
-	.
+	links
 </p>
 <ul>
-	<li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
-	<li><a href="https://github.com/monterail/vue-multiselect" target="new">vue-multiselect</a></li>
-	<li><a href="https://github.com/sagalbot/vue-select" target="new"><s>vue-select</s></a></li>
-	<li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
 	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 	<li><a href="/dba" target="new">DBA app</a></li>
 	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
 </ul>
-</v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link href="/dba">REPLACED</qd-link> </v-layout>  `,
+
+<v-btn floating="floating"> <v-icon>add</v-icon> 
+</v-btn> <qd-link href="/dba">REPLACED</qd-link> 
+  
+    </v-card-text> 
+</v-card> 
+	 `,
       
+    data:  function(){
+      return { 
+              fab: false
+      }
+  }
   }
 
       );
@@ -973,7 +1009,7 @@ v0.0.2 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
           <v-layout row="" wrap="">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
               <v-card class="grey lighten-2 pt-1">
-                <v-card-media :src="src(image)" @click="go(image)" height="80px" :contain="true"></v-card-media>
+                <v-card-media :src="src(image)" @click="go(image)" height="80px" contain=""></v-card-media>
                  <v-card-actions v-tooltip:top="{ html:  ' '+image.path }">
               
                 <v-btn icon="" small="">
@@ -1175,6 +1211,64 @@ body
       const Job=Vue.extend({template:` 
   <v-card>
    <v-toolbar light="">
+      <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+    
+    
+     <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
+    
+      <v-spacer></v-spacer>
+      <v-btn light="" icon="" :loading="loading" @click="getJob()" :disabled="loading">
+         <v-icon>refresh</v-icon>
+    </v-btn>
+     
+    </v-toolbar>
+  <v-card-text>Job: {{ job }}
+  </v-card-text>
+ </v-card>
+ `,
+      
+  props: ['job'],
+  data:  function(){
+    return {
+      jobstate:null,
+      selected:[],
+      search:"",
+      loading:false
+      }
+  },
+  methods:{
+    getJob(){
+      this.loading=true;
+	    HTTP.get("job/" + this.job )
+	    .then(r=>{
+	       this.loading=false
+	       this.jobstate=r.data
+	       setTimeout(()=>{ this.getJob() }, 10000);
+	    })
+	   
+    },
+    stop(){
+      var s=this.selected.map((j)=>{return j.id}).join(",")
+      console.log("AAA",this.selected)
+      alert(s)
+    }
+  },
+  computed: {
+    // a computed getter
+    noSelection: function () {
+      // `this` points to the vm instance
+      return this.selected.length==0
+    }
+  },
+  created(){
+   //this.getJob()
+  }
+}
+
+      );
+      const Jobs=Vue.extend({template:` 
+  <v-card>
+   <v-toolbar light="">
        <v-btn light="" icon="" :loading="loading" @click="getJobs()" :disabled="loading">
     <v-icon>refresh</v-icon>
     </v-btn>
@@ -1187,15 +1281,15 @@ body
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No Jobs currently running">
     <template slot="items" scope="props">
-    <td>
+    <td class="vtop">
         <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
       </td>
-      <td>{{ props.item.id }}</td>
-      <td class="text-xs-right">{{ props.item.state }}</td>
-      <td class="text-xs-right">{{ props.item.duration }}</td>
-      <td class="text-xs-right">{{ props.item.type }}</td>
-      <td class="text-xs-right">{{ props.item.user }}</td>
-       <td><code>{{ props.item.text }}</code></td>
+      <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
+      <td class="vtop text-xs-right">{{ props.item.state }}</td>
+      <td class="vtop text-xs-right">{{ props.item.duration }}</td>
+      <td class="vtop text-xs-right">{{ props.item.type }}</td>
+      <td class="vtop text-xs-right">{{ props.item.user }}</td>
+       <td class="vtop"><code>{{ props.item.text }}</code></td>
     </template>
   </v-data-table>
  </v-card>
@@ -2257,16 +2351,17 @@ const router = new VueRouter({
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
-    { path: '/settings', component: Settings,meta:{title:"Settings"} },
-    { path: '/history', component: History,meta:{title:"File History"} },
-    { path: '/puzzle', component: Puzzle,meta:{title:"Jigsaw"} },
-    { path: '/eval', component: Eval,meta:{title:"Evaluate XQuery"} },
-    { path: '/logs', component: Log,meta:{title:"Server logs"} },
-    { path: '/tasks', component: Task,meta:{title:"Runnable tasks"} },
-    { path: '/tasks/model', component: Model,meta:{title:"build model"} },
-    { path: '/tasks/xqdoc', component: Xqdoc,meta:{title:"build xqdoc"} },
-    { path: '/tasks/vuecompile', component: Vuecompile,meta:{title:"vue compile"} },
-    { path: '/jobs', component: Job,meta:{title:"Jobs"} },
+    { path: '/settings', component: Settings, meta:{title:"Settings"} },
+    { path: '/history', component: History, meta:{title:"File History"} },
+    { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
+    { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
+    { path: '/logs', component: Log, meta:{title:"Server logs"} },
+    { path: '/tasks', component: Task, meta:{title:"Runnable tasks"} },
+    { path: '/tasks/model', component: Model, meta:{title:"build model"} },
+    { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
+    { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
+    { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
+    { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
@@ -2309,7 +2404,7 @@ const app = new Vue({
         text: 'Collections' ,
         model: false,
         children: [
-       {href: '/database', text: 'Databases',icon: 'account_balance' },
+       {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/history',text: 'history',icon: 'history'}
@@ -2370,7 +2465,7 @@ const app = new Vue({
         }) 
       },
       showAlert(msg){
-        this.alert.msg=moment().format("MMMM D, YYYY ")+msg
+        this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
       }
   },

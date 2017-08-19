@@ -84,16 +84,17 @@ const router = new VueRouter({
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
-    { path: '/settings', component: Settings,meta:{title:"Settings"} },
-    { path: '/history', component: History,meta:{title:"File History"} },
-    { path: '/puzzle', component: Puzzle,meta:{title:"Jigsaw"} },
-    { path: '/eval', component: Eval,meta:{title:"Evaluate XQuery"} },
-    { path: '/logs', component: Log,meta:{title:"Server logs"} },
-    { path: '/tasks', component: Task,meta:{title:"Runnable tasks"} },
-    { path: '/tasks/model', component: Model,meta:{title:"build model"} },
-    { path: '/tasks/xqdoc', component: Xqdoc,meta:{title:"build xqdoc"} },
-    { path: '/tasks/vuecompile', component: Vuecompile,meta:{title:"vue compile"} },
-    { path: '/jobs', component: Job,meta:{title:"Jobs"} },
+    { path: '/settings', component: Settings, meta:{title:"Settings"} },
+    { path: '/history', component: History, meta:{title:"File History"} },
+    { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
+    { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
+    { path: '/logs', component: Log, meta:{title:"Server logs"} },
+    { path: '/tasks', component: Task, meta:{title:"Runnable tasks"} },
+    { path: '/tasks/model', component: Model, meta:{title:"build model"} },
+    { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
+    { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
+    { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
+    { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
@@ -136,7 +137,7 @@ const app = new Vue({
         text: 'Collections' ,
         model: false,
         children: [
-       {href: '/database', text: 'Databases',icon: 'account_balance' },
+       {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/history',text: 'history',icon: 'history'}
@@ -197,7 +198,7 @@ const app = new Vue({
         }) 
       },
       showAlert(msg){
-        this.alert.msg=moment().format("MMMM D, YYYY ")+msg
+        this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
       }
   },

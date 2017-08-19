@@ -37,7 +37,8 @@
 </head>
 <body>
 <v-app id="app" >
- <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer"  height="100%"  class="grey lighten-4 pb-0">
+ <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer"  
+ :disable-route-watcher="true" height="100%"  class="grey lighten-4 pb-0">
   <v-list class="pa-0">
 
           <v-list-tile avatar tag="div">

@@ -6,7 +6,7 @@
 module namespace vue-api = 'quodatum:vue.api.eval';
 import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace util = 'vue-poc/util' at "../../lib/util.xqm";
-
+import module namespace ufile = 'vue-poc/file' at "../../lib/file.xqm";
 
 (:~
  : eval
@@ -33,7 +33,6 @@ declare
 %output:method("json")   
 function vue-api:submit($xq )   
 {
- let $x:=fn:trace($xq,"submit: ")
  let $bindings:=map{}
  let $opts:=map{"cache":true()}
  let $r:=jobs:eval($xq,$bindings,$opts)
@@ -43,7 +42,29 @@ function vue-api:submit($xq )
 };
 
 (:~
- : imports
+ : submit a simple job from path 
+ :)
+declare
+%rest:POST %rest:path("/vue-poc/api/eval/invoke")
+%rest:form-param("path", "{$path}")
+%output:method("json")
+%updating    
+function vue-api:invoke($path )   
+{
+ let $path:=ufile:web($path)
+ let $xq:=fetch:text($path)
+ let $bindings:=map{}
+ let $opts:=map{"base-uri":$path,"cache":true()}
+ let $r:=jobs:eval($xq,$bindings,$opts)
+
+ return db:output(
+ <json   type="object" >
+            <job>{$r}</job>
+  </json>
+  )
+};
+(:~
+ : list available imports
  :)
 declare
 %rest:GET %rest:path("/vue-poc/api/eval/imports")

@@ -6,7 +6,7 @@ import module namespace t="expkg-zone58:image.thumbnailator";
 import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 declare variable $DB:="vue-poc";
-
+declare variable $CHUNK:=1000;
 
 declare %updating function local:store-thumb($f as xs:string)
 {
@@ -32,7 +32,7 @@ let $relpath:= $files!( ancestor-or-self::*/@name=>string-join("/"))
 let $relpath:=filter($relpath,function($f){ 
                                 not(file:exists($cfg:IMAGEDIR || $f)) and file:exists($cfg:IMAGEDIR || $f) 
                               })
-let $todo:= $relpath=>subsequence(1, 400)
+let $todo:= $relpath=>subsequence(1, $CHUNK)
 
 return (
         $todo!local:store-thumb(.),

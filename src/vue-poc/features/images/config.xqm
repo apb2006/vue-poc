@@ -3,10 +3,10 @@ xquery version "3.1";
 module namespace cfg = "quodatum:media.image.configure";
 
 declare variable $cfg:DB:="vue-poc";
-declare variable $cfg:IMAGEDIR:="P:/pictures/";
+declare variable $cfg:IMAGEDIR:="P:/pictures/Pictures/";
 declare variable $cfg:THUMBDIR:="C:/tmp/";
 
 (:
-declare variable $cfg:IMAGEDIR:="/mnt/sda1/pictures/";
+declare variable $cfg:IMAGEDIR:="/mnt/sda1/pictures/Pictures/";
 declare variable $cfg:THUMBDIR:="/mnt/sda1/pictures/thumbs/";
 :)

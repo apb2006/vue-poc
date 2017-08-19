@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<template id="job">
+<template id="jobs">
   <v-card >
    <v-toolbar light>
        <v-btn
@@ -36,19 +36,19 @@
       no-data-text="No Jobs currently running"
     >
     <template slot="items" scope="props">
-    <td>
+    <td class="vtop">
         <v-checkbox
           primary
           hide-details
           v-model="props.selected"
         ></v-checkbox>
       </td>
-      <td>{{ props.item.id }}</td>
-      <td class="text-xs-right">{{ props.item.state }}</td>
-      <td class="text-xs-right">{{ props.item.duration }}</td>
-      <td class="text-xs-right">{{ props.item.type }}</td>
-      <td class="text-xs-right">{{ props.item.user }}</td>
-       <td ><code>{{ props.item.text }}</code></td>
+      <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
+      <td class="vtop text-xs-right">{{ props.item.state }}</td>
+      <td class="vtop text-xs-right">{{ props.item.duration }}</td>
+      <td class="vtop text-xs-right">{{ props.item.type }}</td>
+      <td class="vtop text-xs-right">{{ props.item.user }}</td>
+       <td class="vtop"><code>{{ props.item.text }}</code></td>
     </template>
   </v-data-table>
  </v-card>

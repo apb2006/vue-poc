@@ -64,20 +64,23 @@
 	      </v-list-tile>
 	  </v-list>
 	  </v-flex>
-	   <v-flex v-if="showInfo" xs4 grey lighten-3>
+	
+  </v-layout>
+  
+    <v-navigation-drawer left persistent v-model="showInfo" :disable-route-watcher="true">
    <v-card flat tile> 
        <v-toolbar >
-      <v-card-title >{{selected.name}}</v-card-title>
+      <v-card-title >{{ selected && selected.name }}</v-card-title>
       <v-spacer></v-spacer>    
        <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-toolbar>
     <v-card-text> Things to do with  </v-card-text>
     <v-card-actions> 
-           <v-btn flat @click="doit()"><v-icon>run</v-icon>run</v-btn>
+           <v-btn flat @click="invoke()"><v-icon>run</v-icon>run</v-btn>
            </v-card-actions>
     </v-card>
-   </v-flex>
-  </v-layout>
+   </v-navigation-drawer> 
+   
 </v-card>
  </v-container>
 </template>
@@ -131,14 +134,20 @@
       this.selected=item
       this.showInfo=true
     },
-    doit(){
-      alert("doit")
+    invoke(){
+      HTTP.post("eval/invoke",Qs.stringify({path:this.url+this.selected.name}))
+      .then(r=>{
+        var job=r.data.job
+        console.log(r.data)
+         alert("job: "+job)
+         this.$router.push({ path: 'jobs', params: {job:job }})
+      })
     }
   
   },
   computed: {
    icon(){
-        return (this.protocol=="basexdb")?"account_balance":"folder"
+        return (this.protocol=="basexdb")?"developer_mode":"folder"
       },
    crumbs(){
         return this.url.split("/").filter((a)=>a.length>0) 

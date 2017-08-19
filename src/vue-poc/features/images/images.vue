@@ -36,7 +36,7 @@
             >
               <v-card   class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)"  @click="go(image)" 
-                height="80px" :contain="true"></v-card-media>
+                height="80px" contain></v-card-media>
                  <v-card-actions  v-tooltip:top="{ html:  ' '+image.path }">
               
                 <v-btn icon small>
