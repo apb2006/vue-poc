@@ -23,7 +23,6 @@ function vue-api:history( )
 {
  let $entity:=$entity:list("filehistory")
   let $items:= $entity("data")()
-  let $d:=trace($items,"66666")
  return dice:response($items,$entity,web:dice())
 };
 

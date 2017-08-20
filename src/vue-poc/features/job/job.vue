@@ -3,20 +3,34 @@
   <v-card >
    <v-toolbar light>
       <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
-    
+      <v-toolbar-title>{{ job }}</v-toolbar-title>
     
      <v-btn  
       @click="stop()"
-      :disabled="noSelection"
+      :disabled="finished"
     >Stop</v-btn>
-    
+     <v-btn  
+      @click="getResult()"
+      :disabled="result || !finished"
+    >Result</v-btn>
+    <v-chip class="orange white--text">{{  jobstate.state }}</v-chip>
+     <v-chip class="primary white--text">
+     <v-avatar>
+        <v-icon>account_circle</v-icon>
+      </v-avatar>
+     {{  jobstate.user }}</v-chip>
+      <v-chip class="primary white--text">{{  jobstate.duration }}</v-chip>
       <v-spacer></v-spacer>
-      <v-btn light icon  :loading="loading"   @click="getJob()"  :disabled="loading">
+      <v-btn light icon  :loading="loading"   @click="getJob()"  :disabled="loading || finished">
          <v-icon>refresh</v-icon>
     </v-btn>
      
     </v-toolbar>
-  <v-card-text>Job: {{ job }}
+    <v-card-text v-if="result">
+     {{ result }}
+  </v-card-text>
+  <v-card-text>
+     <code>{{ jobstate.text }}</code>
   </v-card-text>
  </v-card>
 </template>
@@ -25,9 +39,8 @@
   props: ['job'],
   data:  function(){
     return {
-      jobstate:null,
-      selected:[],
-      search:"",
+      jobstate:{state:"?",user:"?",duration:"?"},
+      result:null,
       loading:false
       }
   },
@@ -38,25 +51,28 @@
 	    .then(r=>{
 	       this.loading=false
 	       this.jobstate=r.data
-	       setTimeout(()=>{ this.getJob() }, 10000);
+	       if(!this.jobstate.id) this.jobstate={state:"cached", text:"Job not found"}
+	       if(!this.finished)setTimeout(()=>{ this.getJob() }, 10000);
 	    })
 	   
     },
+    getResult(){
+      HTTP.post("eval/result/"+this.job)
+      .then(r=>{
+        this.result=r.data.result
+    })
+    },
     stop(){
-      var s=this.selected.map((j)=>{return j.id}).join(",")
-      console.log("AAA",this.selected)
-      alert(s)
+      alert("todo stop" + this.job)
     }
   },
   computed: {
-    // a computed getter
-    noSelection: function () {
-      // `this` points to the vm instance
-      return this.selected.length==0
-    }
+    finished(){
+      return this.jobstate.state == 'cached'
+      }
   },
   created(){
-   //this.getJob()
+    this.getJob()
   }
 }
 </script>

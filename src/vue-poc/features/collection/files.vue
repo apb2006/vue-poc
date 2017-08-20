@@ -139,8 +139,7 @@
       .then(r=>{
         var job=r.data.job
         console.log(r.data)
-         alert("job: "+job)
-         this.$router.push({ path: 'jobs', params: {job:job }})
+         this.$router.push({ name: 'jobShow', params: {job:job }})
       })
     }
   

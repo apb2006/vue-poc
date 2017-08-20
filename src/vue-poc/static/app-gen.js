@@ -1,4 +1,4 @@
-// generated 2017-08-19T22:16:40.597+01:00
+// generated 2017-08-20T13:42:15.528+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -390,8 +390,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       .then(r=>{
         var job=r.data.job
         console.log(r.data)
-         alert("job: "+job)
-         this.$router.push({ path: 'jobs', params: {job:job }})
+         this.$router.push({ name: 'jobShow', params: {job:job }})
       })
     }
   
@@ -913,6 +912,9 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	links
 </p>
 <ul>
+
+<li><router-link :to="{path:'files', query:{url:'/vue-poc/features/images/'}}">vue-poc image tasks</router-link></li>
+<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}">vue-poc db</router-link></li>
 	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 	<li><a href="/dba" target="new">DBA app</a></li>
 	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
@@ -1212,17 +1214,28 @@ body
   <v-card>
    <v-toolbar light="">
       <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+      <v-toolbar-title>{{ job }}</v-toolbar-title>
     
-    
-     <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
-    
+     <v-btn @click="stop()" :disabled="finished">Stop</v-btn>
+     <v-btn @click="getResult()" :disabled="result || !finished">Result</v-btn>
+    <v-chip class="orange white--text">{{  jobstate.state }}</v-chip>
+     <v-chip class="primary white--text">
+     <v-avatar>
+        <v-icon>account_circle</v-icon>
+      </v-avatar>
+     {{  jobstate.user }}</v-chip>
+      <v-chip class="primary white--text">{{  jobstate.duration }}</v-chip>
       <v-spacer></v-spacer>
-      <v-btn light="" icon="" :loading="loading" @click="getJob()" :disabled="loading">
+      <v-btn light="" icon="" :loading="loading" @click="getJob()" :disabled="loading || finished">
          <v-icon>refresh</v-icon>
     </v-btn>
      
     </v-toolbar>
-  <v-card-text>Job: {{ job }}
+    <v-card-text v-if="result">
+     {{ result }}
+  </v-card-text>
+  <v-card-text>
+     <code>{{ jobstate.text }}</code>
   </v-card-text>
  </v-card>
  `,
@@ -1230,9 +1243,8 @@ body
   props: ['job'],
   data:  function(){
     return {
-      jobstate:null,
-      selected:[],
-      search:"",
+      jobstate:{state:"?",user:"?",duration:"?"},
+      result:null,
       loading:false
       }
   },
@@ -1243,25 +1255,28 @@ body
 	    .then(r=>{
 	       this.loading=false
 	       this.jobstate=r.data
-	       setTimeout(()=>{ this.getJob() }, 10000);
+	       if(!this.jobstate.id) this.jobstate={state:"cached", text:"Job not found"}
+	       if(!this.finished)setTimeout(()=>{ this.getJob() }, 10000);
 	    })
 	   
     },
+    getResult(){
+      HTTP.post("eval/result/"+this.job)
+      .then(r=>{
+        this.result=r.data.result
+    })
+    },
     stop(){
-      var s=this.selected.map((j)=>{return j.id}).join(",")
-      console.log("AAA",this.selected)
-      alert(s)
+      alert("todo stop" + this.job)
     }
   },
   computed: {
-    // a computed getter
-    noSelection: function () {
-      // `this` points to the vm instance
-      return this.selected.length==0
-    }
+    finished(){
+      return this.jobstate.state == 'cached'
+      }
   },
   created(){
-   //this.getJob()
+    this.getJob()
   }
 }
 
