@@ -41,10 +41,17 @@
         JobId:
       <v-chip class="green white--text">{{jobId}}</v-chip>
        <v-progress-circular v-if="waiting" indeterminate class="primary--text"></v-progress-circular>
-         Elapsed:
-         <v-chip class="green white--text">{{elapsed}}</v-chip>
+        
+           <v-chip label class="grey white--text"> 
+           <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
+           {{ jobState.writes }}</v-chip>
+            <v-chip label class="grey white--text"> 
+            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
+            {{ jobState.reads }}</v-chip>
         <v-spacer></v-spacer>
-      <v-btn flat class="green--text darken-1">@TODO</v-btn>
+         <v-chip class="green white--text">
+          <v-avatar >  <v-icon>timer</v-icon></v-avatar>
+         {{elapsed}}ms</v-chip>
     </v-card-actions>
      <v-card-text v-if="show">
      <v-flex xs12 style="height:200px"  fill-height>
@@ -62,15 +69,16 @@
     return {
       xq: '(: type your XQuery :)\n',
       result:'',
-      elapsed:null,
-      show:false,
-      showError:false,
-      jobId:null,
-      waiting:false,
-      start:null,
-      font:'Courier',
+      elapsed: null,
+      show: false,
+      showError: false,
+      jobId: null,
+      waiting: false,
+      start: null,
+      jobState: {},
+      font: 'Courier',
       dropdown_font: [
-        { text: 'Arial' },
+        { text: 'Test select' },
         { text: 'Calibri' },
         { text: 'Courier' },
         { text: 'Verdana' }
@@ -125,6 +133,7 @@
       this.waiting=true;
       HTTP.get("job/"+this.jobId)
       .then(r=>{
+        this.jobState=r.data
         this.waiting=r.data.state!="cached";
         this.elapsed=Math.floor(performance.now() - this.start);
          if(this.waiting) {
@@ -143,7 +152,7 @@
        })
     },
     imports(){
-      alert("imports")
+      alert("@TODO imports")
     }
   },
   

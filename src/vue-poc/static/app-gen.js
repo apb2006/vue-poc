@@ -1,4 +1,4 @@
-// generated 2017-08-20T13:42:15.528+01:00
+// generated 2017-08-21T11:24:21.865+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -773,10 +773,17 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         JobId:
       <v-chip class="green white--text">{{jobId}}</v-chip>
        <v-progress-circular v-if="waiting" indeterminate="" class="primary--text"></v-progress-circular>
-         Elapsed:
-         <v-chip class="green white--text">{{elapsed}}</v-chip>
+        
+           <v-chip label="" class="grey white--text"> 
+           <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
+           {{ jobState.writes }}</v-chip>
+            <v-chip label="" class="grey white--text"> 
+            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
+            {{ jobState.reads }}</v-chip>
         <v-spacer></v-spacer>
-      <v-btn flat="" class="green--text darken-1">@TODO</v-btn>
+         <v-chip class="green white--text">
+          <v-avatar>  <v-icon>timer</v-icon></v-avatar>
+         {{elapsed}}ms</v-chip>
     </v-card-actions>
      <v-card-text v-if="show">
      <v-flex xs12="" style="height:200px" fill-height="">
@@ -792,15 +799,16 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     return {
       xq: '(: type your XQuery :)\n',
       result:'',
-      elapsed:null,
-      show:false,
-      showError:false,
-      jobId:null,
-      waiting:false,
-      start:null,
-      font:'Courier',
+      elapsed: null,
+      show: false,
+      showError: false,
+      jobId: null,
+      waiting: false,
+      start: null,
+      jobState: {},
+      font: 'Courier',
       dropdown_font: [
-        { text: 'Arial' },
+        { text: 'Test select' },
         { text: 'Calibri' },
         { text: 'Courier' },
         { text: 'Verdana' }
@@ -855,6 +863,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       this.waiting=true;
       HTTP.get("job/"+this.jobId)
       .then(r=>{
+        this.jobState=r.data
         this.waiting=r.data.state!="cached";
         this.elapsed=Math.floor(performance.now() - this.start);
          if(this.waiting) {
@@ -873,7 +882,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
        })
     },
     imports(){
-      alert("imports")
+      alert("@TODO imports")
     }
   },
   
@@ -1216,27 +1225,34 @@ body
       <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ job }}</v-toolbar-title>
     
-     <v-btn @click="stop()" :disabled="finished">Stop</v-btn>
-     <v-btn @click="getResult()" :disabled="result || !finished">Result</v-btn>
+     <v-btn v-if="!finished" @click="stop()" :disabled="finished">Stop</v-btn>
+     <v-btn v-if="finished &amp;&amp; !result" @click="getResult()" :disabled="result || !finished">Result</v-btn>
     <v-chip class="orange white--text">{{  jobstate.state }}</v-chip>
-     <v-chip class="primary white--text">
-     <v-avatar>
+  
+        <v-chip label="" class="grey white--text"><v-icon class="red">lock</v-icon>{{  jobstate.writes }}</v-chip>
+       <v-chip label="" class="grey white--text"><v-icon class="amber">lock</v-icon>{{  jobstate.reads }}</v-chip>
+      <v-spacer></v-spacer>
+       <v-chip class="primary white--text">
+      <v-avatar>
         <v-icon>account_circle</v-icon>
       </v-avatar>
      {{  jobstate.user }}</v-chip>
-      <v-chip class="primary white--text">{{  jobstate.duration }}</v-chip>
-      <v-spacer></v-spacer>
+       <v-chip class="green white--text">
+        <v-avatar><v-icon>timer</v-icon></v-avatar>
+       {{  jobstate.duration }}</v-chip>
       <v-btn light="" icon="" :loading="loading" @click="getJob()" :disabled="loading || finished">
          <v-icon>refresh</v-icon>
-    </v-btn>
-     
+    </v-btn>     
     </v-toolbar>
+    
     <v-card-text v-if="result">
      {{ result }}
   </v-card-text>
+  
   <v-card-text>
      <code>{{ jobstate.text }}</code>
   </v-card-text>
+  
  </v-card>
  `,
       
@@ -1303,6 +1319,8 @@ body
       <td class="vtop text-xs-right">{{ props.item.state }}</td>
       <td class="vtop text-xs-right">{{ props.item.duration }}</td>
       <td class="vtop text-xs-right">{{ props.item.type }}</td>
+       <td class="vtop text-xs-right">{{ props.item.writes }}</td>
+        <td class="vtop text-xs-right">{{ props.item.reads }}</td>
       <td class="vtop text-xs-right">{{ props.item.user }}</td>
        <td class="vtop"><code>{{ props.item.text }}</code></td>
     </template>
@@ -1321,6 +1339,8 @@ body
         { text: 'State', value: 'state' },
         { text: 'Duration', value: 'duration' },
         { text: 'Type', value: 'type' },
+        { text: 'WriteL', value: 'writes' },
+        { text: 'ReadL', value: 'reads' },
         { text: 'User', value: 'user' },
         { text: 'Query', value: 'text' }
       ],

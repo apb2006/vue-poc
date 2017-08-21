@@ -47,6 +47,8 @@
       <td class="vtop text-xs-right">{{ props.item.state }}</td>
       <td class="vtop text-xs-right">{{ props.item.duration }}</td>
       <td class="vtop text-xs-right">{{ props.item.type }}</td>
+       <td class="vtop text-xs-right">{{ props.item.writes }}</td>
+        <td class="vtop text-xs-right">{{ props.item.reads }}</td>
       <td class="vtop text-xs-right">{{ props.item.user }}</td>
        <td class="vtop"><code>{{ props.item.text }}</code></td>
     </template>
@@ -66,6 +68,8 @@
         { text: 'State', value: 'state' },
         { text: 'Duration', value: 'duration' },
         { text: 'Type', value: 'type' },
+        { text: 'WriteL', value: 'writes' },
+        { text: 'ReadL', value: 'reads' },
         { text: 'User', value: 'user' },
         { text: 'Query', value: 'text' }
       ],

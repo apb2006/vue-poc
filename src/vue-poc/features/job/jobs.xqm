@@ -30,11 +30,11 @@ as element(json)
 {
  let $j:=jobs:list-details($job)
  return <json type="object">
-         {j:job-json($j)}
+         {if($j) then j:job-json($j) else ()}
         </json>
 };
 
-declare function j:job-json($j) 
+declare function j:job-json($j as element(job)) 
 as element(*)*
 {
      <id>{$j/@id/string()}</id>
@@ -43,4 +43,6 @@ as element(*)*
      ,<user>{$j/@user/string()}</user>
      ,<duration>{$j/@duration/string()}</duration>
      ,<text>{$j/string()}</text>
+      ,<reads>{$j/@reads/string()}</reads>
+       ,<writes>{$j/@writes/string()}</writes>
 };

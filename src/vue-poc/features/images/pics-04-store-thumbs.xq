@@ -10,9 +10,13 @@ declare variable $CHUNK:=1000;
 
 declare %updating function local:store-thumb($f as xs:string)
 {
-  let $src:=$cfg:IMAGEDIR || trace($f)
+  let $src:=$cfg:IMAGEDIR || "../" || trace($f)
   let $trg:= $cfg:THUMBDIR || $f
-  return fetch:binary($src)=>t:size(80)=>local:write-binary($trg)
+  return try{
+            fetch:binary($src)=>t:size(80)=>local:write-binary($trg)
+         } catch * {
+             db:output("bad: " || $f)
+        }
 };
 (:~  create folder if missing) :)
 declare %updating function local:write-binary($data,$url as xs:string)
@@ -30,7 +34,8 @@ let $files:= doc("/vue-poc/pics.xml")//c:file[ends-with(lower-case(@name),".jpg"
 
 let $relpath:= $files!( ancestor-or-self::*/@name=>string-join("/"))
 let $relpath:=filter($relpath,function($f){ 
-                                not(file:exists($cfg:IMAGEDIR || $f)) and file:exists($cfg:IMAGEDIR || $f) 
+                                not(file:exists($cfg:THUMBDIR || $f)) 
+                                and file:exists($cfg:IMAGEDIR || "../" || $f) 
                               })
 let $todo:= $relpath=>subsequence(1, $CHUNK)
 

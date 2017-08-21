@@ -16,7 +16,7 @@ let $relpath:= $files!( ancestor-or-self::*/@name=>string-join("/"))
 
 let $todo:= $relpath[not("/vue-poc/" || .|| "/meta.xml"=$done)]
 return (for $f in subsequence($todo,1, $CHUNK)
-        let $spath:=$cfg:IMAGEDIR || $f
+        let $spath:=$cfg:IMAGEDIR || "../" || $f
         let $dbpath:=$f || "/meta.xml"
         let $meta:=imgmeta:read($spath)
         return  db:replace($DB,$dbpath,$meta),

@@ -5,33 +5,34 @@
       <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ job }}</v-toolbar-title>
     
-     <v-btn  
-      @click="stop()"
-      :disabled="finished"
-    >Stop</v-btn>
-     <v-btn  
-      @click="getResult()"
-      :disabled="result || !finished"
-    >Result</v-btn>
+     <v-btn v-if="!finished"   @click="stop()" :disabled="finished" >Stop</v-btn>
+     <v-btn v-if="finished && !result"  @click="getResult()" :disabled="result || !finished">Result</v-btn>
     <v-chip class="orange white--text">{{  jobstate.state }}</v-chip>
-     <v-chip class="primary white--text">
-     <v-avatar>
+  
+        <v-chip label class="grey white--text"><v-icon class="red">lock</v-icon>{{  jobstate.writes }}</v-chip>
+       <v-chip label class="grey white--text"><v-icon class="amber">lock</v-icon>{{  jobstate.reads }}</v-chip>
+      <v-spacer></v-spacer>
+       <v-chip class="primary white--text">
+      <v-avatar>
         <v-icon>account_circle</v-icon>
       </v-avatar>
      {{  jobstate.user }}</v-chip>
-      <v-chip class="primary white--text">{{  jobstate.duration }}</v-chip>
-      <v-spacer></v-spacer>
+       <v-chip class="green white--text">
+        <v-avatar ><v-icon>timer</v-icon></v-avatar>
+       {{  jobstate.duration }}</v-chip>
       <v-btn light icon  :loading="loading"   @click="getJob()"  :disabled="loading || finished">
          <v-icon>refresh</v-icon>
-    </v-btn>
-     
+    </v-btn>     
     </v-toolbar>
+    
     <v-card-text v-if="result">
      {{ result }}
   </v-card-text>
+  
   <v-card-text>
      <code>{{ jobstate.text }}</code>
   </v-card-text>
+  
  </v-card>
 </template>
 
