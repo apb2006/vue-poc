@@ -20,6 +20,7 @@
  <v-layout>
 		 <v-flex xs5>
 		<pre style="overflow:auto;">{{ image.doc }}</pre>
+		  <a :href="meta" target="_new" >full metadata</a>
 		 </v-flex>
 		 
 		 <v-flex xs7 >
@@ -40,7 +41,10 @@
   computed: {
     path(){
     return this.loaded?'/vue-poc/api/images/list/'+ this.id+ '/image':null
-    }
+    },
+    meta(){
+      return this.loaded?'/vue-poc/api/images/list/'+ this.id+ '/meta':null
+      }
 },
   created:function(){
    var id=this._props.id

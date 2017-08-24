@@ -10,8 +10,8 @@
      </v-btn>  
     <v-toolbar-title>
     <v-breadcrumbs>
-      <v-breadcrumbs-item v-for="item in crumbs" :key="item" :to="{ query: { url: '/' + item + '/' }}">
-    {{ item }}
+      <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
+    {{ item.name }}
     </v-breadcrumbs-item>
     </v-breadcrumbs>
     </v-toolbar-title>
@@ -149,7 +149,10 @@
         return (this.protocol=="basexdb")?"developer_mode":"folder"
       },
    crumbs(){
-        return this.url.split("/").filter((a)=>a.length>0) 
+        var parts=this.url.split("/").filter((a)=>a.length>0)
+        var a=parts.map(function(v,i,a){return {name:v,
+                                                path:"/"+a.slice(0,i+1).join("/")+"/"}})
+        return a 
       }
   },
   watch:{

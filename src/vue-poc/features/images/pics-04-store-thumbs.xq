@@ -29,7 +29,7 @@ declare %updating function local:write-binary($data,$url as xs:string)
            file:write-binary($url,$data)
          )
 };
-let $done:=uri-collection("vue-poc/Pictures")
+
 let $files:= doc("/vue-poc/pics.xml")//c:file[ends-with(lower-case(@name),".jpg")] 
 
 let $relpath:= $files!( ancestor-or-self::*/@name=>string-join("/"))

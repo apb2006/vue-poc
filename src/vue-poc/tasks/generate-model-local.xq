@@ -6,7 +6,7 @@
 declare namespace task="https://github.com/Quodatum/app-doc/task";
 import module namespace bf = 'quodatum.tools.buildfields' at "../lib/entity-gen.xqm";
   
-let $efolder:="file:///C:/Users/andy/workspace/app-doc/src/doc/data/doc/models"
-let $target:="file:///C:/Users/andy/workspace/app-doc/src/doc/generated/models.xqm"
-return (bf:write($efolder,$target),db:output("generated C:/Users/andy/workspace/app-doc/src/doc/generated/models.xqm"))
+let $efolder:="C:/Users/andy/git/vue-poc/src/vue-poc/models"
+let $target:="C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm"
+return (bf:write($efolder,$target),db:output("generated " || $target))
           

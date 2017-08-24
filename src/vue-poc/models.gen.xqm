@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-08-13T22:21:05.468+01:00 
+ : auto generated from xml files in entities folder at: 2017-08-23T10:12:22.413+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -130,7 +130,7 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(image)*
-       { collection("/vue-poc/Pictures")/image },
+       { collection("/vue-poc/image")/image },
        
        "views": map{ 
        'filter': 'name'

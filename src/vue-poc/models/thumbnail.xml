@@ -24,6 +24,6 @@
         <view name="filter">name</view>
     </views>
 	<iconclass>fa fa-file</iconclass>
-	<data type="element(image)">collection("/vue-poc/Pictures")/image</data>
+	<data type="element(image)">collection("/vue-poc/image")/image</data>
 	
 </entity>

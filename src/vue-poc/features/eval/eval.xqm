@@ -25,6 +25,22 @@ function vue-api:eval($xq )
 };
 
 (:~
+ : query plan
+ :)
+declare
+%rest:POST %rest:path("/vue-poc/api/eval/plan")
+%rest:form-param("xq", "{$xq}")
+%output:method("json")   
+function vue-api:plan($xq )   
+{
+ let $x:=fn:trace($xq,"task: ")
+ let $r:=xquery:parse($xq,map{"compile":true(),"plan":true()})
+ return <json   type="object" >
+            <result>{ serialize($r) }</result>
+  </json>
+};
+
+(:~
  : submit a simple job
  :)
 declare

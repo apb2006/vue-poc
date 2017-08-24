@@ -14,9 +14,10 @@
         v-if="query.keyword || query.from || query.until">
             <v-icon>clear</v-icon>
            </v-btn>
-           <v-chip class="primary white--text">{{ total }}</v-chip>
+          
            <v-spacer></v-spacer>
-
+           <span v-if="!busy">
+           <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
        
             Page:{{ query.page+1 }}
           <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon primary>
@@ -25,6 +26,7 @@
            <v-btn @click.stop="query.page+=1" icon primary>
             <v-icon>arrow_forward</v-icon>
            </v-btn>
+           </span>
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
         <v-container v-if="!busy" fluid grid-list-md>
@@ -163,6 +165,7 @@
            keyword:null
     },
     total:null,
+    elapsed:null,
     showFilter:false,
     busy:false,
     menu2:false,
@@ -184,7 +187,7 @@
         this.total=r.data.total
         this.images=r.data.items
         var t1 = performance.now();
-        console.log("Time: ",t1 - t0)
+        this.elapsed= 0.001 *(t1 - t0) 
         }) 
     },
     clear(){

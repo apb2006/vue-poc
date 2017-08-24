@@ -1,4 +1,4 @@
-// generated 2017-08-21T11:24:21.865+01:00
+// generated 2017-08-24T18:16:31.442+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -263,8 +263,8 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
      </v-btn>  
     <v-toolbar-title>
     <v-breadcrumbs>
-      <v-breadcrumbs-item v-for="item in crumbs" :key="item" :to="{ query: { url: '/' + item + '/' }}">
-    {{ item }}
+      <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
+    {{ item.name }}
     </v-breadcrumbs-item>
     </v-breadcrumbs>
     </v-toolbar-title>
@@ -400,7 +400,10 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         return (this.protocol=="basexdb")?"developer_mode":"folder"
       },
    crumbs(){
-        return this.url.split("/").filter((a)=>a.length>0) 
+        var parts=this.url.split("/").filter((a)=>a.length>0)
+        var a=parts.map(function(v,i,a){return {name:v,
+                                                path:"/"+a.slice(0,i+1).join("/")+"/"}})
+        return a 
       }
   },
   watch:{
@@ -746,17 +749,15 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
      <v-btn @click="imports()">
     <v-icon>play_circle_outline</v-icon>
     Imports</v-btn>
-     <v-menu :nudge-width="100">
-          <v-toolbar-title slot="activator">
-            <span>{{font}}</span>
-            <v-icon>arrow_drop_down</v-icon>
-          </v-toolbar-title>
-          <v-list>
-            <v-list-tile v-for="item in dropdown_font" :key="item.text">
-              <v-list-tile-title v-text="item.text" @click="font=item.text"></v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
+     <v-menu offset-y="">
+      <v-btn icon="" primary="" dark="" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
+      <v-list>
+        <v-list-tile @click="plan">Show query plan</v-list-tile>
+     </v-list>
+      <v-list>
+        <v-list-tile @click="hitme">hit me</v-list-tile>
+     </v-list>
+     </v-menu>
    </v-toolbar>
 
   
@@ -769,25 +770,27 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       {{result}}
     </v-alert>
      <v-card-actions v-if="show">
-       
-        JobId:
-      <v-chip class="green white--text">{{jobId}}</v-chip>
-       <v-progress-circular v-if="waiting" indeterminate="" class="primary--text"></v-progress-circular>
-        
+
+      <v-chip class="primary white--text">{{jobId}}</v-chip>
+      
            <v-chip label="" class="grey white--text"> 
            <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
            {{ jobState.writes }}</v-chip>
             <v-chip label="" class="grey white--text"> 
             <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
             {{ jobState.reads }}</v-chip>
+ 
         <v-spacer></v-spacer>
-         <v-chip class="green white--text">
+          <v-progress-circular v-if="waiting" indeterminate="" class="primary--text"></v-progress-circular>
+          <v-chip>{{ jobState.state }}</v-chip>
+         <v-chip class="primary white--text">
           <v-avatar>  <v-icon>timer</v-icon></v-avatar>
          {{elapsed}}ms</v-chip>
+         
     </v-card-actions>
-     <v-card-text v-if="show">
+     <v-card-text v-if="showResult">
      <v-flex xs12="" style="height:200px" fill-height="">
-        <vue-ace :content="result" mode="text" wrap="true" read-only="true"></vue-ace>
+        <vue-ace :content="result" mode="text" wrap="false" read-only="true"></vue-ace>
         </v-flex> 
        </v-card-text>
     </v-card>
@@ -801,18 +804,12 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       result:'',
       elapsed: null,
       show: false,
-      showError: false,
+      showError: false, //unused
+      showResult: false, //
       jobId: null,
       waiting: false,
       start: null,
-      jobState: {},
-      font: 'Courier',
-      dropdown_font: [
-        { text: 'Test select' },
-        { text: 'Calibri' },
-        { text: 'Courier' },
-        { text: 'Verdana' }
-      ]
+      jobState: {}
       }
   },
   methods:{
@@ -823,14 +820,13 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     
     run(){
-      this.showError=this.show=false
+      this.awaitResult(false)
       this.start = performance.now();
       HTTP.post("eval/execute",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.result=r.data.result
         this.jobId=null
-        this.show=true
       })
       .catch(r=> {
         console.log("error",r)
@@ -842,12 +838,12 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     submit(){
       var data={xq:this.xq}
-      this.showError=this.show=false
+      this.showResult=this.show=false
       this.start = performance.now();
       HTTP.post("eval/submit",Qs.stringify(data))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
-        this.result=this.jobId=r.data.job
+        this.jobId=r.data.job
         this.show=true
         this.pollState()
         
@@ -874,15 +870,38 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       })
     },
     getResult(){
+      this.awaitResult(true)
        HTTP.post("eval/result/"+this.jobId)
        .then(r=>{
          this.result=r.data.result
-         this.jobId=null
-         this.show=true
        })
+    },
+    hitme(){
+      this.showResult=true
+      setTimeout(()=>{this.result="123\n".repeat(20000); },10);
+
     },
     imports(){
       alert("@TODO imports")
+    },
+    plan(){
+      this.awaitResult(false)
+      HTTP.post("eval/plan",Qs.stringify({xq:this.xq}))
+      .then(r=>{
+        this.result=r.data.result
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.response.data
+        this.showError=true;
+
+      });
+    },
+    awaitResult(show){
+      // ace slow when setting large text while hidden
+      this.show=show
+      this.result="(Please wait..)"
+      this.showResult=true
     }
   },
   
@@ -961,6 +980,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
  <v-layout>
 		 <v-flex xs5="">
 		<pre style="overflow:auto;">{{ image.doc }}</pre>
+		  <a :href="meta" target="_new">full metadata</a>
 		 </v-flex>
 		 
 		 <v-flex xs7="">
@@ -980,7 +1000,10 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   computed: {
     path(){
     return this.loaded?'/vue-poc/api/images/list/'+ this.id+ '/image':null
-    }
+    },
+    meta(){
+      return this.loaded?'/vue-poc/api/images/list/'+ this.id+ '/meta':null
+      }
 },
   created:function(){
    var id=this._props.id
@@ -1003,9 +1026,10 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         <v-btn @click="clear" icon="" v-tooltip:top="{ html: 'Clear search' }" v-if="query.keyword || query.from || query.until">
             <v-icon>clear</v-icon>
            </v-btn>
-           <v-chip class="primary white--text">{{ total }}</v-chip>
+          
            <v-spacer></v-spacer>
-
+           <span v-if="!busy">
+           <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
        
             Page:{{ query.page+1 }}
           <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon="" primary="">
@@ -1014,6 +1038,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
            <v-btn @click.stop="query.page+=1" icon="" primary="">
             <v-icon>arrow_forward</v-icon>
            </v-btn>
+           </span>
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
         <v-container v-if="!busy" fluid="" grid-list-md="">
@@ -1111,6 +1136,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
            keyword:null
     },
     total:null,
+    elapsed:null,
     showFilter:false,
     busy:false,
     menu2:false,
@@ -1132,7 +1158,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         this.total=r.data.total
         this.images=r.data.items
         var t1 = performance.now();
-        console.log("Time: ",t1 - t0)
+        this.elapsed= 0.001 *(t1 - t0) 
         }) 
     },
     clear(){
@@ -1300,15 +1326,15 @@ body
       const Jobs=Vue.extend({template:` 
   <v-card>
    <v-toolbar light="">
-       <v-btn light="" icon="" :loading="loading" @click="getJobs()" :disabled="loading">
-    <v-icon>refresh</v-icon>
-    </v-btn>
+     
     
      <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
-    
+    <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>   
       <v-spacer></v-spacer>
-      <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>
-     
+      
+       <v-btn light="" icon="" :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
+    <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
+    </v-btn>
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No Jobs currently running">
     <template slot="items" scope="props">
@@ -1316,13 +1342,13 @@ body
         <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
       </td>
       <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
-      <td class="vtop text-xs-right">{{ props.item.state }}</td>
+      <td class="vtop "><div>{{ props.item.state }}</div>
+                                     <div>{{ props.item.type }}</div> </td>
       <td class="vtop text-xs-right">{{ props.item.duration }}</td>
-      <td class="vtop text-xs-right">{{ props.item.type }}</td>
        <td class="vtop text-xs-right">{{ props.item.writes }}</td>
         <td class="vtop text-xs-right">{{ props.item.reads }}</td>
       <td class="vtop text-xs-right">{{ props.item.user }}</td>
-       <td class="vtop"><code>{{ props.item.text }}</code></td>
+       <td class="vtop"><code class="multiline-ellipsis">{{ props.item.text }}</code></td>
     </template>
   </v-data-table>
  </v-card>
@@ -1338,7 +1364,6 @@ body
         },
         { text: 'State', value: 'state' },
         { text: 'Duration', value: 'duration' },
-        { text: 'Type', value: 'type' },
         { text: 'WriteL', value: 'writes' },
         { text: 'ReadL', value: 'reads' },
         { text: 'User', value: 'user' },
@@ -1346,9 +1371,10 @@ body
       ],
       items:[        
       ],
-      selected:[],
-      search:"",
-      loading:false
+      selected: [],
+      search: "",
+      loading: false,
+      autorefresh: true
       }
   },
   methods:{
@@ -1358,7 +1384,7 @@ body
 	    .then(r=>{
 	       this.loading=false
 	       this.items=r.data
-	       setTimeout(()=>{ this.getJobs() }, 10000);
+	       if(this.autorefresh) setTimeout(()=>{ this.getJobs() }, 10000);
 	    })
 	   
     },
@@ -1373,7 +1399,7 @@ body
     noSelection: function () {
       // `this` points to the vm instance
       return this.selected.length==0
-    }
+    },
   },
   created(){
     this.getJobs()
@@ -2362,6 +2388,22 @@ Vue.config.errorHandler = function (err, vm, info) {
   alert("vue error");
 };
 
+//Returns a function, that, as long as it continues to be invoked, will not
+//be triggered. The function will be called after it stops being called for
+//N milliseconds. If `immediate` is passed, trigger the function on the
+//leading edge, instead of the trailing. https://gist.github.com/nmsdvid/8807205
+function debounce(func, wait, immediate) {
+ var timeout;
+ return function() {
+     var context = this, args = arguments;
+     clearTimeout(timeout);
+     timeout = setTimeout(function() {
+         timeout = null;
+         if (!immediate) func.apply(context, args);
+     }, wait);
+     if (immediate && !timeout) func.apply(context, args);
+ };
+};
 
 // used by vue-ace      
 var Events = new Vue({});

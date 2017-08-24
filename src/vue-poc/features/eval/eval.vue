@@ -12,17 +12,15 @@
      <v-btn @click="imports()">
     <v-icon>play_circle_outline</v-icon>
     Imports</v-btn>
-     <v-menu :nudge-width="100">
-          <v-toolbar-title slot="activator">
-            <span>{{font}}</span>
-            <v-icon >arrow_drop_down</v-icon>
-          </v-toolbar-title>
-          <v-list>
-            <v-list-tile v-for="item in dropdown_font" :key="item.text">
-              <v-list-tile-title v-text="item.text" @click="font=item.text"></v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
+     <v-menu offset-y>
+      <v-btn icon primary dark slot="activator"> <v-icon>more_vert</v-icon></v-btn>
+      <v-list>
+        <v-list-tile @click="plan">Show query plan</v-list-tile>
+     </v-list>
+      <v-list>
+        <v-list-tile @click="hitme">hit me</v-list-tile>
+     </v-list>
+     </v-menu>
    </v-toolbar>
 
   
@@ -37,25 +35,27 @@
       {{result}}
     </v-alert>
      <v-card-actions v-if="show" >
-       
-        JobId:
-      <v-chip class="green white--text">{{jobId}}</v-chip>
-       <v-progress-circular v-if="waiting" indeterminate class="primary--text"></v-progress-circular>
-        
+
+      <v-chip class="primary white--text">{{jobId}}</v-chip>
+      
            <v-chip label class="grey white--text"> 
            <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
            {{ jobState.writes }}</v-chip>
             <v-chip label class="grey white--text"> 
             <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
             {{ jobState.reads }}</v-chip>
+ 
         <v-spacer></v-spacer>
-         <v-chip class="green white--text">
+          <v-progress-circular v-if="waiting" indeterminate class="primary--text"></v-progress-circular>
+          <v-chip>{{ jobState.state }}</v-chip>
+         <v-chip class="primary white--text">
           <v-avatar >  <v-icon>timer</v-icon></v-avatar>
          {{elapsed}}ms</v-chip>
+         
     </v-card-actions>
-     <v-card-text v-if="show">
+     <v-card-text v-if="showResult">
      <v-flex xs12 style="height:200px"  fill-height>
-        <vue-ace  :content="result" mode="text" wrap="true" read-only="true"
+        <vue-ace  :content="result" mode="text" wrap="false" read-only="true"
         ></vue-ace>
         </v-flex> 
        </v-card-text>
@@ -71,18 +71,12 @@
       result:'',
       elapsed: null,
       show: false,
-      showError: false,
+      showError: false, //unused
+      showResult: false, //
       jobId: null,
       waiting: false,
       start: null,
-      jobState: {},
-      font: 'Courier',
-      dropdown_font: [
-        { text: 'Test select' },
-        { text: 'Calibri' },
-        { text: 'Courier' },
-        { text: 'Verdana' }
-      ]
+      jobState: {}
       }
   },
   methods:{
@@ -93,14 +87,13 @@
     },
     
     run(){
-      this.showError=this.show=false
+      this.awaitResult(false)
       this.start = performance.now();
       HTTP.post("eval/execute",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.result=r.data.result
         this.jobId=null
-        this.show=true
       })
       .catch(r=> {
         console.log("error",r)
@@ -112,12 +105,12 @@
     },
     submit(){
       var data={xq:this.xq}
-      this.showError=this.show=false
+      this.showResult=this.show=false
       this.start = performance.now();
       HTTP.post("eval/submit",Qs.stringify(data))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
-        this.result=this.jobId=r.data.job
+        this.jobId=r.data.job
         this.show=true
         this.pollState()
         
@@ -144,15 +137,38 @@
       })
     },
     getResult(){
+      this.awaitResult(true)
        HTTP.post("eval/result/"+this.jobId)
        .then(r=>{
          this.result=r.data.result
-         this.jobId=null
-         this.show=true
        })
+    },
+    hitme(){
+      this.showResult=true
+      setTimeout(()=>{this.result="123\n".repeat(20000); },10);
+
     },
     imports(){
       alert("@TODO imports")
+    },
+    plan(){
+      this.awaitResult(false)
+      HTTP.post("eval/plan",Qs.stringify({xq:this.xq}))
+      .then(r=>{
+        this.result=r.data.result
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.response.data
+        this.showError=true;
+
+      });
+    },
+    awaitResult(show){
+      // ace slow when setting large text while hidden
+      this.show=show
+      this.result="(Please wait..)"
+      this.showResult=true
     }
   },
   

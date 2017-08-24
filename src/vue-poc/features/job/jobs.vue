@@ -2,29 +2,30 @@
 <template id="jobs">
   <v-card >
    <v-toolbar light>
-       <v-btn
-      light icon
-      :loading="loading"
-      @click="getJobs()"
-      :disabled="loading"
-    >
-    <v-icon>refresh</v-icon>
-    </v-btn>
+     
     
      <v-btn  
       @click="stop()"
       :disabled="noSelection"
     >Stop</v-btn>
-    
-      <v-spacer></v-spacer>
-      <v-text-field
+    <v-text-field
         append-icon="search"
         label="Filter jobs"
         single-line
         hide-details
         v-model="search"
-      ></v-text-field>
-     
+      ></v-text-field>   
+      <v-spacer></v-spacer>
+      
+       <v-btn
+      light icon
+      :loading="loading"
+      @click="getJobs()"
+      @dblclick="autorefresh = !autorefresh"
+      :disabled="loading"
+    >
+    <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
+    </v-btn>
     </v-toolbar>
   <v-data-table
       :headers="headers"
@@ -44,13 +45,13 @@
         ></v-checkbox>
       </td>
       <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
-      <td class="vtop text-xs-right">{{ props.item.state }}</td>
+      <td class="vtop "><div>{{ props.item.state }}</div>
+                                     <div>{{ props.item.type }}</div> </td>
       <td class="vtop text-xs-right">{{ props.item.duration }}</td>
-      <td class="vtop text-xs-right">{{ props.item.type }}</td>
        <td class="vtop text-xs-right">{{ props.item.writes }}</td>
         <td class="vtop text-xs-right">{{ props.item.reads }}</td>
       <td class="vtop text-xs-right">{{ props.item.user }}</td>
-       <td class="vtop"><code>{{ props.item.text }}</code></td>
+       <td class="vtop" ><code class="multiline-ellipsis">{{ props.item.text }}</code></td>
     </template>
   </v-data-table>
  </v-card>
@@ -67,7 +68,6 @@
         },
         { text: 'State', value: 'state' },
         { text: 'Duration', value: 'duration' },
-        { text: 'Type', value: 'type' },
         { text: 'WriteL', value: 'writes' },
         { text: 'ReadL', value: 'reads' },
         { text: 'User', value: 'user' },
@@ -75,9 +75,10 @@
       ],
       items:[        
       ],
-      selected:[],
-      search:"",
-      loading:false
+      selected: [],
+      search: "",
+      loading: false,
+      autorefresh: true
       }
   },
   methods:{
@@ -87,7 +88,7 @@
 	    .then(r=>{
 	       this.loading=false
 	       this.items=r.data
-	       setTimeout(()=>{ this.getJobs() }, 10000);
+	       if(this.autorefresh) setTimeout(()=>{ this.getJobs() }, 10000);
 	    })
 	   
     },
@@ -102,7 +103,7 @@
     noSelection: function () {
       // `this` points to the vm instance
       return this.selected.length==0
-    }
+    },
   },
   created(){
     this.getJobs()

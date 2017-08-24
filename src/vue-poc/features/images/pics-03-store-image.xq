@@ -4,7 +4,7 @@
  :)
 import module namespace metadata = 'expkg-zone58:image.metadata';
 import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";
-for $meta in collection("/vue-poc/Pictures")/metadata
+for $meta in collection("/vue-poc/meta")/metadata
   let $loc:=db:path($meta)=>tokenize("/")
   let $name:=$loc[count($loc)-1]
   let $path:= subsequence($loc,1,count($loc)-1)=>string-join("/")
@@ -14,5 +14,5 @@ for $meta in collection("/vue-poc/Pictures")/metadata
                 metadata:geo($meta),
                 metadata:keywords($meta)
               } </image>
-let $target:=$path || "/image.xml"
+let $target:="image/"|| $path || "/image.xml"
 return db:replace("vue-poc",$target,$image)

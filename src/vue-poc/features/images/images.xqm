@@ -72,7 +72,7 @@ declare
 function vue-api:keywords()   
 {
 let $keys:=
-collection("/vue-poc/Pictures")/image/keywords/keyword
+collection("/vue-poc/image")/image/keywords/keyword
 =>distinct-values()
 =>sort("http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive")
 return <json   type="object" >
@@ -82,14 +82,37 @@ return <json   type="object" >
   </json>
 };
 
-(:~ fields for image for json :)
+(:~ full size image :)
+declare 
+%rest:GET %rest:path("/vue-poc/api/images/list/{ $id }/image")
+function vue-api:rawimage($id as xs:integer)
+{
+  let $image as element(image):=db:open-id("vue-poc",$id)
+  let $path:=$cfg:IMAGEDIR || '../' || $vue-api:entity?access?path($image)
+  return (
+    web:response-header(map { 'media-type': web:content-type($path) }),
+    file:read-binary($path)
+  )
+};
+
+(:~ image metadata :)
+declare 
+%rest:GET %rest:path("/vue-poc/api/images/list/{ $id }/meta")
+function vue-api:meta($id as xs:integer)
+{
+  let $image as element(image):=db:open-id("vue-poc",$id)
+  let $path:="vue-poc/meta/"  || $vue-api:entity?access?path($image) || "/meta.xml"
+  return doc($path)
+};
+
+(:~ fields for thumbnail for json :)
 declare function vue-api:get-image($image as element(image))
 as element(*)*
 {
 let $id:=$vue-api:entity?access?id($image)
 let $path:=$vue-api:entity?access?path($image)
 let $name:=$vue-api:entity?access?name($image)
-let $thumb:= $cfg:THUMBDIR || $path
+let $thumb:= $cfg:THUMBDIR ||  $path
 let $thumb:=if(file:exists($thumb)) then $thumb else $cfg:THUMBDIR || "missing.jpg"
 return   ( <id>{$id}</id>
          ,<name>{$name}</name>
@@ -98,16 +121,5 @@ return   ( <id>{$id}</id>
          ,<mime>{fetch:content-type($thumb)}</mime>)
 };
 
-declare 
-%rest:GET %rest:path("/vue-poc/api/images/list/{ $id }/image")
-function vue-api:rawimage($id as xs:integer)
-{
-  let $image as element(image):=db:open-id("vue-poc",$id)
-  let $path:=$cfg:IMAGEDIR || $vue-api:entity?access?path($image)
-  return (
-    web:response-header(map { 'media-type': web:content-type($path) }),
-    file:read-binary($path)
-  )
-  };
 
 

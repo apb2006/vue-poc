@@ -25,7 +25,7 @@ declare variable $vue:DEST:="static/app-gen.js";
 declare function vue:feature($doc,$isComp as xs:boolean)
 as xs:string
 {
-let $p:=vue:parse($doc)
+let $p:=vue:parse($doc=>trace("feature: "))
 let $script:= $p?script=>substring-after("{")
 
 return if(empty($p?id)) then 
@@ -64,6 +64,20 @@ declare function vue:capitalize-first
    concat(upper-case(substring($arg,1,1)), substring($arg,2))
 };
 
+declare function vue:feature-files($proj)
+as xs:string*
+{
+ let $FEATURES:="features/"=>file:resolve-path($proj=>trace("proj:"))
+ return  fw:directory-list($FEATURES,map{"include-filter":".*\.vue"})
+             //c:file/@name/resolve-uri(.,base-uri(.))
+};
+
+declare function vue:feature-build($url as xs:string,$isComp as xs:boolean)
+as xs:string
+{
+ fetch:text($url)=>html5:doc()=>vue:feature($isComp)
+};
+
 (:~
  : compile vue code to "static/app-gen.js"
  : @param $proj root folder e.g "C:/Users/andy/git/vue-poc/src/vue-poc/"
@@ -76,13 +90,12 @@ let $CORE:="components/core.js"=>file:resolve-path($proj)
 let $FILTERS:="components/filters.js"=>file:resolve-path($proj)
 let $DEST:="static/app-gen.js"=>file:resolve-path($proj)
 
-let $files:= fw:directory-list($FEATURES,map{"include-filter":".*\.vue"})
-             //c:file/@name/resolve-uri(.,base-uri(.))
-let $feats:=$files!(fetch:text(.)=>html5:doc()=>vue:feature(false()))
+let $files:=vue:feature-files($proj)
+let $feats:=$files!vue:feature-build(.,false())
 
 let $files:= fw:directory-list($COMPONENTS,map{"include-filter":".*\.vue"})
              //c:file/@name/resolve-uri(.,base-uri(.))
-let $comps:=$files!(fetch:text(.)=>html5:doc()=>vue:feature(true()))
+let $comps:=$files!vue:feature-build(.,true())
 
 let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;"
 return file:write-text($DEST,string-join(($comment,
