@@ -159,20 +159,20 @@
 <script>{  
   data: () => ({
     images:[],
-    query:{page:0,  // current page
+    query: {page:0,  // current page
            from:null,
            until:null,
            keyword:null
     },
-    total:null,
-    elapsed:null,
-    showFilter:false,
-    busy:false,
-    menu2:false,
-    showUntil:false,
-    keywords:[],
-    showInfo:false,
-    selitem:"TODO"
+    total: null,
+    elapsed: null,
+    showFilter: false,
+    busy: false,
+    menu2: false,
+    showUntil: false,
+    keywords: [],
+    showInfo: false,
+    selitem: "TODO"
   }),
   methods:{
     src(item){
@@ -228,8 +228,18 @@
           },
         deep:true
       },
+      
       $route(v){
         this.getImages()
+      },
+      
+      showFilter(){
+        if(this.keywords.length==0){
+          HTTP.get("images/keywords")
+          .then(r=>{
+            this.keywords=r.data.items
+            }) 
+        }
       }
   },
   created:function(){
@@ -239,10 +249,7 @@
     this.query.from=this.$route.query.from || this.query.from
     this.query.until=this.$route.query.until || this.query.until
     this.getImages()
-    HTTP.get("images/keywords")
-    .then(r=>{
-      this.keywords=r.data.items
-      }) 
+    
   },
   mounted:function(){
     console.log("images mount")

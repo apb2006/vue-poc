@@ -19,7 +19,7 @@ declare
 %output:method("json")   
 function vue-api:id( $id as xs:integer)   
 {
- let $image:=db:open-id("vue-poc",$id)
+ let $image:=db:open-id($cfg:DB-IMAGE,$id)
  return <json type="object" >
     <doc>{ serialize($image) }</doc>
      { vue-api:get-image($image) }
@@ -72,7 +72,7 @@ declare
 function vue-api:keywords()   
 {
 let $keys:=
-collection("/vue-poc/image")/image/keywords/keyword
+collection($cfg:DB-IMAGE || "/image")/image/keywords/keyword
 =>distinct-values()
 =>sort("http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive")
 return <json   type="object" >
@@ -87,7 +87,7 @@ declare
 %rest:GET %rest:path("/vue-poc/api/images/list/{ $id }/image")
 function vue-api:rawimage($id as xs:integer)
 {
-  let $image as element(image):=db:open-id("vue-poc",$id)
+  let $image as element(image):=db:open-id($cfg:DB-IMAGE,$id)
   let $path:=$cfg:IMAGEDIR || '../' || $vue-api:entity?access?path($image)
   return (
     web:response-header(map { 'media-type': web:content-type($path) }),
@@ -100,8 +100,8 @@ declare
 %rest:GET %rest:path("/vue-poc/api/images/list/{ $id }/meta")
 function vue-api:meta($id as xs:integer)
 {
-  let $image as element(image):=db:open-id("vue-poc",$id)
-  let $path:="vue-poc/meta/"  || $vue-api:entity?access?path($image) || "/meta.xml"
+  let $image as element(image):=db:open-id($cfg:DB-IMAGE,$id)
+  let $path:=$cfg:DB-IMAGE || "/meta/"  || $vue-api:entity?access?path($image) || "/meta.xml"
   return doc($path)
 };
 

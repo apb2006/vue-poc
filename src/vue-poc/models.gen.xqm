@@ -1,9 +1,9 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-08-23T10:12:22.413+01:00 
+ : auto generated from xml files in entities folder at: 2017-08-25T21:59:02.677+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
-declare namespace h='urn:quodatum:vue-poc.history';
+import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
 declare variable $entity:list:=map { 
@@ -130,7 +130,7 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(image)*
-       { collection("/vue-poc/image")/image },
+       { collection($cfg:DB-IMAGE || "/image")/image },
        
        "views": map{ 
        'filter': 'name'

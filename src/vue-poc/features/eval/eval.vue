@@ -9,9 +9,12 @@
     <v-icon>play_circle_outline</v-icon>
     Submit</v-btn>
     <v-spacer></v-spacer>
-     <v-btn @click="imports()">
-    <v-icon>play_circle_outline</v-icon>
+     <v-btn @click="imports">
+    <v-icon>library_books</v-icon>
     Imports</v-btn>
+     <v-btn @click="namespaces">
+    <v-icon>label</v-icon>
+    Namespaces</v-btn>
      <v-menu offset-y>
       <v-btn icon primary dark slot="activator"> <v-icon>more_vert</v-icon></v-btn>
       <v-list>
@@ -31,9 +34,7 @@
     ></vue-ace>
     </v-flex>
    </v-card-text>
-    <v-alert error v-bind:value="showError">
-      {{result}}
-    </v-alert>
+   
      <v-card-actions v-if="show" >
 
       <v-chip class="primary white--text">{{jobId}}</v-chip>
@@ -53,6 +54,11 @@
          {{elapsed}}ms</v-chip>
          
     </v-card-actions>
+    <v-card-text v-if="showError">
+     <v-alert error >
+      {{result}}
+    </v-alert>
+    </v-card-text>
      <v-card-text v-if="showResult">
      <v-flex xs12 style="height:200px"  fill-height>
         <vue-ace  :content="result" mode="text" wrap="false" read-only="true"
@@ -140,7 +146,7 @@
       this.awaitResult(true)
        HTTP.post("eval/result/"+this.jobId)
        .then(r=>{
-         this.result=r.data.result
+         this.result=r.data.result+" "
        })
     },
     hitme(){
@@ -150,6 +156,9 @@
     },
     imports(){
       alert("@TODO imports")
+    },
+    namespaces(){
+      alert("@TODO namespaces")
     },
     plan(){
       this.awaitResult(false)
@@ -166,6 +175,7 @@
     },
     awaitResult(show){
       // ace slow when setting large text while hidden
+      this.showError=false
       this.show=show
       this.result="(Please wait..)"
       this.showResult=true

@@ -25,7 +25,7 @@ declare variable $vue:DEST:="static/app-gen.js";
 declare function vue:feature($doc,$isComp as xs:boolean)
 as xs:string
 {
-let $p:=vue:parse($doc=>trace("feature: "))
+let $p:=vue:parse($doc)
 let $script:= $p?script=>substring-after("{")
 
 return if(empty($p?id)) then 
@@ -67,7 +67,7 @@ declare function vue:capitalize-first
 declare function vue:feature-files($proj)
 as xs:string*
 {
- let $FEATURES:="features/"=>file:resolve-path($proj=>trace("proj:"))
+ let $FEATURES:="features/"=>file:resolve-path($proj)
  return  fw:directory-list($FEATURES,map{"include-filter":".*\.vue"})
              //c:file/@name/resolve-uri(.,base-uri(.))
 };

@@ -9,15 +9,15 @@
      <v-icon >{{icon}}</v-icon>
      </v-btn>  
     <v-toolbar-title>
-    <v-breadcrumbs>
-      <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
-    {{ item.name }}
-    </v-breadcrumbs-item>
-    </v-breadcrumbs>
+		    <v-breadcrumbs>
+				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
+				    {{ item.name }}
+				    </v-breadcrumbs-item>
+		    </v-breadcrumbs>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
-   hide-details single-line  @keyup.enter="filter"></v-text-field>
+     <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
+   hide-details single-line  @keyup.enter="setfilter"></v-text-field>
    
      <v-btn icon @click="alert('todo')">     
     <v-icon>view_module</v-icon>
@@ -30,7 +30,9 @@
   <v-layout>
 	  <v-flex>
 	  <v-list v-if="!busy" two-line subheader>
-	    <v-subheader inset>Folders</v-subheader>
+	    <v-subheader inset >
+	         <span >Folders ({{ folders.length }})</span> 
+	     </v-subheader>
 	      <v-list-tile v-for="item in folders" v-bind:key="item.name" @click="folder(item)" avatar >
 	        <v-list-tile-avatar  >
 	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
@@ -47,7 +49,9 @@
 	      </v-list-tile>
 	    
 	    <v-divider inset></v-divider>
-	    <v-subheader inset>Files</v-subheader> 
+	    <v-subheader inset>
+	       <span >Files ({{ files.length }})</span> 
+	        </v-subheader> 
 	      <v-list-tile v-for="item in files" v-bind:key="item.name" >
 	        <v-list-tile-avatar>
 	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
@@ -93,7 +97,6 @@
             url: "", 
             folders: [],
             files: [],
-            items: ["root"],
             q: "",
             busy: false,
             showInfo: false,
@@ -123,10 +126,8 @@
         });
       
     },
-    root(){
-      this.$router.push({  query: { url: this.url }})
-    },
-    filter(){
+  
+    setfilter(){
       console.log("TODO",this.q)
       this.$router.push({  query: {url:this.url,q:this.q }})
     },
@@ -148,21 +149,24 @@
    icon(){
         return (this.protocol=="basexdb")?"developer_mode":"folder"
       },
+   // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
         var parts=this.url.split("/").filter((a)=>a.length>0)
-        var a=parts.map(function(v,i,a){return {name:v,
-                                                path:"/"+a.slice(0,i+1).join("/")+"/"}})
-        return a 
+        var a=parts.map(
+            function(v,i,a){return {name:v,  path:"/"+a.slice(0,i+1).join("/")+"/"}}
+            )
+        return a  
       }
   },
   watch:{
     url(v){
       this.$router.push({  query: { url: this.url }})
       },
-      $route(v){
+      $route(vnew,vold){
+        //console.log("ROUTE",vnew,vold)    
         var url=this.$route.query.url
         this.url=url?url:"/";
-        this.load(this.url) 
+        if(vnew.query.url != vold.query.url) this.load(this.url) 
       }
   },
   created:function(){

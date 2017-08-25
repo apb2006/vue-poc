@@ -1,4 +1,4 @@
-// generated 2017-08-24T18:16:31.442+01:00
+// generated 2017-08-25T20:24:29.63+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -262,14 +262,14 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
      <v-icon>{{icon}}</v-icon>
      </v-btn>  
     <v-toolbar-title>
-    <v-breadcrumbs>
-      <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
-    {{ item.name }}
-    </v-breadcrumbs-item>
-    </v-breadcrumbs>
+		    <v-breadcrumbs>
+				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
+				    {{ item.name }}
+				    </v-breadcrumbs-item>
+		    </v-breadcrumbs>
     </v-toolbar-title>
     <v-spacer></v-spacer>
-      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="filter"></v-text-field>
+     <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter"></v-text-field>
    
      <v-btn icon="" @click="alert('todo')">     
     <v-icon>view_module</v-icon>
@@ -282,7 +282,9 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   <v-layout>
 	  <v-flex>
 	  <v-list v-if="!busy" two-line="" subheader="">
-	    <v-subheader inset="">Folders</v-subheader>
+	    <v-subheader inset="">
+	         <span>Folders ({{ folders.length }})</span> 
+	     </v-subheader>
 	      <v-list-tile v-for="item in folders" v-bind:key="item.name" @click="folder(item)" avatar="">
 	        <v-list-tile-avatar>
 	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
@@ -299,7 +301,9 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	      </v-list-tile>
 	    
 	    <v-divider inset=""></v-divider>
-	    <v-subheader inset="">Files</v-subheader> 
+	    <v-subheader inset="">
+	       <span>Files ({{ files.length }})</span> 
+	        </v-subheader> 
 	      <v-list-tile v-for="item in files" v-bind:key="item.name">
 	        <v-list-tile-avatar>
 	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
@@ -344,7 +348,6 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
             url: "", 
             folders: [],
             files: [],
-            items: ["root"],
             q: "",
             busy: false,
             showInfo: false,
@@ -374,10 +377,8 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         });
       
     },
-    root(){
-      this.$router.push({  query: { url: this.url }})
-    },
-    filter(){
+  
+    setfilter(){
       console.log("TODO",this.q)
       this.$router.push({  query: {url:this.url,q:this.q }})
     },
@@ -399,21 +400,24 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
    icon(){
         return (this.protocol=="basexdb")?"developer_mode":"folder"
       },
+   // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
         var parts=this.url.split("/").filter((a)=>a.length>0)
-        var a=parts.map(function(v,i,a){return {name:v,
-                                                path:"/"+a.slice(0,i+1).join("/")+"/"}})
-        return a 
+        var a=parts.map(
+            function(v,i,a){return {name:v,  path:"/"+a.slice(0,i+1).join("/")+"/"}}
+            )
+        return a  
       }
   },
   watch:{
     url(v){
       this.$router.push({  query: { url: this.url }})
       },
-      $route(v){
+      $route(vnew,vold){
+        //console.log("ROUTE",vnew,vold)    
         var url=this.$route.query.url
         this.url=url?url:"/";
-        this.load(this.url) 
+        if(vnew.query.url != vold.query.url) this.load(this.url) 
       }
   },
   created:function(){
@@ -746,9 +750,12 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     <v-icon>play_circle_outline</v-icon>
     Submit</v-btn>
     <v-spacer></v-spacer>
-     <v-btn @click="imports()">
-    <v-icon>play_circle_outline</v-icon>
+     <v-btn @click="imports">
+    <v-icon>library_books</v-icon>
     Imports</v-btn>
+     <v-btn @click="namespaces">
+    <v-icon>label</v-icon>
+    Namespaces</v-btn>
      <v-menu offset-y="">
       <v-btn icon="" primary="" dark="" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
       <v-list>
@@ -766,9 +773,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange"></vue-ace>
     </v-flex>
    </v-card-text>
-    <v-alert error="" v-bind:value="showError">
-      {{result}}
-    </v-alert>
+   
      <v-card-actions v-if="show">
 
       <v-chip class="primary white--text">{{jobId}}</v-chip>
@@ -788,6 +793,11 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
          {{elapsed}}ms</v-chip>
          
     </v-card-actions>
+    <v-card-text v-if="showError">
+     <v-alert error="">
+      {{result}}
+    </v-alert>
+    </v-card-text>
      <v-card-text v-if="showResult">
      <v-flex xs12="" style="height:200px" fill-height="">
         <vue-ace :content="result" mode="text" wrap="false" read-only="true"></vue-ace>
@@ -873,7 +883,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       this.awaitResult(true)
        HTTP.post("eval/result/"+this.jobId)
        .then(r=>{
-         this.result=r.data.result
+         this.result=r.data.result+" "
        })
     },
     hitme(){
@@ -883,6 +893,9 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     imports(){
       alert("@TODO imports")
+    },
+    namespaces(){
+      alert("@TODO namespaces")
     },
     plan(){
       this.awaitResult(false)
@@ -899,6 +912,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     },
     awaitResult(show){
       // ace slow when setting large text while hidden
+      this.showError=false
       this.show=show
       this.result="(Please wait..)"
       this.showResult=true
@@ -1130,20 +1144,20 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
         
   data: () => ({
     images:[],
-    query:{page:0,  // current page
+    query: {page:0,  // current page
            from:null,
            until:null,
            keyword:null
     },
-    total:null,
-    elapsed:null,
-    showFilter:false,
-    busy:false,
-    menu2:false,
-    showUntil:false,
-    keywords:[],
-    showInfo:false,
-    selitem:"TODO"
+    total: null,
+    elapsed: null,
+    showFilter: false,
+    busy: false,
+    menu2: false,
+    showUntil: false,
+    keywords: [],
+    showInfo: false,
+    selitem: "TODO"
   }),
   methods:{
     src(item){
@@ -1199,8 +1213,18 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
           },
         deep:true
       },
+      
       $route(v){
         this.getImages()
+      },
+      
+      showFilter(){
+        if(this.keywords.length==0){
+          HTTP.get("images/keywords")
+          .then(r=>{
+            this.keywords=r.data.items
+            }) 
+        }
       }
   },
   created:function(){
@@ -1210,10 +1234,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     this.query.from=this.$route.query.from || this.query.from
     this.query.until=this.$route.query.until || this.query.until
     this.getImages()
-    HTTP.get("images/keywords")
-    .then(r=>{
-      this.keywords=r.data.items
-      }) 
+    
   },
   mounted:function(){
     console.log("images mount")
