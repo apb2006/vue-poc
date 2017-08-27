@@ -13,7 +13,8 @@
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>enableSnippets</v-list-tile-title>
-                <v-list-tile-sub-title>Allow snippets</v-list-tile-sub-title>
+                <v-list-tile-sub-title>Allow 
+                <a href="https://cloud9-sdk.readme.io/docs/snippets" target="docs">snippets</a></v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
     

@@ -1,4 +1,4 @@
-// generated 2017-08-27T11:38:03.302+01:00
+// generated 2017-08-27T21:21:39.471+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -515,12 +515,12 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
               <v-icon black="">navigate_next</v-icon>
            </v-avatar>
           </v-chip>
-   <v-btn icon="" @click="acecmd('outline')">
+   <v-btn icon="" @click="acecmd('outline')" title="outline -todo">
       <v-icon>star</v-icon>
     </v-btn>
 
   
-   <v-btn icon="" @click="acecmd('foldall')">
+   <v-btn icon="" @click="acecmd('foldall')" title="fold all">
       <v-icon>vertical_align_center</v-icon>
     </v-btn>
     
@@ -587,7 +587,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 <v-card-text v-if="!busy">
 <v-flex xs12="" style="height:70vh" fill-height="">
   
-    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
+    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :events="events" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
  </v-flex> 
 </v-card-text>
 </v-card>
@@ -600,19 +600,20 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       contentA: `declare function local:query($q as xs:string)
 { <json type="object"/> 
 };`,
-      mode:'xquery',
-      url:'',
-      protocol:'webfile',
-      name:'',
-      path:[],
-      mimetype:"",
-      wrap:false,
-      busy:false,
-      clearDialog:false,
-      annotations:null,
-      dirty:false,
-      snackbar:false,
-      message:"Cant do that",
+      mode: 'xquery',
+      url: '',
+      protocol: 'webfile',
+      name: '',
+      path: [],
+      mimetype: "",
+      wrap: false,
+      busy: false,
+      clearDialog: false,
+      annotations: null,
+      dirty: false,
+      snackbar: false,
+      message: "Cant do that",
+      events:  new Vue({}),
       mimemap:{
           "text/xml":"xml",
           "application/xml":"xml",
@@ -666,10 +667,11 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       
     },
     acecmd(cmd){
-      Events.$emit('eventFired',cmd);
+      //alert("acecmd: "+cmd)
+      this.events.$emit('eventFired',cmd);
     },
     fold(){
-      Events.$emit('eventFired',"foldall");
+      this.events.$emit('eventFired',"foldall");
     },
     save(){
       alert("TODO save: "+this.url);
@@ -985,6 +987,29 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
   }
 
       );
+      const Dates=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+     <v-chip>todo</v-chip>   
+    </v-card-title>
+   
+    <v-spacer></v-spacer> 
+  
+    </v-toolbar>
+    <v-card-text>
+dates todo
+ </v-card-text>
+ </v-card>
+ </v-container>
+ `,
+        
+ 
+    }
+
+      );
       const Image=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
@@ -1274,6 +1299,29 @@ body
     }
 
       );
+      const Keywords=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+     <v-chip>todo</v-chip>   
+    </v-card-title>
+   
+    <v-spacer></v-spacer> 
+  
+    </v-toolbar>
+    <v-card-text>
+keywords todo
+ </v-card-text>
+ </v-card>
+ </v-container>
+ `,
+        
+ 
+    }
+
+      );
       const Job=Vue.extend({template:` 
   <v-card>
    <v-toolbar light="">
@@ -1532,7 +1580,8 @@ body
                    <v-btn @click="get()">Get count</v-btn>
                </td>
                <td>
-     <v-checkbox v-model="repeat.get"></v-checkbox>
+                <v-switch v-model="repeat.get"></v-switch>
+
         </td>    
               <td>
                   <span>{{getValues.last}}</span>
@@ -1562,7 +1611,7 @@ body
           </td>
           
           <td>
-           <v-checkbox v-model="repeat.post"></v-checkbox>
+           <v-switch v-model="repeat.post"></v-switch>
           </td>
            <td class="col-md-1">
                         <span>{{postValues.last}}</span>
@@ -1898,7 +1947,8 @@ body
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>enableSnippets</v-list-tile-title>
-                <v-list-tile-sub-title>Allow snippets</v-list-tile-sub-title>
+                <v-list-tile-sub-title>Allow 
+                <a href="https://cloud9-sdk.readme.io/docs/snippets" target="docs">snippets</a></v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
     
@@ -2381,7 +2431,7 @@ body
         { id: 1, content: 'item 1', start: '2013-04-20 23:06:15.304' },
 	      { id: 2, content: 'iso date time', start: '2013-04-14T11:11:15.304' },
 	      { id: 3, content: '[GET] http://localhost:8984/vue-poc/ui/icon.png', start: '2013-04-18', end: '2013-04-19' },
-	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19' },
+	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19', className: 'green' },
 	      { id: 5, content: '[GET] http://localhost:8984/vue-poc/ui/app.css', start: '2013-04-25' },
 	      { id: 6, content: 'item 6', start: '2013-04-27' }]
     },
@@ -2481,9 +2531,6 @@ function debounce(func, wait, immediate) {
  };
 };
 
-// used by vue-ace      
-var Events = new Vue({});
-
 
 const router = new VueRouter({
   base:"/vue-poc/ui/",
@@ -2495,6 +2542,8 @@ const router = new VueRouter({
     { path: '/images/report', name:"image-reports",component: Report, props: true, meta:{title: "Image report"}},
     { path: '/images/item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
     { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
+    { path: '/images/keywords', component: Keywords, meta:{title:"Thumbnail keywords"} },
+    { path: '/images/dates', component: Dates, meta:{title:"Thumbnail dates"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -2585,8 +2634,10 @@ const app = new Vue({
         model: false,
         children: [
           {href: '/images/item',text: 'Collection',icon: 'photo_camera'},
-          {href: '/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
-          {href: '/images/report',text: 'Image reports',icon: 'report'}
+          {href: '/images/keywords',text: 'Keywords',icon: 'label'},
+          {href: '/images/dates',text: 'Date taken',icon: 'date_range'},
+          {href: '/images/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
+          {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
       {
         icon: 'more_horiz',

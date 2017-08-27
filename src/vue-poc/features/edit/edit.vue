@@ -38,12 +38,12 @@
               <v-icon black >navigate_next</v-icon>
            </v-avatar>
           </v-chip>
-   <v-btn  icon @click="acecmd('outline')">
+   <v-btn  icon @click="acecmd('outline')" title="outline -todo">
       <v-icon>star</v-icon>
     </v-btn>
 
   
-   <v-btn  icon @click="acecmd('foldall')">
+   <v-btn  icon @click="acecmd('foldall')" title="fold all">
       <v-icon>vertical_align_center</v-icon>
     </v-btn>
     
@@ -110,7 +110,7 @@
 <v-card-text v-if="!busy">
 <v-flex xs12 style="height:70vh"  fill-height>
   
-    <vue-ace  :content="contentA" :mode="mode" :wrap="wrap"
+    <vue-ace  :content="contentA" :mode="mode" :wrap="wrap" :events="events"
 v-on:change-content="changeContentA" 
 v-on:annotation="annotation"></vue-ace>
  </v-flex> 
@@ -126,19 +126,20 @@ v-on:annotation="annotation"></vue-ace>
       contentA: `declare function local:query($q as xs:string)
 { <json type="object"/> 
 };`,
-      mode:'xquery',
-      url:'',
-      protocol:'webfile',
-      name:'',
-      path:[],
-      mimetype:"",
-      wrap:false,
-      busy:false,
-      clearDialog:false,
-      annotations:null,
-      dirty:false,
-      snackbar:false,
-      message:"Cant do that",
+      mode: 'xquery',
+      url: '',
+      protocol: 'webfile',
+      name: '',
+      path: [],
+      mimetype: "",
+      wrap: false,
+      busy: false,
+      clearDialog: false,
+      annotations: null,
+      dirty: false,
+      snackbar: false,
+      message: "Cant do that",
+      events:  new Vue({}),
       mimemap:{
           "text/xml":"xml",
           "application/xml":"xml",
@@ -192,10 +193,11 @@ v-on:annotation="annotation"></vue-ace>
       
     },
     acecmd(cmd){
-      Events.$emit('eventFired',cmd);
+      //alert("acecmd: "+cmd)
+      this.events.$emit('eventFired',cmd);
     },
     fold(){
-      Events.$emit('eventFired',"foldall");
+      this.events.$emit('eventFired',"foldall");
     },
     save(){
       alert("TODO save: "+this.url);

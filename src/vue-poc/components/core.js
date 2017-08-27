@@ -77,9 +77,6 @@ function debounce(func, wait, immediate) {
  };
 };
 
-// used by vue-ace      
-var Events = new Vue({});
-
 
 const router = new VueRouter({
   base:"/vue-poc/ui/",
@@ -91,6 +88,8 @@ const router = new VueRouter({
     { path: '/images/report', name:"image-reports",component: Report, props: true, meta:{title: "Image report"}},
     { path: '/images/item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
     { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
+    { path: '/images/keywords', component: Keywords, meta:{title:"Thumbnail keywords"} },
+    { path: '/images/dates', component: Dates, meta:{title:"Thumbnail dates"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -181,8 +180,10 @@ const app = new Vue({
         model: false,
         children: [
           {href: '/images/item',text: 'Collection',icon: 'photo_camera'},
-          {href: '/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
-          {href: '/images/report',text: 'Image reports',icon: 'report'}
+          {href: '/images/keywords',text: 'Keywords',icon: 'label'},
+          {href: '/images/dates',text: 'Date taken',icon: 'date_range'},
+          {href: '/images/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
+          {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
       {
         icon: 'more_horiz',

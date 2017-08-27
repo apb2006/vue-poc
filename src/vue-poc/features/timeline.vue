@@ -29,7 +29,7 @@
         { id: 1, content: 'item 1', start: '2013-04-20 23:06:15.304' },
 	      { id: 2, content: 'iso date time', start: '2013-04-14T11:11:15.304' },
 	      { id: 3, content: '[GET] http://localhost:8984/vue-poc/ui/icon.png', start: '2013-04-18', end: '2013-04-19' },
-	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19' },
+	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19', className: 'green' },
 	      { id: 5, content: '[GET] http://localhost:8984/vue-poc/ui/app.css', start: '2013-04-25' },
 	      { id: 6, content: 'item 6', start: '2013-04-27' }]
     },

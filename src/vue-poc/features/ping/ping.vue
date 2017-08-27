@@ -31,7 +31,8 @@
                    <v-btn     @click="get()" >Get count</v-btn>
                </td>
                <td>
-     <v-checkbox  v-model="repeat.get" ></v-checkbox>
+                <v-switch  v-model="repeat.get"></v-switch>
+
         </td>    
               <td>
                   <span >{{getValues.last}}</span>
@@ -61,7 +62,7 @@
           </td>
           
           <td>
-           <v-checkbox  v-model="repeat.post" ></v-checkbox>
+           <v-switch  v-model="repeat.post"></v-switch>
           </td>
            <td class="col-md-1">
                         <span >{{postValues.last}}</span>

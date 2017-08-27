@@ -6,7 +6,8 @@ Vue.component('vue-ace', {
           'mode', 
           'theme',
           'wrap',
-          'readOnly'
+          'readOnly',
+          'events'
           ],
   data () {
     return {
@@ -108,8 +109,8 @@ Vue.component('vue-ace', {
       //console.log(this.annots)
        this.$emit('annotation',this.annots)
     });
-    
-    Events.$on('eventFired', (cmd) => {
+    if(this.events){
+      this.events.$on('eventFired', (cmd) => {
       if(cmd=="outline"){
         var row = this.editor.selection.getCursor().row
         var toks=this.editor.session.getTokens(row).filter(function(t) {
@@ -118,5 +119,6 @@ Vue.component('vue-ace', {
         console.log(toks);
       }else this.command(cmd);
     });
+    }
   }
 })
