@@ -2,14 +2,15 @@
 <template id="search">
  <v-container fluid>
  <v-text-field  label="Search..." v-model="q"></v-text-field>
+ <v-alert warning value="true">TODO</v-alert>
  </v-container>
 </template>
 
 <script>{
   data:  function(){
     return {
-      message: 'Hello Vue.js!',
-      q:this.$route.query.q
+      q: this.$route.query.q,
+      results: []
       }
   },
   created:function(){

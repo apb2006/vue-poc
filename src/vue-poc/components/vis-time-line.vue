@@ -6,17 +6,25 @@ for vis-time-line
   <div></div>
 </template>
 <script>{ 
-  props: ['items', 'groups', 'options'],
+  props: ['items', 'groups', 'options','events'],
+  data(){
+    return {timeline:Object}
+  },
   methods:{
     select(properties){
-      //alert('selected items: ' + properties.items);
+      this.$emit('select',properties.items);
     }
   },
   mounted: function () {
     var items = new vis.DataSet(this.items);
     var options = this.options;
     var groups = this.groups;
-    var timeline = new vis.Timeline(this.$el, items, groups, options);
-    timeline.on('select', this.select);
+    this.timeline = new vis.Timeline(this.$el, items, groups, options);
+    this.timeline.on('select', this.select);
+    if(this.events){
+      this.events.$on('fit', (cmd) => {
+        this.timeline.fit(true)
+        })
+    }
   }
 }</script>

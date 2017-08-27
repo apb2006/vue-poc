@@ -5,7 +5,7 @@
 import module namespace t="expkg-zone58:image.thumbnailator";
 import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
-declare variable $DB:="vue-poc";
+
 declare variable $CHUNK:=1000;
 
 declare %updating function local:store-thumb($f as xs:string)
@@ -30,7 +30,7 @@ declare %updating function local:write-binary($data,$url as xs:string)
          )
 };
 
-let $files:= doc("/vue-poc/pics.xml")//c:file[ends-with(lower-case(@name),".jpg")] 
+let $files:= doc($cfg:DB-IMAGE || "/pics.xml")//c:file[ends-with(lower-case(@name),".jpg")] 
 
 let $relpath:= $files!( ancestor-or-self::*/@name=>string-join("/"))
 let $relpath:=filter($relpath,function($f){ 

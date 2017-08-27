@@ -1,7 +1,7 @@
 // performance monitoring. of value stream
 // stores max min etc
 function perfStat() {   
-  this.data={count:0,max:null,min:null,total:0,median:0,last:null};
+  this.data={count:0,max:null,min:null,total:0,median:0,last:null,avg:null};
   // add a value return updated stats
   this.log=function(val){
     var data=this.data
@@ -28,7 +28,8 @@ function perfStat() {
   };
   // clear stats
   this.clear=function(){
-    this.data={count:0,max:null,min:null,total:0};
+    this.data={count:0,max:null,min:null,total:0,median:0,last:null,avg:null};
+    return this.data
   };
   // return values
   this.values=function(){

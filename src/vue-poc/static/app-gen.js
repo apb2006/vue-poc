@@ -1,4 +1,4 @@
-// generated 2017-08-25T20:24:29.63+01:00
+// generated 2017-08-27T11:38:03.302+01:00
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
@@ -94,18 +94,26 @@
   <div></div>
  `,
        
-  props: ['items', 'groups', 'options'],
+  props: ['items', 'groups', 'options','events'],
+  data(){
+    return {timeline:Object}
+  },
   methods:{
     select(properties){
-      //alert('selected items: ' + properties.items);
+      this.$emit('select',properties.items);
     }
   },
   mounted: function () {
     var items = new vis.DataSet(this.items);
     var options = this.options;
     var groups = this.groups;
-    var timeline = new vis.Timeline(this.$el, items, groups, options);
-    timeline.on('select', this.select);
+    this.timeline = new vis.Timeline(this.$el, items, groups, options);
+    this.timeline.on('select', this.select);
+    if(this.events){
+      this.events.$on('fit', (cmd) => {
+        this.timeline.fit(true)
+        })
+    }
   }
 }
       );
@@ -1623,8 +1631,9 @@ body
      })
     },
     reset(){
-      this.getValues.clear();
-      this.postValues.clear();
+      Object.assign(this.getValues,this.getValues.clear());
+      Object.assign(this.postValues,this.postValues.clear());
+      this.$forceUpdate()
     }
   },
   computed: {
@@ -1714,13 +1723,14 @@ body
       const Search=Vue.extend({template:` 
  <v-container fluid="">
  <v-text-field label="Search..." v-model="q"></v-text-field>
+ <v-alert warning="" value="true">TODO</v-alert>
  </v-container>
  `,
       
   data:  function(){
     return {
-      message: 'Hello Vue.js!',
-      q:this.$route.query.q
+      q: this.$route.query.q,
+      results: []
       }
   },
   created:function(){
@@ -1878,7 +1888,7 @@ body
   <v-layout row="">
     <v-flex xs12="" sm6="" offset-sm3="">
       <v-card>
-
+        <v-alert warning="" value="true">Not fully implemented</v-alert>
         <v-list two-line="" subheader="">
           <v-subheader>Ace editor settings</v-subheader>
    
@@ -1898,7 +1908,7 @@ body
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>enableBasicAutocompletion</v-list-tile-title>
-                <v-list-tile-sub-title>enableBasicAutocompletion</v-list-tile-sub-title>
+                <v-list-tile-sub-title>Autocompletion via control-space</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
          
@@ -1908,11 +1918,42 @@ body
               </v-list-tile-action>
               <v-list-tile-content>
                 <v-list-tile-title>enableLiveAutocompletion</v-list-tile-title>
-                <v-list-tile-sub-title>enableLiveAutocompletion</v-list-tile-sub-title>
+                <v-list-tile-sub-title>Autocompletion while typing</v-list-tile-sub-title>
               </v-list-tile-content>
             </v-list-tile>
- 
+            
         </v-list>
+        <v-card-text>
+         <v-divider></v-divider>
+      <v-container fluid="">
+        <v-layout row="">
+          <v-flex xs4="">
+            <v-subheader>Theme</v-subheader>
+          </v-flex>
+          <v-flex xs8="">
+            <v-text-field label="Theme" v-model="ace.theme"></v-text-field>
+          </v-flex>
+        </v-layout>
+        <v-layout row="">
+          <v-flex xs4="">
+            <v-subheader>Key binding</v-subheader>
+          </v-flex>
+          <v-flex xs8="">
+            <v-select v-bind:items="keybindings" v-model="ace.keybinding" label="Key binding"></v-select>
+           
+          </v-flex>
+        </v-layout>
+        <v-layout row="">
+          <v-flex xs4="">
+            <v-subheader>Font size</v-subheader>
+          </v-flex>
+          <v-flex xs8="">
+            <v-text-field label="Font size (px)" v-model="ace.fontsize"></v-text-field>
+          </v-flex>
+        </v-layout>
+       <v-divider></v-divider>
+      </v-container>
+    </v-card-text>
       </v-card>
     </v-flex>
   </v-layout>
@@ -1920,20 +1961,27 @@ body
       
   data () {
     return {
-      ace: {
-        enableSnippets: true,
-        enableBasicAutocompletion: true,
-        enableLiveAutocompletion: true
-    }
-    }
+			     ace: {
+			        enableSnippets: true,
+			        enableBasicAutocompletion: true,
+			        enableLiveAutocompletion: true,
+			        theme: "github",
+			        keybinding: "Ace",
+			        fontsize: "14px"
+			        
+			    },
+			    keybindings:[  'Ace',  'Vim', 'Emacs' ]
+			    }
   },
-  created: function () {
+  
+  beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')
     .then((v)=>{
-      console.log("AAAA",v)
-      this.ace=v
+      next(vm => vm.ace=v)
     })
-
+  },
+  created: function () {
+  
   },
   watch: {"ace":{
     handler:function(v){
@@ -2308,17 +2356,20 @@ body
       const Timeline=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
-	 <v-card-title class="lime darken-1">Line 1</v-card-title>
+ <v-toolbar class="lime darken-1">
+	 <v-card-title>Line 1</v-card-title>
+	 <v-spacer></v-spacer>
+	 <v-btn @click="fit">fit</v-btn>
+	 </v-toolbar>
 	 <v-card-text>
-	   <vis-time-line :items="vueState.data1"></vis-time-line>
+	   <vis-time-line :items="vueState.data1" :events="Events" :options="{editable: true, clickToUse: true}" @select="select"></vis-time-line>
 	 </v-card-text>
  </v-card>
  
  <v-card>
-   <v-card-title class="deep-orange">Line 2</v-card-title>
-   <v-card-text>
-<vis-time-line :items="vueState.data2"></vis-time-line>
-</v-card-text>
+ <v-card-text>
+ {{msg}}
+ </v-card-text>
 </v-card>
  </v-container>
  `,
@@ -2326,24 +2377,28 @@ body
   data(){
     return {
       vueState: {
-
       data1: [
         { id: 1, content: 'item 1', start: '2013-04-20 23:06:15.304' },
-	      { id: 2, content: 'item 2', start: '2013-04-14' },
-	      { id: 3, content: 'item 3', start: '2013-04-18' },
+	      { id: 2, content: 'iso date time', start: '2013-04-14T11:11:15.304' },
+	      { id: 3, content: '[GET] http://localhost:8984/vue-poc/ui/icon.png', start: '2013-04-18', end: '2013-04-19' },
 	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19' },
-	      { id: 5, content: 'item 5', start: '2013-04-25' },
-	      { id: 6, content: 'item 6', start: '2013-04-27' }],
-
-      data2: [
-        { id: 1, content: 'item 11', start: '2017-04-20' },
-	      { id: 2, content: 'item 12', start: '2017-04-14' },
-	      { id: 3, content: 'item 13', start: '2017-04-18' },
-	      { id: 4, content: 'item 14', start: '2017-04-16', end: '2017-04-19' },
-	      { id: 5, content: 'item 15', start: '2017-04-25' },
-	      { id: 6, content: 'item 16', start: '2017-04-27' }]
+	      { id: 5, content: '[GET] http://localhost:8984/vue-poc/ui/app.css', start: '2013-04-25' },
+	      { id: 6, content: 'item 6', start: '2013-04-27' }]
+    },
+    Events: new Vue({}),
+    msg:"Item detail"
     }
-}
+},
+methods:{
+  fit(){
+    this.Events.$emit('fit');
+  },
+  select(items){
+    this.msg='Selected items: ' + items
+  }
+},
+created(){
+  console.log("timeline")
 }
 }
       );

@@ -131,8 +131,9 @@
      })
     },
     reset(){
-      this.getValues.clear();
-      this.postValues.clear();
+      Object.assign(this.getValues,this.getValues.clear());
+      Object.assign(this.postValues,this.postValues.clear());
+      this.$forceUpdate()
     }
   },
   computed: {
