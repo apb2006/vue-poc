@@ -1,9 +1,12 @@
 <!DOCTYPE html>
-<template id="about"> <v-layout class="ma-5"> <v-flex
-	xs4> <v-card hover raised> <v-card-title
-	height="200px" class="pa-5 indigo accent-3">
-<div class="display-1 white--text text-xs-center">VUE-POC</div>
-v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4>
+<template id="about">
+<v-container>
+<v-parallax src="/vue-poc/ui/vue-poc.png" >
+</v-parallax> 
+<v-card>
+
+  <v-card-text>
+ 
 <p>
 	This is a experiment in using
 	<code>vue.js</code>
@@ -22,7 +25,11 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4>
 	 <li> <router-link to="database?url=%2Fvue-poc%2F">DB</router-link></li>
 </ul>
 </v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link
-	href="/dba">REPLACED</qd-link> </v-layout> </template>
+	href="/dba">REPLACED</qd-link> 
+	</v-card-text>
+	</v-card>
+	</v-container>
+	</template>
 <script>
   {
   }

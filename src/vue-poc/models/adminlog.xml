@@ -1,34 +1,34 @@
-<entity name="basexlog" xmlns="https://github.com/Quodatum/app-doc/entity">  
-  <description>BaseX log entry </description>
-  
-  <fields>
-    <field name="time" type="xs:string">
-      <description>time of event</description>
-      <xpath>@time</xpath>
-    </field>
-    <field name="address" type="xs:string">
-      <description>ip address</description>
-      <xpath>@address</xpath>
-    </field>
-    <field name="user" type="xs:string">
-      <description>user name</description>
-      <xpath>@user</xpath>
-    </field>
-    <field name="type" type="xs:string">
-      <description>type of log msg</description>
-      <xpath>@type</xpath>
-    </field>
-     <field name="ms" type="xs:integer">
-      <description>time ms)</description>
-      <xpath>@ms</xpath>
-    </field>
-      <field name="text" type="xs:string">
-            <description>log message</description>
-            <xpath>.</xpath>
-        </field>
-  </fields>
-  <views>
-    </views>
-  <iconclass>fa fa-calendar</iconclass>
-  <data type="element(entry)">hof:top-k-by(admin:logs(), hof:id#1, 2)/string()!reverse(admin:logs(.,true()))</data>
+<entity name="basexlog" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>BaseX log entry </description>
+
+	<fields>
+		<field name="time" type="xs:string">
+			<description>time of event</description>
+			<xpath>@time</xpath>
+		</field>
+		<field name="address" type="xs:string">
+			<description>ip address</description>
+			<xpath>@address</xpath>
+		</field>
+		<field name="user" type="xs:string">
+			<description>user name</description>
+			<xpath>@user</xpath>
+		</field>
+		<field name="type" type="xs:string">
+			<description>type of log msg</description>
+			<xpath>@type</xpath>
+		</field>
+		<field name="ms" type="xs:integer">
+			<description>time ms)</description>
+			<xpath>@ms</xpath>
+		</field>
+		<field name="text" type="xs:string">
+			<description>log message</description>
+			<xpath>.</xpath>
+		</field>
+	</fields>
+	<views>
+	</views>
+	<iconclass>fa fa-calendar</iconclass>
+	<data type="element(entry)">hof:top-k-by(admin:logs(), hof:id#1, 2)/string()!reverse(admin:logs(.,true()))</data>
 </entity>

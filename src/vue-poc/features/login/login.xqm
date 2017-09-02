@@ -7,9 +7,28 @@ import module namespace session = "http://basex.org/modules/session";
 
 
 (:~ Session key. :)
-declare variable $vue-login:SESSION-KEY := "vue-poc";
+declare variable $vue-login:SESSION-KEY := "id";
 (:~ Current session. :)
 declare variable $vue-login:SESSION-VALUE := session:get($vue-login:SESSION-KEY);
+
+(:~
+ : get status
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/status")
+%rest:produces("application/json")
+%output:method("json")   
+function vue-login:status( )   
+{
+let $user:=session:get("id","")
+let $role:=if($user and user:exists($user)) then user:list-details($user)/@permission/string() else ""
+return  <json   type="object" >
+            <user>{ if($user) then $user else "guest" }</user>
+            <permission>{$role}</permission>
+            <session>{session:id()}</session>
+            <created>{session:created()}</created>
+  </json>
+};
 
 (:~
  : Checks the user input and redirects to the main page, or back to the login page.

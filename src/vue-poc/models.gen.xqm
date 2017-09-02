@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-08-25T21:59:02.677+01:00 
+ : auto generated from xml files in entities folder at: 2017-08-31T11:04:08.727+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -102,19 +102,35 @@ declare variable $entity:list:=map {
      "name": "thumbnail",
      "description": "an image.",
      "access": map{ 
+       "geo": function($_ as element()) as xs:boolean {$_/geo },
+       "height": function($_ as element()) as xs:integer {$_/height },
        "id": function($_ as element()) as xs:integer {$_/db:node-id(.) },
+       "keywords": function($_ as element()) as xs:integer {$_/0 },
        "name": function($_ as element()) as xs:string {$_/file/@name },
        "path": function($_ as element()) as xs:string {$_/file/@path },
-       "size": function($_ as element()) as xs:integer {$_/0 } },
+       "size": function($_ as element()) as xs:integer {$_/0 },
+       "width": function($_ as element()) as xs:integer {$_/width } },
     
      "filter": function($item,$q) as xs:boolean{ 
          some $e in ( $item/file/@name) satisfies
          fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
       },
        "json":   map{ 
+           "geo": function($_ as element()) as element(geo)? {
+            (: xs:boolean :)
+                        fn:data($_/geo)!element geo { attribute type {'boolean'}, .} 
+                 },
+           "height": function($_ as element()) as element(height)? {
+            (: xs:integer :)
+                        fn:data($_/height)!element height { attribute type {'number'}, .} 
+                 },
            "id": function($_ as element()) as element(id)? {
             (: xs:integer :)
                         fn:data($_/db:node-id(.))!element id { attribute type {'number'}, .} 
+                 },
+           "keywords": function($_ as element()) as element(keywords)? {
+            (: xs:integer :)
+                        fn:data($_/0)!element keywords { attribute type {'number'}, .} 
                  },
            "name": function($_ as element()) as element(name)? {
             (: xs:string :)
@@ -127,6 +143,10 @@ declare variable $entity:list:=map {
            "size": function($_ as element()) as element(size)? {
             (: xs:integer :)
                         fn:data($_/0)!element size { attribute type {'number'}, .} 
+                 },
+           "width": function($_ as element()) as element(width)? {
+            (: xs:integer :)
+                        fn:data($_/width)!element width { attribute type {'number'}, .} 
                  } },
        
       "data": function() as element(image)*

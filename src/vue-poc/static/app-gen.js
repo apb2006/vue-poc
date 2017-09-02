@@ -1,5 +1,15 @@
-// generated 2017-08-27T21:21:39.471+01:00
-Vue.component('qd-link',{template:` 
+// generated 2017-09-02T22:16:55.583+01:00
+Vue.component('qd-fullscreen',{template:` 
+<a onclick="fullscreen()" href="javascript:void(0);">fS</a>
+ `,
+      
+  created:function(){
+    console.log("qd-fullscreen");
+  }
+}
+
+      );
+      Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
       
@@ -172,9 +182,14 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const About=Vue.extend({template:`  <v-layout class="ma-5"> <v-flex xs4=""> <v-card hover="" raised=""> <v-card-title height="200px" class="pa-5 indigo accent-3">
-<div class="display-1 white--text text-xs-center">VUE-POC</div>
-v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
+      const About=Vue.extend({template:` 
+<v-container>
+<v-parallax src="/vue-poc/ui/vue-poc.png">
+</v-parallax> 
+<v-card>
+
+  <v-card-text>
+ 
 <p>
 	This is a experiment in using
 	<code>vue.js</code>
@@ -189,7 +204,11 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
 	<li><a href="/dba" target="new">DBA app</a></li>
 	 <li> <router-link to="database?url=%2Fvue-poc%2F">DB</router-link></li>
 </ul>
-</v-flex> <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link href="/dba">REPLACED</qd-link> </v-layout>  `,
+ <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link href="/dba">REPLACED</qd-link> 
+	</v-card-text>
+	</v-card>
+	</v-container>
+	 `,
       
   }
 
@@ -520,7 +539,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     </v-btn>
 
   
-   <v-btn icon="" @click="acecmd('foldall')" title="fold all">
+   <v-btn icon="" @click="togglefold" title="fold toggle">
       <v-icon>vertical_align_center</v-icon>
     </v-btn>
     
@@ -614,6 +633,7 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
       snackbar: false,
       message: "Cant do that",
       events:  new Vue({}),
+      folded: false, // toggle fold/unfold action
       mimemap:{
           "text/xml":"xml",
           "application/xml":"xml",
@@ -665,6 +685,10 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
           alert("Get query error:\n"+url)
         });
       
+    },
+    togglefold(){
+      this.folded=!this.folded
+      this.acecmd(this.folded?"foldall":"unfoldall")
     },
     acecmd(cmd){
       //alert("acecmd: "+cmd)
@@ -993,20 +1017,61 @@ v0.0.3 </v-card-title> </v-card> </v-flex> <v-flex xs4="">
     <v-toolbar class="orange darken-1">
      <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
-     <v-chip>todo</v-chip>   
+     <v-chip>Images by year and month</v-chip>   
     </v-card-title>
    
     <v-spacer></v-spacer> 
   
     </v-toolbar>
     <v-card-text>
-dates todo
- </v-card-text>
+     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+<v-container v-if="!busy" fluid="">
+ <v-layout v-for="year in items" :key="year.year">
+      <v-flex v-text="year.year"></v-flex> 
+      <v-flex v-for="(m,i) in year.months" :key="i"><v-btn icon="" primary="" :disabled="0==m" @click="go(year.year,i)">{{m}}</v-btn></v-flex>       
+  </v-layout>            
+</v-container>
+<v-layout>
+ </v-layout></v-card-text>
  </v-card>
  </v-container>
  `,
         
- 
+  data: ()=>({
+    busy: false,
+    total: 0,
+    items: [],
+    elapsed: null,
+    months: ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec']
+  }),
+
+  methods:{
+    getDatetaken(){
+      this.busy=true
+      var t0 = performance.now();
+      HTTP.get("images/datetaken")
+      .then(r=>{
+        this.busy=false
+        this.total=r.data.total
+        this.items=r.data.items
+        var t1 = performance.now();
+        this.elapsed= 0.001 *(t1 - t0) 
+        }) 
+    },
+    go(year,month){
+     
+      month=("0" + (1+month)).slice(-2)
+      // alert("year: "+year+" "+month)
+      var from=year + "-" + month + "-01"
+      var lastday=new Date(year, month, 0).getDate()
+      var until=year + "-" + month + "-"+ lastday
+        this.$router.push({ name: 'images', query: { from:from, until:until }})
+    }
+  },
+  created:function(){
+    console.log("create datetaken")
+    this.getDatetaken()
+  }
     }
 
       );
@@ -1079,20 +1144,20 @@ dates todo
            <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
        
             Page:{{ query.page+1 }}
-          <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon="" primary="">
+          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon="" primary="">
            <v-icon>arrow_back</v-icon>
            </v-btn>
-           <v-btn @click.stop="query.page+=1" icon="" primary="">
+           <v-btn @click.stop="pageNext()" icon="" primary="">
             <v-icon>arrow_forward</v-icon>
            </v-btn>
            </span>
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
         <v-container v-if="!busy" fluid="" grid-list-md="">
-          <v-layout row="" wrap="">
+          <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
               <v-card class="grey lighten-2 pt-1">
-                <v-card-media :src="src(image)" @click="go(image)" height="80px" contain=""></v-card-media>
+                <v-card-media :src="src(image)" @dblclick="go(image)" height="80px" contain=""></v-card-media>
                  <v-card-actions v-tooltip:top="{ html:  ' '+image.path }">
               
                 <v-btn icon="" small="">
@@ -1120,7 +1185,15 @@ dates todo
           </v-toolbar>
           
         <v-card-text>    
-         <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" autocomplete=""></v-select>
+         <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" autocomplete="">
+             <template slot="item" scope="data">
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+              </template>
+            </v-select>
+            
             <v-btn @click="query.keyword=null" :disabled="!query.keyword">
                <v-icon>close</v-icon>Clear keyword
              </v-btn> 
@@ -1226,6 +1299,12 @@ dates todo
     },
     go(image){
       this.$router.push({ name: 'image', params: { id: image.id }})
+    },
+    pageBack(){
+      this.query.page=Math.min(0,this.query.page-1)
+    },
+    pageNext(){
+      this.query.page+=1
     }
    
   },
@@ -1253,7 +1332,7 @@ dates todo
       
       showFilter(){
         if(this.keywords.length==0){
-          HTTP.get("images/keywords")
+          HTTP.get("images/keywords2")
           .then(r=>{
             this.keywords=r.data.items
             }) 
@@ -1305,22 +1384,61 @@ body
     <v-toolbar class="orange darken-1">
      <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
-     <v-chip>todo</v-chip>   
+     <v-chip>click to show</v-chip>   
     </v-card-title>
    
     <v-spacer></v-spacer> 
   
     </v-toolbar>
     <v-card-text>
-keywords todo
+    <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+        <v-container v-if="!busy" fluid="" grid-list-md="">
+          <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
+            <v-flex height="80px" xs3="" v-for="keyword in items" :key="keyword.text">
+              <v-card class="grey lighten-2 pt-1" @click="show(keyword)">
+                       <v-toolbar>
+                 <v-card-title v-text="keyword.text"></v-card-title>
+                <v-spacer></v-spacer>
+                <v-chip>{{keyword.count}}</v-chip>
+              </v-toolbar>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
  </v-card-text>
  </v-card>
  </v-container>
  `,
-        
- 
-    }
+      
+  data: ()=>({
+    busy: false,
+    total: 0,
+    items: [],
+    elapsed: null
+  }),
 
+  methods:{
+    getKeywords(){
+      this.busy=true
+      var t0 = performance.now();
+      HTTP.get("images/keywords2")
+      .then(r=>{
+        this.busy=false
+        this.total=r.data.total
+        this.items=r.data.items
+        var t1 = performance.now();
+        this.elapsed= 0.001 *(t1 - t0) 
+        }) 
+    },
+    show(keyword){
+      this.$router.push({ name: 'images', query: { keyword: keyword.text }})
+    }
+  },
+  created:function(){
+    console.log("create keywords")
+    this.getKeywords()
+  }
+}
       );
       const Job=Vue.extend({template:` 
   <v-card>
@@ -1705,10 +1823,8 @@ keywords todo
    <br>
    <table>
    <tbody><tr v-for="(item, row) in grid">
-    <td v-for="(cell,col) in item" style="width:50px;height:50px;">
-    <v-btn @click="click(row,col)" :disabled="disabled(row,col)">
+    <td v-for="(cell,col) in item" style="width:50px;height:50px;" @click="click(row,col)">
     <img :src="src(row,col)" style="width:50px;height:50px;">
-</v-btn>
     </td>
    </tr>
   </tbody></table>
@@ -1730,6 +1846,7 @@ keywords todo
   },
   methods: {
     click(row,col) {
+      if(this.disabled(row,col))return;
       var g=this.grid
       var h=g[row][col]
       g[row][col]=null
@@ -1933,7 +2050,7 @@ keywords todo
 
 
       );
-      const Settings=Vue.extend({template:` 
+      const Acesettings=Vue.extend({template:` 
   <v-layout row="">
     <v-flex xs12="" sm6="" offset-sm3="">
       <v-card>
@@ -2020,7 +2137,7 @@ keywords todo
 			        fontsize: "14px"
 			        
 			    },
-			    keybindings:[  'Ace',  'Vim', 'Emacs' ]
+			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ]
 			    }
   },
   
@@ -2044,6 +2161,43 @@ keywords todo
 
 
       );
+      const Settings=Vue.extend({template:` 
+ <v-container fluid="">
+	 <v-card>
+	 <v-card-text>
+	   <router-link to="/acesettings">Editor settings</router-link>
+   </v-card-text>
+   </v-card>
+   <v-card>
+   <v-card-title>System information</v-card-title>
+   <v-card-text></v-card-text>
+   <v-card-actions>
+   <v-spacer></v-spacer>
+   <v-btn @click="wipe" error="">Wipe</v-btn></v-card-actions>
+   </v-card>
+ </v-container>
+ `,
+      
+  data:function(){return {
+    keys:[]
+  }
+  },
+  methods:{
+    wipe(){
+      alert("wipe")
+    }
+  },
+  created:function(){
+    console.log("settings")
+    settings.length()
+    .then(k=>{
+      console.log("length:",k)
+      this.keys=k;
+      })
+  }
+}
+
+      );
       const Tabs=Vue.extend({template:` 
   <v-tabs id="mobile-tabs-6" scroll-bars="" light="">
     <v-card class="primary white--text">
@@ -2052,6 +2206,7 @@ keywords todo
             <v-icon>menu</v-icon>
           </v-btn>
           <v-card-title>Page Title</v-card-title>
+          <v-spacer></v-spacer>
           <v-btn icon="" light="">
             <v-icon>search</v-icon>
           </v-btn>
@@ -2060,7 +2215,7 @@ keywords todo
           </v-btn>
         </v-card-actions>
     </v-card>
-    <v-tabs-bar slot="activators">
+    <v-tabs-bar slot="activators" class="green">
       <v-tabs-slider></v-tabs-slider>
       <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
        Item {{ i }}
@@ -2318,6 +2473,7 @@ keywords todo
         this.waiting=false
         this.alert={msg:error.response.data,success:false,error:true}
         console.log(error);
+        alert("bad")
       });
    }
   },
@@ -2452,6 +2608,227 @@ created(){
 }
 }
       );
+      const Vuepoc=Vue.extend({template:` 
+ <v-app>
+ <v-navigation-drawer persistent="" light="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" height="100%" class="grey lighten-4 pb-0">
+  <v-list class="pa-0">
+
+          <v-list-tile avatar="" tag="div">
+            <v-list-tile-avatar>
+              <v-btn icon="" @click="session">
+              <img src="/vue-poc/ui/quodatum.gif">
+              </v-btn>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>Vue PoC</v-list-tile-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon="" @click.stop="mini = !mini">
+                <v-icon>chevron_left</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
+
+      </v-list>
+    <qd-navlist :items="items"></qd-navlist>
+ </v-navigation-drawer>
+  
+ <v-toolbar class="indigo" dark="">
+  <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
+  <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
+  <v-spacer></v-spacer>
+   <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
+   <v-menu left="" transition="v-fade-transition">
+      <v-btn dark="" icon="" slot="activator">
+        {{$auth.user}}
+      </v-btn>
+     
+          <v-list>
+        
+              <v-list-tile @click="logout()">
+                <v-list-tile-title>logout</v-list-tile-title>
+              </v-list-tile>
+               <v-list-tile>
+                <v-list-tile-title>permission: {{$auth.permission}}</v-list-tile-title>
+              </v-list-tile>
+            
+          </v-list>
+      </v-menu>
+      <v-btn icon="" @click="fullscreen" :disabled="!fullscreenEnabled">
+        <v-icon>{{ fullscreenIcon }}</v-icon>
+      </v-btn>
+      <qd-fullscreen></qd-fullscreen>
+</v-toolbar>
+ <main> 
+ <v-alert error="" value="true" dismissible="" v-model="alert.show">
+      <pre style="overflow:auto;">{{ alert.msg }}</pre>
+    </v-alert>   
+      <transition name="fade" mode="out-in">
+        <router-view class="view ma-3"></router-view>
+        </transition>
+     </main>
+</v-app>
+
+ `,
+      
+   // router,
+    data:function(){return {
+      q:"",
+      status:{},
+      drawer:true,
+      mini: false,
+      alert:{show:false,msg:"Hello"},
+      items:[
+        {href: '/',text: 'Home', icon: 'home'    }, 
+        {
+          icon: 'folder_open',
+          text: 'Collections' ,
+          model: false,
+          children: [
+         {href: '/database', text: 'Databases',icon: 'developer_mode' },
+         {href: '/files', text: 'File system',icon: 'folder' },
+        {href: '/edit',text: 'Edit',icon: 'mode_edit'},
+        {href: '/history',text: 'history',icon: 'history'}
+        ]},
+        {
+          icon: 'directions_run',
+          text: 'Actions' ,
+          model: false,
+          children: [
+        {href: '/eval',text: 'Query',icon: 'play_circle_outline'},      
+        {href: '/tasks',text: 'Tasks',icon: 'history'}
+        ]},
+        {
+          icon: 'cast_connected',
+          text: 'Server' ,
+          model: false,
+          children: [
+            {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
+            {href: '/logs',text: 'Server logs',icon: 'dns'},
+            {href: '/ping',text: 'Ping',icon: 'update'}
+        ]},
+        {
+          icon: 'camera_roll',
+          text: 'Images' ,
+          model: false,
+          children: [
+            {href: '/images/item',text: 'Collection',icon: 'photo_camera'},
+            {href: '/images/keywords',text: 'Keywords',icon: 'label'},
+            {href: '/images/dates',text: 'Date taken',icon: 'date_range'},
+            {href: '/images/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
+            {href: '/images/report',text: 'Reports',icon: 'report'}
+            ]},
+        {
+          icon: 'more_horiz',
+          text: 'More' ,
+          model: false,
+          children: [
+        {href: '/session',text: 'Session',icon: 'person'}, 
+        {href: '/select',text: 'Select',icon: 'extension'},
+        {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
+        {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}, 
+        {href: '/timeline',text: 'Time line',icon: 'timelapse'}
+        ]},
+        
+        {href: '/settings',text: 'Settings',icon: 'settings'  },
+        {href: '/about',text: 'About', icon: 'help'    }, 
+      ]
+
+    }},
+    methods: {
+        session(){
+          this.$router.push({path: '/session'})
+        },
+        search(){
+          this.$router.push({path: '/search',query: { q: this.q }})
+        },
+        logout(){
+          HTTP.get("logout").then(r=>{
+            alert("logout")
+          }) 
+        },
+        showAlert(msg){
+          this.alert.msg=moment().format()+" "+ msg
+          this.alert.show=true
+        },
+        fullscreenEnabled(){
+          return document.fullscreenEnabled
+        },
+        isInFullScreen(){
+          return (document.fullscreenElement && document.fullscreenElement !== null) ||
+          (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+          (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+          (document.msFullscreenElement && document.msFullscreenElement !== null)
+        },
+        fullscreen(){
+          // https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
+          var isInFullScreen = this.isInFullScreen();
+          alert(isInFullScreen);
+          var docElm = document.documentElement;
+          if (!isInFullScreen) {
+              if (docElm.requestFullscreen) {
+                  docElm.requestFullscreen();
+              } else if (docElm.mozRequestFullScreen) {
+                  docElm.mozRequestFullScreen();
+              } else if (docElm.webkitRequestFullScreen) {
+                  docElm.webkitRequestFullScreen();
+              } else if (docElm.msRequestFullscreen) {
+                  docElm.msRequestFullscreen();
+              }
+          } else {
+              if (document.exitFullscreen) {
+                  document.exitFullscreen();
+              } else if (document.webkitExitFullscreen) {
+                  document.webkitExitFullscreen();
+              } else if (document.mozCancelFullScreen) {
+                  document.mozCancelFullScreen();
+              } else if (document.msExitFullscreen) {
+                  document.msExitFullscreen();
+              }
+          }
+        }
+    },
+    computed:{
+      fullscreenIcon(){ return this.isInFullScreen()?'fullscreen_exit':'fullscreen'}
+    },
+
+    created(){
+      
+      console.log("create-----------")
+      Vue.config.errorHandler = function (err, vm, info) {
+    // handle error
+    // `info` is a Vue-specific error info, e.g. which lifecycle hook
+          console.error(err, vm, info);
+          this.showAlert("vue error:\n"+err)
+          alert("vue error");
+     };
+      // Add a response interceptor
+
+      HTTP.interceptors.response.use(
+      (response)=> {
+        // Do something with response data
+        return response;
+      },
+      (error) =>{
+        // interupt restxq single 
+        if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
+        return Promise.reject(error);
+      });
+      
+      HTTP.get("status")
+      .then(r=>{
+        console.log("status",r.data)
+        Object.assign(Auth,r.data)
+        this.$forceUpdate()
+      }) 
+    },
+    beforeDestroy(){
+      console.log("destory-----------")
+      
+    }
+}
+
+      );
       // base -----------------------
 localforage.config({
   name: 'vuepoc'
@@ -2492,7 +2869,7 @@ var settings = {
       });
       });
     },
-    setItem (key,value,callback) {
+    setItem (key,value) {
       if (this.debug) console.log('setItem',key,value);
       return new Promise((resolve, reject) => {
       localforage.setItem(key, value) 
@@ -2504,15 +2881,22 @@ var settings = {
         return new Promise((resolve, reject) => {reject(err);})
       });
     })
-    }
-  };
-
-Vue.config.errorHandler = function (err, vm, info) {
-  // handle error
-  // `info` is a Vue-specific error info, e.g. which lifecycle hook
-  console.error(err, vm, info);
-  alert("vue error");
+    },
+    length(){
+      return new Promise((resolve, reject) => {
+        localforage.keys() // returns array of keys
+        .then((value) => {
+          console.log('length ',value);
+          return new Promise((resolve, reject) => {resolve(value);})
+        }).catch((err) => {
+          console.log('length');
+          return new Promise((resolve, reject) => {reject(err);})
+        });
+    })
+  }
 };
+
+
 
 //Returns a function, that, as long as it continues to be invoked, will not
 //be triggered. The function will be called after it stops being called for
@@ -2531,19 +2915,50 @@ function debounce(func, wait, immediate) {
  };
 };
 
+// https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
+function fullscreen() {
+  var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+      (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+      (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+      (document.msFullscreenElement && document.msFullscreenElement !== null);
+
+  var docElm = document.documentElement;
+  if (!isInFullScreen) {
+      if (docElm.requestFullscreen) {
+          docElm.requestFullscreen();
+      } else if (docElm.mozRequestFullScreen) {
+          docElm.mozRequestFullScreen();
+      } else if (docElm.webkitRequestFullScreen) {
+          docElm.webkitRequestFullScreen();
+      } else if (docElm.msRequestFullscreen) {
+          docElm.msRequestFullscreen();
+      }
+  } else {
+      if (document.exitFullscreen) {
+          document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+      }
+  }
+};
 
 const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
   routes: [
-    { path: '/', component: Home,meta:{title:"Home"} },
-    { path: '/session', component: Session ,meta:{title:"Session"}},
-    { path: '/images/item', component: Images, meta:{title:"Images"} },
-    { path: '/images/report', name:"image-reports",component: Report, props: true, meta:{title: "Image report"}},
+    { path: '/', component: Home, meta:{title:"Home"} },
+    { path: '/session', component: Session ,meta: {title:"Session"}},
+    {path: '/images', redirect: '/images/item' },
+    { path: '/images/item', name:'images', component: Images, meta:{title: "Images"} },
+    { path: '/images/report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
     { path: '/images/item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
     { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
-    { path: '/images/keywords', component: Keywords, meta:{title:"Thumbnail keywords"} },
-    { path: '/images/dates', component: Dates, meta:{title:"Thumbnail dates"} },
+    { path: '/images/keywords', component: Keywords, meta:{title:"Image keywords"} },
+    { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -2554,6 +2969,7 @@ const router = new VueRouter({
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
     { path: '/settings', component: Settings, meta:{title:"Settings"} },
+    { path: '/acesettings', component: Acesettings, meta:{title:"Editor settings"} },
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
@@ -2591,6 +3007,7 @@ router.beforeEach((to, from, next) => {
 });
 
 Vue.use(Vuetify);
+
 const app = new Vue({
   router,
   data:function(){return {
@@ -2671,10 +3088,58 @@ const app = new Vue({
       showAlert(msg){
         this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
+      },
+      fullscreenEnabled(){
+        return document.fullscreenEnabled
+      },
+      isInFullScreen(){
+        return (document.fullscreenElement && document.fullscreenElement !== null) ||
+        (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+        (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+        (document.msFullscreenElement && document.msFullscreenElement !== null)
+      },
+      fullscreen(){
+        // https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
+        var isInFullScreen = this.isInFullScreen();
+        alert(isInFullScreen);
+        var docElm = document.documentElement;
+        if (!isInFullScreen) {
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            } else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            } else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
       }
   },
+  computed:{
+    fullscreenIcon(){ return this.isInFullScreen()?'fullscreen_exit':'fullscreen'}
+  },
+
   created(){
+    
     console.log("create-----------")
+    Vue.config.errorHandler = function (err, vm, info) {
+  // handle error
+  // `info` is a Vue-specific error info, e.g. which lifecycle hook
+        console.error(err, vm, info);
+        this.showAlert("vue error:\n"+err)
+        alert("vue error");
+   };
     // Add a response interceptor
 
     HTTP.interceptors.response.use(
@@ -2683,8 +3148,8 @@ const app = new Vue({
       return response;
     },
     (error) =>{
-      // Do something with response error
-      this.showAlert("http error:\n"+error.response.data)
+      // interupt restxq single 
+      if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
       return Promise.reject(error);
     });
     

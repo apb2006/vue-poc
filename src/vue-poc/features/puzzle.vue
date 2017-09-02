@@ -13,10 +13,8 @@
    <br/>
    <table>
    <tr v-for="(item, row) in grid">
-    <td v-for="(cell,col) in item" style="width:50px;height:50px;" >
-    <v-btn @click="click(row,col)" :disabled="disabled(row,col)">
+    <td v-for="(cell,col) in item" style="width:50px;height:50px;" @click="click(row,col)">
     <img :src="src(row,col)" style="width:50px;height:50px;"/>
-</v-btn>
     </td>
    </tr>
   </table>
@@ -39,6 +37,7 @@
   },
   methods: {
     click(row,col) {
+      if(this.disabled(row,col))return;
       var g=this.grid
       var h=g[row][col]
       g[row][col]=null

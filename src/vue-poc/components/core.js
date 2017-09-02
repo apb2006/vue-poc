@@ -38,7 +38,7 @@ var settings = {
       });
       });
     },
-    setItem (key,value,callback) {
+    setItem (key,value) {
       if (this.debug) console.log('setItem',key,value);
       return new Promise((resolve, reject) => {
       localforage.setItem(key, value) 
@@ -50,15 +50,22 @@ var settings = {
         return new Promise((resolve, reject) => {reject(err);})
       });
     })
-    }
-  };
-
-Vue.config.errorHandler = function (err, vm, info) {
-  // handle error
-  // `info` is a Vue-specific error info, e.g. which lifecycle hook
-  console.error(err, vm, info);
-  alert("vue error");
+    },
+    length(){
+      return new Promise((resolve, reject) => {
+        localforage.keys() // returns array of keys
+        .then((value) => {
+          console.log('length ',value);
+          return new Promise((resolve, reject) => {resolve(value);})
+        }).catch((err) => {
+          console.log('length');
+          return new Promise((resolve, reject) => {reject(err);})
+        });
+    })
+  }
 };
+
+
 
 //Returns a function, that, as long as it continues to be invoked, will not
 //be triggered. The function will be called after it stops being called for
@@ -77,19 +84,50 @@ function debounce(func, wait, immediate) {
  };
 };
 
+// https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
+function fullscreen() {
+  var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+      (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+      (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+      (document.msFullscreenElement && document.msFullscreenElement !== null);
+
+  var docElm = document.documentElement;
+  if (!isInFullScreen) {
+      if (docElm.requestFullscreen) {
+          docElm.requestFullscreen();
+      } else if (docElm.mozRequestFullScreen) {
+          docElm.mozRequestFullScreen();
+      } else if (docElm.webkitRequestFullScreen) {
+          docElm.webkitRequestFullScreen();
+      } else if (docElm.msRequestFullscreen) {
+          docElm.msRequestFullscreen();
+      }
+  } else {
+      if (document.exitFullscreen) {
+          document.exitFullscreen();
+      } else if (document.webkitExitFullscreen) {
+          document.webkitExitFullscreen();
+      } else if (document.mozCancelFullScreen) {
+          document.mozCancelFullScreen();
+      } else if (document.msExitFullscreen) {
+          document.msExitFullscreen();
+      }
+  }
+};
 
 const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
   routes: [
-    { path: '/', component: Home,meta:{title:"Home"} },
-    { path: '/session', component: Session ,meta:{title:"Session"}},
-    { path: '/images/item', component: Images, meta:{title:"Images"} },
-    { path: '/images/report', name:"image-reports",component: Report, props: true, meta:{title: "Image report"}},
+    { path: '/', component: Home, meta:{title:"Home"} },
+    { path: '/session', component: Session ,meta: {title:"Session"}},
+    {path: '/images', redirect: '/images/item' },
+    { path: '/images/item', name:'images', component: Images, meta:{title: "Images"} },
+    { path: '/images/report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
     { path: '/images/item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
     { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
-    { path: '/images/keywords', component: Keywords, meta:{title:"Thumbnail keywords"} },
-    { path: '/images/dates', component: Dates, meta:{title:"Thumbnail dates"} },
+    { path: '/images/keywords', component: Keywords, meta:{title:"Image keywords"} },
+    { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -100,6 +138,7 @@ const router = new VueRouter({
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
     { path: '/settings', component: Settings, meta:{title:"Settings"} },
+    { path: '/acesettings', component: Acesettings, meta:{title:"Editor settings"} },
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
@@ -137,6 +176,7 @@ router.beforeEach((to, from, next) => {
 });
 
 Vue.use(Vuetify);
+
 const app = new Vue({
   router,
   data:function(){return {
@@ -217,10 +257,58 @@ const app = new Vue({
       showAlert(msg){
         this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
+      },
+      fullscreenEnabled(){
+        return document.fullscreenEnabled
+      },
+      isInFullScreen(){
+        return (document.fullscreenElement && document.fullscreenElement !== null) ||
+        (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+        (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+        (document.msFullscreenElement && document.msFullscreenElement !== null)
+      },
+      fullscreen(){
+        // https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
+        var isInFullScreen = this.isInFullScreen();
+        alert(isInFullScreen);
+        var docElm = document.documentElement;
+        if (!isInFullScreen) {
+            if (docElm.requestFullscreen) {
+                docElm.requestFullscreen();
+            } else if (docElm.mozRequestFullScreen) {
+                docElm.mozRequestFullScreen();
+            } else if (docElm.webkitRequestFullScreen) {
+                docElm.webkitRequestFullScreen();
+            } else if (docElm.msRequestFullscreen) {
+                docElm.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.mozCancelFullScreen) {
+                document.mozCancelFullScreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
       }
   },
+  computed:{
+    fullscreenIcon(){ return this.isInFullScreen()?'fullscreen_exit':'fullscreen'}
+  },
+
   created(){
+    
     console.log("create-----------")
+    Vue.config.errorHandler = function (err, vm, info) {
+  // handle error
+  // `info` is a Vue-specific error info, e.g. which lifecycle hook
+        console.error(err, vm, info);
+        this.showAlert("vue error:\n"+err)
+        alert("vue error");
+   };
     // Add a response interceptor
 
     HTTP.interceptors.response.use(
@@ -229,8 +317,8 @@ const app = new Vue({
       return response;
     },
     (error) =>{
-      // Do something with response error
-      this.showAlert("http error:\n"+error.response.data)
+      // interupt restxq single 
+      if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
       return Promise.reject(error);
     });
     

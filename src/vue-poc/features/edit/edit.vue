@@ -43,7 +43,7 @@
     </v-btn>
 
   
-   <v-btn  icon @click="acecmd('foldall')" title="fold all">
+   <v-btn  icon @click="togglefold" title="fold toggle">
       <v-icon>vertical_align_center</v-icon>
     </v-btn>
     
@@ -140,6 +140,7 @@ v-on:annotation="annotation"></vue-ace>
       snackbar: false,
       message: "Cant do that",
       events:  new Vue({}),
+      folded: false, // toggle fold/unfold action
       mimemap:{
           "text/xml":"xml",
           "application/xml":"xml",
@@ -191,6 +192,10 @@ v-on:annotation="annotation"></vue-ace>
           alert("Get query error:\n"+url)
         });
       
+    },
+    togglefold(){
+      this.folded=!this.folded
+      this.acecmd(this.folded?"foldall":"unfoldall")
     },
     acecmd(cmd){
       //alert("acecmd: "+cmd)

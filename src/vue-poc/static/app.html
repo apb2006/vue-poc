@@ -83,6 +83,10 @@
             
           </v-list>
       </v-menu>
+      <v-btn  icon @click="fullscreen" :disabled="!fullscreenEnabled">
+        <v-icon>{{ fullscreenIcon }}</v-icon>
+      </v-btn>
+      <qd-fullscreen></qd-fullscreen>
 </v-toolbar>
  <main> 
  <v-alert error value="true" dismissible v-model="alert.show">

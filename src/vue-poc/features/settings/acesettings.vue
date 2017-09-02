@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<template id="settings">
+<template id="acesettings">
   <v-layout row>
     <v-flex xs12 sm6 offset-sm3>
       <v-card>
@@ -97,7 +97,7 @@
 			        fontsize: "14px"
 			        
 			    },
-			    keybindings:[  'Ace',  'Vim', 'Emacs' ]
+			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ]
 			    }
   },
   

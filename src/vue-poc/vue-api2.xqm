@@ -31,24 +31,6 @@ function vue-api:test-select($q )
   </json>
 };
 
-(:~
- : get status
- :)
-declare
-%rest:GET %rest:path("/vue-poc/api/status")
-%rest:produces("application/json")
-%output:method("json")   
-function vue-api:status( )   
-{
-let $user:=user:current()
-let $detail:=user:list-details($user)
-return  <json   type="object" >
-            <user>{$user}</user>
-            <permission>{$detail/@permission/string()}</permission>
-            <session>{session:id()}</session>
-            <created>{session:created()}</created>
-  </json>
-};
 
 
 

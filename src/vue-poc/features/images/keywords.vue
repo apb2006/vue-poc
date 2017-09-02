@@ -9,20 +9,63 @@
     <v-toolbar class="orange darken-1">
      <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title >
-     <v-chip >todo</v-chip>   
+     <v-chip >click to show</v-chip>   
     </v-card-title>
    
     <v-spacer></v-spacer> 
   
     </v-toolbar>
     <v-card-text>
-keywords todo
+    <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
+        <v-container v-if="!busy" fluid grid-list-md>
+          <v-layout row wrap v-touch="{ left: () => pageNext(), right: () => pageBack()}">
+            <v-flex height="80px"
+              xs3
+              v-for="keyword in items"
+              :key="keyword.text"
+            >
+              <v-card   class="grey lighten-2 pt-1" @click="show(keyword)">
+                       <v-toolbar>
+                 <v-card-title v-text="keyword.text"></v-card-title>
+                <v-spacer></v-spacer>
+                <v-chip>{{keyword.count}}</v-chip>
+              </v-toolbar>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
  </v-card-text>
  </v-card>
  </v-container>
 </template>
 
-<script>{  
- 
+<script>{
+  data: ()=>({
+    busy: false,
+    total: 0,
+    items: [],
+    elapsed: null
+  }),
+
+  methods:{
+    getKeywords(){
+      this.busy=true
+      var t0 = performance.now();
+      HTTP.get("images/keywords2")
+      .then(r=>{
+        this.busy=false
+        this.total=r.data.total
+        this.items=r.data.items
+        var t1 = performance.now();
+        this.elapsed= 0.001 *(t1 - t0) 
+        }) 
+    },
+    show(keyword){
+      this.$router.push({ name: 'images', query: { keyword: keyword.text }})
     }
-</script>
+  },
+  created:function(){
+    console.log("create keywords")
+    this.getKeywords()
+  }
+}</script>

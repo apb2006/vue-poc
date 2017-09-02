@@ -7,6 +7,7 @@
             <v-icon>menu</v-icon>
           </v-btn>
           <v-card-title>Page Title</v-card-title>
+          <v-spacer></v-spacer>
           <v-btn icon light>
             <v-icon>search</v-icon>
           </v-btn>
@@ -15,7 +16,7 @@
           </v-btn>
         </v-card-actions>
     </v-card>
-    <v-tabs-bar slot="activators">
+    <v-tabs-bar slot="activators" class="green">
       <v-tabs-slider></v-tabs-slider>
       <v-tabs-item
         v-for="i in 13"

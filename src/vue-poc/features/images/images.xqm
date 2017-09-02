@@ -26,7 +26,7 @@ function vue-api:id( $id as xs:integer)
   </json>
 };
 (:~
- : do a thumbnail
+ : get set of thumbnails matching search
  :)
 declare
 %rest:single
@@ -62,22 +62,52 @@ $keyword
   </json>
 };
 
+
+
 (:~
  : keywords
  :)
 declare
-%rest:GET %rest:path("/vue-poc/api/images/keywords")
+%rest:GET %rest:path("/vue-poc/api/images/keywords2")
 %rest:produces("application/json")
 %output:method("json")   
-function vue-api:keywords()   
+function vue-api:keywords2()   
 {
-let $keys:=
-collection($cfg:DB-IMAGE || "/image")/image/keywords/keyword
-=>distinct-values()
-=>sort("http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive")
+let $keys:=db:open($cfg:DB-IMAGE,"keywords.xml")/keywords/keyword
+
 return <json   type="object" >
             <items type="array">{
-            $keys!<_ >{.}</_>
+            $keys!<_ type="object">
+               <text>{@name/string()}</text>
+               <count>{@count/string()}</count>
+               </_>
+            }</items>
+  </json>
+};
+
+(:~
+ : keywords
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/images/datetaken")
+%rest:produces("application/json")
+%output:method("json")   
+function vue-api:datetaken()   
+{
+let $years:=db:open($cfg:DB-IMAGE,"datetaken.xml")/dates/year
+
+return <json   type="object" >
+            <items type="array">{
+            for $year in $years
+            return <_ type="object">
+               <year>{$year/@value/string()}</year>
+               <count type="number">{$year/@count/string()}</count>
+               <months type="array">{
+               for $m in 1 to 12
+               let $c:= $year/month[@value=format-integer($m,"00")]/@count
+               return <_ type="number">{if($c)then string($c) else 0}</_>
+               }</months>
+               </_>
             }</items>
   </json>
 };

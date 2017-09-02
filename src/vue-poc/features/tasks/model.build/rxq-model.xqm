@@ -6,7 +6,7 @@
  :)
 module namespace vue-api = 'quodatum:vue.api';
 
-import module namespace bf = 'quodatum.tools.buildfields' at "entity-gen.xqm";
+import module namespace bf = 'quodatum.tools.buildfields' at "./../../../lib/entity-gen.xqm";
 
 (:~
  : Returns a file content.
@@ -19,9 +19,13 @@ declare
 %output:method("json")
 %updating   
 function vue-api:model($efolder ,$target )   
-{(
-  prof:variables(),
-  bf:write($efolder,$target),
-  db:output(<json type="object"><msg>Updated: {$target}</msg></json>)
-)};
+{
+    let $config:='import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";'
+    let $src:=bf:module(bf:entities($efolder),$config)
+    return (
+      prof:variables(),
+      file:write-text($target,$src),
+      db:output(<json type="object"><msg>Updated: {$target}</msg></json>)
+    )
+};
           

@@ -72,6 +72,7 @@
         this.waiting=false
         this.alert={msg:error.response.data,success:false,error:true}
         console.log(error);
+        alert("bad")
       });
    }
   },

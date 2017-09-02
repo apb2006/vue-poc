@@ -20,6 +20,22 @@
 			<description>file size.</description>
 			<xpath>0</xpath>
 		</field>
+		<field name="keywords" type="xs:integer">
+      <description>Number of keywords</description>
+      <xpath>0</xpath>
+    </field>
+    <field name="width" type="xs:integer">
+      <description>width in pixels</description>
+      <xpath>width</xpath>
+    </field>
+    <field name="height" type="xs:integer">
+      <description>height in pixels</description>
+      <xpath>height</xpath>
+    </field>
+    <field name="geo" type="xs:boolean">
+      <description>has geo</description>
+      <xpath>geo</xpath>
+    </field>
 	</fields>
 	
 	<views>

@@ -20,24 +20,24 @@
            <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
        
             Page:{{ query.page+1 }}
-          <v-btn @click.stop="query.page=Math.min(0,query.page-1)" :disabled="query.page==0" icon primary>
+          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon primary>
            <v-icon>arrow_back</v-icon>
            </v-btn>
-           <v-btn @click.stop="query.page+=1" icon primary>
+           <v-btn @click.stop="pageNext()" icon primary>
             <v-icon>arrow_forward</v-icon>
            </v-btn>
            </span>
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
         <v-container v-if="!busy" fluid grid-list-md>
-          <v-layout row wrap>
+          <v-layout row wrap v-touch="{ left: () => pageNext(), right: () => pageBack()}">
             <v-flex height="80px"
               xs2
               v-for="image in images"
               :key="image.name"
             >
               <v-card   class="grey lighten-2 pt-1">
-                <v-card-media :src="src(image)"  @click="go(image)" 
+                <v-card-media :src="src(image)"  @dblclick="go(image)" 
                 height="80px" contain></v-card-media>
                  <v-card-actions  v-tooltip:top="{ html:  ' '+image.path }">
               
@@ -69,9 +69,17 @@
          <v-select
               v-bind:items="keywords"
               v-model="query.keyword"
-              label="Keyword"
+              label="Keyword" item-value="text" item-text="text"
               autocomplete
-            ></v-select>
+            >
+             <template slot="item" scope="data">
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+              </template>
+            </v-select>
+            
             <v-btn  @click="query.keyword=null" :disabled="!query.keyword">
                <v-icon>close</v-icon>Clear keyword
              </v-btn> 
@@ -208,6 +216,12 @@
     },
     go(image){
       this.$router.push({ name: 'image', params: { id: image.id }})
+    },
+    pageBack(){
+      this.query.page=Math.min(0,this.query.page-1)
+    },
+    pageNext(){
+      this.query.page+=1
     }
    
   },
@@ -235,7 +249,7 @@
       
       showFilter(){
         if(this.keywords.length==0){
-          HTTP.get("images/keywords")
+          HTTP.get("images/keywords2")
           .then(r=>{
             this.keywords=r.data.items
             }) 
