@@ -30,7 +30,7 @@
   <v-card-text   >
   <v-flex xs12 style="height:200px"  fill-height>
   <vue-ace  :content="xq" mode="xquery" wrap="true"
-    v-on:change-content="onChange" 
+    v-on:change-content="onChange" :settings="aceSettings"
     ></vue-ace>
     </v-flex>
    </v-card-text>
@@ -82,7 +82,8 @@
       jobId: null,
       waiting: false,
       start: null,
-      jobState: {}
+      jobState: {},
+      aceSettings:{}
       }
   },
   methods:{
@@ -181,7 +182,14 @@
       this.showResult=true
     }
   },
-  
+  beforeRouteEnter (to, from, next) {
+    settings.getItem('settings/ace')
+    .then( v =>{
+      next(vm => {
+        console.log('eval settings: ',v);
+        vm.aceSettings = v;
+        })})
+     },
   created:function(){
       localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
   }

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="tabs">
-  <v-tabs id="mobile-tabs-6" scroll-bars light>
-    <v-card class="primary white--text">
+  <v-tabs  scroll-bars >
+    <v-card >
       <v-card-actions>
           <v-btn icon light>
             <v-icon>menu</v-icon>
@@ -16,28 +16,32 @@
           </v-btn>
         </v-card-actions>
     </v-card>
-    <v-tabs-bar slot="activators" class="green">
-      <v-tabs-slider></v-tabs-slider>
+    
+    <v-tabs-bar class="grey lighten-3">
       <v-tabs-item
         v-for="i in 13"
         :key="i"
         :href="'#mobile-tabs-6-' + i"
       >
-       Item {{ i }}
-        <v-btn icon class="pink--text">
-              <v-icon>favorite</v-icon>
-            </v-btn>
+       <v-chip  close>
+       <v-avatar class="pink">
+       <v-icon>favorite</v-icon>
+       </v-avatar>
+       Item {{ i }} more
+       </v-chip>
       </v-tabs-item>
+      <v-tabs-slider class="primary"></v-tabs-slider>
     </v-tabs-bar>
-    <v-tabs-content
-      v-for="i in 13"
+    
+    <v-tabs-items>
+     <v-tabs-content v-for="i in 13"
       :key="i"
-      :id="'mobile-tabs-6-' + i"
-    >
-      <v-card flat>
-        <v-card-text>{{ text }}</v-card-text>
+      :id="'mobile-tabs-6-' + i">
+      <v-card flat  >
+        <v-card-text>{{i}} - {{ text }}</v-card-text>
       </v-card>
-    </v-tabs-content>
+      </v-tabs-content>
+    </v-tabs-items>
 </v-tabs>
 </template>
 

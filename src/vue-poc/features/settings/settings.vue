@@ -1,14 +1,17 @@
 <!DOCTYPE html>
 <template id="settings">
  <v-container fluid>
+ <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
 	 <v-card>
+	   <v-card-title class="lime darken-1">Available settings</v-card-title>
 	 <v-card-text>
-	   <router-link to="/acesettings">Editor settings</router-link>
+	   <router-link to="/acesettings">Editor</router-link>
    </v-card-text>
    </v-card>
-   <v-card>
-   <v-card-title>System information</v-card-title>
-   <v-card-text></v-card-text>
+   <div>.</div>
+   <v-card >
+   <v-card-title class="lime darken-1">System information</v-card-title>
+   <v-card-text>keys?</v-card-text>
    <v-card-actions>
    <v-spacer></v-spacer>
    <v-btn @click="wipe" error>Wipe</v-btn></v-card-actions>
@@ -18,7 +21,8 @@
 
 <script>{
   data:function(){return {
-    keys:[]
+    keys: [],
+    showDev: false
   }
   },
   methods:{

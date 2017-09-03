@@ -110,7 +110,8 @@
 <v-card-text v-if="!busy">
 <v-flex xs12 style="height:70vh"  fill-height>
   
-    <vue-ace  :content="contentA" :mode="mode" :wrap="wrap" :events="events"
+    <vue-ace  :content="contentA" :mode="mode" :wrap="wrap"  :settings="aceSettings"
+    :events="events" v-resize="onResize"
 v-on:change-content="changeContentA" 
 v-on:annotation="annotation"></vue-ace>
  </v-flex> 
@@ -151,7 +152,8 @@ v-on:annotation="annotation"></vue-ace>
           "text/turtle":"turtle",
           "text/css":"css",
           "image/svg+xml":"svg"
-      }
+      },
+      aceSettings: { }
     }
   },
   methods: {
@@ -252,6 +254,10 @@ v-on:annotation="annotation"></vue-ace>
       var r=this.mimemap[mime]
       return r?r:"text"
     },
+    onResize(){
+      var h=window.innerHeight
+      console.log("height:",h)
+    },
     leaving(event) {
       event.returnValue = "event seems to need to be set";
       //debugger;
@@ -271,6 +277,12 @@ v-on:annotation="annotation"></vue-ace>
     var url=this.$route.query.url
     if(url) this.fetch(url)
   },
+  beforeRouteEnter (to, from, next) {
+    settings.getItem('settings/ace')
+    .then( v =>{
+      next(vm => {vm.aceSettings = v;})
+        })
+     },
   beforeRouteLeave (to, from, next) {
     // called when the route that renders this component is about to
     // be navigated away from.

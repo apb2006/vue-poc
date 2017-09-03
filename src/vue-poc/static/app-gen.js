@@ -1,10 +1,22 @@
-// generated 2017-09-02T22:16:55.583+01:00
+// generated 2017-09-03T23:24:46.005+01:00
 Vue.component('qd-fullscreen',{template:` 
-<a onclick="fullscreen()" href="javascript:void(0);">fS</a>
+<a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
+  <v-icon>{{ fullscreenIcon }}</v-icon>
+  </a>
  `,
       
-  created:function(){
-    console.log("qd-fullscreen");
+  data(){
+    return {fullscreenIcon:"fullscreen"}
+  },
+  methods:{
+    toggle(){
+      this.$fullscreen.toggle()
+      setTimeout(()=>{
+        var state=this.$fullscreen.isInFullScreen()
+        //console.log("FS",state);
+        this.fullscreenIcon=state?"fullscreen_exit":"fullscreen"
+        }, 1000);
+    }
   }
 }
 
@@ -123,6 +135,144 @@
       this.events.$on('fit', (cmd) => {
         this.timeline.fit(true)
         })
+    }
+  }
+}
+      );
+      Vue.component('vue-ace',{template:` 
+<div style="width: 100%; height: 100%;"></div>
+ `,
+      
+  props: [ 'content',
+          'mode', 
+          'wrap',
+          'readOnly',
+          'events',
+          'settings'
+          ],
+  data () {
+    return {
+      editor: Object,
+      beforeContent: '',
+      aceSettings:{
+          theme: "github",
+          keybinding: "ace",
+          fontsize: 16,
+          enableSnippets:true,
+          enableBasicAutocompletion:true,
+          enableLiveAutocompletion:true
+          },
+      annots:{
+        error:0,warning:0,info:0
+        } 
+      }
+  },
+  watch: {
+    'content' (value) {
+        if (this.beforeContent !== value) {
+        this.editor.setValue(value, 1)
+      }
+    },
+    'mode' (value) {
+        var session=this.editor.getSession()
+        session.setMode(`ace/mode/${value}`)
+    },
+    'wrap' (value) {
+      var session=this.editor.getSession()
+      session.setUseWrapMode(value)
+    },
+    'settings' (value) {
+      //console.log("--settings--",value)
+      this.applySettings()
+    }
+  },
+  methods:{
+
+    command(cmd){
+      //alert("fold")
+      var cm = this.editor.commands
+      //console.log(cm.commands)
+     cm.exec(cmd, this.editor)
+    },
+    
+    testAnnotations(){
+    this.editor.getSession().setAnnotations([{
+      row: 1,
+      column: 0,
+      text: "Strange error",
+      type: "error" // also warning and information
+    }]);
+    },
+    
+    applySettings(){
+      const aceSettings=this.settings
+      //console.log("font: ",aceSettings.fontsize)
+      this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
+      //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
+      this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
+      this.editor.setOptions({ 
+                          enableSnippets : aceSettings.enableSnippets,
+                          enableBasicAutocompletion : aceSettings.enableBasicAutocompletion,
+                          enableLiveAutocompletion : aceSettings.enableLiveAutocompletion,
+                          tabSize: 2,
+                          useSoftTabs: true
+                          });
+    }
+  },
+  
+  mounted () {
+    const mode = this.mode || 'text'
+    const wrap = this.wrap || false
+
+    const aceSettings=this.settings
+    console.log("QA: ",this.settings.theme)
+    const readOnly = this.readOnly || false
+    ace.config.set("workerPath", "/vue-poc/ui/ace-workers") 
+    this.editor = window.ace.edit(this.$el)
+    
+    this.editor.$blockScrolling = Infinity
+    this.editor.setValue(this.content, 1)
+    this.editor.setOptions({ readOnly:this.readOnly })
+    var session=this.editor.getSession()
+    session.setMode(`ace/mode/${mode}`)
+    session.setUseWrapMode(wrap)
+    this.editor.commands.addCommand({
+      name: "showKeyboardShortcuts",
+      bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
+      exec: function(editor) {
+          ace.config.loadModule("ace/ext/keybinding_menu", function(module) {
+              module.init(editor);
+              editor.showKeyboardShortcuts()
+          })
+      }
+  })
+    this.editor.on('change', () => {
+        this.beforeContent = this.editor.getValue()
+      this.$emit('change-content', this.editor.getValue())
+    });
+    
+    this.editor.getSession().on("changeAnnotation", ()=>{
+      var annot = this.editor.getSession().getAnnotations();
+      this.annots={error:0,warning:0,info:0};
+      for (var key in annot){
+          if (annot.hasOwnProperty(key)){
+            this.annots[annot[key].type]+=1;
+            //console.log("[" + annot[key].row + " , " + annot[key].column + "] - \t" + annot[key].type+ "# " +annot[key].text);
+          }
+      }
+      //console.log(this.annots)
+       this.$emit('annotation',this.annots)
+    });
+    if(this.events){
+      this.events.$on('eventFired', (cmd) => {
+      if(cmd=="outline"){
+        var row = this.editor.selection.getCursor().row
+        var toks=this.editor.session.getTokens(row).filter(function(t) {
+            return true
+        })
+        console.log(toks);
+      }else this.command(cmd);
+    });
     }
   }
 }
@@ -606,7 +756,7 @@ Vue.filter('round', function(value, decimals) {
 <v-card-text v-if="!busy">
 <v-flex xs12="" style="height:70vh" fill-height="">
   
-    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :events="events" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
+    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :settings="aceSettings" :events="events" v-resize="onResize" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
  </v-flex> 
 </v-card-text>
 </v-card>
@@ -644,7 +794,8 @@ Vue.filter('round', function(value, decimals) {
           "text/turtle":"turtle",
           "text/css":"css",
           "image/svg+xml":"svg"
-      }
+      },
+      aceSettings: { }
     }
   },
   methods: {
@@ -745,6 +896,10 @@ Vue.filter('round', function(value, decimals) {
       var r=this.mimemap[mime]
       return r?r:"text"
     },
+    onResize(){
+      var h=window.innerHeight
+      console.log("height:",h)
+    },
     leaving(event) {
       event.returnValue = "event seems to need to be set";
       //debugger;
@@ -764,6 +919,12 @@ Vue.filter('round', function(value, decimals) {
     var url=this.$route.query.url
     if(url) this.fetch(url)
   },
+  beforeRouteEnter (to, from, next) {
+    settings.getItem('settings/ace')
+    .then( v =>{
+      next(vm => {vm.aceSettings = v;})
+        })
+     },
   beforeRouteLeave (to, from, next) {
     // called when the route that renders this component is about to
     // be navigated away from.
@@ -804,7 +965,7 @@ Vue.filter('round', function(value, decimals) {
   
   <v-card-text>
   <v-flex xs12="" style="height:200px" fill-height="">
-  <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange"></vue-ace>
+  <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange" :settings="aceSettings"></vue-ace>
     </v-flex>
    </v-card-text>
    
@@ -853,7 +1014,8 @@ Vue.filter('round', function(value, decimals) {
       jobId: null,
       waiting: false,
       start: null,
-      jobState: {}
+      jobState: {},
+      aceSettings:{}
       }
   },
   methods:{
@@ -952,7 +1114,14 @@ Vue.filter('round', function(value, decimals) {
       this.showResult=true
     }
   },
-  
+  beforeRouteEnter (to, from, next) {
+    settings.getItem('settings/ace')
+    .then( v =>{
+      next(vm => {
+        console.log('eval settings: ',v);
+        vm.aceSettings = v;
+        })})
+     },
   created:function(){
       localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
   }
@@ -1886,6 +2055,23 @@ body
 
 
       );
+      const Repo=Vue.extend({template:` 
+ <v-container fluid="">
+repository todo
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'bad route!'
+      }
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
+  }
+}
+
+      );
       const Search=Vue.extend({template:` 
  <v-container fluid="">
  <v-text-field label="Search..." v-model="q"></v-text-field>
@@ -2051,10 +2237,42 @@ body
 
       );
       const Acesettings=Vue.extend({template:` 
+<v-container>
+
   <v-layout row="">
-    <v-flex xs12="" sm6="" offset-sm3="">
+    <v-flex xs12="" sm8="" offset-sm2="">
       <v-card>
         <v-alert warning="" value="true">Not fully implemented</v-alert>
+      
+      <v-container fluid="">
+        <v-layout row="">
+          <v-flex xs4="">
+            <v-subheader>Theme</v-subheader>
+          </v-flex>
+          <v-flex xs8="">
+            <v-select v-bind:items="themes" v-model="ace.theme" label="Theme"></v-select>
+          </v-flex>
+        </v-layout>
+        <v-layout row="">
+          <v-flex xs4="">
+            <v-subheader>Key binding</v-subheader>
+          </v-flex>
+          <v-flex xs8="">
+            <v-select v-bind:items="keybindings" v-model="ace.keybinding" label="Key binding"></v-select>
+           
+          </v-flex>
+        </v-layout>
+        <v-layout row="">
+          <v-flex xs4="">
+            <v-subheader>Font size</v-subheader>
+          </v-flex>
+          <v-flex xs8="">
+            <v-text-field label="Font size (px)" v-model="ace.fontsize"></v-text-field>
+          </v-flex>
+        </v-layout>
+       <v-divider></v-divider>
+      </v-container>
+        
         <v-list two-line="" subheader="">
           <v-subheader>Ace editor settings</v-subheader>
    
@@ -2091,64 +2309,46 @@ body
             
         </v-list>
         <v-card-text>
-         <v-divider></v-divider>
-      <v-container fluid="">
-        <v-layout row="">
-          <v-flex xs4="">
-            <v-subheader>Theme</v-subheader>
-          </v-flex>
-          <v-flex xs8="">
-            <v-text-field label="Theme" v-model="ace.theme"></v-text-field>
-          </v-flex>
-        </v-layout>
-        <v-layout row="">
-          <v-flex xs4="">
-            <v-subheader>Key binding</v-subheader>
-          </v-flex>
-          <v-flex xs8="">
-            <v-select v-bind:items="keybindings" v-model="ace.keybinding" label="Key binding"></v-select>
-           
-          </v-flex>
-        </v-layout>
-        <v-layout row="">
-          <v-flex xs4="">
-            <v-subheader>Font size</v-subheader>
-          </v-flex>
-          <v-flex xs8="">
-            <v-text-field label="Font size (px)" v-model="ace.fontsize"></v-text-field>
-          </v-flex>
-        </v-layout>
-       <v-divider></v-divider>
-      </v-container>
+       
     </v-card-text>
       </v-card>
     </v-flex>
   </v-layout>
+  </v-container>
  `,
       
   data () {
     return {
-			     ace: {
+			     xace: {
 			        enableSnippets: true,
 			        enableBasicAutocompletion: true,
 			        enableLiveAutocompletion: true,
 			        theme: "github",
-			        keybinding: "Ace",
-			        fontsize: "14px"
-			        
+			        keybinding: "ace",
+			        fontsize: "14"
 			    },
-			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ]
+			    ace: {},
+			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ],
+			    themes: [ "github", "chaos","tomorrow"]
 			    }
   },
-  
+  methods:{
+    extend(obj, src) {
+      Object.keys(src).forEach(function(key) { if(!obj[key]) obj[key] = src[key]; });
+      return obj;
+    }
+  },
   beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')
-    .then((v)=>{
-      next(vm => vm.ace=v)
-    })
-  },
-  created: function () {
+    .then( v =>{
+      next(vm => { vm.ace = v; })
+      })
+     },
   
+  mounted: function () {
+ // console.log(this.ace,this.xace)
+ // this.extend(this.storeace,this.storeace);
+ // console.log("$$$",this.ace)
   },
   watch: {"ace":{
     handler:function(v){
@@ -2163,14 +2363,17 @@ body
       );
       const Settings=Vue.extend({template:` 
  <v-container fluid="">
+ <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
 	 <v-card>
+	   <v-card-title class="lime darken-1">Available settings</v-card-title>
 	 <v-card-text>
-	   <router-link to="/acesettings">Editor settings</router-link>
+	   <router-link to="/acesettings">Editor</router-link>
    </v-card-text>
    </v-card>
+   <div>.</div>
    <v-card>
-   <v-card-title>System information</v-card-title>
-   <v-card-text></v-card-text>
+   <v-card-title class="lime darken-1">System information</v-card-title>
+   <v-card-text>keys?</v-card-text>
    <v-card-actions>
    <v-spacer></v-spacer>
    <v-btn @click="wipe" error="">Wipe</v-btn></v-card-actions>
@@ -2179,7 +2382,8 @@ body
  `,
       
   data:function(){return {
-    keys:[]
+    keys: [],
+    showDev: false
   }
   },
   methods:{
@@ -2199,8 +2403,8 @@ body
 
       );
       const Tabs=Vue.extend({template:` 
-  <v-tabs id="mobile-tabs-6" scroll-bars="" light="">
-    <v-card class="primary white--text">
+  <v-tabs scroll-bars="">
+    <v-card>
       <v-card-actions>
           <v-btn icon="" light="">
             <v-icon>menu</v-icon>
@@ -2215,20 +2419,26 @@ body
           </v-btn>
         </v-card-actions>
     </v-card>
-    <v-tabs-bar slot="activators" class="green">
-      <v-tabs-slider></v-tabs-slider>
+    
+    <v-tabs-bar class="grey lighten-3">
       <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
-       Item {{ i }}
-        <v-btn icon="" class="pink--text">
-              <v-icon>favorite</v-icon>
-            </v-btn>
+       <v-chip close="">
+       <v-avatar class="pink">
+       <v-icon>favorite</v-icon>
+       </v-avatar>
+       Item {{ i }} more
+       </v-chip>
       </v-tabs-item>
+      <v-tabs-slider class="primary"></v-tabs-slider>
     </v-tabs-bar>
-    <v-tabs-content v-for="i in 13" :key="i" :id="'mobile-tabs-6-' + i">
+    
+    <v-tabs-items>
+     <v-tabs-content v-for="i in 13" :key="i" :id="'mobile-tabs-6-' + i">
       <v-card flat="">
-        <v-card-text>{{ text }}</v-card-text>
+        <v-card-text>{{i}} - {{ text }}</v-card-text>
       </v-card>
-    </v-tabs-content>
+      </v-tabs-content>
+    </v-tabs-items>
 </v-tabs>
  `,
       
@@ -2608,6 +2818,23 @@ created(){
 }
 }
       );
+      const Users=Vue.extend({template:` 
+ <v-container fluid="">
+users todo
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'bad route!'
+      }
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
+  }
+}
+
+      );
       const Vuepoc=Vue.extend({template:` 
  <v-app>
  <v-navigation-drawer persistent="" light="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" height="100%" class="grey lighten-4 pb-0">
@@ -2916,35 +3143,44 @@ function debounce(func, wait, immediate) {
 };
 
 // https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
-function fullscreen() {
-  var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+const Fullscreen={
+    isInFullScreen(){
+      return (document.fullscreenElement && document.fullscreenElement !== null) ||
       (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
       (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
       (document.msFullscreenElement && document.msFullscreenElement !== null);
-
-  var docElm = document.documentElement;
-  if (!isInFullScreen) {
-      if (docElm.requestFullscreen) {
-          docElm.requestFullscreen();
-      } else if (docElm.mozRequestFullScreen) {
-          docElm.mozRequestFullScreen();
-      } else if (docElm.webkitRequestFullScreen) {
-          docElm.webkitRequestFullScreen();
-      } else if (docElm.msRequestFullscreen) {
-          docElm.msRequestFullscreen();
+    },
+    toggle(){
+      var docElm = document.documentElement;
+      if (!this.isInFullScreen()) {
+          if (docElm.requestFullscreen) {
+              docElm.requestFullscreen();
+          } else if (docElm.mozRequestFullScreen) {
+              docElm.mozRequestFullScreen();
+          } else if (docElm.webkitRequestFullScreen) {
+              docElm.webkitRequestFullScreen();
+          } else if (docElm.msRequestFullscreen) {
+              docElm.msRequestFullscreen();
+          }
+      } else {
+          if (document.exitFullscreen) {
+              document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+          } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+          } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+          }
       }
-  } else {
-      if (document.exitFullscreen) {
-          document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
-      }
-  }
+    },
+    install: function(Vue){
+      Object.defineProperty(Vue.prototype, '$fullscreen', {
+        get () { return Fullscreen }
+    })  }
 };
+Vue.use(Fullscreen);
+
 
 const router = new VueRouter({
   base:"/vue-poc/ui/",
@@ -2964,7 +3200,8 @@ const router = new VueRouter({
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
-   
+    { path: '/server/users', component: Users,meta:{title:"Users"} },
+    { path: '/server/repo', component: Repo,meta:{title:"Repository"} },
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
@@ -3043,6 +3280,8 @@ const app = new Vue({
         children: [
           {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
           {href: '/logs',text: 'Server logs',icon: 'dns'},
+          {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
+          {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/ping',text: 'Ping',icon: 'update'}
       ]},
       {
@@ -3088,46 +3327,7 @@ const app = new Vue({
       showAlert(msg){
         this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
-      },
-      fullscreenEnabled(){
-        return document.fullscreenEnabled
-      },
-      isInFullScreen(){
-        return (document.fullscreenElement && document.fullscreenElement !== null) ||
-        (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
-        (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
-        (document.msFullscreenElement && document.msFullscreenElement !== null)
-      },
-      fullscreen(){
-        // https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
-        var isInFullScreen = this.isInFullScreen();
-        alert(isInFullScreen);
-        var docElm = document.documentElement;
-        if (!isInFullScreen) {
-            if (docElm.requestFullscreen) {
-                docElm.requestFullscreen();
-            } else if (docElm.mozRequestFullScreen) {
-                docElm.mozRequestFullScreen();
-            } else if (docElm.webkitRequestFullScreen) {
-                docElm.webkitRequestFullScreen();
-            } else if (docElm.msRequestFullscreen) {
-                docElm.msRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
       }
-  },
-  computed:{
-    fullscreenIcon(){ return this.isInFullScreen()?'fullscreen_exit':'fullscreen'}
   },
 
   created(){

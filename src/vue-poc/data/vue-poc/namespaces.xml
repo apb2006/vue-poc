@@ -1,0 +1,45 @@
+<!-- common namespaces -->
+<namespaces>
+	<namespace uri="http://www.w3.org/XML/1998/namespace" prefix="xml">
+		<description>XML core features</description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/1999/xlink" prefix="xlink">
+		<description>XML Linking Language (XLink) namespace</description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2001/XInclude" prefix="xi">
+		<description>XML Inclusions (XInclude) </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/1999/XSL/Format" prefix="fo">
+		<description>XSL Formatting Objects namespace </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/1999/XSL/Transform" prefix="xsl">
+		<description>XSL Transformations namespace from the XSLT 1.0
+			Recommendation
+		</description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2001/XMLSchema" prefix="xsd">
+		<description>XML Schema Part 1: Structures namespace. </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2001/XMLSchema-datatypes"
+		prefix="xs">
+		<description>XML Schema Part 2: Datatypes namespace. </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2001/XMLSchema-instance"
+		prefix="xsi">
+		<description>Namespace for XML Schema attributes used in XML instances
+			(documents), such as xsi:type, xsi:schemaLocation, and xsi:nil.
+		</description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2000/svg" prefix="svg">
+		<description>Scalable Vector Graphics namespace
+		</description>
+	</namespace>
+</namespaces>

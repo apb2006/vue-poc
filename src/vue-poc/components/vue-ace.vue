@@ -1,22 +1,31 @@
-// ace editor for vue.js
+<!DOCTYPE html>
+<!-- 
+ace editor for vue.js
 //https://jsfiddle.net/bc_rikko/gbpw2q9x/3/
-Vue.component('vue-ace', {
-    template: '<div  style="width: 100%; height: 100%;"></div>',
+ --> 
+<template id="vue-ace">
+<div  style="width: 100%; height: 100%;"></div>
+</template>
+<script>{
   props: [ 'content',
           'mode', 
-          'theme',
           'wrap',
           'readOnly',
-          'events'
+          'events',
+          'settings'
           ],
   data () {
     return {
       editor: Object,
       beforeContent: '',
       aceSettings:{
+          theme: "github",
+          keybinding: "ace",
+          fontsize: 16,
           enableSnippets:true,
           enableBasicAutocompletion:true,
-          enableLiveAutocompletion:true},
+          enableLiveAutocompletion:true
+          },
       annots:{
         error:0,warning:0,info:0
         } 
@@ -35,7 +44,11 @@ Vue.component('vue-ace', {
     'wrap' (value) {
       var session=this.editor.getSession()
       session.setUseWrapMode(value)
-  }
+    },
+    'settings' (value) {
+      //console.log("--settings--",value)
+      this.applySettings()
+    }
   },
   methods:{
 
@@ -53,35 +66,40 @@ Vue.component('vue-ace', {
       text: "Strange error",
       type: "error" // also warning and information
     }]);
+    },
+    
+    applySettings(){
+      const aceSettings=this.settings
+      //console.log("font: ",aceSettings.fontsize)
+      this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
+      //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
+      this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
+      this.editor.setOptions({ 
+                          enableSnippets : aceSettings.enableSnippets,
+                          enableBasicAutocompletion : aceSettings.enableBasicAutocompletion,
+                          enableLiveAutocompletion : aceSettings.enableLiveAutocompletion,
+                          tabSize: 2,
+                          useSoftTabs: true
+                          });
     }
   },
   
   mounted () {
     const mode = this.mode || 'text'
-    const theme = this.theme || 'github'
     const wrap = this.wrap || false
 
-    const aceSettings=this.aceSettings
-    
+    const aceSettings=this.settings
+    console.log("QA: ",this.settings.theme)
     const readOnly = this.readOnly || false
     ace.config.set("workerPath", "/vue-poc/ui/ace-workers") 
     this.editor = window.ace.edit(this.$el)
     
     this.editor.$blockScrolling = Infinity
     this.editor.setValue(this.content, 1)
-    
-    // mode-xxx.js or theme-xxx.jsがある場合のみ有効
+    this.editor.setOptions({ readOnly:this.readOnly })
     var session=this.editor.getSession()
     session.setMode(`ace/mode/${mode}`)
     session.setUseWrapMode(wrap)
-    this.editor.setTheme(`ace/theme/${theme}`)
-    this.editor.setOptions({ readOnly:this.readOnly,
-                        enableSnippets : aceSettings.enableSnippets,
-                        enableBasicAutocompletion : aceSettings.enableBasicAutocompletion,
-                        enableLiveAutocompletion : aceSettings.enableLiveAutocompletion,
-                        tabSize: 2,
-                        useSoftTabs: true
-                        });
     this.editor.commands.addCommand({
       name: "showKeyboardShortcuts",
       bindKey: {win: "Ctrl-Alt-h", mac: "Command-Alt-h"},
@@ -121,4 +139,4 @@ Vue.component('vue-ace', {
     });
     }
   }
-})
+}</script>

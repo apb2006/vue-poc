@@ -85,35 +85,44 @@ function debounce(func, wait, immediate) {
 };
 
 // https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
-function fullscreen() {
-  var isInFullScreen = (document.fullscreenElement && document.fullscreenElement !== null) ||
+const Fullscreen={
+    isInFullScreen(){
+      return (document.fullscreenElement && document.fullscreenElement !== null) ||
       (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
       (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
       (document.msFullscreenElement && document.msFullscreenElement !== null);
-
-  var docElm = document.documentElement;
-  if (!isInFullScreen) {
-      if (docElm.requestFullscreen) {
-          docElm.requestFullscreen();
-      } else if (docElm.mozRequestFullScreen) {
-          docElm.mozRequestFullScreen();
-      } else if (docElm.webkitRequestFullScreen) {
-          docElm.webkitRequestFullScreen();
-      } else if (docElm.msRequestFullscreen) {
-          docElm.msRequestFullscreen();
+    },
+    toggle(){
+      var docElm = document.documentElement;
+      if (!this.isInFullScreen()) {
+          if (docElm.requestFullscreen) {
+              docElm.requestFullscreen();
+          } else if (docElm.mozRequestFullScreen) {
+              docElm.mozRequestFullScreen();
+          } else if (docElm.webkitRequestFullScreen) {
+              docElm.webkitRequestFullScreen();
+          } else if (docElm.msRequestFullscreen) {
+              docElm.msRequestFullscreen();
+          }
+      } else {
+          if (document.exitFullscreen) {
+              document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+          } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+          } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+          }
       }
-  } else {
-      if (document.exitFullscreen) {
-          document.exitFullscreen();
-      } else if (document.webkitExitFullscreen) {
-          document.webkitExitFullscreen();
-      } else if (document.mozCancelFullScreen) {
-          document.mozCancelFullScreen();
-      } else if (document.msExitFullscreen) {
-          document.msExitFullscreen();
-      }
-  }
+    },
+    install: function(Vue){
+      Object.defineProperty(Vue.prototype, '$fullscreen', {
+        get () { return Fullscreen }
+    })  }
 };
+Vue.use(Fullscreen);
+
 
 const router = new VueRouter({
   base:"/vue-poc/ui/",
@@ -133,7 +142,8 @@ const router = new VueRouter({
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
-   
+    { path: '/server/users', component: Users,meta:{title:"Users"} },
+    { path: '/server/repo', component: Repo,meta:{title:"Repository"} },
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
@@ -212,6 +222,8 @@ const app = new Vue({
         children: [
           {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
           {href: '/logs',text: 'Server logs',icon: 'dns'},
+          {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
+          {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/ping',text: 'Ping',icon: 'update'}
       ]},
       {
@@ -257,46 +269,7 @@ const app = new Vue({
       showAlert(msg){
         this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
-      },
-      fullscreenEnabled(){
-        return document.fullscreenEnabled
-      },
-      isInFullScreen(){
-        return (document.fullscreenElement && document.fullscreenElement !== null) ||
-        (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
-        (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
-        (document.msFullscreenElement && document.msFullscreenElement !== null)
-      },
-      fullscreen(){
-        // https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
-        var isInFullScreen = this.isInFullScreen();
-        alert(isInFullScreen);
-        var docElm = document.documentElement;
-        if (!isInFullScreen) {
-            if (docElm.requestFullscreen) {
-                docElm.requestFullscreen();
-            } else if (docElm.mozRequestFullScreen) {
-                docElm.mozRequestFullScreen();
-            } else if (docElm.webkitRequestFullScreen) {
-                docElm.webkitRequestFullScreen();
-            } else if (docElm.msRequestFullscreen) {
-                docElm.msRequestFullscreen();
-            }
-        } else {
-            if (document.exitFullscreen) {
-                document.exitFullscreen();
-            } else if (document.webkitExitFullscreen) {
-                document.webkitExitFullscreen();
-            } else if (document.mozCancelFullScreen) {
-                document.mozCancelFullScreen();
-            } else if (document.msExitFullscreen) {
-                document.msExitFullscreen();
-            }
-        }
       }
-  },
-  computed:{
-    fullscreenIcon(){ return this.isInFullScreen()?'fullscreen_exit':'fullscreen'}
   },
 
   created(){

@@ -9,7 +9,7 @@
 <title>Vue Router Test</title>
 <link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic">
 <link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons">
-<link href="https://unpkg.com/vuetify@0.14.11/dist/vuetify.min.css" rel="stylesheet" type="text/css">
+<link href="https://unpkg.com/vuetify@0.15.1/dist/vuetify.min.css" rel="stylesheet" type="text/css">
 <link href="https://unpkg.com/vue-multiselect@2.0.0-beta.15/dist/vue-multiselect.min.css"  rel="stylesheet" type="text/css">
 
 <link href="/vue-poc/ui/app.css" rel="stylesheet" type="text/css">
@@ -19,7 +19,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vue-router/2.5.3/vue-router.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/axios/0.16.1/axios.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/qs/6.4.0/qs.js"></script>
-<script src="https://unpkg.com/vuetify@0.14.11/dist/vuetify.min.js"></script>
+<script src="https://unpkg.com/vuetify@0.15.1/dist/vuetify.min.js"></script>
 <script src="https://unpkg.com/vue-multiselect@2.0.0-beta.15/dist/vue-multiselect.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.7/ace.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/ace/1.2.7/ext-language_tools.js"></script>
@@ -33,7 +33,6 @@
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-timeline-graph2d.min.css" />
 
 <script src="/vue-poc/ui/perf-stat.js"></script>
-<script src="/vue-poc/ui/vue-ace.js"></script>
 </head>
 <body>
 <v-app id="app" >
@@ -83,9 +82,6 @@
             
           </v-list>
       </v-menu>
-      <v-btn  icon @click="fullscreen" :disabled="!fullscreenEnabled">
-        <v-icon>{{ fullscreenIcon }}</v-icon>
-      </v-btn>
       <qd-fullscreen></qd-fullscreen>
 </v-toolbar>
  <main> 
