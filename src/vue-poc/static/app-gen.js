@@ -1,4 +1,4 @@
-// generated 2017-09-03T23:24:46.005+01:00
+// generated 2017-09-04T12:26:20.994+01:00
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -182,8 +182,8 @@
       session.setUseWrapMode(value)
     },
     'settings' (value) {
-      //console.log("--settings--",value)
-      this.applySettings()
+      console.log("--settings--",value)
+      this.applySettings(value)
     }
   },
   methods:{
@@ -204,9 +204,8 @@
     }]);
     },
     
-    applySettings(){
-      const aceSettings=this.settings
-      //console.log("font: ",aceSettings.fontsize)
+    applySettings(aceSettings){
+      console.log("apply: ",aceSettings)
       this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
@@ -224,12 +223,10 @@
     const mode = this.mode || 'text'
     const wrap = this.wrap || false
 
-    const aceSettings=this.settings
-    console.log("QA: ",this.settings.theme)
     const readOnly = this.readOnly || false
     ace.config.set("workerPath", "/vue-poc/ui/ace-workers") 
     this.editor = window.ace.edit(this.$el)
-    
+    this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
     this.editor.setValue(this.content, 1)
     this.editor.setOptions({ readOnly:this.readOnly })
@@ -248,7 +245,7 @@
   })
     this.editor.on('change', () => {
         this.beforeContent = this.editor.getValue()
-      this.$emit('change-content', this.editor.getValue())
+      this.$emit('change-content', this.beforeContent)
     });
     
     this.editor.getSession().on("changeAnnotation", ()=>{
@@ -850,13 +847,12 @@ Vue.filter('round', function(value, decimals) {
     },
     save(){
       alert("TODO save: "+this.url);
-      var data=Qs.stringify(
-          {
+      var data= {
             protocol:this.protocol,
             url: this.url, //gave the values directly for testing
             data: this.contentA
-            })
-      HTTP.post("edit", data,{
+            }
+      HTTP.post("edit", Qs.stringify(data),{
   headers: { "Content-Type": "application/x-www-form-urlencoded"}
       }).then(r=>{
         alert("AAA")
@@ -989,13 +985,11 @@ Vue.filter('round', function(value, decimals) {
          
     </v-card-actions>
     <v-card-text v-if="showError">
-     <v-alert error="">
-      {{result}}
-    </v-alert>
+     <v-alert error="" v-model="showError">Error </v-alert>
     </v-card-text>
      <v-card-text v-if="showResult">
      <v-flex xs12="" style="height:200px" fill-height="">
-        <vue-ace :content="result" mode="text" wrap="false" read-only="true"></vue-ace>
+        <vue-ace :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"></vue-ace>
         </v-flex> 
        </v-card-text>
     </v-card>
@@ -1028,7 +1022,7 @@ Vue.filter('round', function(value, decimals) {
     run(){
       this.awaitResult(false)
       this.start = performance.now();
-      HTTP.post("eval/execute",Qs.stringify({xq:this.xq}))
+      HTTPNE.post("eval/execute",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.result=r.data.result
@@ -1043,10 +1037,9 @@ Vue.filter('round', function(value, decimals) {
       localforage.setItem('eval/xq', this.xq)
     },
     submit(){
-      var data={xq:this.xq}
-      this.showResult=this.show=false
+      this.showError=this.showResult=this.show=false
       this.start = performance.now();
-      HTTP.post("eval/submit",Qs.stringify(data))
+      HTTPNE.post("eval/submit",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.jobId=r.data.job
@@ -1055,6 +1048,7 @@ Vue.filter('round', function(value, decimals) {
         
       })
       .catch(r=> {
+        alert("catch")
         console.log("error",r)
         this.jobId=r.response.job
         this.showError=true;
@@ -1077,10 +1071,16 @@ Vue.filter('round', function(value, decimals) {
     },
     getResult(){
       this.awaitResult(true)
-       HTTP.post("eval/result/"+this.jobId)
+       HTTPNE.post("eval/result/"+this.jobId)
        .then(r=>{
          this.result=r.data.result+" "
-       })
+       }).catch(r=> {
+        // alert("catch")
+         console.log("error",r)
+         this.result=r.response.data
+         this.showError=true;
+
+       });
     },
     hitme(){
       this.showResult=true
@@ -1810,13 +1810,12 @@ body
       go () {
        this.hidepass=true
        this.showMessage=false
-       var data=Qs.stringify(
-           {
+       var data={
              username: this.name, //gave the values directly for testing
              password: this.password,
              redirect: this.redirect
-             })
-       HTTP.post("login-check", data)
+             }
+       HTTP.post("login-check",Qs.stringify( data))
       .then(r=>{
         console.log("login",r.data)
         if(r.data.status){
@@ -3060,11 +3059,25 @@ users todo
 localforage.config({
   name: 'vuepoc'
 });
+
 const HTTP = axios.create({
   baseURL: "/vue-poc/api/",
   headers: {
     'X-Custom-Header': 'vue-poc',
     accept: 'application/json'
+  },
+  paramsSerializer: function(params) {
+    return Qs.stringify(params)
+  }
+});
+const HTTPNE = axios.create({
+  baseURL: "/vue-poc/api/",
+  headers: {
+    'X-Custom-Header': 'vue-poc',
+    accept: 'application/json'
+  },
+  paramsSerializer: function(params) {
+    return Qs.stringify(params)
   }
 });
 const axios_json={ headers: {accept: 'application/json'}};
@@ -3348,7 +3361,8 @@ const app = new Vue({
       return response;
     },
     (error) =>{
-      // interupt restxq single 
+      // interupt restxq single
+      console.log("$$$$$$$$$$$",error)
       if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
       return Promise.reject(error);
     });

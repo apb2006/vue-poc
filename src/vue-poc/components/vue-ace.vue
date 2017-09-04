@@ -46,8 +46,8 @@ ace editor for vue.js
       session.setUseWrapMode(value)
     },
     'settings' (value) {
-      //console.log("--settings--",value)
-      this.applySettings()
+      console.log("--settings--",value)
+      this.applySettings(value)
     }
   },
   methods:{
@@ -68,9 +68,8 @@ ace editor for vue.js
     }]);
     },
     
-    applySettings(){
-      const aceSettings=this.settings
-      //console.log("font: ",aceSettings.fontsize)
+    applySettings(aceSettings){
+      console.log("apply: ",aceSettings)
       this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
@@ -88,12 +87,10 @@ ace editor for vue.js
     const mode = this.mode || 'text'
     const wrap = this.wrap || false
 
-    const aceSettings=this.settings
-    console.log("QA: ",this.settings.theme)
     const readOnly = this.readOnly || false
     ace.config.set("workerPath", "/vue-poc/ui/ace-workers") 
     this.editor = window.ace.edit(this.$el)
-    
+    this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
     this.editor.setValue(this.content, 1)
     this.editor.setOptions({ readOnly:this.readOnly })
@@ -112,7 +109,7 @@ ace editor for vue.js
   })
     this.editor.on('change', () => {
         this.beforeContent = this.editor.getValue()
-      this.$emit('change-content', this.editor.getValue())
+      this.$emit('change-content', this.beforeContent)
     });
     
     this.editor.getSession().on("changeAnnotation", ()=>{

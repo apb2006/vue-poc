@@ -54,13 +54,12 @@
       go () {
        this.hidepass=true
        this.showMessage=false
-       var data=Qs.stringify(
-           {
+       var data={
              username: this.name, //gave the values directly for testing
              password: this.password,
              redirect: this.redirect
-             })
-       HTTP.post("login-check", data)
+             }
+       HTTP.post("login-check",Qs.stringify( data))
       .then(r=>{
         console.log("login",r.data)
         if(r.data.status){

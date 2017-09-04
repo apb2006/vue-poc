@@ -2,11 +2,25 @@
 localforage.config({
   name: 'vuepoc'
 });
+
 const HTTP = axios.create({
   baseURL: "/vue-poc/api/",
   headers: {
     'X-Custom-Header': 'vue-poc',
     accept: 'application/json'
+  },
+  paramsSerializer: function(params) {
+    return Qs.stringify(params)
+  }
+});
+const HTTPNE = axios.create({
+  baseURL: "/vue-poc/api/",
+  headers: {
+    'X-Custom-Header': 'vue-poc',
+    accept: 'application/json'
+  },
+  paramsSerializer: function(params) {
+    return Qs.stringify(params)
   }
 });
 const axios_json={ headers: {accept: 'application/json'}};
@@ -290,7 +304,8 @@ const app = new Vue({
       return response;
     },
     (error) =>{
-      // interupt restxq single 
+      // interupt restxq single
+      console.log("$$$$$$$$$$$",error)
       if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
       return Promise.reject(error);
     });

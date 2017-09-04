@@ -208,13 +208,12 @@ v-on:annotation="annotation"></vue-ace>
     },
     save(){
       alert("TODO save: "+this.url);
-      var data=Qs.stringify(
-          {
+      var data= {
             protocol:this.protocol,
             url: this.url, //gave the values directly for testing
             data: this.contentA
-            })
-      HTTP.post("edit", data,{
+            }
+      HTTP.post("edit", Qs.stringify(data),{
   headers: { "Content-Type": "application/x-www-form-urlencoded"}
       }).then(r=>{
         alert("AAA")

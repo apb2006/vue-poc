@@ -55,13 +55,11 @@
          
     </v-card-actions>
     <v-card-text v-if="showError">
-     <v-alert error >
-      {{result}}
-    </v-alert>
+     <v-alert error v-model="showError">Error </v-alert>
     </v-card-text>
      <v-card-text v-if="showResult">
      <v-flex xs12 style="height:200px"  fill-height>
-        <vue-ace  :content="result" mode="text" wrap="false" read-only="true"
+        <vue-ace  :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"
         ></vue-ace>
         </v-flex> 
        </v-card-text>
@@ -96,7 +94,7 @@
     run(){
       this.awaitResult(false)
       this.start = performance.now();
-      HTTP.post("eval/execute",Qs.stringify({xq:this.xq}))
+      HTTPNE.post("eval/execute",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.result=r.data.result
@@ -111,10 +109,9 @@
       localforage.setItem('eval/xq', this.xq)
     },
     submit(){
-      var data={xq:this.xq}
-      this.showResult=this.show=false
+      this.showError=this.showResult=this.show=false
       this.start = performance.now();
-      HTTP.post("eval/submit",Qs.stringify(data))
+      HTTPNE.post("eval/submit",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.jobId=r.data.job
@@ -123,6 +120,7 @@
         
       })
       .catch(r=> {
+        alert("catch")
         console.log("error",r)
         this.jobId=r.response.job
         this.showError=true;
@@ -145,10 +143,16 @@
     },
     getResult(){
       this.awaitResult(true)
-       HTTP.post("eval/result/"+this.jobId)
+       HTTPNE.post("eval/result/"+this.jobId)
        .then(r=>{
          this.result=r.data.result+" "
-       })
+       }).catch(r=> {
+        // alert("catch")
+         console.log("error",r)
+         this.result=r.response.data
+         this.showError=true;
+
+       });
     },
     hitme(){
       this.showResult=true
