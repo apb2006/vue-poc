@@ -27,7 +27,7 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify-css.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/js-beautify/1.6.12/beautify-html.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.5.0/localforage.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/localforage/1.4.3/localforage.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.18.1/moment.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-timeline-graph2d.min.js"></script>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/vis/4.20.1/vis-timeline-graph2d.min.css" />
@@ -35,9 +35,9 @@
 <script src="/vue-poc/ui/perf-stat.js"></script>
 </head>
 <body>
-<v-app id="app" >
- <v-navigation-drawer persistent light :mini-variant.sync="mini" v-model="drawer"  
- :disable-route-watcher="true" height="100%"  class="grey lighten-4 pb-0">
+<v-app id="app" :dark="dark" @theme="onDark">
+ <v-navigation-drawer persistent  :mini-variant.sync="mini" v-model="drawer"  
+ :disable-route-watcher="true"  class="grey lighten-4 pb-0">
   <v-list class="pa-0">
 
           <v-list-tile avatar tag="div">

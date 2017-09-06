@@ -1,4 +1,4 @@
-// generated 2017-09-04T12:26:20.994+01:00
+// generated 2017-09-05T15:21:42.951+01:00
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -948,8 +948,8 @@ Vue.filter('round', function(value, decimals) {
     <v-icon>label</v-icon>
     Namespaces</v-btn>
      <v-menu offset-y="">
-      <v-btn icon="" primary="" dark="" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
-      <v-list>
+      <v-btn icon="" primary="" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
+      <v-list dense="">
         <v-list-tile @click="plan">Show query plan</v-list-tile>
      </v-list>
       <v-list>
@@ -1117,6 +1117,7 @@ Vue.filter('round', function(value, decimals) {
   beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')
     .then( v =>{
+      
       next(vm => {
         console.log('eval settings: ',v);
         vm.aceSettings = v;
@@ -2236,7 +2237,7 @@ repository todo
 
       );
       const Acesettings=Vue.extend({template:` 
-<v-container>
+<v-container fluid="">
 
   <v-layout row="">
     <v-flex xs12="" sm8="" offset-sm2="">
@@ -2270,7 +2271,7 @@ repository todo
           </v-flex>
         </v-layout>
        <v-divider></v-divider>
-      </v-container>
+ 
         
         <v-list two-line="" subheader="">
           <v-subheader>Ace editor settings</v-subheader>
@@ -2310,7 +2311,7 @@ repository todo
         <v-card-text>
        
     </v-card-text>
-      </v-card>
+      </v-container></v-card>
     </v-flex>
   </v-layout>
   </v-container>
@@ -2340,7 +2341,7 @@ repository todo
   beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')
     .then( v =>{
-      next(vm => { vm.ace = v; })
+      next(vm => { vm.ace = v?v:vm.xace; })
       })
      },
   
@@ -2363,16 +2364,26 @@ repository todo
       const Settings=Vue.extend({template:` 
  <v-container fluid="">
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
+<v-switch label="Dark theme" v-model="dark" @change="theme"></v-switch>
 	 <v-card>
 	   <v-card-title class="lime darken-1">Available settings</v-card-title>
+	  
+
+
 	 <v-card-text>
 	   <router-link to="/acesettings">Editor</router-link>
    </v-card-text>
    </v-card>
-   <div>.</div>
-   <v-card>
-   <v-card-title class="lime darken-1">System information</v-card-title>
-   <v-card-text>keys?</v-card-text>
+    <v-switch label="Show advanced options" v-model="showDev"></v-switch>
+   <v-card v-if="showDev">
+   <v-card-title class="amber darken-1">System information</v-card-title>
+   <v-card-text>keys
+   <ul>
+  <li v-for="key in keys">
+    {{ key }}
+  </li>
+</ul>
+   </v-card-text>
    <v-card-actions>
    <v-spacer></v-spacer>
    <v-btn @click="wipe" error="">Wipe</v-btn></v-card-actions>
@@ -2380,23 +2391,27 @@ repository todo
  </v-container>
  `,
       
-  data:function(){return {
-    keys: [],
-    showDev: false
+  data(){return {
+    keys: ["?"],
+    showDev: false,
+    dark:false
   }
   },
   methods:{
     wipe(){
-      alert("wipe")
+      if(confirm("wipe localstorage? "+this.keys.length)) settings.clear();
+    },
+    theme(){
+     this.$emit("theme",this.dark)
     }
   },
-  created:function(){
+  created(){
     console.log("settings")
-    settings.length()
-    .then(k=>{
-      console.log("length:",k)
-      this.keys=k;
-      })
+    settings.keys()
+    .then( v =>{
+     this.keys=v
+    })
+     
   }
 }
 
@@ -2405,15 +2420,15 @@ repository todo
   <v-tabs scroll-bars="">
     <v-card>
       <v-card-actions>
-          <v-btn icon="" light="">
+          <v-btn icon="">
             <v-icon>menu</v-icon>
           </v-btn>
           <v-card-title>Page Title</v-card-title>
           <v-spacer></v-spacer>
-          <v-btn icon="" light="">
+          <v-btn icon="">
             <v-icon>search</v-icon>
           </v-btn>
-          <v-btn icon="" light="">
+          <v-btn icon="">
             <v-icon>more_vert</v-icon>
           </v-btn>
         </v-card-actions>
@@ -3060,6 +3075,7 @@ localforage.config({
   name: 'vuepoc'
 });
 
+// errors displayed by interceptor
 const HTTP = axios.create({
   baseURL: "/vue-poc/api/",
   headers: {
@@ -3070,6 +3086,7 @@ const HTTP = axios.create({
     return Qs.stringify(params)
   }
 });
+// errors hidden
 const HTTPNE = axios.create({
   baseURL: "/vue-poc/api/",
   headers: {
@@ -3121,18 +3138,13 @@ var settings = {
         return new Promise((resolve, reject) => {reject(err);})
       });
     })
-    },
-    length(){
-      return new Promise((resolve, reject) => {
-        localforage.keys() // returns array of keys
-        .then((value) => {
-          console.log('length ',value);
-          return new Promise((resolve, reject) => {resolve(value);})
-        }).catch((err) => {
-          console.log('length');
-          return new Promise((resolve, reject) => {reject(err);})
-        });
-    })
+},
+    keys(){
+      return localforage.keys() // returns array of keys 
+ 
+  },
+  clear(){
+    localforage.clear()
   }
 };
 
@@ -3265,6 +3277,7 @@ const app = new Vue({
     status:{},
     drawer:true,
     mini: false,
+    dark: false,
     alert:{show:false,msg:"Hello"},
     items:[
       {href: '/',text: 'Home', icon: 'home'    }, 
@@ -3340,6 +3353,10 @@ const app = new Vue({
       showAlert(msg){
         this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
+      },
+      onDark(dark){
+        this.dark=dark
+        alert("theme")
       }
   },
 

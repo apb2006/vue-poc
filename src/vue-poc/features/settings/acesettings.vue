@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <template id="acesettings">
-<v-container>
+<v-container fluid>
 
   <v-layout row>
     <v-flex xs12 sm8 offset-sm2>
@@ -45,7 +45,7 @@
           </v-flex>
         </v-layout>
        <v-divider ></v-divider>
-      </v-container>
+ 
         
         <v-list two-line subheader>
           <v-subheader>Ace editor settings</v-subheader>
@@ -116,7 +116,7 @@
   beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')
     .then( v =>{
-      next(vm => { vm.ace = v; })
+      next(vm => { vm.ace = v?v:vm.xace; })
       })
      },
   

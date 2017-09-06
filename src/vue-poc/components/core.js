@@ -3,6 +3,7 @@ localforage.config({
   name: 'vuepoc'
 });
 
+// errors displayed by interceptor
 const HTTP = axios.create({
   baseURL: "/vue-poc/api/",
   headers: {
@@ -13,6 +14,7 @@ const HTTP = axios.create({
     return Qs.stringify(params)
   }
 });
+// errors hidden
 const HTTPNE = axios.create({
   baseURL: "/vue-poc/api/",
   headers: {
@@ -64,18 +66,13 @@ var settings = {
         return new Promise((resolve, reject) => {reject(err);})
       });
     })
-    },
-    length(){
-      return new Promise((resolve, reject) => {
-        localforage.keys() // returns array of keys
-        .then((value) => {
-          console.log('length ',value);
-          return new Promise((resolve, reject) => {resolve(value);})
-        }).catch((err) => {
-          console.log('length');
-          return new Promise((resolve, reject) => {reject(err);})
-        });
-    })
+},
+    keys(){
+      return localforage.keys() // returns array of keys 
+ 
+  },
+  clear(){
+    localforage.clear()
   }
 };
 
@@ -208,6 +205,7 @@ const app = new Vue({
     status:{},
     drawer:true,
     mini: false,
+    dark: false,
     alert:{show:false,msg:"Hello"},
     items:[
       {href: '/',text: 'Home', icon: 'home'    }, 
@@ -283,6 +281,10 @@ const app = new Vue({
       showAlert(msg){
         this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
+      },
+      onDark(dark){
+        this.dark=dark
+        alert("theme")
       }
   },
 

@@ -3,15 +3,15 @@
   <v-tabs  scroll-bars >
     <v-card >
       <v-card-actions>
-          <v-btn icon light>
+          <v-btn icon >
             <v-icon>menu</v-icon>
           </v-btn>
           <v-card-title>Page Title</v-card-title>
           <v-spacer></v-spacer>
-          <v-btn icon light>
+          <v-btn icon >
             <v-icon>search</v-icon>
           </v-btn>
-          <v-btn icon light>
+          <v-btn icon >
             <v-icon>more_vert</v-icon>
           </v-btn>
         </v-card-actions>

@@ -16,8 +16,8 @@
     <v-icon>label</v-icon>
     Namespaces</v-btn>
      <v-menu offset-y>
-      <v-btn icon primary dark slot="activator"> <v-icon>more_vert</v-icon></v-btn>
-      <v-list>
+      <v-btn icon primary  slot="activator"> <v-icon>more_vert</v-icon></v-btn>
+      <v-list dense>
         <v-list-tile @click="plan">Show query plan</v-list-tile>
      </v-list>
       <v-list>
@@ -189,6 +189,7 @@
   beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')
     .then( v =>{
+      
       next(vm => {
         console.log('eval settings: ',v);
         vm.aceSettings = v;
