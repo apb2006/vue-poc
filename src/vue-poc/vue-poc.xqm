@@ -40,7 +40,9 @@ function vue-poc:file(
 };
 
 
-
+(:~
+ :web serve $file if it exists otherwise serve $vue-poc:index
+ :)
 declare function vue-poc:get-file($file)
 {
   let $path := resolve-uri( 'static/' || $file,static-base-uri())

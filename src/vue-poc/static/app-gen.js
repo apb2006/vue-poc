@@ -1,4 +1,4 @@
-// generated 2017-09-05T15:21:42.951+01:00
+// generated 2017-09-07T22:40:46.775+01:00
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -936,10 +936,26 @@ Vue.filter('round', function(value, decimals) {
   <v-card>
 
      <v-toolbar>
-      <v-btn @click="run()">Run</v-btn>
-    <v-btn @click="submit()">
-    <v-icon>play_circle_outline</v-icon>
-    Submit</v-btn>
+     
+    
+    <v-menu offset-y="">
+      <v-btn slot="activator">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+      <v-list>
+        <v-list-tile @click="submit">
+          <v-list-tile-title>Submit</v-list-tile-title>
+        </v-list-tile>
+        <v-divider></v-divider>
+        <v-list-tile @click="run">
+          <v-list-tile-title>Run</v-list-tile-title>
+        </v-list-tile>
+         <v-list-tile @click="plan">
+          <v-list-tile-title>Show query plan</v-list-tile-title>
+        </v-list-tile>
+        
+      </v-list>
+    </v-menu>
     <v-spacer></v-spacer>
      <v-btn @click="imports">
     <v-icon>library_books</v-icon>
@@ -1095,7 +1111,7 @@ Vue.filter('round', function(value, decimals) {
     },
     plan(){
       this.awaitResult(false)
-      HTTP.post("eval/plan",Qs.stringify({xq:this.xq}))
+      HTTPNE.post("eval/plan",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.result=r.data.result
       })
@@ -2849,365 +2865,7 @@ users todo
 }
 
       );
-      const Vuepoc=Vue.extend({template:` 
- <v-app>
- <v-navigation-drawer persistent="" light="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" height="100%" class="grey lighten-4 pb-0">
-  <v-list class="pa-0">
-
-          <v-list-tile avatar="" tag="div">
-            <v-list-tile-avatar>
-              <v-btn icon="" @click="session">
-              <img src="/vue-poc/ui/quodatum.gif">
-              </v-btn>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>Vue PoC</v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
-              <v-btn icon="" @click.stop="mini = !mini">
-                <v-icon>chevron_left</v-icon>
-              </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
-
-      </v-list>
-    <qd-navlist :items="items"></qd-navlist>
- </v-navigation-drawer>
-  
- <v-toolbar class="indigo" dark="">
-  <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
-  <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
-  <v-spacer></v-spacer>
-   <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
-   <v-menu left="" transition="v-fade-transition">
-      <v-btn dark="" icon="" slot="activator">
-        {{$auth.user}}
-      </v-btn>
-     
-          <v-list>
-        
-              <v-list-tile @click="logout()">
-                <v-list-tile-title>logout</v-list-tile-title>
-              </v-list-tile>
-               <v-list-tile>
-                <v-list-tile-title>permission: {{$auth.permission}}</v-list-tile-title>
-              </v-list-tile>
-            
-          </v-list>
-      </v-menu>
-      <v-btn icon="" @click="fullscreen" :disabled="!fullscreenEnabled">
-        <v-icon>{{ fullscreenIcon }}</v-icon>
-      </v-btn>
-      <qd-fullscreen></qd-fullscreen>
-</v-toolbar>
- <main> 
- <v-alert error="" value="true" dismissible="" v-model="alert.show">
-      <pre style="overflow:auto;">{{ alert.msg }}</pre>
-    </v-alert>   
-      <transition name="fade" mode="out-in">
-        <router-view class="view ma-3"></router-view>
-        </transition>
-     </main>
-</v-app>
-
- `,
-      
-   // router,
-    data:function(){return {
-      q:"",
-      status:{},
-      drawer:true,
-      mini: false,
-      alert:{show:false,msg:"Hello"},
-      items:[
-        {href: '/',text: 'Home', icon: 'home'    }, 
-        {
-          icon: 'folder_open',
-          text: 'Collections' ,
-          model: false,
-          children: [
-         {href: '/database', text: 'Databases',icon: 'developer_mode' },
-         {href: '/files', text: 'File system',icon: 'folder' },
-        {href: '/edit',text: 'Edit',icon: 'mode_edit'},
-        {href: '/history',text: 'history',icon: 'history'}
-        ]},
-        {
-          icon: 'directions_run',
-          text: 'Actions' ,
-          model: false,
-          children: [
-        {href: '/eval',text: 'Query',icon: 'play_circle_outline'},      
-        {href: '/tasks',text: 'Tasks',icon: 'history'}
-        ]},
-        {
-          icon: 'cast_connected',
-          text: 'Server' ,
-          model: false,
-          children: [
-            {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
-            {href: '/logs',text: 'Server logs',icon: 'dns'},
-            {href: '/ping',text: 'Ping',icon: 'update'}
-        ]},
-        {
-          icon: 'camera_roll',
-          text: 'Images' ,
-          model: false,
-          children: [
-            {href: '/images/item',text: 'Collection',icon: 'photo_camera'},
-            {href: '/images/keywords',text: 'Keywords',icon: 'label'},
-            {href: '/images/dates',text: 'Date taken',icon: 'date_range'},
-            {href: '/images/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
-            {href: '/images/report',text: 'Reports',icon: 'report'}
-            ]},
-        {
-          icon: 'more_horiz',
-          text: 'More' ,
-          model: false,
-          children: [
-        {href: '/session',text: 'Session',icon: 'person'}, 
-        {href: '/select',text: 'Select',icon: 'extension'},
-        {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
-        {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}, 
-        {href: '/timeline',text: 'Time line',icon: 'timelapse'}
-        ]},
-        
-        {href: '/settings',text: 'Settings',icon: 'settings'  },
-        {href: '/about',text: 'About', icon: 'help'    }, 
-      ]
-
-    }},
-    methods: {
-        session(){
-          this.$router.push({path: '/session'})
-        },
-        search(){
-          this.$router.push({path: '/search',query: { q: this.q }})
-        },
-        logout(){
-          HTTP.get("logout").then(r=>{
-            alert("logout")
-          }) 
-        },
-        showAlert(msg){
-          this.alert.msg=moment().format()+" "+ msg
-          this.alert.show=true
-        },
-        fullscreenEnabled(){
-          return document.fullscreenEnabled
-        },
-        isInFullScreen(){
-          return (document.fullscreenElement && document.fullscreenElement !== null) ||
-          (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
-          (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
-          (document.msFullscreenElement && document.msFullscreenElement !== null)
-        },
-        fullscreen(){
-          // https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
-          var isInFullScreen = this.isInFullScreen();
-          alert(isInFullScreen);
-          var docElm = document.documentElement;
-          if (!isInFullScreen) {
-              if (docElm.requestFullscreen) {
-                  docElm.requestFullscreen();
-              } else if (docElm.mozRequestFullScreen) {
-                  docElm.mozRequestFullScreen();
-              } else if (docElm.webkitRequestFullScreen) {
-                  docElm.webkitRequestFullScreen();
-              } else if (docElm.msRequestFullscreen) {
-                  docElm.msRequestFullscreen();
-              }
-          } else {
-              if (document.exitFullscreen) {
-                  document.exitFullscreen();
-              } else if (document.webkitExitFullscreen) {
-                  document.webkitExitFullscreen();
-              } else if (document.mozCancelFullScreen) {
-                  document.mozCancelFullScreen();
-              } else if (document.msExitFullscreen) {
-                  document.msExitFullscreen();
-              }
-          }
-        }
-    },
-    computed:{
-      fullscreenIcon(){ return this.isInFullScreen()?'fullscreen_exit':'fullscreen'}
-    },
-
-    created(){
-      
-      console.log("create-----------")
-      Vue.config.errorHandler = function (err, vm, info) {
-    // handle error
-    // `info` is a Vue-specific error info, e.g. which lifecycle hook
-          console.error(err, vm, info);
-          this.showAlert("vue error:\n"+err)
-          alert("vue error");
-     };
-      // Add a response interceptor
-
-      HTTP.interceptors.response.use(
-      (response)=> {
-        // Do something with response data
-        return response;
-      },
-      (error) =>{
-        // interupt restxq single 
-        if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
-        return Promise.reject(error);
-      });
-      
-      HTTP.get("status")
-      .then(r=>{
-        console.log("status",r.data)
-        Object.assign(Auth,r.data)
-        this.$forceUpdate()
-      }) 
-    },
-    beforeDestroy(){
-      console.log("destory-----------")
-      
-    }
-}
-
-      );
-      // base -----------------------
-localforage.config({
-  name: 'vuepoc'
-});
-
-// errors displayed by interceptor
-const HTTP = axios.create({
-  baseURL: "/vue-poc/api/",
-  headers: {
-    'X-Custom-Header': 'vue-poc',
-    accept: 'application/json'
-  },
-  paramsSerializer: function(params) {
-    return Qs.stringify(params)
-  }
-});
-// errors hidden
-const HTTPNE = axios.create({
-  baseURL: "/vue-poc/api/",
-  headers: {
-    'X-Custom-Header': 'vue-poc',
-    accept: 'application/json'
-  },
-  paramsSerializer: function(params) {
-    return Qs.stringify(params)
-  }
-});
-const axios_json={ headers: {accept: 'application/json'}};
-
-const Auth={
-    user:"guest",
-    permission:null,
-    install: function(Vue){
-        Object.defineProperty(Vue.prototype, '$auth', {
-          get () { return Auth }
-      })  }
-};
-Vue.use(Auth);
-
-// read and write settings 
-// https://vuejs.org/v2/guide/state-management.html
-var settings = {
-    debug: true,
-    getItem (key) {
-      if (this.debug) console.log('getItem',key);
-      return new Promise((resolve, reject) => {
-        localforage.getItem(key)
-        .then((value) => {
-          console.log('GET setting', key,value);
-          resolve(value)
-        }).catch((err) => {
-          console.log('GET failed');
-          reject(err)
-      });
-      });
-    },
-    setItem (key,value) {
-      if (this.debug) console.log('setItem',key,value);
-      return new Promise((resolve, reject) => {
-      localforage.setItem(key, value) 
-      .then((value) => {
-        console.log('SET ',key, value);
-        return new Promise((resolve, reject) => {resolve(value);})
-      }).catch((err) => {
-        console.log('set failed');
-        return new Promise((resolve, reject) => {reject(err);})
-      });
-    })
-},
-    keys(){
-      return localforage.keys() // returns array of keys 
- 
-  },
-  clear(){
-    localforage.clear()
-  }
-};
-
-
-
-//Returns a function, that, as long as it continues to be invoked, will not
-//be triggered. The function will be called after it stops being called for
-//N milliseconds. If `immediate` is passed, trigger the function on the
-//leading edge, instead of the trailing. https://gist.github.com/nmsdvid/8807205
-function debounce(func, wait, immediate) {
- var timeout;
- return function() {
-     var context = this, args = arguments;
-     clearTimeout(timeout);
-     timeout = setTimeout(function() {
-         timeout = null;
-         if (!immediate) func.apply(context, args);
-     }, wait);
-     if (immediate && !timeout) func.apply(context, args);
- };
-};
-
-// https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
-const Fullscreen={
-    isInFullScreen(){
-      return (document.fullscreenElement && document.fullscreenElement !== null) ||
-      (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
-      (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
-      (document.msFullscreenElement && document.msFullscreenElement !== null);
-    },
-    toggle(){
-      var docElm = document.documentElement;
-      if (!this.isInFullScreen()) {
-          if (docElm.requestFullscreen) {
-              docElm.requestFullscreen();
-          } else if (docElm.mozRequestFullScreen) {
-              docElm.mozRequestFullScreen();
-          } else if (docElm.webkitRequestFullScreen) {
-              docElm.webkitRequestFullScreen();
-          } else if (docElm.msRequestFullscreen) {
-              docElm.msRequestFullscreen();
-          }
-      } else {
-          if (document.exitFullscreen) {
-              document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-              document.webkitExitFullscreen();
-          } else if (document.mozCancelFullScreen) {
-              document.mozCancelFullScreen();
-          } else if (document.msExitFullscreen) {
-              document.msExitFullscreen();
-          }
-      }
-    },
-    install: function(Vue){
-      Object.defineProperty(Vue.prototype, '$fullscreen', {
-        get () { return Fullscreen }
-    })  }
-};
-Vue.use(Fullscreen);
-
-
-const router = new VueRouter({
+      const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
   routes: [
@@ -3266,11 +2924,65 @@ router.beforeEach((to, from, next) => {
   } else {
     next() // make sure to always call next()!
   }
-});
+});const Vuepoc=Vue.extend({template:` 
+ <v-app id="app" :dark="dark" @theme="onDark">
+ <v-navigation-drawer persistent="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" class="grey lighten-4 pb-0">
+  <v-list class="pa-0">
 
-Vue.use(Vuetify);
+          <v-list-tile avatar="" tag="div">
+            <v-list-tile-avatar>
+              <v-btn icon="" @click="session">
+              <img src="/vue-poc/ui/quodatum.gif">
+              </v-btn>
+            </v-list-tile-avatar>
+            <v-list-tile-content>
+              <v-list-tile-title>Vue PoC</v-list-tile-title>
+            </v-list-tile-content>
+            <v-list-tile-action>
+              <v-btn icon="" @click.stop="mini = !mini">
+                <v-icon>chevron_left</v-icon>
+              </v-btn>
+            </v-list-tile-action>
+          </v-list-tile>
 
-const app = new Vue({
+      </v-list>
+    <qd-navlist :items="items"></qd-navlist>
+ </v-navigation-drawer>
+  
+ <v-toolbar class="indigo" dark="">
+  <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
+  <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
+  <v-spacer></v-spacer>
+   <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
+   <v-menu left="" transition="v-fade-transition">
+      <v-btn dark="" icon="" slot="activator">
+        {{$auth.user}}
+      </v-btn>
+     
+          <v-list>
+        
+              <v-list-tile @click="logout()">
+                <v-list-tile-title>logout</v-list-tile-title>
+              </v-list-tile>
+               <v-list-tile>
+                <v-list-tile-title>permission: {{$auth.permission}}</v-list-tile-title>
+              </v-list-tile>
+            
+          </v-list>
+      </v-menu>
+      <qd-fullscreen></qd-fullscreen>
+</v-toolbar>
+ <main> 
+ <v-alert error="" value="true" dismissible="" v-model="alert.show">
+      <pre style="overflow:auto;">{{ alert.msg }}</pre>
+    </v-alert>   
+      <transition name="fade" mode="out-in">
+        <router-view class="view ma-3"></router-view>
+        </transition>
+     </main>
+</v-app>
+ `,
+      
   router,
   data:function(){return {
     q:"",
@@ -3395,4 +3107,137 @@ const app = new Vue({
     console.log("destory-----------")
     
   }
-  }).$mount('#app');
+  }
+
+      );
+      // base -----------------------
+localforage.config({
+  name: 'vuepoc'
+});
+const AXIOS_CONFIG={
+    baseURL: "/vue-poc/api/",
+    headers: {
+      'X-Custom-Header': 'vue-poc',
+      accept: 'application/json'
+    },
+    paramsSerializer: function(params) {
+      return Qs.stringify(params)
+    }
+  };
+
+// errors displayed by interceptor
+const HTTP = axios.create(AXIOS_CONFIG);
+// errors hidden
+const HTTPNE = axios.create(AXIOS_CONFIG);
+const axios_json={ headers: {accept: 'application/json'}};
+
+const Auth={
+    user:"guest",
+    permission:null,
+    install: function(Vue){
+        Object.defineProperty(Vue.prototype, '$auth', {
+          get () { return Auth }
+      })  }
+};
+Vue.use(Auth);
+
+// read and write settings 
+// https://vuejs.org/v2/guide/state-management.html
+var settings = {
+    debug: true,
+    getItem (key) {
+      if (this.debug) console.log('getItem',key);
+      return new Promise((resolve, reject) => {
+        localforage.getItem(key)
+        .then((value) => {
+          console.log('GET setting', key,value);
+          resolve(value)
+        }).catch((err) => {
+          console.log('GET failed');
+          reject(err)
+      });
+      });
+    },
+    setItem (key,value) {
+      if (this.debug) console.log('setItem',key,value);
+      return new Promise((resolve, reject) => {
+      localforage.setItem(key, value) 
+      .then((value) => {
+        console.log('SET ',key, value);
+        return new Promise((resolve, reject) => {resolve(value);})
+      }).catch((err) => {
+        console.log('set failed');
+        return new Promise((resolve, reject) => {reject(err);})
+      });
+    })
+},
+    keys(){
+      return localforage.keys() // returns array of keys 
+ 
+  },
+  clear(){
+    localforage.clear()
+  }
+};
+
+
+
+//Returns a function, that, as long as it continues to be invoked, will not
+//be triggered. The function will be called after it stops being called for
+//N milliseconds. If `immediate` is passed, trigger the function on the
+//leading edge, instead of the trailing. https://gist.github.com/nmsdvid/8807205
+function debounce(func, wait, immediate) {
+ var timeout;
+ return function() {
+     var context = this, args = arguments;
+     clearTimeout(timeout);
+     timeout = setTimeout(function() {
+         timeout = null;
+         if (!immediate) func.apply(context, args);
+     }, wait);
+     if (immediate && !timeout) func.apply(context, args);
+ };
+};
+
+// https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
+const Fullscreen={
+    isInFullScreen(){
+      return (document.fullscreenElement && document.fullscreenElement !== null) ||
+      (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+      (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+      (document.msFullscreenElement && document.msFullscreenElement !== null);
+    },
+    toggle(){
+      var docElm = document.documentElement;
+      if (!this.isInFullScreen()) {
+          if (docElm.requestFullscreen) {
+              docElm.requestFullscreen();
+          } else if (docElm.mozRequestFullScreen) {
+              docElm.mozRequestFullScreen();
+          } else if (docElm.webkitRequestFullScreen) {
+              docElm.webkitRequestFullScreen();
+          } else if (docElm.msRequestFullscreen) {
+              docElm.msRequestFullscreen();
+          }
+      } else {
+          if (document.exitFullscreen) {
+              document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+          } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+          } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+          }
+      }
+    },
+    install: function(Vue){
+      Object.defineProperty(Vue.prototype, '$fullscreen', {
+        get () { return Fullscreen }
+    })  }
+};
+Vue.use(Fullscreen);
+
+
+Vue.use(Vuetify);
+new Vuepoc().$mount('#app')

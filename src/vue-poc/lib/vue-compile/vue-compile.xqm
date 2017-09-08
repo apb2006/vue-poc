@@ -64,12 +64,14 @@ declare function vue:capitalize-first
    concat(upper-case(substring($arg,1,1)), substring($arg,2))
 };
 
+(: filename of features:)
 declare function vue:feature-files($proj)
 as xs:string*
 {
  let $FEATURES:="features/"=>file:resolve-path($proj)
- return  fw:directory-list($FEATURES,map{"include-filter":".*\.vue"})
+ let $files:=  fw:directory-list($FEATURES,map{"include-filter":".*\.vue"})
              //c:file/@name/resolve-uri(.,base-uri(.))
+ return $files
 };
 
 declare function vue:feature-build($url as xs:string,$isComp as xs:boolean)
@@ -88,8 +90,9 @@ let $FEATURES:="features/"=>file:resolve-path($proj=>trace("proj:"))
 let $COMPONENTS:="components/"=>file:resolve-path($proj)
 let $CORE:="components/core.js"=>file:resolve-path($proj)
 let $FILTERS:="components/filters.js"=>file:resolve-path($proj)
+let $ROUTER:="components/router.js"=>file:resolve-path($proj)
 let $DEST:="static/app-gen.js"=>file:resolve-path($proj)
-
+let $APP:="vue-poc.vue"=>file:resolve-path($proj)
 let $files:=vue:feature-files($proj)
 let $feats:=$files!vue:feature-build(.,false())
 
@@ -102,5 +105,7 @@ return file:write-text($DEST,string-join(($comment,
                                          $comps,
                                          fetch:text($FILTERS),
                                          $feats,
+                                         fetch:text($ROUTER),
+                                         $APP!vue:feature-build(.,false()),
                                          fetch:text($CORE))))
 };

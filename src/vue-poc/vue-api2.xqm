@@ -12,7 +12,18 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
 
 declare namespace wadl="http://wadl.dev.java.net/2009/02";
 
-
+(:~
+ : get status
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/start")
+ function vue-api:start( )   
+{
+  if(db:exists("vue-poc")) then
+   ()
+  else 
+  ()
+};
 
 (:~
  : Returns a query result.

@@ -4,10 +4,26 @@
   <v-card >
 
      <v-toolbar>
-      <v-btn @click="run()">Run</v-btn>
-    <v-btn @click="submit()">
-    <v-icon>play_circle_outline</v-icon>
-    Submit</v-btn>
+     
+    
+    <v-menu offset-y>
+      <v-btn  slot="activator">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+      <v-list>
+        <v-list-tile  @click="submit">
+          <v-list-tile-title>Submit</v-list-tile-title>
+        </v-list-tile>
+        <v-divider></v-divider>
+        <v-list-tile  @click="run">
+          <v-list-tile-title>Run</v-list-tile-title>
+        </v-list-tile>
+         <v-list-tile  @click="plan">
+          <v-list-tile-title>Show query plan</v-list-tile-title>
+        </v-list-tile>
+        
+      </v-list>
+    </v-menu>
     <v-spacer></v-spacer>
      <v-btn @click="imports">
     <v-icon>library_books</v-icon>
@@ -167,7 +183,7 @@
     },
     plan(){
       this.awaitResult(false)
-      HTTP.post("eval/plan",Qs.stringify({xq:this.xq}))
+      HTTPNE.post("eval/plan",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.result=r.data.result
       })
