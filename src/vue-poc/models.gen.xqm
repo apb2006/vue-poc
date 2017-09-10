@@ -1,9 +1,10 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-09-05T14:36:25.45+01:00 
+ : auto generated from xml files in entities folder at: 2017-09-08T12:06:30.901+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
 import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace h='urn:quodatum:vue-poc.history';
+declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
 declare variable $entity:list:=map { 
@@ -92,7 +93,89 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(h:event)*
-       { doc("history.xml")/h:history/h:event[h:file] },
+       { doc("vue-poc/history.xml")/h:history/h:event[h:file] },
+       
+       "views": map{ 
+       
+       }
+   },
+  "query": map{
+     "name": "query",
+     "description": "An replx query",
+     "access": map{ 
+       "created": function($_ as element()) as xs:string {$_/created },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "query": function($_ as element()) as xs:string {$_/query },
+       "result": function($_ as element()) as xs:string {$_/substring(result,0,1000) },
+       "resultlength": function($_ as element()) as xs:integer {$_/string-length(result) } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "created": function($_ as element()) as element(created)? {
+            (: xs:string :)
+                        fn:data($_/created)!element created {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "query": function($_ as element()) as element(query)? {
+            (: xs:string :)
+                        fn:data($_/query)!element query {  .} 
+                 },
+           "result": function($_ as element()) as element(result)? {
+            (: xs:string :)
+                        fn:data($_/substring(result,0,1000))!element result {  .} 
+                 },
+           "resultlength": function($_ as element()) as element(resultlength)? {
+            (: xs:integer :)
+                        fn:data($_/string-length(result))!element resultlength { attribute type {'number'}, .} 
+                 } },
+       
+      "data": function() as element(query)*
+       { collection("replx/queries")/query
+	 },
+       
+       "views": map{ 
+       'filter': 'name description'
+       }
+   },
+  "search-result": map{
+     "name": "search-result",
+     "description": "About a search result.",
+     "access": map{ 
+       "sref": function($_ as element()) as xs:string {$_/"app.item.index({'name':'benchx'})" },
+       "title": function($_ as element()) as xs:string {$_/title },
+       "type": function($_ as element()) as xs:string {$_/type },
+       "uri": function($_ as element()) as xs:string {$_/uri } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "sref": function($_ as element()) as element(sref)? {
+            (: xs:string :)
+                        fn:data($_/"app.item.index({'name':'benchx'})")!element sref {  .} 
+                 },
+           "title": function($_ as element()) as element(title)? {
+            (: xs:string :)
+                        fn:data($_/title)!element title {  .} 
+                 },
+           "type": function($_ as element()) as element(type)? {
+            (: xs:string :)
+                        fn:data($_/type)!element type {  .} 
+                 },
+           "uri": function($_ as element()) as element(uri)? {
+            (: xs:string :)
+                        fn:data($_/uri)!element uri {  .} 
+                 } },
+       
+      "data": function() as element(search)*
+       { () },
        
        "views": map{ 
        

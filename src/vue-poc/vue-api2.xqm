@@ -6,7 +6,9 @@
 module namespace vue-api = 'quodatum:vue.api';
 import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace session = "http://basex.org/modules/session";
-
+import module namespace entity = 'quodatum.models.generated' at "models.gen.xqm";
+import module namespace dice = 'quodatum.web.dice/v4' at "lib/dice.xqm";
+import module namespace web = 'quodatum.web.utils4' at "lib/webutils.xqm";
 
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
@@ -26,7 +28,29 @@ declare
 };
 
 (:~
- : Returns a query result.
+ : Returns search results
+ :)
+declare
+%rest:path("/vue-poc/api/search")
+%rest:query-param("q", "{$q}")
+%rest:produces("application/json")
+%output:method("json")   
+function vue-api:search($q )   
+{
+  let $entity:=$entity:list("search-result")
+  let $items:=(<search>
+  <title>No search yet: {$q} </title>
+  <uri>database?url=%2F</uri>
+  </search>,
+  <search>
+  <title>soon</title>
+  <uri>ping</uri>
+  </search>)
+  
+ return dice:response($items,$entity,web:dice())
+};
+(:~
+ : Returns test list for select.
  :)
 declare
 %rest:path("/vue-poc/api/test-select")
@@ -41,7 +65,6 @@ function vue-api:test-select($q )
             </items>
   </json>
 };
-
 
 
 

@@ -27,5 +27,5 @@
   <views>
     </views>
   <iconclass>fa fa-calendar</iconclass>
-  <data type="element(h:event)">doc("history.xml")/h:history/h:event[h:file]</data>
+  <data type="element(h:event)">doc("vue-poc/history.xml")/h:history/h:event[h:file]</data>
 </entity>

@@ -1,4 +1,4 @@
-// generated 2017-09-07T22:40:46.775+01:00
+// generated 2017-09-10T22:43:59.216+01:00
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -2090,19 +2090,71 @@ repository todo
       );
       const Search=Vue.extend({template:` 
  <v-container fluid="">
- <v-text-field label="Search..." v-model="q"></v-text-field>
- <v-alert warning="" value="true">TODO</v-alert>
+ <v-alert warning="" value="true">Not finished</v-alert>
+ <v-text-field label="Search..." v-model="q" v-on:keyup="send"></v-text-field> 
+  <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+  <v-layout>
+    <v-flex>
+    <v-list v-if="!busy" two-line="" subheader="">
+      
+        <v-list-tile v-for="(item,index) in results" v-bind:key="item.uri" :to="item.uri" v-model="selected[index]" avatar="">
+          <v-list-tile-avatar @click.prevent.stop="select(index)">
+            <v-icon v-text="icon(index)"></v-icon>
+          </v-list-tile-avatar>
+          <v-list-tile-content>
+            <v-list-tile-title>{{ index }} {{ item.title }}</v-list-tile-title>
+            <v-list-tile-sub-title>{{ item.uri }}</v-list-tile-sub-title>
+          </v-list-tile-content>
+          <v-list-tile-action>
+            <v-btn icon="" ripple="">
+              <v-icon class="grey--text text--lighten-1">info</v-icon>
+            </v-btn>
+          </v-list-tile-action>
+        </v-list-tile>
+     </v-list>
+     </v-flex>
+     </v-layout>
  </v-container>
  `,
       
   data:  function(){
     return {
       q: this.$route.query.q,
-      results: []
+      results: [],
+      busy: false,
+      selected: []
       }
+  },
+  methods:{
+    get() {
+      this.busy= true
+      console.log("q",this.q)
+      HTTP.get('search',{params:{q:this.q}})
+      .then((res) => {
+        this.busy=false
+        this.results = res.data.items;
+        this.selected=[false,true]
+      });
+    },
+    send(e){
+      if(e.keyCode==13){
+        this.get()
+      }
+    },
+    icon(index){
+      return this.selected[index]?"check_circle":"search"
+    },
+    search(item){
+      alert(item.title)
+    },
+    select(index){
+      this.$set(this.selected,index,!this.selected[index])
+      //alert(index)
+    }
   },
   created:function(){
     console.log("Serch",this.$route.query.q)
+    this.get()
   }
 }
 
@@ -3075,11 +3127,12 @@ router.beforeEach((to, from, next) => {
   created(){
     
     console.log("create-----------")
+    var that=this
     Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
         console.error(err, vm, info);
-        this.showAlert("vue error:\n"+err)
+        that.showAlert("vue error:\n"+err)
         alert("vue error");
    };
     // Add a response interceptor
@@ -3144,13 +3197,13 @@ Vue.use(Auth);
 // read and write settings 
 // https://vuejs.org/v2/guide/state-management.html
 var settings = {
-    debug: true,
+    debug: false,
     getItem (key) {
       if (this.debug) console.log('getItem',key);
       return new Promise((resolve, reject) => {
         localforage.getItem(key)
         .then((value) => {
-          console.log('GET setting', key,value);
+          //console.log('GET setting', key,value);
           resolve(value)
         }).catch((err) => {
           console.log('GET failed');
@@ -3163,7 +3216,7 @@ var settings = {
       return new Promise((resolve, reject) => {
       localforage.setItem(key, value) 
       .then((value) => {
-        console.log('SET ',key, value);
+        //console.log('SET ',key, value);
         return new Promise((resolve, reject) => {resolve(value);})
       }).catch((err) => {
         console.log('set failed');
@@ -3237,7 +3290,5 @@ const Fullscreen={
     })  }
 };
 Vue.use(Fullscreen);
-
-
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')
