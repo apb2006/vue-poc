@@ -6,6 +6,7 @@ Includes:
 * ace editor
 * localforage for persistence
 
+Edit via android 
 
 ## Settings
 Global `settings` provides `getItem(name)` and `setItem(name.value)`
