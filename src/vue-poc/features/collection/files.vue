@@ -15,6 +15,10 @@
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
     </v-toolbar-title>
+  <v-toolbar-items>
+   <v-btn @click="search"><v-icon>search</v-icon></v-btn>
+   <v-btn @click="search"><v-icon>search</v-icon></v-btn>
+</v-toolbar-items>
     <v-spacer></v-spacer>
      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"></v-text-field>
@@ -142,8 +146,10 @@
         console.log(r.data)
          this.$router.push({ name: 'jobShow', params: {job:job }})
       })
-    }
-  
+    },
+   search(){
+		alert("search")
+     }
   },
   computed: {
    icon(){
