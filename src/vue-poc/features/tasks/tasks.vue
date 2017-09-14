@@ -1,27 +1,32 @@
 <!DOCTYPE html>
 <template id="task">
  <v-container fluid>
-  <h3>Tasks</h3>
+  <h3>Available Tasks</h3>
   <ul>
-  <li>
-  <router-link to="tasks/model">model</router-link>
-  </li>
-  <li>
-  <router-link to="tasks/xqdoc">xqdoc</router-link>
-  </li>
-  <li>
-  <router-link to="tasks/vuecompile">vue compile</router-link>
+  <li  v-for="task in tasks" :key="task.to">
+  <router-link :to="task.to" v-text="task.text"></router-link>
   </li>
   </ul>
  </v-container>
 </template>
 
 <script>{
-  data:  function(){
+  data(){
     return {
-      message: 'Hello Vue.js!',
-      q:this.$route.query.q
+      tasks: [
+       {to: "tasks/model", text: "model"},
+       {to: "tasks/xqdoc", text: "xqdoc"},
+       {to: "tasks/vuecompile", text: "vue compile"}
+      ]
       }
-  }
+  },
+  methods:{
+    getTasks(){
+       alert("get tasks")
+    }
+   },
+  created(){
+    this.getTasks()
+   }
 }
 </script>

@@ -17,13 +17,13 @@
       <v-container fluid>
         <v-layout row wrap>
           
-          <v-flex xs6>
+          <v-flex xs12>
             <v-text-field    v-model="params.efolder"
               label="Folder containing model  definitions as xml"
             ></v-text-field>
           </v-flex>
         
-          <v-flex xs6>
+          <v-flex xs12>
             <v-text-field v-model="params.target"
               label="Path to xqm file to generate"  
             ></v-text-field>

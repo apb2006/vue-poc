@@ -16,7 +16,7 @@
     <v-card-text>
       <v-container fluid>
         <v-layout row wrap>   
-          <v-flex xs6>
+          <v-flex xs12>
             <v-text-field    v-model="params.proj"
               label="vue project to compile"
             ></v-text-field>

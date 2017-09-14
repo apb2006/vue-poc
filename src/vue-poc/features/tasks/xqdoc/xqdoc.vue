@@ -17,13 +17,13 @@
       <v-container fluid>
         <v-layout row wrap>
           
-          <v-flex xs6>
+          <v-flex xs12>
             <v-text-field    v-model="params.efolder"
               label="Root Folder containing xq files"
             ></v-text-field>
           </v-flex>
         
-          <v-flex xs6>
+          <v-flex xs12>
             <v-text-field v-model="params.target"
               label="Path for xqdoc files"  
             ></v-text-field>

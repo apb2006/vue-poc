@@ -4,7 +4,7 @@
  
 <v-card>
 
-<v-toolbar light>
+<v-toolbar >
     <v-btn icon :to="{query: { url: '/' }}">
      <v-icon >{{icon}}</v-icon>
      </v-btn>  
@@ -15,17 +15,22 @@
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
     </v-toolbar-title>
-  <v-toolbar-items>
-   <v-btn @click="search"><v-icon>search</v-icon></v-btn>
-   <v-btn @click="search"><v-icon>search</v-icon></v-btn>
-</v-toolbar-items>
+ 
     <v-spacer></v-spacer>
+
+    <v-toolbar-items v-if="!selected">
      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"></v-text-field>
-   
-     <v-btn icon @click="alert('todo')">     
-    <v-icon>view_module</v-icon>
+   <v-btn icon v-for="b in buttons" :key="b.icon" @click="action(b)">
+        <v-icon v-text="b.icon"></v-icon>
     </v-btn>
+</v-toolbar-items>
+
+    <v-toolbar-items v-if="selected">
+   <v-btn icon v-for="b in selopts" :key="b.icon" @click="action(b)">
+        <v-icon v-text="b.icon"></v-icon>
+    </v-btn>
+</v-toolbar-items>
  </v-toolbar>
  
   
@@ -46,7 +51,7 @@
 	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon ripple @click.stop="info(item)">
+	          <v-btn icon @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -96,7 +101,7 @@
 <script>{
   
   props:["protocol"],
-  data:  function(){
+  data(){
     return { 
             url: "", 
             folders: [],
@@ -104,7 +109,22 @@
             q: "",
             busy: false,
             showInfo: false,
-            selected: null
+            selected: null,
+			buttons: [ 
+			    {method: this.todo, icon: "view_quilt"},
+            {method: this.add, icon: "add"},
+			    {method: this.todo, icon: "refresh"},
+			    {method: this.todo, icon: "sort"},
+			    {method: this.todo, icon: "select_all"}     
+],
+selopts: [
+			    {method: this.todo, icon: "delete"},
+			    {method: this.todo, icon: "content_copy"},
+			    {method: this.todo, icon: "content_cut"},
+			    {method: this.todo, icon: "text_format"},
+			    {method: this.todo, icon: "info"},
+			    {method: this.todo, icon: "share"}
+]
     }
   },
   methods:{
@@ -130,7 +150,13 @@
         });
       
     },
-  
+  action(b){
+      alert(b.icon)
+      b.method()
+  },
+    add(){
+      alert("add")
+    },
     setfilter(){
       console.log("TODO",this.q)
       this.$router.push({  query: {url:this.url,q:this.q }})
@@ -147,8 +173,8 @@
          this.$router.push({ name: 'jobShow', params: {job:job }})
       })
     },
-   search(){
-		alert("search")
+   todo(){
+		alert("todo")
      }
   },
   computed: {

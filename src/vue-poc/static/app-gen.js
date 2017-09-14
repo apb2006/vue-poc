@@ -1,4 +1,4 @@
-// generated 2017-09-13T16:57:35.141+01:00
+// generated 2017-09-14T21:51:22.679+01:00
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -626,11 +626,11 @@ Vue.filter('round', function(value, decimals) {
       <v-container fluid="">
         <v-layout row="" wrap="">
           
-          <v-flex xs6="">
+          <v-flex xs12="">
             <v-text-field v-model="params.efolder" label="Folder containing model  definitions as xml"></v-text-field>
           </v-flex>
         
-          <v-flex xs6="">
+          <v-flex xs12="">
             <v-text-field v-model="params.target" label="Path to xqm file to generate"></v-text-field>
           </v-flex>
            <v-flex xs12="">
@@ -698,11 +698,11 @@ Vue.filter('round', function(value, decimals) {
       <v-container fluid="">
         <v-layout row="" wrap="">
           
-          <v-flex xs6="">
+          <v-flex xs12="">
             <v-text-field v-model="params.efolder" label="Root Folder containing xq files"></v-text-field>
           </v-flex>
         
-          <v-flex xs6="">
+          <v-flex xs12="">
             <v-text-field v-model="params.target" label="Path for xqdoc files"></v-text-field>
           </v-flex>
         
@@ -781,7 +781,7 @@ Vue.filter('round', function(value, decimals) {
     <v-card-text>
       <v-container fluid="">
         <v-layout row="" wrap="">   
-          <v-flex xs6="">
+          <v-flex xs12="">
             <v-text-field v-model="params.proj" label="vue project to compile"></v-text-field>
           </v-flex>
         </v-layout>
@@ -835,27 +835,32 @@ Vue.filter('round', function(value, decimals) {
       );
       const Task=Vue.extend({template:` 
  <v-container fluid="">
-  <h3>Tasks</h3>
+  <h3>Available Tasks</h3>
   <ul>
-  <li>
-  <router-link to="tasks/model">model</router-link>
-  </li>
-  <li>
-  <router-link to="tasks/xqdoc">xqdoc</router-link>
-  </li>
-  <li>
-  <router-link to="tasks/vuecompile">vue compile</router-link>
+  <li v-for="task in tasks" :key="task.to">
+  <router-link :to="task.to" v-text="task.text"></router-link>
   </li>
   </ul>
  </v-container>
  `,
       
-  data:  function(){
+  data(){
     return {
-      message: 'Hello Vue.js!',
-      q:this.$route.query.q
+      tasks: [
+       {to: "tasks/model", text: "model"},
+       {to: "tasks/xqdoc", text: "xqdoc"},
+       {to: "tasks/vuecompile", text: "vue compile"}
+      ]
       }
-  }
+  },
+  methods:{
+    getTasks(){
+       alert("get tasks")
+    }
+   },
+  created(){
+    this.getTasks()
+   }
 }
 
       );
@@ -1478,6 +1483,59 @@ created(){
    
   }
 }
+
+      );
+      const Home=Vue.extend({template:` 
+
+<v-card hover="" raised=""> 
+<v-card-title class="pa-5 indigo">
+<div class="display-1 white--text text-xs-center">VUE-POC</div>
+<v-spacer></v-spacer>
+  <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
+      <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
+        <v-icon>account_circle</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="green">
+        <v-icon>edit</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="indigo">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="red">
+        <v-icon>delete</v-icon>
+      </v-btn>
+    </v-speed-dial>
+ </v-card-title> 
+
+ <v-card-text>
+ 
+<p>
+	links
+</p>
+<ul>
+
+<li><router-link :to="{path:'files', query:{url:'/vue-poc/'}}">vue-poc files</router-link></li>
+<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}">vue-poc db</router-link></li>
+	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
+	<li><a href="/dba" target="new">DBA app</a></li>
+	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
+<li><router-link :to="{path:'files', query:{url:'/vue-poc/features/images/'}}">vue-poc image tasks</router-link></li>
+</ul>
+
+<v-btn floating="floating"> <v-icon>add</v-icon> 
+</v-btn> <qd-link href="/dba">REPLACED</qd-link> 
+  
+    </v-card-text> 
+</v-card> 
+	 `,
+      
+    data:  function(){
+      return { 
+              fab: false
+      }
+  }
+  }
 
       );
       const Tabs=Vue.extend({template:` 
@@ -2519,7 +2577,7 @@ created(){
  
 <v-card>
 
-<v-toolbar light="">
+<v-toolbar>
     <v-btn icon="" :to="{query: { url: '/' }}">
      <v-icon>{{icon}}</v-icon>
      </v-btn>  
@@ -2530,16 +2588,21 @@ created(){
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
     </v-toolbar-title>
-  <v-toolbar-items>
-   <v-btn @click="search"><v-icon>search</v-icon></v-btn>
-   <v-btn @click="search"><v-icon>search</v-icon></v-btn>
-</v-toolbar-items>
+ 
     <v-spacer></v-spacer>
+
+    <v-toolbar-items v-if="!selected">
      <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter"></v-text-field>
-   
-     <v-btn icon="" @click="alert('todo')">     
-    <v-icon>view_module</v-icon>
+   <v-btn icon="" v-for="b in buttons" :key="b.icon" @click="action(b)">
+        <v-icon v-text="b.icon"></v-icon>
     </v-btn>
+</v-toolbar-items>
+
+    <v-toolbar-items v-if="selected">
+   <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
+        <v-icon v-text="b.icon"></v-icon>
+    </v-btn>
+</v-toolbar-items>
  </v-toolbar>
  
   
@@ -2560,7 +2623,7 @@ created(){
 	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon="" ripple="" @click.stop="info(item)">
+	          <v-btn icon="" @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -2609,7 +2672,7 @@ created(){
       
   
   props:["protocol"],
-  data:  function(){
+  data(){
     return { 
             url: "", 
             folders: [],
@@ -2617,7 +2680,22 @@ created(){
             q: "",
             busy: false,
             showInfo: false,
-            selected: null
+            selected: null,
+			buttons: [ 
+			    {method: this.todo, icon: "view_quilt"},
+            {method: this.add, icon: "add"},
+			    {method: this.todo, icon: "refresh"},
+			    {method: this.todo, icon: "sort"},
+			    {method: this.todo, icon: "select_all"}     
+],
+selopts: [
+			    {method: this.todo, icon: "delete"},
+			    {method: this.todo, icon: "content_copy"},
+			    {method: this.todo, icon: "content_cut"},
+			    {method: this.todo, icon: "text_format"},
+			    {method: this.todo, icon: "info"},
+			    {method: this.todo, icon: "share"}
+]
     }
   },
   methods:{
@@ -2643,7 +2721,13 @@ created(){
         });
       
     },
-  
+  action(b){
+      alert(b.icon)
+      b.method()
+  },
+    add(){
+      alert("add")
+    },
     setfilter(){
       console.log("TODO",this.q)
       this.$router.push({  query: {url:this.url,q:this.q }})
@@ -2660,8 +2744,8 @@ created(){
          this.$router.push({ name: 'jobShow', params: {job:job }})
       })
     },
-   search(){
-		alert("search")
+   todo(){
+		alert("todo")
      }
   },
   computed: {
@@ -2736,58 +2820,6 @@ created(){
     console.log("history")
   }
 }
-
-      );
-      const Home=Vue.extend({template:` 
-
-<v-card hover="" raised=""> 
-<v-card-title class="pa-5 indigo">
-<div class="display-1 white--text text-xs-center">VUE-POC</div>
-<v-spacer></v-spacer>
-  <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
-      <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
-        <v-icon>account_circle</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="green">
-        <v-icon>edit</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="indigo">
-        <v-icon>add</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="red">
-        <v-icon>delete</v-icon>
-      </v-btn>
-    </v-speed-dial>
- </v-card-title> 
-
- <v-card-text>
- 
-<p>
-	links
-</p>
-<ul>
-
-<li><router-link :to="{path:'files', query:{url:'/vue-poc/features/images/'}}">vue-poc image tasks</router-link></li>
-<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}">vue-poc db</router-link></li>
-	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
-	<li><a href="/dba" target="new">DBA app</a></li>
-	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
-</ul>
-
-<v-btn floating="floating"> <v-icon>add</v-icon> 
-</v-btn> <qd-link href="/dba">REPLACED</qd-link> 
-  
-    </v-card-text> 
-</v-card> 
-	 `,
-      
-    data:  function(){
-      return { 
-              fab: false
-      }
-  }
-  }
 
       );
       const About=Vue.extend({template:` 
