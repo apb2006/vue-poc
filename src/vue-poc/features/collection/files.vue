@@ -30,7 +30,25 @@
    <v-btn icon v-for="b in selopts" :key="b.icon" @click="action(b)">
         <v-icon v-text="b.icon"></v-icon>
     </v-btn>
+   
 </v-toolbar-items>
+ <v-menu offset-y>
+      <v-btn  icon slot="activator">
+      <v-icon>more_vert</v-icon>
+     </v-btn>
+      <v-list>
+        <v-list-tile  @click="invoke">
+          <v-list-tile-title>Invoke</v-list-tile-title>
+        </v-list-tile>
+        <v-divider></v-divider>
+        <v-list-tile  @click="invoke">
+          <v-list-tile-title>todo</v-list-tile-title>
+        </v-list-tile>
+         <v-list-tile  @click="invoke">
+          <v-list-tile-title>todo</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
  </v-toolbar>
  
   

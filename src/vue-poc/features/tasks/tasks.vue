@@ -22,7 +22,10 @@
   },
   methods:{
     getTasks(){
-       alert("get tasks")
+        HTTP.get("tasks/list")
+        .then(r=>{
+		alert("tasks http")
+       })
     }
    },
   created(){

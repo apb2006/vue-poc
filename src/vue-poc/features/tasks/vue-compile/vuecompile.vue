@@ -61,6 +61,7 @@
         this.waiting=false      
         this.snackbar={show:true,msg:r.data.msg,context:"success"}
         console.log(r.data)
+         settings.setItem('tasks/vuecompile',this.params)
       })
       .catch(error=>{
         this.waiting=false
@@ -68,6 +69,12 @@
         console.log(error);
       });
    }
+  },
+   created: function () {
+    settings.getItem('tasks/vuecompile')
+    .then((v)=>{
+      if(v)this.params=v
+    })
   },
   computed:{
     code(){return 'code here'}

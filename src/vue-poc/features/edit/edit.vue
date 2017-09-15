@@ -38,6 +38,7 @@
               <v-icon black >navigate_next</v-icon>
            </v-avatar>
           </v-chip>
+<v-spacer></v-spacer>
    <v-btn  icon @click="acecmd('outline')" title="outline -todo">
       <v-icon>star</v-icon>
     </v-btn>

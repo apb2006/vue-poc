@@ -1,4 +1,4 @@
-// generated 2017-09-14T21:51:22.679+01:00
+// generated 2017-09-15T20:50:14.366+01:00
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -819,6 +819,7 @@ Vue.filter('round', function(value, decimals) {
         this.waiting=false      
         this.snackbar={show:true,msg:r.data.msg,context:"success"}
         console.log(r.data)
+         settings.setItem('tasks/vuecompile',this.params)
       })
       .catch(error=>{
         this.waiting=false
@@ -826,6 +827,12 @@ Vue.filter('round', function(value, decimals) {
         console.log(error);
       });
    }
+  },
+   created: function () {
+    settings.getItem('tasks/vuecompile')
+    .then((v)=>{
+      if(v)this.params=v
+    })
   },
   computed:{
     code(){return 'code here'}
@@ -855,7 +862,10 @@ Vue.filter('round', function(value, decimals) {
   },
   methods:{
     getTasks(){
-       alert("get tasks")
+        HTTP.get("tasks/list")
+        .then(r=>{
+		alert("tasks http")
+       })
     }
    },
   created(){
@@ -2322,6 +2332,7 @@ created(){
               <v-icon black="">navigate_next</v-icon>
            </v-avatar>
           </v-chip>
+<v-spacer></v-spacer>
    <v-btn icon="" @click="acecmd('outline')" title="outline -todo">
       <v-icon>star</v-icon>
     </v-btn>
@@ -2602,7 +2613,25 @@ created(){
    <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
         <v-icon v-text="b.icon"></v-icon>
     </v-btn>
+   
 </v-toolbar-items>
+ <v-menu offset-y="">
+      <v-btn icon="" slot="activator">
+      <v-icon>more_vert</v-icon>
+     </v-btn>
+      <v-list>
+        <v-list-tile @click="invoke">
+          <v-list-tile-title>Invoke</v-list-tile-title>
+        </v-list-tile>
+        <v-divider></v-divider>
+        <v-list-tile @click="invoke">
+          <v-list-tile-title>todo</v-list-tile-title>
+        </v-list-tile>
+         <v-list-tile @click="invoke">
+          <v-list-tile-title>todo</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
  </v-toolbar>
  
   
