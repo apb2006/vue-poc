@@ -1,4 +1,4 @@
-// generated 2017-09-17T17:24:08.963+01:00
+// generated 2017-09-17T22:10:03.752+01:00
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -442,11 +442,11 @@ Vue.filter('round', function(value, decimals) {
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
     </v-toolbar-title>
-   
+   <v-btn v-if="clipboard" @click="clipboard=null" icon=""><v-icon>content_paste</v-icon></v-btn>
     <v-spacer></v-spacer>
-     <v-btn v-if="selCount" @click="selectNone">Sel:{{selCount}}</v-btn>
- <v-text-field v-if="!selCount" prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter"></v-text-field>
-    <v-toolbar-items v-if="!selCount">
+     <v-btn v-if="selection.length" @click="selectNone">S: {{selection.length}}</v-btn>
+ <v-text-field v-if="!selection.length" prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter"></v-text-field>
+    <v-toolbar-items v-if="!selection.length">
     
    <v-btn icon="" v-for="b in buttons" :key="b.icon" @click="action(b)">
       <v-avatar>
@@ -455,13 +455,13 @@ Vue.filter('round', function(value, decimals) {
     </v-btn>
 </v-toolbar-items>
 
-    <v-toolbar-items v-if="selCount">
+    <v-toolbar-items v-if="selection.length">
    <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
         <v-icon v-text="b.icon"></v-icon>
     </v-btn>
    
 </v-toolbar-items>
- <v-menu offset-y="" v-if="selCount">
+ <v-menu offset-y="" v-if="selection.length">
       <v-btn icon="" slot="activator">
       <v-icon>more_vert</v-icon>
      </v-btn>
@@ -487,8 +487,8 @@ Vue.filter('round', function(value, decimals) {
 	    <v-subheader inset="">
 	         <span>Folders ({{ xfolders.length }})</span> 
 	     </v-subheader>
-	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" @click="folder(item)" avatar="">
-	        <v-list-tile-avatar>
+	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" v-model="item.selected" @click="folder(item)" avatar="">
+	        <v-list-tile-avatar @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
 	        <v-list-tile-content>
@@ -528,7 +528,7 @@ Vue.filter('round', function(value, decimals) {
     <v-navigation-drawer left="" persistent="" v-model="showInfo" :disable-route-watcher="true">
    <v-card flat="" tile=""> 
        <v-toolbar>
-      <v-card-title>{{ selected &amp;&amp; selected.name }}</v-card-title>
+      <v-card-title>{{ selection[0] &amp;&amp; selection[0].name }}</v-card-title>
       <v-spacer></v-spacer>    
        <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-toolbar>
@@ -553,22 +553,22 @@ Vue.filter('round', function(value, decimals) {
             q: "",
             busy: false,
             showInfo: false,
-            selected: [],
-			buttons: [ 
-			    {method: this.todo, icon: "view_quilt"},
-            {method: this.add, icon: "add"},
-			    {method: this.load, icon: "refresh"},
-			    {method: this.todo, icon: "sort"},
-			    {method: this.selectAll, icon: "select_all"}     
-],
-selopts: [
-			    {method: this.todo, icon: "delete"},
-			    {method: this.todo, icon: "content_copy"},
-			    {method: this.todo, icon: "content_cut"},
-			    {method: this.todo, icon: "text_format"},
-			    {method: this.todo, icon: "info"},
-			    {method: this.todo, icon: "share"}
-]
+            clipboard: null,
+						buttons: [ 
+						    {method: this.todo, icon: "view_quilt"},
+			          {method: this.add, icon: "add"},
+						    {method: this.load, icon: "refresh"},
+						    {method: this.todo, icon: "sort"},
+						    {method: this.selectAll, icon: "select_all"}     
+						],
+						selopts: [
+						    {method: this.todo, icon: "delete"},
+						    {method: this.clip, icon: "content_copy"},
+						    {method: this.clip, icon: "content_cut"},
+						    {method: this.todo, icon: "text_format"},
+						    {method: this.todo, icon: "info"},
+						    {method: this.todo, icon: "share"}
+						 ]
     }
   },
   methods:{
@@ -594,9 +594,12 @@ selopts: [
         });
       
     },
-  action(b){
-      b.method(b.icon)
-  },
+	  action(b){
+	      b.method(b.icon)
+	  },
+	  clip(icon){
+	    this.clipboard=icon
+	  },
     add(){
       alert("add")
     },
@@ -605,11 +608,10 @@ selopts: [
       this.$router.push({  query: {url:this.url,q:this.q }})
     },
     info(item){
-      this.selected=item
       this.showInfo=true
     },
     invoke(){
-      HTTP.post("eval/invoke",Qs.stringify({path:this.url+this.selected.name}))
+      HTTP.post("eval/invoke",Qs.stringify({path:this.url+this.selection[0].name}))
       .then(r=>{
         var job=r.data.job
         console.log(r.data)
@@ -620,7 +622,8 @@ selopts: [
       alert("todo: " + icon)
      },
    itemIcon(item){
-       return item.selected?"check_circle":"folder" 
+       if(item.selected) return "check_circle"
+       else return (item.type=="folder")?"folder":"insert_drive_file"
      },
     selectAll(){
        this.items.forEach(item=>{item.selected=true})
@@ -647,8 +650,8 @@ selopts: [
             )
         return a  
       },
-   selCount(){
-        return this.items.reduce((acc,item)=>{return acc+(item.selected?1:0)},0) 
+   selection(){
+        return this.items.filter(item=>{return item.selected} ) 
       }
   },
   watch:{
