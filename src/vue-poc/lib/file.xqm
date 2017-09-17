@@ -32,10 +32,10 @@ as element(c:directory)
                     error(xs:QName('ufile:badpath'),$path)
 };
 
-declare  function ufile:basexdb($url as xs:string)
+declare  function ufile:xmldb($url as xs:string)
 as element(c:directory)
 {
-        <c:directory  name="" xml:base="basexdb:/" last-modified="2017-07-01T13:39:38.98691Z" size="4096">{
+        <c:directory  name="" xml:base="xmldb:/" last-modified="2017-07-01T13:39:38.98691Z" size="4096">{
          if($url="/") then
              db:list()!
              <c:directory name="{db:property(.,'name')}" 

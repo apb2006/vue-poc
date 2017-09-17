@@ -41,7 +41,7 @@ as element(json)
 {
    let $reader:=map{
               "webfile":ufile:webfile#1,
-              "basexdb":ufile:basexdb#1
+              "xmldb":ufile:xmldb#1
               }
    let $items:=$reader($protocol)($url)
    return vue-api:items($items)
@@ -53,32 +53,25 @@ declare function vue-api:items($items)
 as element(json)
 {
    <json type="object" >
-              <folders type="array">
-              {for $f in $items/c:directory
+              <items type="array">
+              {for $f in $items/*
               order by $f/@name/lower-case(.)
               return <_ type="object">
                {vue-api:details($f,"folder")}
               </_>
               }
-              </folders>
-               <files type="array">
-              {for $f in $items/c:file
-              order by $f/@name/lower-case(.)
-              return <_ type="object">
-              {vue-api:details($f,"insert_drive_file")}
-              </_>
-              }
-              </files>
+              </items>
            </json>
 };
       
-declare function vue-api:details($f as element(*),$icon as xs:string)
+declare function vue-api:details($f as element(*),$type as xs:string)
 as element(*)*
 {
  <name>{$f/@name/string()}</name>
- ,<icon>{$icon}</icon>
+ ,<type>{if(local-name($f)="file" )then "file" else "folder"}</type>
  ,<modified>{$f/@last-modified/string()}</modified>
  ,<size type="number">{$f/@size/string()}</size>
+ ,<selected type="boolean">false</selected>
  ,<mime>unknown</mime>
 };
 

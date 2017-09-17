@@ -4,7 +4,7 @@
  
 <v-card>
 
-<v-toolbar >
+<v-toolbar dense >
     <v-btn icon :to="{query: { url: '/' }}">
      <v-icon >{{icon}}</v-icon>
      </v-btn>  
@@ -15,24 +15,27 @@
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
     </v-toolbar-title>
- 
+   
     <v-spacer></v-spacer>
-
-    <v-toolbar-items v-if="!selected">
-     <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search"
+     <v-btn v-if="selCount"  @click="selectNone">Sel:{{selCount}}</v-btn>
+ <v-text-field v-if="!selCount" prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"></v-text-field>
+    <v-toolbar-items v-if="!selCount">
+    
    <v-btn icon v-for="b in buttons" :key="b.icon" @click="action(b)">
+      <v-avatar>
         <v-icon v-text="b.icon"></v-icon>
+       </v-avatar>
     </v-btn>
 </v-toolbar-items>
 
-    <v-toolbar-items v-if="selected">
+    <v-toolbar-items v-if="selCount">
    <v-btn icon v-for="b in selopts" :key="b.icon" @click="action(b)">
         <v-icon v-text="b.icon"></v-icon>
     </v-btn>
    
 </v-toolbar-items>
- <v-menu offset-y>
+ <v-menu offset-y v-if="selCount">
       <v-btn  icon slot="activator">
       <v-icon>more_vert</v-icon>
      </v-btn>
@@ -49,20 +52,18 @@
         </v-list-tile>
       </v-list>
     </v-menu>
+   
  </v-toolbar>
- 
   
-  
-  <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
-  <v-layout>
+  <v-layout v-if="!busy">
 	  <v-flex>
-	  <v-list v-if="!busy" two-line subheader>
+	  <v-list  two-line subheader>
 	    <v-subheader inset >
-	         <span >Folders ({{ folders.length }})</span> 
+	         <span >Folders ({{ xfolders.length }})</span> 
 	     </v-subheader>
-	      <v-list-tile v-for="item in folders" v-bind:key="item.name" @click="folder(item)" avatar >
+	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" @click="folder(item)" avatar >
 	        <v-list-tile-avatar  >
-	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
+	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
 	        <v-list-tile-content  >
 	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
@@ -77,11 +78,11 @@
 	    
 	    <v-divider inset></v-divider>
 	    <v-subheader inset>
-	       <span >Files ({{ files.length }})</span> 
+	       <span >Files ({{ xfiles.length }})</span> 
 	        </v-subheader> 
-	      <v-list-tile v-for="item in files" v-bind:key="item.name" >
-	        <v-list-tile-avatar>
-	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
+	      <v-list-tile v-for="item in xfiles" v-bind:key="item.name" >
+	        <v-list-tile-avatar avatar  @click.prevent.stop="item.selected =! item.selected ">
+	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
 	        <v-list-tile-content @click="file(item.name)">
 	          <v-list-tile-title >{{ item.name }}</v-list-tile-title>
@@ -113,6 +114,7 @@
    </v-navigation-drawer> 
    
 </v-card>
+<v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
  </v-container>
 </template>
 
@@ -122,18 +124,17 @@
   data(){
     return { 
             url: "", 
-            folders: [],
-            files: [],
+            items: [],
             q: "",
             busy: false,
             showInfo: false,
-            selected: null,
+            selected: [],
 			buttons: [ 
 			    {method: this.todo, icon: "view_quilt"},
             {method: this.add, icon: "add"},
-			    {method: this.todo, icon: "refresh"},
+			    {method: this.load, icon: "refresh"},
 			    {method: this.todo, icon: "sort"},
-			    {method: this.todo, icon: "select_all"}     
+			    {method: this.selectAll, icon: "select_all"}     
 ],
 selopts: [
 			    {method: this.todo, icon: "delete"},
@@ -153,12 +154,12 @@ selopts: [
     folder (item) {
       this.url=this.url+item.name+"/"
     },
-    load(url){
+    load(){
+      var url=this.url
       this.busy=true
       HTTP.get("collection",{params:{url:url,protocol:this.protocol}})
       .then(r=>{
-        this.folders=r.data.folders
-        this.files=r.data.files
+        this.items=r.data.items
         this.busy=false
         })
         .catch(error=> {
@@ -169,8 +170,7 @@ selopts: [
       
     },
   action(b){
-      alert(b.icon)
-      b.method()
+      b.method(b.icon)
   },
     add(){
       alert("add")
@@ -191,14 +191,29 @@ selopts: [
          this.$router.push({ name: 'jobShow', params: {job:job }})
       })
     },
-   todo(){
-		alert("todo")
+   todo(icon){
+      alert("todo: " + icon)
+     },
+   itemIcon(item){
+       return item.selected?"check_circle":"folder" 
+     },
+    selectAll(){
+       this.items.forEach(item=>{item.selected=true})
+     },
+    selectNone(){
+       this.items.forEach(item=>{item.selected=false})
      }
   },
   computed: {
    icon(){
-        return (this.protocol=="basexdb")?"developer_mode":"folder"
+        return (this.protocol=="xmldb")?"developer_mode":"folder"
       },
+   xfiles(){
+        return this.items.filter(item=>{return item.type!="folder"})
+      },
+   xfolders(){
+        return this.items.filter(item=>{return item.type=="folder"})
+      },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
         var parts=this.url.split("/").filter((a)=>a.length>0)
@@ -206,6 +221,9 @@ selopts: [
             function(v,i,a){return {name:v,  path:"/"+a.slice(0,i+1).join("/")+"/"}}
             )
         return a  
+      },
+   selCount(){
+        return this.items.reduce((acc,item)=>{return acc+(item.selected?1:0)},0) 
       }
   },
   watch:{
@@ -216,14 +234,14 @@ selopts: [
         //console.log("ROUTE",vnew,vold)    
         var url=this.$route.query.url
         this.url=url?url:"/";
-        if(vnew.query.url != vold.query.url) this.load(this.url) 
+        if(vnew.query.url != vold.query.url) this.load() 
       }
   },
   created:function(){
     var url=this.$route.query.url
     this.url=url?url:"/";
     this.q=this.$route.query.q || this.q
-    this.load(this.url)
+    this.load()
   }
 }
 </script>

@@ -221,7 +221,7 @@ v-on:annotation="annotation"></vue-ace>
       })
     },
     showfiles(){
-          var target=this.protocol="basexdb"?"database":"files";
+          var target=this.protocol="xmldb"?"database":"files";
            router.push({ path: target, query: { url: this.path.join("/"),protocol:this.protocol }})
     },
     beautify(){
@@ -267,7 +267,7 @@ v-on:annotation="annotation"></vue-ace>
   },
   computed:{
     icon(){
-      return (this.protocol=="basexdb")?"account_balance":"folder"
+      return (this.protocol=="xmldb")?"account_balance":"folder"
     }
   },
   created(){

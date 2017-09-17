@@ -25,7 +25,7 @@ function vue-api:edit-get($url as xs:string,$protocol as xs:string)
 {
   let $reader := map{
       "webfile":vue-api:get-webfile#1,
-      "basexdb":vue-api:get-basexdb#1
+      "xmldb":vue-api:get-basexdb#1
       }
    return $reader($protocol)($url)
 };

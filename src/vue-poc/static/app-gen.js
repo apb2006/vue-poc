@@ -1,4 +1,4 @@
-// generated 2017-09-15T20:50:14.366+01:00
+// generated 2017-09-17T17:24:08.963+01:00
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -31,6 +31,113 @@
     }
 }
 
+      );
+      Vue.component('qd-navlist',{template:` 
+ <v-list dense="">
+<template v-for="(item, i) in items">
+  <v-layout row="" v-if="item.heading" align-center="" :key="i"> 
+    <v-flex xs6="">
+      <v-subheader v-if="item.heading">
+        {{ item.heading }}
+      </v-subheader>
+    </v-flex>
+    <v-flex xs6="" class="text-xs-center">
+      <a href="#!" class="body-2 black--text">EDIT</a>
+    </v-flex>
+  </v-layout>
+  <v-list-group v-else-if="item.children" v-model="item.model" no-action="">
+
+      <v-list-tile :to="item.href" ripple="" slot="item">
+       <v-list-tile-action>
+          <v-icon>{{ item.icon }}</v-icon>
+        </v-list-tile-action>
+          <v-list-tile-title>
+            {{ item.text }}
+          </v-list-tile-title>
+          <v-spacer></v-spacer>
+        <v-list-tile-action>
+          <v-icon>{{ item.model ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
+        </v-list-tile-action>
+       
+      </v-list-tile>
+    <template v-for="(child, i) in item.children">
+      <v-list-tile :to="child.href" :key="i" ripple="">
+        <v-list-tile-action>
+          <v-icon></v-icon>
+        </v-list-tile-action>
+        <v-list-tile-content>
+          <v-list-tile-title>
+             <v-icon>{{ child.icon }}</v-icon>&nbsp;{{ child.text }}
+          </v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+    </template>
+  </v-list-group>
+ 
+    <v-list-tile v-else="" :to="item.href" ripple="">
+      <v-list-tile-action>
+        <v-icon>{{ item.icon }}</v-icon>
+      </v-list-tile-action>
+      <v-list-tile-content>
+        <v-list-tile-title>
+          {{ item.text }}
+        </v-list-tile-title>
+      </v-list-tile-content>
+    </v-list-tile>
+
+</template>
+</v-list>
+ `,
+      
+  props: ['items']
+}
+
+      );
+      Vue.component('qd-panel',{template:` 
+ <v-layout>
+		<v-flex>
+		<slot name="body"></slot>
+		</v-flex>
+		
+		<v-flex v-if="show" xs4="" grey="" lighten-3="">
+		<slot name="aside"></slot>
+		</v-flex>
+</v-layout>
+ `,
+      
+  props: ['show'],
+  created:function(){
+      console.log("qd-panel");
+    }
+}
+
+      );
+      Vue.component('vis-time-line',{template:` 
+  <div></div>
+ `,
+       
+  props: ['items', 'groups', 'options','events'],
+  data(){
+    return {timeline:Object}
+  },
+  methods:{
+    select(properties){
+      this.$emit('select',properties.items);
+    }
+  },
+  mounted: function () {
+    var items = new vis.DataSet(this.items);
+    var options = this.options;
+    var groups = this.groups;
+    this.timeline = new vis.Timeline(this.$el, items, groups, options);
+    this.timeline.on('select', this.select);
+    if(this.events){
+      this.events.$on('fit', (cmd) => {
+        this.timeline.fit(true)
+        })
+    }
+  }
+}
       );
       Vue.component('vue-ace',{template:` 
 <div style="width: 100%; height: 100%;"></div>
@@ -167,113 +274,6 @@
   }
 }
       );
-      Vue.component('vis-time-line',{template:` 
-  <div></div>
- `,
-       
-  props: ['items', 'groups', 'options','events'],
-  data(){
-    return {timeline:Object}
-  },
-  methods:{
-    select(properties){
-      this.$emit('select',properties.items);
-    }
-  },
-  mounted: function () {
-    var items = new vis.DataSet(this.items);
-    var options = this.options;
-    var groups = this.groups;
-    this.timeline = new vis.Timeline(this.$el, items, groups, options);
-    this.timeline.on('select', this.select);
-    if(this.events){
-      this.events.$on('fit', (cmd) => {
-        this.timeline.fit(true)
-        })
-    }
-  }
-}
-      );
-      Vue.component('qd-panel',{template:` 
- <v-layout>
-		<v-flex>
-		<slot name="body"></slot>
-		</v-flex>
-		
-		<v-flex v-if="show" xs4="" grey="" lighten-3="">
-		<slot name="aside"></slot>
-		</v-flex>
-</v-layout>
- `,
-      
-  props: ['show'],
-  created:function(){
-      console.log("qd-panel");
-    }
-}
-
-      );
-      Vue.component('qd-navlist',{template:` 
- <v-list dense="">
-<template v-for="(item, i) in items">
-  <v-layout row="" v-if="item.heading" align-center="" :key="i"> 
-    <v-flex xs6="">
-      <v-subheader v-if="item.heading">
-        {{ item.heading }}
-      </v-subheader>
-    </v-flex>
-    <v-flex xs6="" class="text-xs-center">
-      <a href="#!" class="body-2 black--text">EDIT</a>
-    </v-flex>
-  </v-layout>
-  <v-list-group v-else-if="item.children" v-model="item.model" no-action="">
-
-      <v-list-tile :to="item.href" ripple="" slot="item">
-       <v-list-tile-action>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-tile-action>
-          <v-list-tile-title>
-            {{ item.text }}
-          </v-list-tile-title>
-          <v-spacer></v-spacer>
-        <v-list-tile-action>
-          <v-icon>{{ item.model ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
-        </v-list-tile-action>
-       
-      </v-list-tile>
-    <template v-for="(child, i) in item.children">
-      <v-list-tile :to="child.href" :key="i" ripple="">
-        <v-list-tile-action>
-          <v-icon></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>
-             <v-icon>{{ child.icon }}</v-icon>&nbsp;{{ child.text }}
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-    </template>
-  </v-list-group>
- 
-    <v-list-tile v-else="" :to="item.href" ripple="">
-      <v-list-tile-action>
-        <v-icon>{{ item.icon }}</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title>
-          {{ item.text }}
-        </v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
-
-</template>
-</v-list>
- `,
-      
-  props: ['items']
-}
-
-      );
       /**
  * vue filters
  */
@@ -312,235 +312,52 @@ Vue.filter('round', function(value, decimals) {
 
   value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
   return value;
-});const Thumbnail=Vue.extend({template:` 
+});const Notfound=Vue.extend({template:` 
  <v-container fluid="">
- <v-stepper v-model="step" non-linear="">
-  <v-stepper-header>
-      <v-stepper-step step="1" :complete="step > 1">Select image location</v-stepper-step>
-      <v-divider></v-divider>
-      <v-stepper-step step="2" :complete="step > 2">Set thumbnail details</v-stepper-step>
-      <v-divider></v-divider>
-      <v-stepper-step step="3">Result</v-stepper-step>
-    </v-stepper-header>
-  
-  <v-stepper-content step="1" non-linear="">
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required=""></v-text-field>
-    </v-card>
-        <v-btn primary="" @click="step = 2">Next</v-btn>
-  </v-stepper-content>
-  
-  <v-stepper-content step="2" non-linear="">
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    <vue-ace editor-id="editorA" :content="taskxml" mode="xml" wrap="true" v-on:change-content="onChange"></vue-ace>
-		</v-card>
-   
-    <v-btn flat="" @click="step -= 1">Back</v-btn>
-    <v-btn primary="" @click="validate()">Validate</v-btn>
-     <v-btn primary="" @click="step = 3">Next</v-btn>  
-  </v-stepper-content>
-
-  <v-stepper-content step="3" non-linear="">
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    output todo
-    </v-card>
-
-     <v-btn flat="" @click="step -= 1">Back</v-btn>
-     <v-btn primary="" @click="go()">go</v-btn>
-  </v-stepper-content>
-</v-stepper>
+ Not found
  </v-container>
  `,
       
-  data(){
+  data:  function(){
     return {
-      image:"http://images.metmuseum.org/CRDImages/ep/original/DT46.jpg",
-      step: 0,
-      taskxml:"<task></task>"
+      message: 'bad route!'
       }
   },
-  methods:{
-    onChange (val) {
-      if (this.taskxml !== val) this.taskxml = val;
-      },
-    validate(){
-        alert("validate")
-        HTTP.post("thumbnail/validate",Qs.stringify({task: this.taskxml}))
-        .then(r=>{alert("gg")})
-      },
-    go(){
-        alert("post")
-        HTTP.post("thumbnail",Qs.stringify({task: this.taskxml,url:this.image}))
-        .then(function(r){
-          console.log(r)
-       alert("not yet:"+r);
-     })
-      }
+  created:function(){
+    console.log("notfound",this.$route.query.q)
   }
-
 }
 
       );
-      const Job=Vue.extend({template:` 
-  <v-card>
-   <v-toolbar light="">
-      <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
-      <v-toolbar-title>{{ job }}</v-toolbar-title>
-    
-     <v-btn v-if="!finished" @click="stop()" :disabled="finished">Stop</v-btn>
-     <v-btn v-if="finished &amp;&amp; !result" @click="getResult()" :disabled="result || !finished">Result</v-btn>
-    <v-chip class="orange white--text">{{  jobstate.state }}</v-chip>
-  
-        <v-chip label="" class="grey white--text"><v-icon class="red">lock</v-icon>{{  jobstate.writes }}</v-chip>
-       <v-chip label="" class="grey white--text"><v-icon class="amber">lock</v-icon>{{  jobstate.reads }}</v-chip>
-      <v-spacer></v-spacer>
-       <v-chip class="primary white--text">
-      <v-avatar>
-        <v-icon>account_circle</v-icon>
-      </v-avatar>
-     {{  jobstate.user }}</v-chip>
-       <v-chip class="green white--text">
-        <v-avatar><v-icon>timer</v-icon></v-avatar>
-       {{  jobstate.duration }}</v-chip>
-      <v-btn light="" icon="" :loading="loading" @click="getJob()" :disabled="loading || finished">
-         <v-icon>refresh</v-icon>
-    </v-btn>     
-    </v-toolbar>
-    
-    <v-card-text v-if="result">
-     {{ result }}
-  </v-card-text>
-  
+      const About=Vue.extend({template:` 
+<v-container>
+<v-parallax src="/vue-poc/ui/vue-poc.png">
+</v-parallax> 
+<v-card>
+
   <v-card-text>
-     <code>{{ jobstate.text }}</code>
-  </v-card-text>
-  
- </v-card>
- `,
+ 
+<p>
+	This is a experiment in using
+	<code>vue.js</code>
+	.
+</p>
+<ul>
+	<li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
+	<li><a href="https://github.com/monterail/vue-multiselect" target="new">vue-multiselect</a></li>
+	<li><a href="https://github.com/sagalbot/vue-select" target="new"><s>vue-select</s></a></li>
+	<li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
+	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
+	<li><a href="/dba" target="new">DBA app</a></li>
+	 <li> <router-link to="database?url=%2Fvue-poc%2F">DB</router-link></li>
+</ul>
+ <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link href="/dba">REPLACED</qd-link> 
+	</v-card-text>
+	</v-card>
+	</v-container>
+	 `,
       
-  props: ['job'],
-  data:  function(){
-    return {
-      jobstate:{state:"?",user:"?",duration:"?"},
-      result:null,
-      loading:false
-      }
-  },
-  methods:{
-    getJob(){
-      this.loading=true;
-	    HTTP.get("job/" + this.job )
-	    .then(r=>{
-	       this.loading=false
-	       this.jobstate=r.data
-	       if(!this.jobstate.id) this.jobstate={state:"cached", text:"Job not found"}
-	       if(!this.finished)setTimeout(()=>{ this.getJob() }, 10000);
-	    })
-	   
-    },
-    getResult(){
-      HTTP.post("eval/result/"+this.job)
-      .then(r=>{
-        this.result=r.data.result
-    })
-    },
-    stop(){
-      alert("todo stop" + this.job)
-    }
-  },
-  computed: {
-    finished(){
-      return this.jobstate.state == 'cached'
-      }
-  },
-  created(){
-    this.getJob()
   }
-}
-
-      );
-      const Jobs=Vue.extend({template:` 
-  <v-card>
-   <v-toolbar light="">
-     
-    
-     <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
-    <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>   
-      <v-spacer></v-spacer>
-      
-       <v-btn light="" icon="" :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
-    <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
-    </v-btn>
-    </v-toolbar>
-  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No Jobs currently running">
-    <template slot="items" scope="props">
-    <td class="vtop">
-        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
-      </td>
-      <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
-      <td class="vtop "><div>{{ props.item.state }}</div>
-                                     <div>{{ props.item.type }}</div> </td>
-      <td class="vtop text-xs-right">{{ props.item.duration }}</td>
-       <td class="vtop text-xs-right">{{ props.item.writes }}</td>
-        <td class="vtop text-xs-right">{{ props.item.reads }}</td>
-      <td class="vtop text-xs-right">{{ props.item.user }}</td>
-       <td class="vtop"><code class="multiline-ellipsis">{{ props.item.text }}</code></td>
-    </template>
-  </v-data-table>
- </v-card>
- `,
-      
-  data:  function(){
-    return {
-      headers: [
-        {
-          text: 'Job id',
-          left: true,
-          value: 'id'
-        },
-        { text: 'State', value: 'state' },
-        { text: 'Duration', value: 'duration' },
-        { text: 'WriteL', value: 'writes' },
-        { text: 'ReadL', value: 'reads' },
-        { text: 'User', value: 'user' },
-        { text: 'Query', value: 'text' }
-      ],
-      items:[        
-      ],
-      selected: [],
-      search: "",
-      loading: false,
-      autorefresh: true
-      }
-  },
-  methods:{
-    getJobs(){
-      this.loading=true;
-	    HTTP.get("job")
-	    .then(r=>{
-	       this.loading=false
-	       this.items=r.data
-	       if(this.autorefresh) setTimeout(()=>{ this.getJobs() }, 10000);
-	    })
-	   
-    },
-    stop(){
-      var s=this.selected.map((j)=>{return j.id}).join(",")
-      console.log("AAA",this.selected)
-      alert(s)
-    }
-  },
-  computed: {
-    // a computed getter
-    noSelection: function () {
-      // `this` points to the vm instance
-      return this.selected.length==0
-    },
-  },
-  created(){
-    this.getJobs()
-  }
-}
 
       );
       const Log=Vue.extend({template:` 
@@ -609,292 +426,845 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const Model=Vue.extend({template:` 
+      const Files=Vue.extend({template:` 
  <v-container fluid="">
-    <v-card>
-    <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title>
-      <span class="white--text">Generate <code>model.gen.xqm</code></span>      
-    </v-card-title>
-    <v-spacer></v-spacer>
-     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-    </v-toolbar>
-    <v-card-text>
-      <v-container fluid="">
-        <v-layout row="" wrap="">
-          
-          <v-flex xs12="">
-            <v-text-field v-model="params.efolder" label="Folder containing model  definitions as xml"></v-text-field>
-          </v-flex>
-        
-          <v-flex xs12="">
-            <v-text-field v-model="params.target" label="Path to xqm file to generate"></v-text-field>
-          </v-flex>
-           <v-flex xs12="">
-            <code>{{code}}</code>
-          </v-flex>
-        </v-layout>
-  
-      </v-container>
-    </v-card-text>
  
-      <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
-      {{ snackbar.msg }}
-      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
-    </v-snackbar>
-  </v-card>
- </v-container>
- `,
-      
-  data:  function(){
-    return {
-      params:{
-			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc/models",
-			      target:"C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm"
-			 },
-			waiting:false,
-			snackbar:{show:false,msg:"",context:"success"},
-    }
-  },
-  methods:{
-    submit(){
-      this.waiting=true
-      HTTP.post("tasks/model",Qs.stringify(this.params))
-      .then(r=>{
-        this.waiting=false      
-        this.snackbar={show:true,msg:r.data.msg,context:"success"}
-        console.log(r.data)
-      })
-      .catch(error=>{
-        this.waiting=false
-        this.snackbar={show:true,msg:"Problem",context:"error"}
-        console.log(error);
-      });
-   }
-  },
-  computed:{
-    code(){return 'import module namespace entity = "quodatum.models.generated" at "'+this.params.target+'";'}
-  }
-}
+<v-card>
 
-      );
-      const Xqdoc=Vue.extend({template:` 
- <v-container fluid="">
-    <v-card>
-     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title>
-      <span class="white--text">Task: Generate <code>xqdoc</code></span>      
-    </v-card-title>
-      <v-spacer></v-spacer>
-     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-    </v-toolbar>
-    <v-card-text>
-      <v-container fluid="">
-        <v-layout row="" wrap="">
-          
-          <v-flex xs12="">
-            <v-text-field v-model="params.efolder" label="Root Folder containing xq files"></v-text-field>
-          </v-flex>
-        
-          <v-flex xs12="">
-            <v-text-field v-model="params.target" label="Path for xqdoc files"></v-text-field>
-          </v-flex>
-        
-        </v-layout>
-  
-      </v-container>
-    </v-card-text>
+<v-toolbar dense="">
+    <v-btn icon="" :to="{query: { url: '/' }}">
+     <v-icon>{{icon}}</v-icon>
+     </v-btn>  
+    <v-toolbar-title>
+		    <v-breadcrumbs>
+				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
+				    {{ item.name }}
+				    </v-breadcrumbs-item>
+		    </v-breadcrumbs>
+    </v-toolbar-title>
    
-     
-    <v-alert success="" v-model="alert.success">
-    {{alert.timestamp}}:{{alert.msg}}
-    </v-alert>
-     <v-alert error="" v-model="alert.error">
-    {{alert.timestamp}}:<code>{{alert.msg}}</code>
-    </v-alert>
-  </v-card>
-  <code>{{code}}</code>
- </v-container>
- `,
-      
-  data:  function(){
-    return {
-      params:{
-			      efolder:"C:/Users/andy/git/graphxq/src",
-			      target:"C:/tmp/xqdoc/"
-			 },
-			waiting:false,
-			alert:{msg:"",success:false,error:false},
-    }
-  },
-  methods:{
-    submit(){
-      this.waiting=true
-      this.alert={msg:"Loading..",success:false,error:false}
-      HTTP.post("tasks/xqdoc",Qs.stringify(this.params))
-      .then(r=>{
-        this.waiting=false      
-        this.alert={msg:r.data.msg,success:true,error:false}
-        console.log(r.data)
-         settings.setItem('tasks/xqdoc',this.params)
-      })
-      .catch(error=>{
-        this.waiting=false
-        this.alert={msg:error.response.data,success:false,error:true}
-        console.log(error);
-        alert("bad")
-      });
-   }
-  },
-  created: function () {
-    settings.getItem('tasks/xqdoc')
-    .then((v)=>{
-      if(v)this.params=v
-    })
-  },
-  
-  computed:{
-    code(){return 'generate xqdoc'}
-  }
-}
+    <v-spacer></v-spacer>
+     <v-btn v-if="selCount" @click="selectNone">Sel:{{selCount}}</v-btn>
+ <v-text-field v-if="!selCount" prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter"></v-text-field>
+    <v-toolbar-items v-if="!selCount">
+    
+   <v-btn icon="" v-for="b in buttons" :key="b.icon" @click="action(b)">
+      <v-avatar>
+        <v-icon v-text="b.icon"></v-icon>
+       </v-avatar>
+    </v-btn>
+</v-toolbar-items>
 
-      );
-      const Vuecompile=Vue.extend({template:` 
- <v-container fluid="">
-    <v-card>
-    <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title>
-      <span class="white--text">compile</span>      
-    </v-card-title>
-      <v-spacer></v-spacer>
-     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-    </v-toolbar>
-    <v-card-text>
-      <v-container fluid="">
-        <v-layout row="" wrap="">   
-          <v-flex xs12="">
-            <v-text-field v-model="params.proj" label="vue project to compile"></v-text-field>
-          </v-flex>
-        </v-layout>
-         <v-layout row="" wrap="">
-           <v-flex xs12="">
-            <code>{{code}}</code>
-          </v-flex>
-        </v-layout>
-  
-      </v-container>
-    </v-card-text>
+    <v-toolbar-items v-if="selCount">
+   <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
+        <v-icon v-text="b.icon"></v-icon>
+    </v-btn>
    
-      <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
-      {{ snackbar.msg }}
-      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
-    </v-snackbar>
-  </v-card>
+</v-toolbar-items>
+ <v-menu offset-y="" v-if="selCount">
+      <v-btn icon="" slot="activator">
+      <v-icon>more_vert</v-icon>
+     </v-btn>
+      <v-list>
+        <v-list-tile @click="invoke">
+          <v-list-tile-title>Invoke</v-list-tile-title>
+        </v-list-tile>
+        <v-divider></v-divider>
+        <v-list-tile @click="invoke">
+          <v-list-tile-title>todo</v-list-tile-title>
+        </v-list-tile>
+         <v-list-tile @click="invoke">
+          <v-list-tile-title>todo</v-list-tile-title>
+        </v-list-tile>
+      </v-list>
+    </v-menu>
+   
+ </v-toolbar>
+  
+  <v-layout v-if="!busy">
+	  <v-flex>
+	  <v-list two-line="" subheader="">
+	    <v-subheader inset="">
+	         <span>Folders ({{ xfolders.length }})</span> 
+	     </v-subheader>
+	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" @click="folder(item)" avatar="">
+	        <v-list-tile-avatar>
+	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
+	        </v-list-tile-avatar>
+	        <v-list-tile-content>
+	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
+	        </v-list-tile-content>
+	        <v-list-tile-action>
+	          <v-btn icon="" @click.stop="info(item)">
+	            <v-icon class="grey--text text--lighten-1">info</v-icon>
+	          </v-btn>
+	        </v-list-tile-action>
+	      </v-list-tile>
+	    
+	    <v-divider inset=""></v-divider>
+	    <v-subheader inset="">
+	       <span>Files ({{ xfiles.length }})</span> 
+	        </v-subheader> 
+	      <v-list-tile v-for="item in xfiles" v-bind:key="item.name">
+	        <v-list-tile-avatar avatar="" @click.prevent.stop="item.selected =! item.selected ">
+	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
+	        </v-list-tile-avatar>
+	        <v-list-tile-content @click="file(item.name)">
+	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
+	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
+	        </v-list-tile-content>
+	        <v-list-tile-action>
+	          <v-btn icon="" ripple="" @click.stop="info(item)">
+	            <v-icon class="grey--text text--lighten-1">info</v-icon>
+	          </v-btn>
+	        </v-list-tile-action>
+	      </v-list-tile>
+	  </v-list>
+	  </v-flex>
+	
+  </v-layout>
+  
+    <v-navigation-drawer left="" persistent="" v-model="showInfo" :disable-route-watcher="true">
+   <v-card flat="" tile=""> 
+       <v-toolbar>
+      <v-card-title>{{ selected &amp;&amp; selected.name }}</v-card-title>
+      <v-spacer></v-spacer>    
+       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+    </v-toolbar>
+    <v-card-text> Things to do with  </v-card-text>
+    <v-card-actions> 
+           <v-btn flat="" @click="invoke()"><v-icon>run</v-icon>run</v-btn>
+           </v-card-actions>
+    </v-card>
+   </v-navigation-drawer> 
+   
+</v-card>
+<v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
  </v-container>
  `,
       
-  data:  function(){
-    return {
-      params:{
-			      proj:"C:/Users/andy/git/vue-poc/src/vue-poc/"
-			 },
-			waiting:false,
-			snackbar:{show:false,msg:"",context:"success"},
-    }
-  },
-  methods:{
-    submit(){
-      this.waiting=true
-      HTTP.post("tasks/vue-compile",Qs.stringify(this.params))
-      .then(r=>{
-        this.waiting=false      
-        this.snackbar={show:true,msg:r.data.msg,context:"success"}
-        console.log(r.data)
-         settings.setItem('tasks/vuecompile',this.params)
-      })
-      .catch(error=>{
-        this.waiting=false
-        this.snackbar={show:true,msg:"Problem",context:"error"}
-        console.log(error);
-      });
-   }
-  },
-   created: function () {
-    settings.getItem('tasks/vuecompile')
-    .then((v)=>{
-      if(v)this.params=v
-    })
-  },
-  computed:{
-    code(){return 'code here'}
-  }
-}
-
-      );
-      const Task=Vue.extend({template:` 
- <v-container fluid="">
-  <h3>Available Tasks</h3>
-  <ul>
-  <li v-for="task in tasks" :key="task.to">
-  <router-link :to="task.to" v-text="task.text"></router-link>
-  </li>
-  </ul>
- </v-container>
- `,
-      
+  
+  props:["protocol"],
   data(){
+    return { 
+            url: "", 
+            items: [],
+            q: "",
+            busy: false,
+            showInfo: false,
+            selected: [],
+			buttons: [ 
+			    {method: this.todo, icon: "view_quilt"},
+            {method: this.add, icon: "add"},
+			    {method: this.load, icon: "refresh"},
+			    {method: this.todo, icon: "sort"},
+			    {method: this.selectAll, icon: "select_all"}     
+],
+selopts: [
+			    {method: this.todo, icon: "delete"},
+			    {method: this.todo, icon: "content_copy"},
+			    {method: this.todo, icon: "content_cut"},
+			    {method: this.todo, icon: "text_format"},
+			    {method: this.todo, icon: "info"},
+			    {method: this.todo, icon: "share"}
+]
+    }
+  },
+  methods:{
+    file (val) {
+   // with query, resulting in /register?plan=private
+      router.push({ path: 'edit', query: { url: this.url+"/"+val,protocol:this.protocol  }})
+    },
+    folder (item) {
+      this.url=this.url+item.name+"/"
+    },
+    load(){
+      var url=this.url
+      this.busy=true
+      HTTP.get("collection",{params:{url:url,protocol:this.protocol}})
+      .then(r=>{
+        this.items=r.data.items
+        this.busy=false
+        })
+        .catch(error=> {
+          console.log(error);
+          this.busy=false
+          alert("Get query error"+url)
+        });
+      
+    },
+  action(b){
+      b.method(b.icon)
+  },
+    add(){
+      alert("add")
+    },
+    setfilter(){
+      console.log("TODO",this.q)
+      this.$router.push({  query: {url:this.url,q:this.q }})
+    },
+    info(item){
+      this.selected=item
+      this.showInfo=true
+    },
+    invoke(){
+      HTTP.post("eval/invoke",Qs.stringify({path:this.url+this.selected.name}))
+      .then(r=>{
+        var job=r.data.job
+        console.log(r.data)
+         this.$router.push({ name: 'jobShow', params: {job:job }})
+      })
+    },
+   todo(icon){
+      alert("todo: " + icon)
+     },
+   itemIcon(item){
+       return item.selected?"check_circle":"folder" 
+     },
+    selectAll(){
+       this.items.forEach(item=>{item.selected=true})
+     },
+    selectNone(){
+       this.items.forEach(item=>{item.selected=false})
+     }
+  },
+  computed: {
+   icon(){
+        return (this.protocol=="xmldb")?"developer_mode":"folder"
+      },
+   xfiles(){
+        return this.items.filter(item=>{return item.type!="folder"})
+      },
+   xfolders(){
+        return this.items.filter(item=>{return item.type=="folder"})
+      },   
+   // array of {name:"that", path:"/this/that/"} for url
+   crumbs(){
+        var parts=this.url.split("/").filter((a)=>a.length>0)
+        var a=parts.map(
+            function(v,i,a){return {name:v,  path:"/"+a.slice(0,i+1).join("/")+"/"}}
+            )
+        return a  
+      },
+   selCount(){
+        return this.items.reduce((acc,item)=>{return acc+(item.selected?1:0)},0) 
+      }
+  },
+  watch:{
+    url(v){
+      this.$router.push({  query: { url: this.url }})
+      },
+      $route(vnew,vold){
+        //console.log("ROUTE",vnew,vold)    
+        var url=this.$route.query.url
+        this.url=url?url:"/";
+        if(vnew.query.url != vold.query.url) this.load() 
+      }
+  },
+  created:function(){
+    var url=this.$route.query.url
+    this.url=url?url:"/";
+    this.q=this.$route.query.q || this.q
+    this.load()
+  }
+}
+
+      );
+      const History=Vue.extend({template:` 
+ <v-container fluid="">
+    <v-list>
+            <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar="">
+              <v-list-tile-action>
+               <v-chip v-text="item.protocol">Example Chip</v-chip>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+   </v-list>
+ </v-container>
+ `,
+      
+  data:  function(){
     return {
-      tasks: [
-       {to: "tasks/model", text: "model"},
-       {to: "tasks/xqdoc", text: "xqdoc"},
-       {to: "tasks/vuecompile", text: "vue compile"}
-      ]
+      message: 'Hello Vue.js!',
+      items:[]
       }
   },
   methods:{
-    getTasks(){
-        HTTP.get("tasks/list")
-        .then(r=>{
-		alert("tasks http")
-       })
+    get() {
+      HTTP.get('history')
+      .then((res) => {
+        this.items = res.data.items;
+        console.log("items",this.items)
+      });
+    },
+    doEdit(item){
+      console.log("history: ",item)
+        router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
     }
-   },
-  created(){
-    this.getTasks()
-   }
+  },
+  created:function(){
+    this.get()
+    console.log("history")
+  }
 }
 
       );
-      const Report=Vue.extend({template:` 
- <v-container fluid="">
-  <v-card>
-    <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title>
-     <v-chip>todo</v-chip>   
-    </v-card-title>
-   
-    <v-spacer></v-spacer> 
+      const Edit=Vue.extend({template:` 
+<v-container fluid="">
+      <v-snackbar top="" error="" v-model="snackbar">
+      {{ message }}
+      <v-btn flat="" @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
+    </v-snackbar>
+<v-card>
+
+<v-toolbar class="grey lighten-2 black--text">
+<v-menu>
+  <v-btn primary="" icon="" dark="" slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon>{{icon}}</v-icon></v-btn>
+  <v-list>
+      <v-list-tile v-for="item in path" :key="item">
+        <v-list-tile-content @click="showfiles()">
+        <v-list-tile-title>{{ item }}</v-list-tile-title>
+        </v-list-tile-content>
+      </v-list-tile>
+  </v-list>
+</v-menu>
+
+  <v-toolbar-title>
+      <span>{{ name }}</span>
+  </v-toolbar-title>
+  <v-toolbar-items>
+  <span v-tooltip:top="{ html: 'Changed?' }">
+  <v-chip v-if="dirty" label="" small="" class="red white--text">*</v-chip>
+<v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
+</span>
+ <v-chip small="" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
+     <v-chip @click="acecmd('goToNextError')" v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }">
+          <v-avatar class="green ">{{annotations &amp;&amp; annotations.info}}</v-avatar>
+          <v-avatar class="yellow ">{{annotations &amp;&amp; annotations.warning}}</v-avatar>        
+          <v-avatar class="red " small="">{{annotations &amp;&amp; annotations.error}}</v-avatar>    
+           <v-avatar>
+              <v-icon black="">navigate_next</v-icon>
+           </v-avatar>
+          </v-chip>
+<v-spacer></v-spacer>
+   <v-btn icon="" @click="acecmd('outline')" title="outline -todo">
+      <v-icon>star</v-icon>
+    </v-btn>
+
   
-    </v-toolbar>
-    <v-card-text>
-body
- </v-card-text>
- </v-card>
+   <v-btn icon="" @click="togglefold" title="fold toggle">
+      <v-icon>vertical_align_center</v-icon>
+    </v-btn>
+    
+    <v-btn icon="" @click="wrap=!wrap">
+      <v-icon>wrap_text</v-icon>
+    </v-btn>
+    
+   <v-btn icon="" @click="save()">
+      <v-icon>file_upload</v-icon>
+    </v-btn>
+    
+    <v-btn icon="" @click="beautify()">
+      <v-icon>format_align_center</v-icon>
+    </v-btn>
+    <v-btn icon="" @click="clearDialog = true">
+      <v-icon>delete</v-icon>
+    </v-btn>
+        <v-menu left="" transition="v-fade-transition">
+        <v-btn icon="" slot="activator">
+          <v-icon>help</v-icon>
+        </v-btn>     
+        <v-list>
+            <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
+               <v-list-tile-avatar>
+              <v-icon>settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')">Show settings</v-list-tile-title>
+            </v-list-tile>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
+              <v-list-tile-avatar>
+              <v-icon>keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showKeyboardShortcuts')">Show keyboard commands</v-list-tile-title>
+            </v-list-tile>
+          </v-list>
+       </v-menu>
+    <v-menu left="" transition="v-fade-transition">
+      <v-btn icon="" slot="activator">
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+     
+          <v-list>
+              <v-list-tile>
+                <v-list-tile-title>unused</v-list-tile-title>
+              </v-list-tile>           
+          </v-list>
+          
+      </v-menu>
+    </v-toolbar-items>
+     <v-dialog v-model="clearDialog">
+       <v-card>
+		      <v-card-title>Clear?</v-card-title>
+		      <v-card-text>clear text.</v-card-text>
+		    <v-card-actions>
+		      <v-btn class="green--text darken-1" flat="flat" @click="reset(false)">Cancel</v-btn>
+		      <v-btn class="green--text darken-1" flat="flat" @click="reset(true)">Ok</v-btn>
+		    </v-card-actions>
+		    </v-card>
+		</v-dialog>
+ </v-toolbar>
+   <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+
+<v-card-text v-if="!busy">
+<v-flex xs12="" style="height:70vh" fill-height="">
+  
+    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :settings="aceSettings" :events="events" v-resize="onResize" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
+ </v-flex> 
+</v-card-text>
+</v-card>
+  
  </v-container>
  `,
-        
- 
+      
+  data () {
+    return {
+      contentA: `declare function local:query($q as xs:string)
+{ <json type="object"/> 
+};`,
+      mode: 'xquery',
+      url: '',
+      protocol: 'webfile',
+      name: '',
+      path: [],
+      mimetype: "",
+      wrap: false,
+      busy: false,
+      clearDialog: false,
+      annotations: null,
+      dirty: false,
+      snackbar: false,
+      message: "Cant do that",
+      events:  new Vue({}),
+      folded: false, // toggle fold/unfold action
+      mimemap:{
+          "text/xml":"xml",
+          "application/xml":"xml",
+          "application/xquery":"xquery",
+          "text/ecmascript":"javascript",
+          "application/sparql-query":"sparql",
+          "text/html":"html",
+          "text/turtle":"turtle",
+          "text/css":"css",
+          "image/svg+xml":"svg"
+      },
+      aceSettings: { }
     }
+  },
+  methods: {
+    reset (ok) {
+        if(ok){
+          this.contentA = 'reset content for Editor A'
+          this.dirty=false
+        }
+        this.clearDialog=false
+    },
+    changeContentA (val) {
+        if (this.contentA !== val) {
+        this.contentA = val
+        this.dirty=true
+      }
+    },
+    // load from url
+    fetch(url){
+      this.busy=true
+      var a=url.split("/")
+      this.url=url
+      this.name=a.pop()
+      this.path=a
+      HTTP.get("edit",{params: {url:url,protocol:this.protocol}})
+      .then(r=>{
+        //console.log(r)
+        this.mimetype=r.data.mimetype
+        this.mode=this.acetype(r.data.mimetype)
+        this.contentA=r.data.data
+       
+        this.busy=false
+        this.dirty=false
+        //alert(mode)
+        })
+        .catch(error=> {
+          console.log(error);
+          this.busy=false
+          alert("Get query error:\n"+url)
+        });
+      
+    },
+    togglefold(){
+      this.folded=!this.folded
+      this.acecmd(this.folded?"foldall":"unfoldall")
+    },
+    acecmd(cmd){
+      //alert("acecmd: "+cmd)
+      this.events.$emit('eventFired',cmd);
+    },
+    fold(){
+      this.events.$emit('eventFired',"foldall");
+    },
+    save(){
+      alert("TODO save: "+this.url);
+      var data= {
+            protocol:this.protocol,
+            url: this.url, //gave the values directly for testing
+            data: this.contentA
+            }
+      HTTP.post("edit", Qs.stringify(data),{
+  headers: { "Content-Type": "application/x-www-form-urlencoded"}
+      }).then(r=>{
+        alert("AAA")
+      })
+    },
+    showfiles(){
+          var target=this.protocol="xmldb"?"database":"files";
+           router.push({ path: target, query: { url: this.path.join("/"),protocol:this.protocol }})
+    },
+    beautify(){
+      this.busy=true
+      var a=this.contentA
+      switch(this.mode) {
+      case "html":
+      case "svg":  
+      case "xml":  
+          a=html_beautify(a, { indent_size: 3 ,indent_inner_html:true})
+          break;
+      case "javascript":
+           a=js_beautify(a, { indent_size: 2 })
+          break;
+      case "css":
+         a=css_beautify(a, { indent_size: 2 })
+         break;     
+      default:
+        this.message="No beautify yet for "+this.mode
+        this.snackbar=true
+     } 
+      this.contentA=a
+      this.busy=false
+    },
+    annotation(counts){
+      this.annotations=counts
+      //console.log("annotations: ",counts)
+    },
+    acetype(mime){
+      var r=this.mimemap[mime]
+      return r?r:"text"
+    },
+    onResize(){
+      var h=window.innerHeight
+      console.log("height:",h)
+    },
+    leaving(event) {
+      event.returnValue = "event seems to need to be set";
+      //debugger;
+      console.log("Leaving...");
+      if(this.dirty)event.preventDefault();
+  }
+  },
+  computed:{
+    icon(){
+      return (this.protocol=="xmldb")?"account_balance":"folder"
+    }
+  },
+  created(){
+    //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
+    document.addEventListener('beforeunload', this.leaving);
+  this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
+    var url=this.$route.query.url
+    if(url) this.fetch(url)
+  },
+  beforeRouteEnter (to, from, next) {
+    settings.getItem('settings/ace')
+    .then( v =>{
+      next(vm => {vm.aceSettings = v;})
+        })
+     },
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    if(this.dirty && confirm("unsaved changes will be lost"))this.dirty=false;
+    next(!this.dirty);
+  }
+}
+
+      );
+      const Eval=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-card>
+
+     <v-toolbar>
+     
+    
+    <v-menu offset-y="">
+      <v-btn slot="activator">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+      <v-list>
+        <v-list-tile @click="submit">
+          <v-list-tile-title>Submit</v-list-tile-title>
+        </v-list-tile>
+        <v-divider></v-divider>
+        <v-list-tile @click="run">
+          <v-list-tile-title>Run</v-list-tile-title>
+        </v-list-tile>
+         <v-list-tile @click="plan">
+          <v-list-tile-title>Show query plan</v-list-tile-title>
+        </v-list-tile>
+        
+      </v-list>
+    </v-menu>
+    <v-spacer></v-spacer>
+     <v-btn @click="imports">
+    <v-icon>library_books</v-icon>
+    Imports</v-btn>
+     <v-btn @click="namespaces">
+    <v-icon>label</v-icon>
+    Namespaces</v-btn>
+     <v-menu offset-y="">
+      <v-btn icon="" primary="" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
+      <v-list dense="">
+        <v-list-tile @click="plan">Show query plan</v-list-tile>
+     </v-list>
+      <v-list>
+        <v-list-tile @click="hitme">hit me</v-list-tile>
+     </v-list>
+     </v-menu>
+   </v-toolbar>
+
+  
+  <v-card-text>
+  <v-flex xs12="" style="height:200px" fill-height="">
+  <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange" :settings="aceSettings"></vue-ace>
+    </v-flex>
+   </v-card-text>
+   
+     <v-card-actions v-if="show">
+
+      <v-chip class="primary white--text">{{jobId}}</v-chip>
+      
+           <v-chip label="" class="grey white--text"> 
+           <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
+           {{ jobState.writes }}</v-chip>
+            <v-chip label="" class="grey white--text"> 
+            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
+            {{ jobState.reads }}</v-chip>
+ 
+        <v-spacer></v-spacer>
+          <v-progress-circular v-if="waiting" indeterminate="" class="primary--text"></v-progress-circular>
+          <v-chip>{{ jobState.state }}</v-chip>
+         <v-chip class="primary white--text">
+          <v-avatar>  <v-icon>timer</v-icon></v-avatar>
+         {{elapsed}}ms</v-chip>
+         
+    </v-card-actions>
+    <v-card-text v-if="showError">
+     <v-alert error="" v-model="showError">Error </v-alert>
+    </v-card-text>
+     <v-card-text v-if="showResult">
+     <v-flex xs12="" style="height:200px" fill-height="">
+        <vue-ace :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"></vue-ace>
+        </v-flex> 
+       </v-card-text>
+    </v-card>
+
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      xq: '(: type your XQuery :)\n',
+      result:'',
+      elapsed: null,
+      show: false,
+      showError: false, //unused
+      showResult: false, //
+      jobId: null,
+      waiting: false,
+      start: null,
+      jobState: {},
+      aceSettings:{}
+      }
+  },
+  methods:{
+    onChange(val){
+      if (this.xq !== val) {
+        this.xq = val
+      }
+    },
+    
+    run(){
+      this.awaitResult(false)
+      this.start = performance.now();
+      HTTPNE.post("eval/execute",Qs.stringify({xq:this.xq}))
+      .then(r=>{
+        this.elapsed=Math.floor(performance.now() - this.start);
+        this.result=r.data.result
+        this.jobId=null
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.response.data
+        this.showError=true;
+
+      });
+      localforage.setItem('eval/xq', this.xq)
+    },
+    submit(){
+      this.showError=this.showResult=this.show=false
+      this.start = performance.now();
+      HTTPNE.post("eval/submit",Qs.stringify({xq:this.xq}))
+      .then(r=>{
+        this.elapsed=Math.floor(performance.now() - this.start);
+        this.jobId=r.data.job
+        this.show=true
+        this.pollState()
+        
+      })
+      .catch(r=> {
+        alert("catch")
+        console.log("error",r)
+        this.jobId=r.response.job
+        this.showError=true;
+
+      });
+    },
+    pollState(){
+      this.waiting=true;
+      HTTP.get("job/"+this.jobId)
+      .then(r=>{
+        this.jobState=r.data
+        this.waiting=r.data.state!="cached";
+        this.elapsed=Math.floor(performance.now() - this.start);
+         if(this.waiting) {
+           setTimeout(()=>{ this.pollState() }, 5000);
+         }else{
+           this.getResult()
+         }
+      })
+    },
+    getResult(){
+      this.awaitResult(true)
+       HTTPNE.post("eval/result/"+this.jobId)
+       .then(r=>{
+         this.result=r.data.result+" "
+       }).catch(r=> {
+        // alert("catch")
+         console.log("error",r)
+         this.result=r.response.data
+         this.showError=true;
+
+       });
+    },
+    hitme(){
+      this.showResult=true
+      setTimeout(()=>{this.result="123\n".repeat(20000); },10);
+
+    },
+    imports(){
+      alert("@TODO imports")
+    },
+    namespaces(){
+      alert("@TODO namespaces")
+    },
+    plan(){
+      this.awaitResult(false)
+      HTTPNE.post("eval/plan",Qs.stringify({xq:this.xq}))
+      .then(r=>{
+        this.result=r.data.result
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.response.data
+        this.showError=true;
+
+      });
+    },
+    awaitResult(show){
+      // ace slow when setting large text while hidden
+      this.showError=false
+      this.show=show
+      this.result="(Please wait..)"
+      this.showResult=true
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    settings.getItem('settings/ace')
+    .then( v =>{
+      
+      next(vm => {
+        console.log('eval settings: ',v);
+        vm.aceSettings = v;
+        })})
+     },
+  created:function(){
+      localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
+  }
+}
+
+      );
+      const Home=Vue.extend({template:` 
+
+<v-card hover="" raised=""> 
+<v-card-title class="pa-5 indigo">
+<div class="display-1 white--text text-xs-center">VUE-POC</div>
+<v-spacer></v-spacer>
+  <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
+      <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
+        <v-icon>account_circle</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="green">
+        <v-icon>edit</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="indigo">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="red">
+        <v-icon>delete</v-icon>
+      </v-btn>
+    </v-speed-dial>
+ </v-card-title> 
+
+ <v-card-text>
+ 
+<p>
+	links
+</p>
+<ul>
+
+<li><router-link :to="{path:'files', query:{url:'/vue-poc/'}}">vue-poc files</router-link></li>
+<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}">vue-poc db</router-link></li>
+	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
+	<li><a href="/dba" target="new">DBA app</a></li>
+	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
+<li><router-link :to="{path:'files', query:{url:'/vue-poc/features/images/'}}">vue-poc image tasks</router-link></li>
+</ul>
+
+<v-btn floating="floating"> <v-icon>add</v-icon> 
+</v-btn> <qd-link href="/dba">REPLACED</qd-link> 
+  
+    </v-card-text> 
+</v-card> 
+	 `,
+      
+    data:  function(){
+      return { 
+              fab: false
+      }
+  }
+  }
 
       );
       const Dates=Vue.extend({template:` 
@@ -960,68 +1330,6 @@ body
   }
     }
 
-      );
-      const Keywords=Vue.extend({template:` 
- <v-container fluid="">
-  <v-card>
-    <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title>
-     <v-chip>click to show</v-chip>   
-    </v-card-title>
-   
-    <v-spacer></v-spacer> 
-  
-    </v-toolbar>
-    <v-card-text>
-    <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-        <v-container v-if="!busy" fluid="" grid-list-md="">
-          <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
-            <v-flex height="80px" xs3="" v-for="keyword in items" :key="keyword.text">
-              <v-card class="grey lighten-2 pt-1" @click="show(keyword)">
-                       <v-toolbar>
-                 <v-card-title v-text="keyword.text"></v-card-title>
-                <v-spacer></v-spacer>
-                <v-chip>{{keyword.count}}</v-chip>
-              </v-toolbar>
-              </v-card>
-            </v-flex>
-          </v-layout>
-        </v-container>
- </v-card-text>
- </v-card>
- </v-container>
- `,
-      
-  data: ()=>({
-    busy: false,
-    total: 0,
-    items: [],
-    elapsed: null
-  }),
-
-  methods:{
-    getKeywords(){
-      this.busy=true
-      var t0 = performance.now();
-      HTTP.get("images/keywords2")
-      .then(r=>{
-        this.busy=false
-        this.total=r.data.total
-        this.items=r.data.items
-        var t1 = performance.now();
-        this.elapsed= 0.001 *(t1 - t0) 
-        }) 
-    },
-    show(keyword){
-      this.$router.push({ name: 'images', query: { keyword: keyword.text }})
-    }
-  },
-  created:function(){
-    console.log("create keywords")
-    this.getKeywords()
-  }
-}
       );
       const Image=Vue.extend({template:` 
  <v-container fluid="">
@@ -1303,54 +1611,315 @@ body
     }
 
       );
-      const Timeline=Vue.extend({template:` 
+      const Report=Vue.extend({template:` 
  <v-container fluid="">
- <v-card>
- <v-toolbar class="lime darken-1">
-	 <v-card-title>Line 1</v-card-title>
-	 <v-spacer></v-spacer>
-	 <v-btn @click="fit">fit</v-btn>
-	 </v-toolbar>
-	 <v-card-text>
-	   <vis-time-line :items="vueState.data1" :events="Events" :options="{editable: true, clickToUse: true}" @select="select"></vis-time-line>
-	 </v-card-text>
- </v-card>
- 
- <v-card>
- <v-card-text>
- {{msg}}
+  <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+     <v-chip>todo</v-chip>   
+    </v-card-title>
+   
+    <v-spacer></v-spacer> 
+  
+    </v-toolbar>
+    <v-card-text>
+body
  </v-card-text>
-</v-card>
+ </v-card>
+ </v-container>
+ `,
+        
+ 
+    }
+
+      );
+      const Keywords=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+     <v-chip>click to show</v-chip>   
+    </v-card-title>
+   
+    <v-spacer></v-spacer> 
+  
+    </v-toolbar>
+    <v-card-text>
+    <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+        <v-container v-if="!busy" fluid="" grid-list-md="">
+          <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
+            <v-flex height="80px" xs3="" v-for="keyword in items" :key="keyword.text">
+              <v-card class="grey lighten-2 pt-1" @click="show(keyword)">
+                       <v-toolbar>
+                 <v-card-title v-text="keyword.text"></v-card-title>
+                <v-spacer></v-spacer>
+                <v-chip>{{keyword.count}}</v-chip>
+              </v-toolbar>
+              </v-card>
+            </v-flex>
+          </v-layout>
+        </v-container>
+ </v-card-text>
+ </v-card>
  </v-container>
  `,
       
-  data(){
-    return {
-      vueState: {
-      data1: [
-        { id: 1, content: 'item 1', start: '2013-04-20 23:06:15.304' },
-	      { id: 2, content: 'iso date time', start: '2013-04-14T11:11:15.304' },
-	      { id: 3, content: '[GET] http://localhost:8984/vue-poc/ui/icon.png', start: '2013-04-18', end: '2013-04-19' },
-	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19', className: 'green' },
-	      { id: 5, content: '[GET] http://localhost:8984/vue-poc/ui/app.css', start: '2013-04-25' },
-	      { id: 6, content: 'item 6', start: '2013-04-27' }]
+  data: ()=>({
+    busy: false,
+    total: 0,
+    items: [],
+    elapsed: null
+  }),
+
+  methods:{
+    getKeywords(){
+      this.busy=true
+      var t0 = performance.now();
+      HTTP.get("images/keywords2")
+      .then(r=>{
+        this.busy=false
+        this.total=r.data.total
+        this.items=r.data.items
+        var t1 = performance.now();
+        this.elapsed= 0.001 *(t1 - t0) 
+        }) 
     },
-    Events: new Vue({}),
-    msg:"Item detail"
+    show(keyword){
+      this.$router.push({ name: 'images', query: { keyword: keyword.text }})
     }
-},
-methods:{
-  fit(){
-    this.Events.$emit('fit');
   },
-  select(items){
-    this.msg='Selected items: ' + items
+  created:function(){
+    console.log("create keywords")
+    this.getKeywords()
   }
-},
-created(){
-  console.log("timeline")
 }
+      );
+      const Job=Vue.extend({template:` 
+  <v-card>
+   <v-toolbar light="">
+      <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+      <v-toolbar-title>{{ job }}</v-toolbar-title>
+    
+     <v-btn v-if="!finished" @click="stop()" :disabled="finished">Stop</v-btn>
+     <v-btn v-if="finished &amp;&amp; !result" @click="getResult()" :disabled="result || !finished">Result</v-btn>
+    <v-chip class="orange white--text">{{  jobstate.state }}</v-chip>
+  
+        <v-chip label="" class="grey white--text"><v-icon class="red">lock</v-icon>{{  jobstate.writes }}</v-chip>
+       <v-chip label="" class="grey white--text"><v-icon class="amber">lock</v-icon>{{  jobstate.reads }}</v-chip>
+      <v-spacer></v-spacer>
+       <v-chip class="primary white--text">
+      <v-avatar>
+        <v-icon>account_circle</v-icon>
+      </v-avatar>
+     {{  jobstate.user }}</v-chip>
+       <v-chip class="green white--text">
+        <v-avatar><v-icon>timer</v-icon></v-avatar>
+       {{  jobstate.duration }}</v-chip>
+      <v-btn light="" icon="" :loading="loading" @click="getJob()" :disabled="loading || finished">
+         <v-icon>refresh</v-icon>
+    </v-btn>     
+    </v-toolbar>
+    
+    <v-card-text v-if="result">
+     {{ result }}
+  </v-card-text>
+  
+  <v-card-text>
+     <code>{{ jobstate.text }}</code>
+  </v-card-text>
+  
+ </v-card>
+ `,
+      
+  props: ['job'],
+  data:  function(){
+    return {
+      jobstate:{state:"?",user:"?",duration:"?"},
+      result:null,
+      loading:false
+      }
+  },
+  methods:{
+    getJob(){
+      this.loading=true;
+	    HTTP.get("job/" + this.job )
+	    .then(r=>{
+	       this.loading=false
+	       this.jobstate=r.data
+	       if(!this.jobstate.id) this.jobstate={state:"cached", text:"Job not found"}
+	       if(!this.finished)setTimeout(()=>{ this.getJob() }, 10000);
+	    })
+	   
+    },
+    getResult(){
+      HTTP.post("eval/result/"+this.job)
+      .then(r=>{
+        this.result=r.data.result
+    })
+    },
+    stop(){
+      alert("todo stop" + this.job)
+    }
+  },
+  computed: {
+    finished(){
+      return this.jobstate.state == 'cached'
+      }
+  },
+  created(){
+    this.getJob()
+  }
 }
+
+      );
+      const Jobs=Vue.extend({template:` 
+  <v-card>
+   <v-toolbar light="">
+     
+    
+     <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
+    <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>   
+      <v-spacer></v-spacer>
+      
+       <v-btn light="" icon="" :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
+    <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
+    </v-btn>
+    </v-toolbar>
+  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No Jobs currently running">
+    <template slot="items" scope="props">
+    <td class="vtop">
+        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
+      </td>
+      <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
+      <td class="vtop "><div>{{ props.item.state }}</div>
+                                     <div>{{ props.item.type }}</div> </td>
+      <td class="vtop text-xs-right">{{ props.item.duration }}</td>
+       <td class="vtop text-xs-right">{{ props.item.writes }}</td>
+        <td class="vtop text-xs-right">{{ props.item.reads }}</td>
+      <td class="vtop text-xs-right">{{ props.item.user }}</td>
+       <td class="vtop"><code class="multiline-ellipsis">{{ props.item.text }}</code></td>
+    </template>
+  </v-data-table>
+ </v-card>
+ `,
+      
+  data:  function(){
+    return {
+      headers: [
+        {
+          text: 'Job id',
+          left: true,
+          value: 'id'
+        },
+        { text: 'State', value: 'state' },
+        { text: 'Duration', value: 'duration' },
+        { text: 'WriteL', value: 'writes' },
+        { text: 'ReadL', value: 'reads' },
+        { text: 'User', value: 'user' },
+        { text: 'Query', value: 'text' }
+      ],
+      items:[        
+      ],
+      selected: [],
+      search: "",
+      loading: false,
+      autorefresh: true
+      }
+  },
+  methods:{
+    getJobs(){
+      this.loading=true;
+	    HTTP.get("job")
+	    .then(r=>{
+	       this.loading=false
+	       this.items=r.data
+	       if(this.autorefresh) setTimeout(()=>{ this.getJobs() }, 10000);
+	    })
+	   
+    },
+    stop(){
+      var s=this.selected.map((j)=>{return j.id}).join(",")
+      console.log("AAA",this.selected)
+      alert(s)
+    }
+  },
+  computed: {
+    // a computed getter
+    noSelection: function () {
+      // `this` points to the vm instance
+      return this.selected.length==0
+    },
+  },
+  created(){
+    this.getJobs()
+  }
+}
+
+      );
+      const Login=Vue.extend({template:` 
+<v-card class="grey lighten-4 elevation-0">
+
+      <v-card-title class="green darken-1">
+        <span class="white--text">Login</span>
+      </v-card-title>
+    <v-alert error="" v-bind:value="showMessage">
+      {{message}}
+    </v-alert>
+     <v-card-actions>
+      <v-text-field name="input-name" label="Enter your name" hint="name??" v-model="name" required=""></v-text-field>
+     </v-card-actions>
+  
+    <v-card-actions>    
+         <v-text-field name="input-password" label="Enter your password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required=""></v-text-field>      
+    </v-card-actions>
+        
+    <v-divider></v-divider>
+    <v-card-actions class="blue-grey darken-1 mt-0">
+       <v-btn primary="" @click="go()">Continue</v-btn>
+       <v-spacer></v-spacer>
+    </v-card-actions>
+</v-card>
+ `,
+      
+    data () {
+      return {
+        hidepass: true,
+        name:'',
+        password: '',
+        redirect: this.$route.query.redirect,
+        message:"",
+        showMessage:false
+      }
+    },
+    methods:{
+      go () {
+       this.hidepass=true
+       this.showMessage=false
+       var data={
+             username: this.name, //gave the values directly for testing
+             password: this.password,
+             redirect: this.redirect
+             }
+       HTTP.post("login-check",Qs.stringify( data))
+      .then(r=>{
+        console.log("login",r.data)
+        if(r.data.status){
+          this.$auth.role="admin"
+          this.$router.replace(this.redirect)
+        }else{
+          this.message=r.data.message
+          this.showMessage=true;
+        }
+          
+      }).catch(error=> {
+        alert("err login")
+      })
+    }
+  }
+}
+
       );
       const Ping=Vue.extend({template:` 
  <v-container fluid="">
@@ -1495,110 +2064,86 @@ created(){
 }
 
       );
-      const Home=Vue.extend({template:` 
-
-<v-card hover="" raised=""> 
-<v-card-title class="pa-5 indigo">
-<div class="display-1 white--text text-xs-center">VUE-POC</div>
-<v-spacer></v-spacer>
-  <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
-      <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
-        <v-icon>account_circle</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="green">
-        <v-icon>edit</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="indigo">
-        <v-icon>add</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="red">
-        <v-icon>delete</v-icon>
-      </v-btn>
-    </v-speed-dial>
- </v-card-title> 
-
- <v-card-text>
+      const Puzzle=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-layout>
  
-<p>
-	links
-</p>
-<ul>
-
-<li><router-link :to="{path:'files', query:{url:'/vue-poc/'}}">vue-poc files</router-link></li>
-<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}">vue-poc db</router-link></li>
-	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
-	<li><a href="/dba" target="new">DBA app</a></li>
-	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
-<li><router-link :to="{path:'files', query:{url:'/vue-poc/features/images/'}}">vue-poc image tasks</router-link></li>
-</ul>
-
-<v-btn floating="floating"> <v-icon>add</v-icon> 
-</v-btn> <qd-link href="/dba">REPLACED</qd-link> 
-  
-    </v-card-text> 
-</v-card> 
-	 `,
-      
-    data:  function(){
-      return { 
-              fab: false
-      }
-  }
-  }
-
-      );
-      const Tabs=Vue.extend({template:` 
-  <v-tabs scroll-bars="">
-    <v-card>
-      <v-card-actions>
-          <v-btn icon="">
-            <v-icon>menu</v-icon>
-          </v-btn>
-          <v-card-title>Page Title</v-card-title>
-          <v-spacer></v-spacer>
-          <v-btn icon="">
-            <v-icon>search</v-icon>
-          </v-btn>
-          <v-btn icon="">
-            <v-icon>more_vert</v-icon>
-          </v-btn>
-        </v-card-actions>
-    </v-card>
-    
-    <v-tabs-bar class="grey lighten-3">
-      <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
-       <v-chip close="">
-       <v-avatar class="pink">
-       <v-icon>favorite</v-icon>
-       </v-avatar>
-       Item {{ i }} more
-       </v-chip>
-      </v-tabs-item>
-      <v-tabs-slider class="primary"></v-tabs-slider>
-    </v-tabs-bar>
-    
-    <v-tabs-items>
-     <v-tabs-content v-for="i in 13" :key="i" :id="'mobile-tabs-6-' + i">
-      <v-card flat="">
-        <v-card-text>{{i}} - {{ text }}</v-card-text>
-      </v-card>
-      </v-tabs-content>
-    </v-tabs-items>
-</v-tabs>
+  <table>
+   <tbody><tr v-for="(item, row) in grid">
+    <td v-for="(cell,col) in item" style="width:3em;">
+    <v-btn @click="click(row,col)" :disabled="disabled(row,col)">{{cell}}</v-btn>
+    </td>
+   </tr>
+  </tbody></table>
+   <br>
+   <table>
+   <tbody><tr v-for="(item, row) in grid">
+    <td v-for="(cell,col) in item" style="width:50px;height:50px;" @click="click(row,col)">
+    <img :src="src(row,col)" style="width:50px;height:50px;">
+    </td>
+   </tr>
+  </tbody></table>
+  </v-layout>
+    Loosely inspired by <a href="http://homepages.cwi.nl/~steven/Talks/2017/06-10-iot/game-demo.html">demo</a>
+ </v-container>
  `,
       
-    data () {
-      return {
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      }
+  data:  function(){
+    return {grid: [
+      [1,5,8,12],
+      [2,6,9,13],
+      [3,7,10,14],
+      [4,null,11,15] 
+    ],
+    empty:[3,1],
+    tiles:[{data:""}]
     }
+  },
+  methods: {
+    click(row,col) {
+      if(this.disabled(row,col))return;
+      var g=this.grid
+      var h=g[row][col]
+      g[row][col]=null
+      g[this.empty[0]][this.empty[1]]=h
+      var e=[row,col]
+      this.empty=e
+      this.grid= g
+      console.log("click",this.grid,e)
+      this.$forceUpdate()
+    },
+    disabled(row,col){
+      var ok=(row==this.empty[0]) && (col==this.empty[1]-1 ||col==this.empty[1]+1) 
+      ok=ok || (col==this.empty[1]) && (row==this.empty[0]-1 ||row==this.empty[0]+1);
+      return !ok 
+    },
+    gettiles(){
+      HTTP.get("thumbnail/images")
+      .then(r=>{
+        this.tiles=r.data.items
+        this.$forceUpdate()
+        })
+      
+    },
+    src(row,col){
+      var v=this.grid[row][col]
+      var d=""
+      if(typeof this.tiles[v] !== 'undefined') d=this.tiles[v].data 
+      
+      return "data:image/jpeg;base64,"+d 
+    }
+   
+  },
+  created(){
+    this.gettiles()
   }
+}
+
 
       );
-      const Notfound=Vue.extend({template:` 
+      const Repo=Vue.extend({template:` 
  <v-container fluid="">
- Not found
+repository todo
  </v-container>
  `,
       
@@ -1761,67 +2306,72 @@ created(){
 
 
       );
-      const Login=Vue.extend({template:` 
-<v-card class="grey lighten-4 elevation-0">
-
-      <v-card-title class="green darken-1">
-        <span class="white--text">Login</span>
-      </v-card-title>
-    <v-alert error="" v-bind:value="showMessage">
-      {{message}}
-    </v-alert>
-     <v-card-actions>
-      <v-text-field name="input-name" label="Enter your name" hint="name??" v-model="name" required=""></v-text-field>
-     </v-card-actions>
-  
-    <v-card-actions>    
-         <v-text-field name="input-password" label="Enter your password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required=""></v-text-field>      
-    </v-card-actions>
-        
-    <v-divider></v-divider>
-    <v-card-actions class="blue-grey darken-1 mt-0">
-       <v-btn primary="" @click="go()">Continue</v-btn>
-       <v-spacer></v-spacer>
-    </v-card-actions>
-</v-card>
+      const Session=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-layout>
+   <v-btn v-on:click="redraw">this.$forceUpdate()</v-btn>
+    <v-btn v-on:click="logout">logout</v-btn>
+   <!-- 
+    <v-autocomplete :items="list" 
+    v-model="fieldValue" 
+    :search.sync="search"
+     label="Suburb" item-text="suburb" 
+    item-value="suburb" 
+    @selected="handleSelected"
+     strict="Unknown">
+<template slot="item" scope="data">
+      <v-list-tile-content>
+        <v-list-tile-title>{{data.item.suburb}}</v-list-tile-title>
+        <template v-if="!data.item.generatedItem">
+          <v-list-tile-sub-title>{{data.item.postcode}} - {{data.item.state}}</v-list-tile-sub-title>
+        </template>
+      </v-list-tile-content>
+    </template>
+</v-autocomplete>
+ -->
+  </v-layout>
+   <table class="table">
+      <thead> 
+        <tr>
+          <th>Name</th>
+          <th>value</th>
+          </tr>
+        </thead>
+        <tbody>
+        <tr>
+        <td>created</td><td>{{$auth.created}}</td>
+        </tr>
+        <tr>
+        <td>session</td><td>{{$auth.session}}</td>
+        </tr>
+        <tr>
+        <td>permision</td><td>{{$auth.permission}}</td>
+        </tr>
+        </tbody>
+        </table>
+ </v-container>
  `,
       
-    data () {
-      return {
-        hidepass: true,
-        name:'',
-        password: '',
-        redirect: this.$route.query.redirect,
-        message:"",
-        showMessage:false
-      }
+  data:  function(){
+    return {
+      fieldValue:"",
+      list:[],
+      search:"",
+      data:[]    }
+  },
+  methods: {
+    logout(){
+      alert("TODO")
     },
-    methods:{
-      go () {
-       this.hidepass=true
-       this.showMessage=false
-       var data={
-             username: this.name, //gave the values directly for testing
-             password: this.password,
-             redirect: this.redirect
-             }
-       HTTP.post("login-check",Qs.stringify( data))
-      .then(r=>{
-        console.log("login",r.data)
-        if(r.data.status){
-          this.$auth.role="admin"
-          this.$router.replace(this.redirect)
-        }else{
-          this.message=r.data.message
-          this.showMessage=true;
-        }
-          
-      }).catch(error=> {
-        alert("err login")
-      })
+    redraw(){
+      this.$forceUpdate()
+    },
+    handleSelected(){
+      
     }
   }
 }
+
 
       );
       const Acesettings=Vue.extend({template:` 
@@ -2004,900 +2554,441 @@ created(){
 }
 
       );
-      const Eval=Vue.extend({template:` 
- <v-container fluid="">
-  <v-card>
-
-     <v-toolbar>
-     
+      const Tabs=Vue.extend({template:` 
+  <v-tabs scroll-bars="">
+    <v-card>
+      <v-card-actions>
+          <v-btn icon="">
+            <v-icon>menu</v-icon>
+          </v-btn>
+          <v-card-title>Page Title</v-card-title>
+          <v-spacer></v-spacer>
+          <v-btn icon="">
+            <v-icon>search</v-icon>
+          </v-btn>
+          <v-btn icon="">
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </v-card-actions>
+    </v-card>
     
-    <v-menu offset-y="">
-      <v-btn slot="activator">
+    <v-tabs-bar class="grey lighten-3">
+      <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
+       <v-chip close="">
+       <v-avatar class="pink">
+       <v-icon>favorite</v-icon>
+       </v-avatar>
+       Item {{ i }} more
+       </v-chip>
+      </v-tabs-item>
+      <v-tabs-slider class="primary"></v-tabs-slider>
+    </v-tabs-bar>
+    
+    <v-tabs-items>
+     <v-tabs-content v-for="i in 13" :key="i" :id="'mobile-tabs-6-' + i">
+      <v-card flat="">
+        <v-card-text>{{i}} - {{ text }}</v-card-text>
+      </v-card>
+      </v-tabs-content>
+    </v-tabs-items>
+</v-tabs>
+ `,
+      
+    data () {
+      return {
+        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
+      }
+    }
+  }
+
+      );
+      const Model=Vue.extend({template:` 
+ <v-container fluid="">
+    <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+      <span class="white--text">Generate <code>model.gen.xqm</code></span>      
+    </v-card-title>
+    <v-spacer></v-spacer>
+     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
-      <v-list>
-        <v-list-tile @click="submit">
-          <v-list-tile-title>Submit</v-list-tile-title>
-        </v-list-tile>
-        <v-divider></v-divider>
-        <v-list-tile @click="run">
-          <v-list-tile-title>Run</v-list-tile-title>
-        </v-list-tile>
-         <v-list-tile @click="plan">
-          <v-list-tile-title>Show query plan</v-list-tile-title>
-        </v-list-tile>
+    </v-toolbar>
+    <v-card-text>
+      <v-container fluid="">
+        <v-layout row="" wrap="">
+          
+          <v-flex xs12="">
+            <v-text-field v-model="params.efolder" label="Folder containing model  definitions as xml"></v-text-field>
+          </v-flex>
         
-      </v-list>
-    </v-menu>
-    <v-spacer></v-spacer>
-     <v-btn @click="imports">
-    <v-icon>library_books</v-icon>
-    Imports</v-btn>
-     <v-btn @click="namespaces">
-    <v-icon>label</v-icon>
-    Namespaces</v-btn>
-     <v-menu offset-y="">
-      <v-btn icon="" primary="" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
-      <v-list dense="">
-        <v-list-tile @click="plan">Show query plan</v-list-tile>
-     </v-list>
-      <v-list>
-        <v-list-tile @click="hitme">hit me</v-list-tile>
-     </v-list>
-     </v-menu>
-   </v-toolbar>
-
+          <v-flex xs12="">
+            <v-text-field v-model="params.target" label="Path to xqm file to generate"></v-text-field>
+          </v-flex>
+           <v-flex xs12="">
+            <code>{{code}}</code>
+          </v-flex>
+        </v-layout>
   
-  <v-card-text>
-  <v-flex xs12="" style="height:200px" fill-height="">
-  <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange" :settings="aceSettings"></vue-ace>
-    </v-flex>
-   </v-card-text>
-   
-     <v-card-actions v-if="show">
-
-      <v-chip class="primary white--text">{{jobId}}</v-chip>
-      
-           <v-chip label="" class="grey white--text"> 
-           <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
-           {{ jobState.writes }}</v-chip>
-            <v-chip label="" class="grey white--text"> 
-            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
-            {{ jobState.reads }}</v-chip>
- 
-        <v-spacer></v-spacer>
-          <v-progress-circular v-if="waiting" indeterminate="" class="primary--text"></v-progress-circular>
-          <v-chip>{{ jobState.state }}</v-chip>
-         <v-chip class="primary white--text">
-          <v-avatar>  <v-icon>timer</v-icon></v-avatar>
-         {{elapsed}}ms</v-chip>
-         
-    </v-card-actions>
-    <v-card-text v-if="showError">
-     <v-alert error="" v-model="showError">Error </v-alert>
+      </v-container>
     </v-card-text>
-     <v-card-text v-if="showResult">
-     <v-flex xs12="" style="height:200px" fill-height="">
-        <vue-ace :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"></vue-ace>
-        </v-flex> 
-       </v-card-text>
-    </v-card>
-
+ 
+      <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
+      {{ snackbar.msg }}
+      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
+    </v-snackbar>
+  </v-card>
  </v-container>
  `,
       
   data:  function(){
     return {
-      xq: '(: type your XQuery :)\n',
-      result:'',
-      elapsed: null,
-      show: false,
-      showError: false, //unused
-      showResult: false, //
-      jobId: null,
-      waiting: false,
-      start: null,
-      jobState: {},
-      aceSettings:{}
-      }
+      params:{
+			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc/models",
+			      target:"C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm"
+			 },
+			waiting:false,
+			snackbar:{show:false,msg:"",context:"success"},
+    }
   },
   methods:{
-    onChange(val){
-      if (this.xq !== val) {
-        this.xq = val
-      }
-    },
-    
-    run(){
-      this.awaitResult(false)
-      this.start = performance.now();
-      HTTPNE.post("eval/execute",Qs.stringify({xq:this.xq}))
-      .then(r=>{
-        this.elapsed=Math.floor(performance.now() - this.start);
-        this.result=r.data.result
-        this.jobId=null
-      })
-      .catch(r=> {
-        console.log("error",r)
-        this.result=r.response.data
-        this.showError=true;
-
-      });
-      localforage.setItem('eval/xq', this.xq)
-    },
     submit(){
-      this.showError=this.showResult=this.show=false
-      this.start = performance.now();
-      HTTPNE.post("eval/submit",Qs.stringify({xq:this.xq}))
+      this.waiting=true
+      HTTP.post("tasks/model",Qs.stringify(this.params))
       .then(r=>{
-        this.elapsed=Math.floor(performance.now() - this.start);
-        this.jobId=r.data.job
-        this.show=true
-        this.pollState()
-        
+        this.waiting=false      
+        this.snackbar={show:true,msg:r.data.msg,context:"success"}
+        console.log(r.data)
       })
-      .catch(r=> {
-        alert("catch")
-        console.log("error",r)
-        this.jobId=r.response.job
-        this.showError=true;
-
+      .catch(error=>{
+        this.waiting=false
+        this.snackbar={show:true,msg:"Problem",context:"error"}
+        console.log(error);
       });
-    },
-    pollState(){
-      this.waiting=true;
-      HTTP.get("job/"+this.jobId)
-      .then(r=>{
-        this.jobState=r.data
-        this.waiting=r.data.state!="cached";
-        this.elapsed=Math.floor(performance.now() - this.start);
-         if(this.waiting) {
-           setTimeout(()=>{ this.pollState() }, 5000);
-         }else{
-           this.getResult()
-         }
-      })
-    },
-    getResult(){
-      this.awaitResult(true)
-       HTTPNE.post("eval/result/"+this.jobId)
-       .then(r=>{
-         this.result=r.data.result+" "
-       }).catch(r=> {
-        // alert("catch")
-         console.log("error",r)
-         this.result=r.response.data
-         this.showError=true;
-
-       });
-    },
-    hitme(){
-      this.showResult=true
-      setTimeout(()=>{this.result="123\n".repeat(20000); },10);
-
-    },
-    imports(){
-      alert("@TODO imports")
-    },
-    namespaces(){
-      alert("@TODO namespaces")
-    },
-    plan(){
-      this.awaitResult(false)
-      HTTPNE.post("eval/plan",Qs.stringify({xq:this.xq}))
-      .then(r=>{
-        this.result=r.data.result
-      })
-      .catch(r=> {
-        console.log("error",r)
-        this.result=r.response.data
-        this.showError=true;
-
-      });
-    },
-    awaitResult(show){
-      // ace slow when setting large text while hidden
-      this.showError=false
-      this.show=show
-      this.result="(Please wait..)"
-      this.showResult=true
-    }
-  },
-  beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
-    .then( v =>{
-      
-      next(vm => {
-        console.log('eval settings: ',v);
-        vm.aceSettings = v;
-        })})
-     },
-  created:function(){
-      localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
-  }
-}
-
-      );
-      const Puzzle=Vue.extend({template:` 
- <v-container fluid="">
-  <v-layout>
- 
-  <table>
-   <tbody><tr v-for="(item, row) in grid">
-    <td v-for="(cell,col) in item" style="width:3em;">
-    <v-btn @click="click(row,col)" :disabled="disabled(row,col)">{{cell}}</v-btn>
-    </td>
-   </tr>
-  </tbody></table>
-   <br>
-   <table>
-   <tbody><tr v-for="(item, row) in grid">
-    <td v-for="(cell,col) in item" style="width:50px;height:50px;" @click="click(row,col)">
-    <img :src="src(row,col)" style="width:50px;height:50px;">
-    </td>
-   </tr>
-  </tbody></table>
-  </v-layout>
-    Loosely inspired by <a href="http://homepages.cwi.nl/~steven/Talks/2017/06-10-iot/game-demo.html">demo</a>
- </v-container>
- `,
-      
-  data:  function(){
-    return {grid: [
-      [1,5,8,12],
-      [2,6,9,13],
-      [3,7,10,14],
-      [4,null,11,15] 
-    ],
-    empty:[3,1],
-    tiles:[{data:""}]
-    }
-  },
-  methods: {
-    click(row,col) {
-      if(this.disabled(row,col))return;
-      var g=this.grid
-      var h=g[row][col]
-      g[row][col]=null
-      g[this.empty[0]][this.empty[1]]=h
-      var e=[row,col]
-      this.empty=e
-      this.grid= g
-      console.log("click",this.grid,e)
-      this.$forceUpdate()
-    },
-    disabled(row,col){
-      var ok=(row==this.empty[0]) && (col==this.empty[1]-1 ||col==this.empty[1]+1) 
-      ok=ok || (col==this.empty[1]) && (row==this.empty[0]-1 ||row==this.empty[0]+1);
-      return !ok 
-    },
-    gettiles(){
-      HTTP.get("thumbnail/images")
-      .then(r=>{
-        this.tiles=r.data.items
-        this.$forceUpdate()
-        })
-      
-    },
-    src(row,col){
-      var v=this.grid[row][col]
-      var d=""
-      if(typeof this.tiles[v] !== 'undefined') d=this.tiles[v].data 
-      
-      return "data:image/jpeg;base64,"+d 
-    }
-   
-  },
-  created(){
-    this.gettiles()
-  }
-}
-
-
-      );
-      const Edit=Vue.extend({template:` 
-<v-container fluid="">
-      <v-snackbar top="" error="" v-model="snackbar">
-      {{ message }}
-      <v-btn flat="" @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
-    </v-snackbar>
-<v-card>
-
-<v-toolbar class="grey lighten-2 black--text">
-<v-menu>
-  <v-btn primary="" icon="" dark="" slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon>{{icon}}</v-icon></v-btn>
-  <v-list>
-      <v-list-tile v-for="item in path" :key="item">
-        <v-list-tile-content @click="showfiles()">
-        <v-list-tile-title>{{ item }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-  </v-list>
-</v-menu>
-
-  <v-toolbar-title>
-      <span>{{ name }}</span>
-  </v-toolbar-title>
-  <v-toolbar-items>
-  <span v-tooltip:top="{ html: 'Changed?' }">
-  <v-chip v-if="dirty" label="" small="" class="red white--text">*</v-chip>
-<v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
-</span>
- <v-chip small="" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
-     <v-chip @click="acecmd('goToNextError')" v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }">
-          <v-avatar class="green ">{{annotations &amp;&amp; annotations.info}}</v-avatar>
-          <v-avatar class="yellow ">{{annotations &amp;&amp; annotations.warning}}</v-avatar>        
-          <v-avatar class="red " small="">{{annotations &amp;&amp; annotations.error}}</v-avatar>    
-           <v-avatar>
-              <v-icon black="">navigate_next</v-icon>
-           </v-avatar>
-          </v-chip>
-<v-spacer></v-spacer>
-   <v-btn icon="" @click="acecmd('outline')" title="outline -todo">
-      <v-icon>star</v-icon>
-    </v-btn>
-
-  
-   <v-btn icon="" @click="togglefold" title="fold toggle">
-      <v-icon>vertical_align_center</v-icon>
-    </v-btn>
-    
-    <v-btn icon="" @click="wrap=!wrap">
-      <v-icon>wrap_text</v-icon>
-    </v-btn>
-    
-   <v-btn icon="" @click="save()">
-      <v-icon>file_upload</v-icon>
-    </v-btn>
-    
-    <v-btn icon="" @click="beautify()">
-      <v-icon>format_align_center</v-icon>
-    </v-btn>
-    <v-btn icon="" @click="clearDialog = true">
-      <v-icon>delete</v-icon>
-    </v-btn>
-        <v-menu left="" transition="v-fade-transition">
-        <v-btn icon="" slot="activator">
-          <v-icon>help</v-icon>
-        </v-btn>     
-        <v-list>
-            <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
-               <v-list-tile-avatar>
-              <v-icon>settings</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title @click="acecmd('showSettingsMenu')">Show settings</v-list-tile-title>
-            </v-list-tile>
-                      
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
-              <v-list-tile-avatar>
-              <v-icon>keyboard</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title @click="acecmd('showKeyboardShortcuts')">Show keyboard commands</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-       </v-menu>
-    <v-menu left="" transition="v-fade-transition">
-      <v-btn icon="" slot="activator">
-        <v-icon>more_vert</v-icon>
-      </v-btn>
-     
-          <v-list>
-              <v-list-tile>
-                <v-list-tile-title>unused</v-list-tile-title>
-              </v-list-tile>           
-          </v-list>
-          
-      </v-menu>
-    </v-toolbar-items>
-     <v-dialog v-model="clearDialog">
-       <v-card>
-		      <v-card-title>Clear?</v-card-title>
-		      <v-card-text>clear text.</v-card-text>
-		    <v-card-actions>
-		      <v-btn class="green--text darken-1" flat="flat" @click="reset(false)">Cancel</v-btn>
-		      <v-btn class="green--text darken-1" flat="flat" @click="reset(true)">Ok</v-btn>
-		    </v-card-actions>
-		    </v-card>
-		</v-dialog>
- </v-toolbar>
-   <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-
-<v-card-text v-if="!busy">
-<v-flex xs12="" style="height:70vh" fill-height="">
-  
-    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :settings="aceSettings" :events="events" v-resize="onResize" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
- </v-flex> 
-</v-card-text>
-</v-card>
-  
- </v-container>
- `,
-      
-  data () {
-    return {
-      contentA: `declare function local:query($q as xs:string)
-{ <json type="object"/> 
-};`,
-      mode: 'xquery',
-      url: '',
-      protocol: 'webfile',
-      name: '',
-      path: [],
-      mimetype: "",
-      wrap: false,
-      busy: false,
-      clearDialog: false,
-      annotations: null,
-      dirty: false,
-      snackbar: false,
-      message: "Cant do that",
-      events:  new Vue({}),
-      folded: false, // toggle fold/unfold action
-      mimemap:{
-          "text/xml":"xml",
-          "application/xml":"xml",
-          "application/xquery":"xquery",
-          "text/ecmascript":"javascript",
-          "application/sparql-query":"sparql",
-          "text/html":"html",
-          "text/turtle":"turtle",
-          "text/css":"css",
-          "image/svg+xml":"svg"
-      },
-      aceSettings: { }
-    }
-  },
-  methods: {
-    reset (ok) {
-        if(ok){
-          this.contentA = 'reset content for Editor A'
-          this.dirty=false
-        }
-        this.clearDialog=false
-    },
-    changeContentA (val) {
-        if (this.contentA !== val) {
-        this.contentA = val
-        this.dirty=true
-      }
-    },
-    // load from url
-    fetch(url){
-      this.busy=true
-      var a=url.split("/")
-      this.url=url
-      this.name=a.pop()
-      this.path=a
-      HTTP.get("edit",{params: {url:url,protocol:this.protocol}})
-      .then(r=>{
-        //console.log(r)
-        this.mimetype=r.data.mimetype
-        this.mode=this.acetype(r.data.mimetype)
-        this.contentA=r.data.data
-       
-        this.busy=false
-        this.dirty=false
-        //alert(mode)
-        })
-        .catch(error=> {
-          console.log(error);
-          this.busy=false
-          alert("Get query error:\n"+url)
-        });
-      
-    },
-    togglefold(){
-      this.folded=!this.folded
-      this.acecmd(this.folded?"foldall":"unfoldall")
-    },
-    acecmd(cmd){
-      //alert("acecmd: "+cmd)
-      this.events.$emit('eventFired',cmd);
-    },
-    fold(){
-      this.events.$emit('eventFired',"foldall");
-    },
-    save(){
-      alert("TODO save: "+this.url);
-      var data= {
-            protocol:this.protocol,
-            url: this.url, //gave the values directly for testing
-            data: this.contentA
-            }
-      HTTP.post("edit", Qs.stringify(data),{
-  headers: { "Content-Type": "application/x-www-form-urlencoded"}
-      }).then(r=>{
-        alert("AAA")
-      })
-    },
-    showfiles(){
-          var target=this.protocol="basexdb"?"database":"files";
-           router.push({ path: target, query: { url: this.path.join("/"),protocol:this.protocol }})
-    },
-    beautify(){
-      this.busy=true
-      var a=this.contentA
-      switch(this.mode) {
-      case "html":
-      case "svg":  
-      case "xml":  
-          a=html_beautify(a, { indent_size: 3 ,indent_inner_html:true})
-          break;
-      case "javascript":
-           a=js_beautify(a, { indent_size: 2 })
-          break;
-      case "css":
-         a=css_beautify(a, { indent_size: 2 })
-         break;     
-      default:
-        this.message="No beautify yet for "+this.mode
-        this.snackbar=true
-     } 
-      this.contentA=a
-      this.busy=false
-    },
-    annotation(counts){
-      this.annotations=counts
-      //console.log("annotations: ",counts)
-    },
-    acetype(mime){
-      var r=this.mimemap[mime]
-      return r?r:"text"
-    },
-    onResize(){
-      var h=window.innerHeight
-      console.log("height:",h)
-    },
-    leaving(event) {
-      event.returnValue = "event seems to need to be set";
-      //debugger;
-      console.log("Leaving...");
-      if(this.dirty)event.preventDefault();
-  }
+   }
   },
   computed:{
-    icon(){
-      return (this.protocol=="basexdb")?"account_balance":"folder"
-    }
-  },
-  created(){
-    //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
-    document.addEventListener('beforeunload', this.leaving);
-  this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
-    var url=this.$route.query.url
-    if(url) this.fetch(url)
-  },
-  beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
-    .then( v =>{
-      next(vm => {vm.aceSettings = v;})
-        })
-     },
-  beforeRouteLeave (to, from, next) {
-    // called when the route that renders this component is about to
-    // be navigated away from.
-    // has access to `this` component instance.
-    if(this.dirty && confirm("unsaved changes will be lost"))this.dirty=false;
-    next(!this.dirty);
+    code(){return 'import module namespace entity = "quodatum.models.generated" at "'+this.params.target+'";'}
   }
 }
 
       );
-      const Files=Vue.extend({template:` 
+      const Task=Vue.extend({template:` 
  <v-container fluid="">
- 
-<v-card>
+  <h3>Available Tasks</h3>
+  <v-snackbar :bottom="true" v-model="snackbar">
+     got tasks, currently ignoring
+      <v-btn flat="" class="pink--text" @click.native="snackbar = false">Close</v-btn>
+    </v-snackbar>
+  <ul>
+  <li v-for="task in tasks" :key="task.to">
+  <router-link :to="task.to" v-text="task.text"></router-link>
+  </li>
+  </ul>
+ </v-container>
+ `,
+      
+  data(){
+    return {
+      tasks: [
+       {to: "tasks/model", text: "model"},
+       {to: "tasks/xqdoc", text: "xqdoc"},
+       {to: "tasks/vuecompile", text: "vue compile"}
+      ],
+      snackbar: false
+      }
+  },
+  methods:{
+    getTasks(){
+        HTTP.get("tasks/list")
+        .then(r=>{
+		   this.snackbar=true
+       })
+    }
+   },
+  created(){
+    this.getTasks()
+   }
+}
 
-<v-toolbar>
-    <v-btn icon="" :to="{query: { url: '/' }}">
-     <v-icon>{{icon}}</v-icon>
-     </v-btn>  
-    <v-toolbar-title>
-		    <v-breadcrumbs>
-				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
-				    {{ item.name }}
-				    </v-breadcrumbs-item>
-		    </v-breadcrumbs>
-    </v-toolbar-title>
- 
-    <v-spacer></v-spacer>
-
-    <v-toolbar-items v-if="!selected">
-     <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter"></v-text-field>
-   <v-btn icon="" v-for="b in buttons" :key="b.icon" @click="action(b)">
-        <v-icon v-text="b.icon"></v-icon>
-    </v-btn>
-</v-toolbar-items>
-
-    <v-toolbar-items v-if="selected">
-   <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
-        <v-icon v-text="b.icon"></v-icon>
-    </v-btn>
-   
-</v-toolbar-items>
- <v-menu offset-y="">
-      <v-btn icon="" slot="activator">
-      <v-icon>more_vert</v-icon>
-     </v-btn>
-      <v-list>
-        <v-list-tile @click="invoke">
-          <v-list-tile-title>Invoke</v-list-tile-title>
-        </v-list-tile>
-        <v-divider></v-divider>
-        <v-list-tile @click="invoke">
-          <v-list-tile-title>todo</v-list-tile-title>
-        </v-list-tile>
-         <v-list-tile @click="invoke">
-          <v-list-tile-title>todo</v-list-tile-title>
-        </v-list-tile>
-      </v-list>
-    </v-menu>
- </v-toolbar>
- 
-  
-  
-  <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-  <v-layout>
-	  <v-flex>
-	  <v-list v-if="!busy" two-line="" subheader="">
-	    <v-subheader inset="">
-	         <span>Folders ({{ folders.length }})</span> 
-	     </v-subheader>
-	      <v-list-tile v-for="item in folders" v-bind:key="item.name" @click="folder(item)" avatar="">
-	        <v-list-tile-avatar>
-	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
-	        </v-list-tile-avatar>
-	        <v-list-tile-content>
-	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
-	        </v-list-tile-content>
-	        <v-list-tile-action>
-	          <v-btn icon="" @click.stop="info(item)">
-	            <v-icon class="grey--text text--lighten-1">info</v-icon>
-	          </v-btn>
-	        </v-list-tile-action>
-	      </v-list-tile>
-	    
-	    <v-divider inset=""></v-divider>
-	    <v-subheader inset="">
-	       <span>Files ({{ files.length }})</span> 
-	        </v-subheader> 
-	      <v-list-tile v-for="item in files" v-bind:key="item.name">
-	        <v-list-tile-avatar>
-	          <v-icon v-bind:class="[item.iconClass]">{{ item.icon }}</v-icon>
-	        </v-list-tile-avatar>
-	        <v-list-tile-content @click="file(item.name)">
-	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
-	        </v-list-tile-content>
-	        <v-list-tile-action>
-	          <v-btn icon="" ripple="" @click.stop="info(item)">
-	            <v-icon class="grey--text text--lighten-1">info</v-icon>
-	          </v-btn>
-	        </v-list-tile-action>
-	      </v-list-tile>
-	  </v-list>
-	  </v-flex>
-	
-  </v-layout>
-  
-    <v-navigation-drawer left="" persistent="" v-model="showInfo" :disable-route-watcher="true">
-   <v-card flat="" tile=""> 
-       <v-toolbar>
-      <v-card-title>{{ selected &amp;&amp; selected.name }}</v-card-title>
-      <v-spacer></v-spacer>    
-       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+      );
+      const Vuecompile=Vue.extend({template:` 
+ <v-container fluid="">
+    <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+      <span class="white--text">compile</span>      
+    </v-card-title>
+      <v-spacer></v-spacer>
+     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
     </v-toolbar>
-    <v-card-text> Things to do with  </v-card-text>
-    <v-card-actions> 
-           <v-btn flat="" @click="invoke()"><v-icon>run</v-icon>run</v-btn>
-           </v-card-actions>
-    </v-card>
-   </v-navigation-drawer> 
+    <v-card-text>
+      <v-container fluid="">
+        <v-layout row="" wrap="">   
+          <v-flex xs12="">
+            <v-text-field v-model="params.proj" label="vue project to compile"></v-text-field>
+          </v-flex>
+        </v-layout>
+         <v-layout row="" wrap="">
+           <v-flex xs12="">
+            <code>{{code}}</code>
+          </v-flex>
+        </v-layout>
+  
+      </v-container>
+    </v-card-text>
    
+      <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
+      {{ snackbar.msg }}
+      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
+    </v-snackbar>
+  </v-card>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      params:{
+			      proj:"C:/Users/andy/git/vue-poc/src/vue-poc/"
+			 },
+			waiting:false,
+			snackbar:{show:false,msg:"",context:"success"},
+    }
+  },
+  methods:{
+    submit(){
+      this.waiting=true
+      HTTP.post("tasks/vue-compile",Qs.stringify(this.params))
+      .then(r=>{
+        this.waiting=false      
+        this.snackbar={show:true,msg:r.data.msg,context:"success"}
+        console.log(r.data)
+         settings.setItem('tasks/vuecompile',this.params)
+      })
+      .catch(error=>{
+        this.waiting=false
+        this.snackbar={show:true,msg:"Problem",context:"error"}
+        console.log(error);
+      });
+   }
+  },
+   created: function () {
+    settings.getItem('tasks/vuecompile')
+    .then((v)=>{
+      if(v)this.params=v
+    })
+  },
+  computed:{
+    code(){return 'code here'}
+  }
+}
+
+      );
+      const Xqdoc=Vue.extend({template:` 
+ <v-container fluid="">
+    <v-card>
+     <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+      <span class="white--text">Task: Generate <code>xqdoc</code></span>      
+    </v-card-title>
+      <v-spacer></v-spacer>
+     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+    </v-toolbar>
+    <v-card-text>
+      <v-container fluid="">
+        <v-layout row="" wrap="">
+          
+          <v-flex xs12="">
+            <v-text-field v-model="params.efolder" label="Root Folder containing xq files"></v-text-field>
+          </v-flex>
+        
+          <v-flex xs12="">
+            <v-text-field v-model="params.target" label="Path for xqdoc files"></v-text-field>
+          </v-flex>
+        
+        </v-layout>
+  
+      </v-container>
+    </v-card-text>
+   
+     
+    <v-alert success="" v-model="alert.success">
+    {{alert.timestamp}}:{{alert.msg}}
+    </v-alert>
+     <v-alert error="" v-model="alert.error">
+    {{alert.timestamp}}:<code>{{alert.msg}}</code>
+    </v-alert>
+  </v-card>
+  <code>{{code}}</code>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      params:{
+			      efolder:"C:/Users/andy/git/graphxq/src",
+			      target:"C:/tmp/xqdoc/"
+			 },
+			waiting:false,
+			alert:{msg:"",success:false,error:false},
+    }
+  },
+  methods:{
+    submit(){
+      this.waiting=true
+      this.alert={msg:"Loading..",success:false,error:false}
+      HTTP.post("tasks/xqdoc",Qs.stringify(this.params))
+      .then(r=>{
+        this.waiting=false      
+        this.alert={msg:r.data.msg,success:true,error:false}
+        console.log(r.data)
+         settings.setItem('tasks/xqdoc',this.params)
+      })
+      .catch(error=>{
+        this.waiting=false
+        this.alert={msg:error.response.data,success:false,error:true}
+        console.log(error);
+        alert("bad")
+      });
+   }
+  },
+  created: function () {
+    settings.getItem('tasks/xqdoc')
+    .then((v)=>{
+      if(v)this.params=v
+    })
+  },
+  
+  computed:{
+    code(){return 'generate xqdoc'}
+  }
+}
+
+      );
+      const Thumbnail=Vue.extend({template:` 
+ <v-container fluid="">
+ <v-stepper v-model="step" non-linear="">
+  <v-stepper-header>
+      <v-stepper-step step="1" :complete="step > 1">Select image location</v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step step="2" :complete="step > 2">Set thumbnail details</v-stepper-step>
+      <v-divider></v-divider>
+      <v-stepper-step step="3">Result</v-stepper-step>
+    </v-stepper-header>
+  
+  <v-stepper-content step="1" non-linear="">
+    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
+    <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required=""></v-text-field>
+    </v-card>
+        <v-btn primary="" @click="step = 2">Next</v-btn>
+  </v-stepper-content>
+  
+  <v-stepper-content step="2" non-linear="">
+    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
+    <vue-ace editor-id="editorA" :content="taskxml" mode="xml" wrap="true" v-on:change-content="onChange"></vue-ace>
+		</v-card>
+   
+    <v-btn flat="" @click="step -= 1">Back</v-btn>
+    <v-btn primary="" @click="validate()">Validate</v-btn>
+     <v-btn primary="" @click="step = 3">Next</v-btn>  
+  </v-stepper-content>
+
+  <v-stepper-content step="3" non-linear="">
+    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
+    output todo
+    </v-card>
+
+     <v-btn flat="" @click="step -= 1">Back</v-btn>
+     <v-btn primary="" @click="go()">go</v-btn>
+  </v-stepper-content>
+</v-stepper>
+ </v-container>
+ `,
+      
+  data(){
+    return {
+      image:"http://images.metmuseum.org/CRDImages/ep/original/DT46.jpg",
+      step: 0,
+      taskxml:"<task></task>"
+      }
+  },
+  methods:{
+    onChange (val) {
+      if (this.taskxml !== val) this.taskxml = val;
+      },
+    validate(){
+        alert("validate")
+        HTTP.post("thumbnail/validate",Qs.stringify({task: this.taskxml}))
+        .then(r=>{alert("gg")})
+      },
+    go(){
+        alert("post")
+        HTTP.post("thumbnail",Qs.stringify({task: this.taskxml,url:this.image}))
+        .then(function(r){
+          console.log(r)
+       alert("not yet:"+r);
+     })
+      }
+  }
+
+}
+
+      );
+      const Timeline=Vue.extend({template:` 
+ <v-container fluid="">
+ <v-card>
+ <v-toolbar class="lime darken-1">
+	 <v-card-title>Line 1</v-card-title>
+	 <v-spacer></v-spacer>
+	 <v-btn @click="fit">fit</v-btn>
+	 </v-toolbar>
+	 <v-card-text>
+	   <vis-time-line :items="vueState.data1" :events="Events" :options="{editable: true, clickToUse: true}" @select="select"></vis-time-line>
+	 </v-card-text>
+ </v-card>
+ 
+ <v-card>
+ <v-card-text>
+ {{msg}}
+ </v-card-text>
 </v-card>
  </v-container>
  `,
       
-  
-  props:["protocol"],
   data(){
-    return { 
-            url: "", 
-            folders: [],
-            files: [],
-            q: "",
-            busy: false,
-            showInfo: false,
-            selected: null,
-			buttons: [ 
-			    {method: this.todo, icon: "view_quilt"},
-            {method: this.add, icon: "add"},
-			    {method: this.todo, icon: "refresh"},
-			    {method: this.todo, icon: "sort"},
-			    {method: this.todo, icon: "select_all"}     
-],
-selopts: [
-			    {method: this.todo, icon: "delete"},
-			    {method: this.todo, icon: "content_copy"},
-			    {method: this.todo, icon: "content_cut"},
-			    {method: this.todo, icon: "text_format"},
-			    {method: this.todo, icon: "info"},
-			    {method: this.todo, icon: "share"}
-]
-    }
-  },
-  methods:{
-    file (val) {
-   // with query, resulting in /register?plan=private
-      router.push({ path: 'edit', query: { url: this.url+"/"+val,protocol:this.protocol  }})
-    },
-    folder (item) {
-      this.url=this.url+item.name+"/"
-    },
-    load(url){
-      this.busy=true
-      HTTP.get("collection",{params:{url:url,protocol:this.protocol}})
-      .then(r=>{
-        this.folders=r.data.folders
-        this.files=r.data.files
-        this.busy=false
-        })
-        .catch(error=> {
-          console.log(error);
-          this.busy=false
-          alert("Get query error"+url)
-        });
-      
-    },
-  action(b){
-      alert(b.icon)
-      b.method()
-  },
-    add(){
-      alert("add")
-    },
-    setfilter(){
-      console.log("TODO",this.q)
-      this.$router.push({  query: {url:this.url,q:this.q }})
-    },
-    info(item){
-      this.selected=item
-      this.showInfo=true
-    },
-    invoke(){
-      HTTP.post("eval/invoke",Qs.stringify({path:this.url+this.selected.name}))
-      .then(r=>{
-        var job=r.data.job
-        console.log(r.data)
-         this.$router.push({ name: 'jobShow', params: {job:job }})
-      })
-    },
-   todo(){
-		alert("todo")
-     }
-  },
-  computed: {
-   icon(){
-        return (this.protocol=="basexdb")?"developer_mode":"folder"
-      },
-   // array of {name:"that", path:"/this/that/"} for url
-   crumbs(){
-        var parts=this.url.split("/").filter((a)=>a.length>0)
-        var a=parts.map(
-            function(v,i,a){return {name:v,  path:"/"+a.slice(0,i+1).join("/")+"/"}}
-            )
-        return a  
-      }
-  },
-  watch:{
-    url(v){
-      this.$router.push({  query: { url: this.url }})
-      },
-      $route(vnew,vold){
-        //console.log("ROUTE",vnew,vold)    
-        var url=this.$route.query.url
-        this.url=url?url:"/";
-        if(vnew.query.url != vold.query.url) this.load(this.url) 
-      }
-  },
-  created:function(){
-    var url=this.$route.query.url
-    this.url=url?url:"/";
-    this.q=this.$route.query.q || this.q
-    this.load(this.url)
-  }
-}
-
-      );
-      const History=Vue.extend({template:` 
- <v-container fluid="">
-    <v-list>
-            <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar="">
-              <v-list-tile-action>
-               <v-chip v-text="item.protocol">Example Chip</v-chip>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-   </v-list>
- </v-container>
- `,
-      
-  data:  function(){
     return {
-      message: 'Hello Vue.js!',
-      items:[]
-      }
-  },
-  methods:{
-    get() {
-      HTTP.get('history')
-      .then((res) => {
-        this.items = res.data.items;
-        console.log("items",this.items)
-      });
+      vueState: {
+      data1: [
+        { id: 1, content: 'item 1', start: '2013-04-20 23:06:15.304' },
+	      { id: 2, content: 'iso date time', start: '2013-04-14T11:11:15.304' },
+	      { id: 3, content: '[GET] http://localhost:8984/vue-poc/ui/icon.png', start: '2013-04-18', end: '2013-04-19' },
+	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19', className: 'green' },
+	      { id: 5, content: '[GET] http://localhost:8984/vue-poc/ui/app.css', start: '2013-04-25' },
+	      { id: 6, content: 'item 6', start: '2013-04-27' }]
     },
-    doEdit(item){
-      console.log("history: ",item)
-        router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
+    Events: new Vue({}),
+    msg:"Item detail"
     }
+},
+methods:{
+  fit(){
+    this.Events.$emit('fit');
   },
-  created:function(){
-    this.get()
-    console.log("history")
+  select(items){
+    this.msg='Selected items: ' + items
   }
+},
+created(){
+  console.log("timeline")
 }
-
-      );
-      const About=Vue.extend({template:` 
-<v-container>
-<v-parallax src="/vue-poc/ui/vue-poc.png">
-</v-parallax> 
-<v-card>
-
-  <v-card-text>
- 
-<p>
-	This is a experiment in using
-	<code>vue.js</code>
-	.
-</p>
-<ul>
-	<li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
-	<li><a href="https://github.com/monterail/vue-multiselect" target="new">vue-multiselect</a></li>
-	<li><a href="https://github.com/sagalbot/vue-select" target="new"><s>vue-select</s></a></li>
-	<li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
-	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
-	<li><a href="/dba" target="new">DBA app</a></li>
-	 <li> <router-link to="database?url=%2Fvue-poc%2F">DB</router-link></li>
-</ul>
- <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link href="/dba">REPLACED</qd-link> 
-	</v-card-text>
-	</v-card>
-	</v-container>
-	 `,
-      
-  }
-
-      );
-      const Repo=Vue.extend({template:` 
- <v-container fluid="">
-repository todo
- </v-container>
- `,
-      
-  data:  function(){
-    return {
-      message: 'bad route!'
-      }
-  },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
-  }
 }
-
       );
       const Users=Vue.extend({template:` 
  <v-container fluid="">
@@ -2914,74 +3005,6 @@ users todo
     console.log("notfound",this.$route.query.q)
   }
 }
-
-      );
-      const Session=Vue.extend({template:` 
- <v-container fluid="">
-  <v-layout>
-   <v-btn v-on:click="redraw">this.$forceUpdate()</v-btn>
-    <v-btn v-on:click="logout">logout</v-btn>
-   <!-- 
-    <v-autocomplete :items="list" 
-    v-model="fieldValue" 
-    :search.sync="search"
-     label="Suburb" item-text="suburb" 
-    item-value="suburb" 
-    @selected="handleSelected"
-     strict="Unknown">
-<template slot="item" scope="data">
-      <v-list-tile-content>
-        <v-list-tile-title>{{data.item.suburb}}</v-list-tile-title>
-        <template v-if="!data.item.generatedItem">
-          <v-list-tile-sub-title>{{data.item.postcode}} - {{data.item.state}}</v-list-tile-sub-title>
-        </template>
-      </v-list-tile-content>
-    </template>
-</v-autocomplete>
- -->
-  </v-layout>
-   <table class="table">
-      <thead> 
-        <tr>
-          <th>Name</th>
-          <th>value</th>
-          </tr>
-        </thead>
-        <tbody>
-        <tr>
-        <td>created</td><td>{{$auth.created}}</td>
-        </tr>
-        <tr>
-        <td>session</td><td>{{$auth.session}}</td>
-        </tr>
-        <tr>
-        <td>permision</td><td>{{$auth.permission}}</td>
-        </tr>
-        </tbody>
-        </table>
- </v-container>
- `,
-      
-  data:  function(){
-    return {
-      fieldValue:"",
-      list:[],
-      search:"",
-      data:[]    }
-  },
-  methods: {
-    logout(){
-      alert("TODO")
-    },
-    redraw(){
-      this.$forceUpdate()
-    },
-    handleSelected(){
-      
-    }
-  }
-}
-
 
       );
       const router = new VueRouter({
@@ -3005,7 +3028,7 @@ users todo
     { path: '/server/users', component: Users,meta:{title:"Users"} },
     { path: '/server/repo', component: Repo,meta:{title:"Repository"} },
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
-    { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
+    { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
     { path: '/settings', component: Settings, meta:{title:"Settings"} },
     { path: '/acesettings', component: Acesettings, meta:{title:"Editor settings"} },

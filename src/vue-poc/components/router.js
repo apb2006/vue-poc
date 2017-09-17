@@ -19,7 +19,7 @@ const router = new VueRouter({
     { path: '/server/users', component: Users,meta:{title:"Users"} },
     { path: '/server/repo', component: Repo,meta:{title:"Repository"} },
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
-    { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"basexdb"} },
+    { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
     { path: '/settings', component: Settings, meta:{title:"Settings"} },
     { path: '/acesettings', component: Acesettings, meta:{title:"Editor settings"} },
