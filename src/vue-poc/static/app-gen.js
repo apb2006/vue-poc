@@ -1,5 +1,27 @@
-// generated 2017-09-17T22:10:03.752+01:00
-Vue.component('qd-fullscreen',{template:` 
+// generated 2017-09-23T23:02:27.92+01:00
+Vue.component('qd-confirm',{template:` 
+  <v-dialog v-model="showDialog">
+       <v-card>
+       <v-toolbar class="lime darken-1">
+          <v-card-title>Confirm action</v-card-title>
+          </v-toolbar>
+          <v-card-text>Delete all edit text?</v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+          <v-btn v-on:click="$emit('cancel')">Cancel</v-btn>
+          <v-btn v-on:click="$emit('ok')">Ok</v-btn>
+        </v-card-actions>
+        </v-card>
+    </v-dialog>
+ `,
+      
+  data(){
+    return {showDialog:false}
+  },
+}
+
+      );
+      Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
   </a>
@@ -437,7 +459,7 @@ Vue.filter('round', function(value, decimals) {
      </v-btn>  
     <v-toolbar-title>
 		    <v-breadcrumbs>
-				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
+				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}" :exact="true">
 				    {{ item.name }}
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
@@ -721,9 +743,9 @@ Vue.filter('round', function(value, decimals) {
       {{ message }}
       <v-btn flat="" @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-snackbar>
+    
 <v-card>
-
-<v-toolbar class="grey lighten-2 black--text">
+<v-toolbar dense="">
 <v-menu>
   <v-btn primary="" icon="" dark="" slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon>{{icon}}</v-icon></v-btn>
   <v-list>
@@ -738,12 +760,20 @@ Vue.filter('round', function(value, decimals) {
   <v-toolbar-title>
       <span>{{ name }}</span>
   </v-toolbar-title>
-  <v-toolbar-items>
+ 
   <span v-tooltip:top="{ html: 'Changed?' }">
   <v-chip v-if="dirty" label="" small="" class="red white--text">*</v-chip>
 <v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
 </span>
- <v-chip small="" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
+  <v-menu left="" transition="v-fade-transition">
+      <v-chip label="" small="" slot="activator" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
+          <v-list dense="">
+              <v-list-tile v-for="(mode, mimetype) in mimeTypes" :key="mimetype">
+                <v-list-tile-title v-text="mimetype" @click="setMode(mimetype)"></v-list-tile-title>
+              </v-list-tile>           
+          </v-list>         
+   </v-menu>
+ 
      <v-chip @click="acecmd('goToNextError')" v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }">
           <v-avatar class="green ">{{annotations &amp;&amp; annotations.info}}</v-avatar>
           <v-avatar class="yellow ">{{annotations &amp;&amp; annotations.warning}}</v-avatar>        
@@ -801,24 +831,15 @@ Vue.filter('round', function(value, decimals) {
         <v-icon>more_vert</v-icon>
       </v-btn>
      
-          <v-list>
-              <v-list-tile>
-                <v-list-tile-title>unused</v-list-tile-title>
+          <v-list dense="">
+              <v-list-tile v-for="t in mimeTypes" :key="t">
+                <v-list-tile-title v-text="t" @click="setMode(t)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>
           
       </v-menu>
-    </v-toolbar-items>
-     <v-dialog v-model="clearDialog">
-       <v-card>
-		      <v-card-title>Clear?</v-card-title>
-		      <v-card-text>clear text.</v-card-text>
-		    <v-card-actions>
-		      <v-btn class="green--text darken-1" flat="flat" @click="reset(false)">Cancel</v-btn>
-		      <v-btn class="green--text darken-1" flat="flat" @click="reset(true)">Ok</v-btn>
-		    </v-card-actions>
-		    </v-card>
-		</v-dialog>
+    
+     
  </v-toolbar>
    <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
 
@@ -829,7 +850,19 @@ Vue.filter('round', function(value, decimals) {
  </v-flex> 
 </v-card-text>
 </v-card>
-  
+  <v-dialog v-model="clearDialog">
+       <v-card>
+       <v-toolbar class="lime darken-1">
+          <v-card-title>Confirm action</v-card-title>
+          </v-toolbar>
+          <v-card-text>Delete all edit text?</v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+          <v-btn @click="reset(false)">Cancel</v-btn>
+          <v-btn @click="reset(true)">Ok</v-btn>
+        </v-card-actions>
+        </v-card>
+    </v-dialog>
  </v-container>
  `,
       
@@ -853,18 +886,8 @@ Vue.filter('round', function(value, decimals) {
       message: "Cant do that",
       events:  new Vue({}),
       folded: false, // toggle fold/unfold action
-      mimemap:{
-          "text/xml":"xml",
-          "application/xml":"xml",
-          "application/xquery":"xquery",
-          "text/ecmascript":"javascript",
-          "application/sparql-query":"sparql",
-          "text/html":"html",
-          "text/turtle":"turtle",
-          "text/css":"css",
-          "image/svg+xml":"svg"
-      },
-      aceSettings: { }
+      aceSettings: { },
+      mimeTypes:MimeTypes
     }
   },
   methods: {
@@ -891,8 +914,7 @@ Vue.filter('round', function(value, decimals) {
       HTTP.get("edit",{params: {url:url,protocol:this.protocol}})
       .then(r=>{
         //console.log(r)
-        this.mimetype=r.data.mimetype
-        this.mode=this.acetype(r.data.mimetype)
+        this.setMode(r.data.mimetype)
         this.contentA=r.data.data
        
         this.busy=false
@@ -960,9 +982,10 @@ Vue.filter('round', function(value, decimals) {
       this.annotations=counts
       //console.log("annotations: ",counts)
     },
-    acetype(mime){
-      var r=this.mimemap[mime]
-      return r?r:"text"
+    setMode(mimetype){
+      this.mimetype=mimetype
+      var r=MimeTypes[mimetype]
+      this.mode=r?r:"text"
     },
     onResize(){
       var h=window.innerHeight
@@ -3145,7 +3168,6 @@ router.beforeEach((to, from, next) => {
         children: [
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
-      {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/history',text: 'history',icon: 'history'}
       ]},
       {
@@ -3153,7 +3175,8 @@ router.beforeEach((to, from, next) => {
         text: 'Actions' ,
         model: false,
         children: [
-      {href: '/eval',text: 'Query',icon: 'play_circle_outline'},      
+      {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
+      {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
       {
@@ -3257,9 +3280,7 @@ router.beforeEach((to, from, next) => {
 
       );
       // base -----------------------
-localforage.config({
-  name: 'vuepoc'
-});
+
 const AXIOS_CONFIG={
     baseURL: "/vue-poc/api/",
     headers: {
@@ -3277,6 +3298,7 @@ const HTTP = axios.create(AXIOS_CONFIG);
 const HTTPNE = axios.create(AXIOS_CONFIG);
 const axios_json={ headers: {accept: 'application/json'}};
 
+// Authorization Object
 const Auth={
     user:"guest",
     permission:null,
@@ -3287,7 +3309,23 @@ const Auth={
 };
 Vue.use(Auth);
 
-// read and write settings 
+// Mimetype info
+const MimeTypes={
+      "text/xml":"xml",
+      "application/xml":"xml",
+      "application/xquery":"xquery",
+      "text/ecmascript":"javascript",
+      "application/sparql-query":"sparql",
+      "text/html":"html",
+      "text/turtle":"turtle",
+      "text/css":"css",
+      "image/svg+xml":"svg"
+};
+
+// Settings read and write list clear
+localforage.config({
+  name: 'vuepoc'
+});
 // https://vuejs.org/v2/guide/state-management.html
 var settings = {
     debug: false,
@@ -3383,5 +3421,6 @@ const Fullscreen={
     })  }
 };
 Vue.use(Fullscreen);
+
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')

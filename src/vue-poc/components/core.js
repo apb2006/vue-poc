@@ -1,7 +1,5 @@
 // base -----------------------
-localforage.config({
-  name: 'vuepoc'
-});
+
 const AXIOS_CONFIG={
     baseURL: "/vue-poc/api/",
     headers: {
@@ -19,6 +17,7 @@ const HTTP = axios.create(AXIOS_CONFIG);
 const HTTPNE = axios.create(AXIOS_CONFIG);
 const axios_json={ headers: {accept: 'application/json'}};
 
+// Authorization Object
 const Auth={
     user:"guest",
     permission:null,
@@ -29,7 +28,23 @@ const Auth={
 };
 Vue.use(Auth);
 
-// read and write settings 
+// Mimetype info
+const MimeTypes={
+      "text/xml":"xml",
+      "application/xml":"xml",
+      "application/xquery":"xquery",
+      "text/ecmascript":"javascript",
+      "application/sparql-query":"sparql",
+      "text/html":"html",
+      "text/turtle":"turtle",
+      "text/css":"css",
+      "image/svg+xml":"svg"
+};
+
+// Settings read and write list clear
+localforage.config({
+  name: 'vuepoc'
+});
 // https://vuejs.org/v2/guide/state-management.html
 var settings = {
     debug: false,
@@ -125,5 +140,6 @@ const Fullscreen={
     })  }
 };
 Vue.use(Fullscreen);
+
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')

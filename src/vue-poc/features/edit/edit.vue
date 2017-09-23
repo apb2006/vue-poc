@@ -5,9 +5,9 @@
       {{ message }}
       <v-btn flat  @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-snackbar>
+    
 <v-card>
-
-<v-toolbar class="grey lighten-2 black--text">
+<v-toolbar dense>
 <v-menu >
   <v-btn primary icon dark slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon >{{icon}}</v-icon></v-btn>
   <v-list>
@@ -22,12 +22,20 @@
   <v-toolbar-title >
       <span >{{ name }}</span>
   </v-toolbar-title>
-  <v-toolbar-items>
+ 
   <span v-tooltip:top="{ html: 'Changed?' }">
   <v-chip v-if="dirty" label small class="red white--text">*</v-chip>
 <v-chip  v-if="!dirty" label small class="green white--text">.</v-chip>
 </span>
- <v-chip small  v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
+  <v-menu left  transition="v-fade-transition">
+      <v-chip label small slot="activator" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
+          <v-list dense>
+              <v-list-tile v-for="(mode, mimetype) in mimeTypes"  :key="mimetype">
+                <v-list-tile-title v-text="mimetype" @click="setMode(mimetype)"></v-list-tile-title>
+              </v-list-tile>           
+          </v-list>         
+   </v-menu>
+ 
      <v-chip   @click="acecmd('goToNextError')"
           v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }"
            >
@@ -87,24 +95,15 @@
         <v-icon>more_vert</v-icon>
       </v-btn>
      
-          <v-list>
-              <v-list-tile>
-                <v-list-tile-title >unused</v-list-tile-title>
+          <v-list dense>
+              <v-list-tile v-for="t in mimeTypes"  :key="t">
+                <v-list-tile-title v-text="t" @click="setMode(t)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>
           
       </v-menu>
-    </v-toolbar-items>
-     <v-dialog v-model="clearDialog" >
-       <v-card>
-		      <v-card-title>Clear?</v-card-title>
-		      <v-card-text>clear text.</v-card-text>
-		    <v-card-actions>
-		      <v-btn class="green--text darken-1" flat="flat" @click="reset(false)">Cancel</v-btn>
-		      <v-btn class="green--text darken-1" flat="flat" @click="reset(true)">Ok</v-btn>
-		    </v-card-actions>
-		    </v-card>
-		</v-dialog>
+    
+     
  </v-toolbar>
    <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
 
@@ -118,7 +117,19 @@ v-on:annotation="annotation"></vue-ace>
  </v-flex> 
 </v-card-text>
 </v-card>
-  
+  <v-dialog v-model="clearDialog" >
+       <v-card >
+       <v-toolbar class="lime darken-1">
+          <v-card-title>Confirm action</v-card-title>
+          </v-toolbar>
+          <v-card-text>Delete all edit text?</v-card-text>
+        <v-card-actions>
+        <v-spacer></v-spacer>
+          <v-btn  @click="reset(false)">Cancel</v-btn>
+          <v-btn   @click="reset(true)">Ok</v-btn>
+        </v-card-actions>
+        </v-card>
+    </v-dialog>
  </v-container>
 </template>
 
@@ -143,18 +154,8 @@ v-on:annotation="annotation"></vue-ace>
       message: "Cant do that",
       events:  new Vue({}),
       folded: false, // toggle fold/unfold action
-      mimemap:{
-          "text/xml":"xml",
-          "application/xml":"xml",
-          "application/xquery":"xquery",
-          "text/ecmascript":"javascript",
-          "application/sparql-query":"sparql",
-          "text/html":"html",
-          "text/turtle":"turtle",
-          "text/css":"css",
-          "image/svg+xml":"svg"
-      },
-      aceSettings: { }
+      aceSettings: { },
+      mimeTypes:MimeTypes
     }
   },
   methods: {
@@ -181,8 +182,7 @@ v-on:annotation="annotation"></vue-ace>
       HTTP.get("edit",{params: {url:url,protocol:this.protocol}})
       .then(r=>{
         //console.log(r)
-        this.mimetype=r.data.mimetype
-        this.mode=this.acetype(r.data.mimetype)
+        this.setMode(r.data.mimetype)
         this.contentA=r.data.data
        
         this.busy=false
@@ -250,9 +250,10 @@ v-on:annotation="annotation"></vue-ace>
       this.annotations=counts
       //console.log("annotations: ",counts)
     },
-    acetype(mime){
-      var r=this.mimemap[mime]
-      return r?r:"text"
+    setMode(mimetype){
+      this.mimetype=mimetype
+      var r=MimeTypes[mimetype]
+      this.mode=r?r:"text"
     },
     onResize(){
       var h=window.innerHeight

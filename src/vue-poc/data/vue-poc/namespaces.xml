@@ -42,4 +42,24 @@
 		<description>Scalable Vector Graphics namespace
 		</description>
 	</namespace>
+	
+	<namespace uri="http://docbook.org/ns/docbook" prefix="d">
+		<description>Docbook
+		</description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/1998/Math/MathML" prefix="mml">
+		<description>Math ML
+		</description>
+	</namespace>
+	
+	<namespace uri="http://www.vraweb.org/vracore4.htm" prefix="vra">
+		<description>Visual Resources Association
+		</description>
+	</namespace>
+	
+	<namespace uri="http://purl.oclc.org/dsdl/schematron" prefix="sch">
+		<description>Schematron
+		</description>
+	</namespace>
 </namespaces>

@@ -10,7 +10,8 @@
      </v-btn>  
     <v-toolbar-title>
 		    <v-breadcrumbs>
-				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}">
+				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" 
+				    :to="{ query: { url:  item.path }}" :exact="true">
 				    {{ item.name }}
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>

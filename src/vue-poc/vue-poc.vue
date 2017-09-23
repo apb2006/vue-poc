@@ -78,7 +78,6 @@
         children: [
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
-      {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/history',text: 'history',icon: 'history'}
       ]},
       {
@@ -86,7 +85,8 @@
         text: 'Actions' ,
         model: false,
         children: [
-      {href: '/eval',text: 'Query',icon: 'play_circle_outline'},      
+      {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
+      {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
       {
