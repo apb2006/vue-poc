@@ -71,7 +71,7 @@
          
     </v-card-actions>
     <v-card-text v-if="showError">
-     <v-alert error v-model="showError">Error </v-alert>
+     <v-alert color="error" v-model="showError">Error </v-alert>
     </v-card-text>
      <v-card-text v-if="showResult">
      <v-flex xs12 style="height:200px"  fill-height>

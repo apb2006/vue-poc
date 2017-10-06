@@ -19,8 +19,12 @@
    <v-btn v-if="clipboard" @click="clipboard=null" icon><v-icon>content_paste</v-icon></v-btn>
     <v-spacer></v-spacer>
      <v-btn v-if="selection.length"  @click="selectNone">S: {{selection.length}}</v-btn>
+     
  <v-text-field v-if="!selection.length" prepend-icon="search" label="Filter..." v-model="q" type="search"
-   hide-details single-line  @keyup.enter="setfilter"></v-text-field>
+   hide-details single-line  @keyup.enter="setfilter"
+   :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   
+ 
     <v-toolbar-items v-if="!selection.length">
     
    <v-btn icon v-for="b in buttons" :key="b.icon" @click="action(b)">
@@ -65,7 +69,7 @@
 	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" 
 	      v-model="item.selected" @click="folder(item)" avatar >
 	        <v-list-tile-avatar   @click.prevent.stop="item.selected =! item.selected ">
-	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
+	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
 	        <v-list-tile-content  >
 	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
@@ -84,7 +88,7 @@
 	        </v-subheader> 
 	      <v-list-tile v-for="item in xfiles" v-bind:key="item.name" >
 	        <v-list-tile-avatar avatar  @click.prevent.stop="item.selected =! item.selected ">
-	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
+	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
 	        <v-list-tile-content @click="file(item.name)">
 	          <v-list-tile-title >{{ item.name }}</v-list-tile-title>
@@ -127,10 +131,11 @@
     return { 
             url: "", 
             items: [],
-            q: "",
+            q: null,
             busy: false,
             showInfo: false,
             clipboard: null,
+          
 						buttons: [ 
 						    {method: this.todo, icon: "view_quilt"},
 			          {method: this.add, icon: "add"},
@@ -162,6 +167,7 @@
       HTTP.get("collection",{params:{url:url,protocol:this.protocol}})
       .then(r=>{
         this.items=r.data.items
+        this.q=null
         this.busy=false
         })
         .catch(error=> {
@@ -170,6 +176,9 @@
           alert("Get query error"+url)
         });
       
+    },
+    clearq(){
+      this.q=null
     },
 	  action(b){
 	      b.method(b.icon)
@@ -198,6 +207,9 @@
    todo(icon){
       alert("todo: " + icon)
      },
+   itemClass(item){
+       return (item.selected)?"blue--text text--darken-2":""
+     }, 
    itemIcon(item){
        if(item.selected) return "check_circle"
        else return (item.type=="folder")?"folder":"insert_drive_file"
@@ -214,10 +226,10 @@
         return (this.protocol=="xmldb")?"developer_mode":"folder"
       },
    xfiles(){
-        return this.items.filter(item=>{return item.type!="folder"})
+        return this.items.filter(item=>{return item.type!="folder" &&((!this.q) || item.name.includes(this.q))})
       },
    xfolders(){
-        return this.items.filter(item=>{return item.type=="folder"})
+        return this.items.filter(item=>{return item.type=="folder" &&((!this.q) || item.name.includes(this.q))})
       },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){

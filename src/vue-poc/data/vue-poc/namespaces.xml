@@ -62,4 +62,9 @@
 		<description>Schematron
 		</description>
 	</namespace>
+	
+	<namespace uri="http://www.opengis.net/kml/2.2" prefix="kml">
+    <description>Geo 
+    </description>
+  </namespace>
 </namespaces>

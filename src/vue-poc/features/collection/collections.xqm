@@ -39,6 +39,7 @@ declare
 function vue-api:file($url as xs:string,$protocol as xs:string)
 as element(json)   
 {
+   let $_:=trace($protocol,"proto:")
    let $reader:=map{
               "webfile":ufile:webfile#1,
               "xmldb":ufile:xmldb#1

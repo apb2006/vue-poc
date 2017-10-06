@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="vuepoc">
  <v-app id="app" :dark="dark" @theme="onDark">
- <v-navigation-drawer persistent  :mini-variant.sync="mini" v-model="drawer"  
+ <v-navigation-drawer persistent app :mini-variant.sync="mini" v-model="drawer"  
  :disable-route-watcher="true"  class="grey lighten-4 pb-0">
   <v-list class="pa-0">
 
@@ -25,9 +25,14 @@
     <qd-navlist  :items="items"></qd-navlist>
  </v-navigation-drawer>
   
- <v-toolbar class="indigo" dark >
+ <v-toolbar class="indigo" app dark >
   <v-toolbar-side-icon @click.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down" >{{$route.meta.title}}</v-toolbar-title>
+  <v-spacer></v-spacer>
+  <v-btn @click="favorite" icon flat title="Save location">
+       <v-icon>favorite</v-icon>
+   </v-btn>
+  
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.enter="search"></v-text-field>
@@ -48,15 +53,20 @@
           </v-list>
       </v-menu>
       <qd-fullscreen></qd-fullscreen>
+       <v-btn  @click="notifications" icon flat title="Notifications">
+       <v-icon>notifications</v-icon>
+   </v-btn>
 </v-toolbar>
- <main> 
- <v-alert error value="true" dismissible v-model="alert.show">
+ <main>
+ <v-content> 
+ <v-alert color="error" value="true" dismissible v-model="alert.show">
       <pre style="overflow:auto;">{{ alert.msg }}</pre>
     </v-alert>   
-      <transition name="fade" mode="out-in">
-        <router-view class="view ma-3"></router-view>
-        </transition>
-     </main>
+    <transition name="fade" mode="out-in">
+      <router-view class="view ma-3"></router-view>
+      </transition>
+  </v-content>
+  </main>
 </v-app>
 </template>
 
@@ -109,6 +119,8 @@
           {href: '/images/keywords',text: 'Keywords',icon: 'label'},
           {href: '/images/dates',text: 'Date taken',icon: 'date_range'},
           {href: '/images/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
+          {href: '/images/people',text: 'People',icon: 'people'},
+          {href: '/map',text: 'Map',icon: 'place'}, 
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
       {
@@ -119,7 +131,7 @@
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}, 
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},
       {href: '/timeline',text: 'Time line',icon: 'timelapse'}
       ]},
       
@@ -147,6 +159,12 @@
       onDark(dark){
         this.dark=dark
         alert("theme")
+      },
+      favorite(){
+        alert("@TODO")
+      },
+      notifications(){
+        alert("@TODO")
       }
   },
 

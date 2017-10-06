@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="search">
  <v-container fluid>
- <v-alert warning value="true">Not finished</v-alert>
+ <v-alert color="warning" value="true">Not finished</v-alert>
  <v-text-field  label="Search..." v-model="q" v-on:keyup="send"></v-text-field> 
   <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
   <v-layout>

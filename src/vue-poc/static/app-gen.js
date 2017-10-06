@@ -1,4 +1,4 @@
-// generated 2017-09-23T23:02:27.92+01:00
+// generated 2017-10-06T15:15:26.236+01:00
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="showDialog">
        <v-card>
@@ -467,7 +467,10 @@ Vue.filter('round', function(value, decimals) {
    <v-btn v-if="clipboard" @click="clipboard=null" icon=""><v-icon>content_paste</v-icon></v-btn>
     <v-spacer></v-spacer>
      <v-btn v-if="selection.length" @click="selectNone">S: {{selection.length}}</v-btn>
- <v-text-field v-if="!selection.length" prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter"></v-text-field>
+     
+ <v-text-field v-if="!selection.length" prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   
+ 
     <v-toolbar-items v-if="!selection.length">
     
    <v-btn icon="" v-for="b in buttons" :key="b.icon" @click="action(b)">
@@ -511,7 +514,7 @@ Vue.filter('round', function(value, decimals) {
 	     </v-subheader>
 	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" v-model="item.selected" @click="folder(item)" avatar="">
 	        <v-list-tile-avatar @click.prevent.stop="item.selected =! item.selected ">
-	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
+	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
 	        <v-list-tile-content>
 	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
@@ -530,7 +533,7 @@ Vue.filter('round', function(value, decimals) {
 	        </v-subheader> 
 	      <v-list-tile v-for="item in xfiles" v-bind:key="item.name">
 	        <v-list-tile-avatar avatar="" @click.prevent.stop="item.selected =! item.selected ">
-	          <v-icon v-bind:class="[item.iconClass]">{{ itemIcon(item) }}</v-icon>
+	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
 	        <v-list-tile-content @click="file(item.name)">
 	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
@@ -572,10 +575,11 @@ Vue.filter('round', function(value, decimals) {
     return { 
             url: "", 
             items: [],
-            q: "",
+            q: null,
             busy: false,
             showInfo: false,
             clipboard: null,
+          
 						buttons: [ 
 						    {method: this.todo, icon: "view_quilt"},
 			          {method: this.add, icon: "add"},
@@ -607,6 +611,7 @@ Vue.filter('round', function(value, decimals) {
       HTTP.get("collection",{params:{url:url,protocol:this.protocol}})
       .then(r=>{
         this.items=r.data.items
+        this.q=null
         this.busy=false
         })
         .catch(error=> {
@@ -615,6 +620,9 @@ Vue.filter('round', function(value, decimals) {
           alert("Get query error"+url)
         });
       
+    },
+    clearq(){
+      this.q=null
     },
 	  action(b){
 	      b.method(b.icon)
@@ -643,6 +651,9 @@ Vue.filter('round', function(value, decimals) {
    todo(icon){
       alert("todo: " + icon)
      },
+   itemClass(item){
+       return (item.selected)?"blue--text text--darken-2":""
+     }, 
    itemIcon(item){
        if(item.selected) return "check_circle"
        else return (item.type=="folder")?"folder":"insert_drive_file"
@@ -659,10 +670,10 @@ Vue.filter('round', function(value, decimals) {
         return (this.protocol=="xmldb")?"developer_mode":"folder"
       },
    xfiles(){
-        return this.items.filter(item=>{return item.type!="folder"})
+        return this.items.filter(item=>{return item.type!="folder" &&((!this.q) || item.name.includes(this.q))})
       },
    xfolders(){
-        return this.items.filter(item=>{return item.type=="folder"})
+        return this.items.filter(item=>{return item.type=="folder" &&((!this.q) || item.name.includes(this.q))})
       },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
@@ -739,15 +750,17 @@ Vue.filter('round', function(value, decimals) {
       );
       const Edit=Vue.extend({template:` 
 <v-container fluid="">
-      <v-snackbar top="" error="" v-model="snackbar">
+      <v-snackbar top="" color="error" v-model="snackbar">
       {{ message }}
       <v-btn flat="" @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-snackbar>
     
 <v-card>
 <v-toolbar dense="">
-<v-menu>
-  <v-btn primary="" icon="" dark="" slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon>{{icon}}</v-icon></v-btn>
+<v-tooltip top="">
+<v-menu slot="activator">
+
+  <v-btn primary="" icon="" dark="" slot="activator"><v-icon>{{icon}}</v-icon></v-btn>
   <v-list>
       <v-list-tile v-for="item in path" :key="item">
         <v-list-tile-content @click="showfiles()">
@@ -756,32 +769,42 @@ Vue.filter('round', function(value, decimals) {
       </v-list-tile>
   </v-list>
 </v-menu>
-
+<span>{{ path.join('/') }}</span>
+</v-tooltip>
   <v-toolbar-title>
       <span>{{ name }}</span>
   </v-toolbar-title>
- 
-  <span v-tooltip:top="{ html: 'Changed?' }">
+  <v-tooltip top="">
+  <span slot="activator">
   <v-chip v-if="dirty" label="" small="" class="red white--text">*</v-chip>
 <v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
 </span>
-  <v-menu left="" transition="v-fade-transition">
-      <v-chip label="" small="" slot="activator" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
+<span>Changed?</span>
+</v-tooltip>
+
+<v-tooltip top="">
+  <v-menu left="" transition="v-fade-transition" slot="activator">
+      <v-chip label="" small="" slot="activator">{{ mode }}</v-chip>
           <v-list dense="">
               <v-list-tile v-for="(mode, mimetype) in mimeTypes" :key="mimetype">
                 <v-list-tile-title v-text="mimetype" @click="setMode(mimetype)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
    </v-menu>
- 
-     <v-chip @click="acecmd('goToNextError')" v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }">
+   <span v-text="mimetype"></span>
+   </v-tooltip>
+   
+  <v-tooltip top="">
+     <v-chip @click="acecmd('goToNextError')" slot="activator">
           <v-avatar class="green ">{{annotations &amp;&amp; annotations.info}}</v-avatar>
           <v-avatar class="yellow ">{{annotations &amp;&amp; annotations.warning}}</v-avatar>        
           <v-avatar class="red " small="">{{annotations &amp;&amp; annotations.error}}</v-avatar>    
            <v-avatar>
               <v-icon black="">navigate_next</v-icon>
            </v-avatar>
-          </v-chip>
+      </v-chip>
+      <span>Annotations: Errors,Warning and Info</span>
+   </v-tooltip>
 <v-spacer></v-spacer>
    <v-btn icon="" @click="acecmd('outline')" title="outline -todo">
       <v-icon>star</v-icon>
@@ -1096,7 +1119,7 @@ Vue.filter('round', function(value, decimals) {
          
     </v-card-actions>
     <v-card-text v-if="showError">
-     <v-alert error="" v-model="showError">Error </v-alert>
+     <v-alert color="error" v-model="showError">Error </v-alert>
     </v-card-text>
      <v-card-text v-if="showResult">
      <v-flex xs12="" style="height:200px" fill-height="">
@@ -1416,11 +1439,12 @@ Vue.filter('round', function(value, decimals) {
       <v-toolbar class="green white--text">
       <v-btn @click.stop="showFilter = true" icon=""><v-icon>search</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
-              
-        <v-btn @click="clear" icon="" v-tooltip:top="{ html: 'Clear search' }" v-if="query.keyword || query.from || query.until">
+        <v-tooltip top="" v-if="query.keyword || query.from || query.until">      
+        <v-btn @click="clear" icon="" slot="activator">
             <v-icon>clear</v-icon>
            </v-btn>
-          
+         <span>Clear search</span>
+         </v-tooltip> 
            <v-spacer></v-spacer>
            <span v-if="!busy">
            <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
@@ -1440,7 +1464,8 @@ Vue.filter('round', function(value, decimals) {
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
               <v-card class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)" @dblclick="go(image)" height="80px" contain=""></v-card-media>
-                 <v-card-actions v-tooltip:top="{ html:  ' '+image.path }">
+                <v-tooltip top="">
+                 <v-card-actions slot="activator">
               
                 <v-btn icon="" small="">
                   <v-icon>favorite</v-icon>
@@ -1453,6 +1478,8 @@ Vue.filter('round', function(value, decimals) {
                   <v-icon>share</v-icon>
                 </v-btn>
               </v-card-actions>
+              <span v-text="image.path"></span>
+              </v-tooltip>
               </v-card>
             </v-flex>
           </v-layout>
@@ -1467,7 +1494,7 @@ Vue.filter('round', function(value, decimals) {
           </v-toolbar>
           
         <v-card-text>    
-         <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" autocomplete="">
+         <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" autocomplete="" clearable="">
              <template slot="item" scope="data">
                   <v-list-tile-content>
                     <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
@@ -1506,6 +1533,9 @@ Vue.filter('round', function(value, decimals) {
             </template>
           </v-date-picker>
           </v-menu>
+        
+            <v-checkbox :value="location.value" :indeterminate="location.use" @click="cyclelocation" label="With location:"></v-checkbox>
+        
         </v-card-text>
         
         <v-card-actions>
@@ -1545,11 +1575,15 @@ Vue.filter('round', function(value, decimals) {
     showUntil: false,
     keywords: [],
     showInfo: false,
-    selitem: "TODO"
+    selitem: "TODO",
+    location: {use:false,value:true}
   }),
   methods:{
     src(item){
         return "data:image/jpeg;base64,"+item.data
+    },
+    cyclelocation(){
+      this.location.use=!this.location.use
     },
     getImages(){
       this.busy=true
@@ -1722,6 +1756,29 @@ body
   }
 }
       );
+      const People=Vue.extend({template:` 
+ <v-container fluid="">
+  <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+     <v-chip>todo</v-chip>   
+    </v-card-title>
+   
+    <v-spacer></v-spacer> 
+  
+    </v-toolbar>
+    <v-card-text>
+people
+ </v-card-text>
+ </v-card>
+ </v-container>
+ `,
+        
+ 
+    }
+
+      );
       const Job=Vue.extend({template:` 
   <v-card>
    <v-toolbar light="">
@@ -1890,7 +1947,7 @@ body
       <v-card-title class="green darken-1">
         <span class="white--text">Login</span>
       </v-card-title>
-    <v-alert error="" v-bind:value="showMessage">
+    <v-alert color="error" v-bind:value="showMessage">
       {{message}}
     </v-alert>
      <v-card-actions>
@@ -1947,6 +2004,34 @@ body
 }
 
       );
+      const Map=Vue.extend({template:` 
+ <v-container fluid="">
+     <v-layout row="" wrap="">
+      <v-flex xs12="" style="height:400px">
+     <v-map :zoom="zoom" :center="center">
+      <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
+      <v-marker :lat-lng="marker"></v-marker>
+    </v-map>
+    </v-flex>
+    </v-layout>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      zoom: 13,
+      center: [54.320498718, -2.739663708],
+      url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      marker: L.latLng(54.320498718, -2.739663708)
+    }
+  },
+  created:function(){
+    console.log("map")
+  }
+}
+
+      );
       const Ping=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
@@ -1956,12 +2041,13 @@ body
  <v-btn @click="reset()">Reset</v-btn>
  </v-toolbar>
  <v-card-text>
-  <p>Read or increment a database value.</p>
+  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
   <p>Counter:{{counter}}</p>
   <table class="table">
       <thead> 
         <tr>
-          <th>Option</th>
+         <th>Action</th>
+          <th>Once</th>
           <th>Repeat</th>
           <th>Last</th>
           <th>Count</th>
@@ -1975,13 +2061,17 @@ body
 
       
           <tr>
+              <td>Get</td>
               <td>
-                   <v-btn @click="get()">Get count</v-btn>
+               <v-btn @click="get()" icon="">
+                   <v-icon>cached</v-icon>
+                </v-btn>
+             
                </td>
                <td>
-                <v-switch v-model="repeat.get"></v-switch>
+                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
 
-        </td>    
+             </td>    
               <td>
                   <span>{{getValues.last}}</span>
               </td>
@@ -2005,12 +2095,15 @@ body
           </tr>
           
             <tr>
+             <td>Update</td>
           <td>
-             <v-btn @click="update()">Update count</v-btn>
+           <v-btn @click="update()" icon="">
+                   <v-icon>cached</v-icon>
+            </v-btn>
           </td>
           
           <td>
-           <v-switch v-model="repeat.post"></v-switch>
+           <v-switch v-on:change="pchange" v-model="repeat.post"></v-switch>
           </td>
            <td class="col-md-1">
                         <span>{{postValues.last}}</span>
@@ -2077,6 +2170,12 @@ body
           this.get(); //does this leak??
         }
      })
+    },
+    gchange(v){
+      if(v)this.get() 
+    },
+    pchange(v){
+      if(v)this.update() 
     },
     reset(){
       Object.assign(this.getValues,this.getValues.clear());
@@ -2186,7 +2285,7 @@ repository todo
       );
       const Search=Vue.extend({template:` 
  <v-container fluid="">
- <v-alert warning="" value="true">Not finished</v-alert>
+ <v-alert color="warning" value="true">Not finished</v-alert>
  <v-text-field label="Search..." v-model="q" v-on:keyup="send"></v-text-field> 
   <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
   <v-layout>
@@ -2406,7 +2505,7 @@ repository todo
   <v-layout row="">
     <v-flex xs12="" sm8="" offset-sm2="">
       <v-card>
-        <v-alert warning="" value="true">Not fully implemented</v-alert>
+        <v-alert color="warning" value="true">Not fully implemented</v-alert>
       
       <v-container fluid="">
         <v-layout row="">
@@ -2717,11 +2816,7 @@ repository todo
       
   data(){
     return {
-      tasks: [
-       {to: "tasks/model", text: "model"},
-       {to: "tasks/xqdoc", text: "xqdoc"},
-       {to: "tasks/vuecompile", text: "vue compile"}
-      ],
+      tasks: [],      
       snackbar: false
       }
   },
@@ -2730,6 +2825,7 @@ repository todo
         HTTP.get("tasks/list")
         .then(r=>{
 		   this.snackbar=true
+		   this.tasks=r.data
        })
     }
    },
@@ -2845,10 +2941,10 @@ repository todo
     </v-card-text>
    
      
-    <v-alert success="" v-model="alert.success">
+    <v-alert color="success" v-model="alert.success">
     {{alert.timestamp}}:{{alert.msg}}
     </v-alert>
-     <v-alert error="" v-model="alert.error">
+     <v-alert color="error" v-model="alert.error">
     {{alert.timestamp}}:<code>{{alert.msg}}</code>
     </v-alert>
   </v-card>
@@ -2908,7 +3004,7 @@ repository todo
       <v-divider></v-divider>
       <v-stepper-step step="3">Result</v-stepper-step>
     </v-stepper-header>
-  
+  <v-stepper-items>
   <v-stepper-content step="1" non-linear="">
     <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
     <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required=""></v-text-field>
@@ -2934,6 +3030,7 @@ repository todo
      <v-btn flat="" @click="step -= 1">Back</v-btn>
      <v-btn primary="" @click="go()">go</v-btn>
   </v-stepper-content>
+  </v-stepper-items>
 </v-stepper>
  </v-container>
  `,
@@ -3039,6 +3136,7 @@ users todo
   routes: [
     { path: '/', component: Home, meta:{title:"Home"} },
     { path: '/session', component: Session ,meta: {title:"Session"}},
+    
     {path: '/images', redirect: '/images/item' },
     { path: '/images/item', name:'images', component: Images, meta:{title: "Images"} },
     { path: '/images/report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
@@ -3046,6 +3144,8 @@ users todo
     { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
     { path: '/images/keywords', component: Keywords, meta:{title:"Image keywords"} },
     { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
+    { path: '/images/people', component: People, meta:{title:"Image people"} },
+    
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -3069,6 +3169,7 @@ users todo
     { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
+    { path: '/map', component: Map,meta:{title:"map"} },
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
@@ -3094,7 +3195,7 @@ router.beforeEach((to, from, next) => {
   }
 });const Vuepoc=Vue.extend({template:` 
  <v-app id="app" :dark="dark" @theme="onDark">
- <v-navigation-drawer persistent="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" class="grey lighten-4 pb-0">
+ <v-navigation-drawer persistent="" app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" class="grey lighten-4 pb-0">
   <v-list class="pa-0">
 
           <v-list-tile avatar="" tag="div">
@@ -3117,9 +3218,14 @@ router.beforeEach((to, from, next) => {
     <qd-navlist :items="items"></qd-navlist>
  </v-navigation-drawer>
   
- <v-toolbar class="indigo" dark="">
+ <v-toolbar class="indigo" app="" dark="">
   <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
+  <v-spacer></v-spacer>
+  <v-btn @click="favorite" icon="" flat="" title="Save location">
+       <v-icon>favorite</v-icon>
+   </v-btn>
+  
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
    <v-menu left="" transition="v-fade-transition">
@@ -3139,15 +3245,20 @@ router.beforeEach((to, from, next) => {
           </v-list>
       </v-menu>
       <qd-fullscreen></qd-fullscreen>
+       <v-btn @click="notifications" icon="" flat="" title="Notifications">
+       <v-icon>notifications</v-icon>
+   </v-btn>
 </v-toolbar>
- <main> 
- <v-alert error="" value="true" dismissible="" v-model="alert.show">
+ <main>
+ <v-content> 
+ <v-alert color="error" value="true" dismissible="" v-model="alert.show">
       <pre style="overflow:auto;">{{ alert.msg }}</pre>
     </v-alert>   
-      <transition name="fade" mode="out-in">
-        <router-view class="view ma-3"></router-view>
-        </transition>
-     </main>
+    <transition name="fade" mode="out-in">
+      <router-view class="view ma-3"></router-view>
+      </transition>
+  </v-content>
+  </main>
 </v-app>
  `,
       
@@ -3199,6 +3310,8 @@ router.beforeEach((to, from, next) => {
           {href: '/images/keywords',text: 'Keywords',icon: 'label'},
           {href: '/images/dates',text: 'Date taken',icon: 'date_range'},
           {href: '/images/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
+          {href: '/images/people',text: 'People',icon: 'people'},
+          {href: '/map',text: 'Map',icon: 'place'}, 
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
       {
@@ -3209,7 +3322,7 @@ router.beforeEach((to, from, next) => {
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}, 
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},
       {href: '/timeline',text: 'Time line',icon: 'timelapse'}
       ]},
       
@@ -3237,6 +3350,12 @@ router.beforeEach((to, from, next) => {
       onDark(dark){
         this.dark=dark
         alert("theme")
+      },
+      favorite(){
+        alert("@TODO")
+      },
+      notifications(){
+        alert("@TODO")
       }
   },
 
@@ -3421,6 +3540,11 @@ const Fullscreen={
     })  }
 };
 Vue.use(Fullscreen);
+
+//leaflet
+Vue.component('v-map', Vue2Leaflet.Map);
+Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
+Vue.component('v-marker', Vue2Leaflet.Marker);
 
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')

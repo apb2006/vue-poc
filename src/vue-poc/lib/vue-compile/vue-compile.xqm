@@ -88,11 +88,14 @@ declare function vue:compile($proj as xs:string)
 {
 let $FEATURES:="features/"=>file:resolve-path($proj=>trace("proj:"))
 let $COMPONENTS:="components/"=>file:resolve-path($proj)
-let $CORE:="components/core.js"=>file:resolve-path($proj)
 let $FILTERS:="components/filters.js"=>file:resolve-path($proj)
-let $ROUTER:="components/router.js"=>file:resolve-path($proj)
-let $DEST:="static/app-gen.js"=>file:resolve-path($proj)
+
+let $CORE:="core.js"=>file:resolve-path($proj)
+let $ROUTER:="router.js"=>file:resolve-path($proj)
 let $APP:="vue-poc.vue"=>file:resolve-path($proj)
+
+let $DEST:="static/app-gen.js"=>file:resolve-path($proj)
+
 let $files:=vue:feature-files($proj)
 let $feats:=$files!vue:feature-build(.,false())
 

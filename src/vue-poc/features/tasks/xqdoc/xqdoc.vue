@@ -35,10 +35,10 @@
     </v-card-text>
    
      
-    <v-alert success v-model="alert.success">
+    <v-alert color="success" v-model="alert.success">
     {{alert.timestamp}}:{{alert.msg}}
     </v-alert>
-     <v-alert error v-model="alert.error">
+     <v-alert color="error" v-model="alert.error">
     {{alert.timestamp}}:<code>{{alert.msg}}</code>
     </v-alert>
   </v-card>

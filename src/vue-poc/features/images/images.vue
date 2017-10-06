@@ -9,12 +9,13 @@
       <v-toolbar class="green white--text">
       <v-btn  @click.stop="showFilter = true" icon><v-icon>search</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
-              
-        <v-btn @click="clear" icon v-tooltip:top="{ html: 'Clear search' }"
-        v-if="query.keyword || query.from || query.until">
+        <v-tooltip top  v-if="query.keyword || query.from || query.until">      
+        <v-btn @click="clear" icon slot="activator"
+       >
             <v-icon>clear</v-icon>
            </v-btn>
-          
+         <span>Clear search</span>
+         </v-tooltip> 
            <v-spacer></v-spacer>
            <span v-if="!busy">
            <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
@@ -39,7 +40,8 @@
               <v-card   class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)"  @dblclick="go(image)" 
                 height="80px" contain></v-card-media>
-                 <v-card-actions  v-tooltip:top="{ html:  ' '+image.path }">
+                <v-tooltip top>
+                 <v-card-actions  slot="activator">
               
                 <v-btn icon small>
                   <v-icon>favorite</v-icon>
@@ -52,6 +54,8 @@
                   <v-icon>share</v-icon>
                 </v-btn>
               </v-card-actions>
+              <span v-text="image.path"></span>
+              </v-tooltip>
               </v-card>
             </v-flex>
           </v-layout>
@@ -70,7 +74,7 @@
               v-bind:items="keywords"
               v-model="query.keyword"
               label="Keyword" item-value="text" item-text="text"
-              autocomplete
+              autocomplete clearable
             >
              <template slot="item" scope="data">
                   <v-list-tile-content>
@@ -140,6 +144,9 @@
             </template>
           </v-date-picker>
           </v-menu>
+        
+            <v-checkbox :value="location.value" :indeterminate="location.use" @click="cyclelocation" label="With location:"></v-checkbox>
+        
         </v-card-text>
         
         <v-card-actions>
@@ -180,11 +187,15 @@
     showUntil: false,
     keywords: [],
     showInfo: false,
-    selitem: "TODO"
+    selitem: "TODO",
+    location: {use:false,value:true}
   }),
   methods:{
     src(item){
         return "data:image/jpeg;base64,"+item.data
+    },
+    cyclelocation(){
+      this.location.use=!this.location.use
     },
     getImages(){
       this.busy=true

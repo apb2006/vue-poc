@@ -5,7 +5,7 @@
   <v-layout row>
     <v-flex xs12 sm8 offset-sm2>
       <v-card>
-        <v-alert  warning value="true">Not fully implemented</v-alert>
+        <v-alert  color="warning" value="true">Not fully implemented</v-alert>
       
       <v-container fluid>
         <v-layout row>

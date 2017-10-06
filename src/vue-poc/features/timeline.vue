@@ -9,7 +9,7 @@
 	 </v-toolbar>
 	 <v-card-text>
 	   <vis-time-line :items="vueState.data1" :events="Events" 
-	                  :options="{editable: true, clickToUse: true}" @select="select"></vis-time-line>
+	                  :options="{editable: true, clickToUse: false" @select="select"></vis-time-line>
 	 </v-card-text>
  </v-card>
  

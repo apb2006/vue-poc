@@ -9,7 +9,7 @@
       <v-divider></v-divider>
       <v-stepper-step step="3">Result</v-stepper-step>
     </v-stepper-header>
-  
+  <v-stepper-items>
   <v-stepper-content step="1" non-linear>
     <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px" >
     <v-text-field
@@ -43,6 +43,7 @@
      <v-btn flat @click="step -= 1">Back</v-btn>
      <v-btn primary @click="go()">go</v-btn>
   </v-stepper-content>
+  </v-stepper-items>
 </v-stepper>
  </v-container>
 </template>

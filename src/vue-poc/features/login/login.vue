@@ -5,7 +5,7 @@
       <v-card-title class="green darken-1">
         <span class="white--text">Login</span>
       </v-card-title>
-    <v-alert error v-bind:value="showMessage">
+    <v-alert color="error" v-bind:value="showMessage">
       {{message}}
     </v-alert>
      <v-card-actions>

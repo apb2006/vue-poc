@@ -4,6 +4,7 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: Home, meta:{title:"Home"} },
     { path: '/session', component: Session ,meta: {title:"Session"}},
+    
     {path: '/images', redirect: '/images/item' },
     { path: '/images/item', name:'images', component: Images, meta:{title: "Images"} },
     { path: '/images/report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
@@ -11,6 +12,8 @@ const router = new VueRouter({
     { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
     { path: '/images/keywords', component: Keywords, meta:{title:"Image keywords"} },
     { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
+    { path: '/images/people', component: People, meta:{title:"Image people"} },
+    
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -34,6 +37,7 @@ const router = new VueRouter({
     { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
+    { path: '/map', component: Map,meta:{title:"map"} },
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],

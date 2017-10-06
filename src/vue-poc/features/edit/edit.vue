@@ -1,15 +1,17 @@
 <!DOCTYPE html>
 <template id="edit">
 <v-container fluid>
-      <v-snackbar top error  v-model="snackbar">
+      <v-snackbar top color="error"  v-model="snackbar">
       {{ message }}
       <v-btn flat  @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-snackbar>
     
 <v-card>
 <v-toolbar dense>
-<v-menu >
-  <v-btn primary icon dark slot="activator" v-tooltip:top="{ html: path.join('/') }"><v-icon >{{icon}}</v-icon></v-btn>
+<v-tooltip top >
+<v-menu slot="activator">
+
+  <v-btn primary icon dark slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
   <v-list>
       <v-list-tile  v-for="item in path" :key="item">
         <v-list-tile-content @click="showfiles()">
@@ -18,34 +20,42 @@
       </v-list-tile>
   </v-list>
 </v-menu>
-
+<span>{{ path.join('/') }}</span>
+</v-tooltip>
   <v-toolbar-title >
       <span >{{ name }}</span>
   </v-toolbar-title>
- 
-  <span v-tooltip:top="{ html: 'Changed?' }">
+  <v-tooltip top>
+  <span slot="activator">
   <v-chip v-if="dirty" label small class="red white--text">*</v-chip>
 <v-chip  v-if="!dirty" label small class="green white--text">.</v-chip>
 </span>
-  <v-menu left  transition="v-fade-transition">
-      <v-chip label small slot="activator" v-tooltip:top="{ html: mimetype }">{{ mode }}</v-chip>
+<span>Changed?</span>
+</v-tooltip>
+
+<v-tooltip top>
+  <v-menu left  transition="v-fade-transition" slot="activator">
+      <v-chip label small slot="activator" >{{ mode }}</v-chip>
           <v-list dense>
               <v-list-tile v-for="(mode, mimetype) in mimeTypes"  :key="mimetype">
                 <v-list-tile-title v-text="mimetype" @click="setMode(mimetype)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
    </v-menu>
- 
-     <v-chip   @click="acecmd('goToNextError')"
-          v-tooltip:top="{ html: 'Annotations: Errors,Warning and Info' }"
-           >
+   <span v-text="mimetype"></span>
+   </v-tooltip>
+   
+  <v-tooltip top>
+     <v-chip   @click="acecmd('goToNextError')" slot="activator" >
           <v-avatar  class="green ">{{annotations && annotations.info}}</v-avatar>
           <v-avatar  class="yellow ">{{annotations && annotations.warning}}</v-avatar>        
           <v-avatar   class="red " small>{{annotations && annotations.error}}</v-avatar>    
            <v-avatar>
               <v-icon black >navigate_next</v-icon>
            </v-avatar>
-          </v-chip>
+      </v-chip>
+      <span>Annotations: Errors,Warning and Info</span>
+   </v-tooltip>
 <v-spacer></v-spacer>
    <v-btn  icon @click="acecmd('outline')" title="outline -todo">
       <v-icon>star</v-icon>

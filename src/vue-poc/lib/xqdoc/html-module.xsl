@@ -4,9 +4,7 @@
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
 	xmlns:qd="http://www.quodatum.com/ns/xsl" exclude-result-prefixes="xs doc fn"
 	version="2.0">
-	<!-- Standalone xqdoc:xqdoc transform 
-	mode"restxq"
-	-->
+	<!-- Standalone xqdoc:xqdoc transform mode"restxq" -->
 	<xsl:param name="project" as="xs:string" />
 	<xsl:param name="source" as="xs:string" />
 	<xsl:param name="filename" as="xs:string" />
@@ -20,7 +18,7 @@
 		select="//doc:function[$show-private or not(doc:annotations/doc:annotation/@name='private')]" />
 	<xsl:variable name="docuri"
 		select="//doc:xqdoc/doc:module/doc:uri/string()" />
-	<!-- uses RESTXQ namespace -->
+	<!-- prefixes used for RESTXQ namespace -->
 	<xsl:variable name="restxq"
 		select="//doc:namespace[@uri='http://exquery.org/ns/restxq']/@prefix/string()" />
 	<!-- generate module html // -->
@@ -101,7 +99,7 @@
 			<xsl:apply-templates select="doc:comment/doc:description" />
 			<dt>Tags</dt>
 			<dd>
-				<xsl:if test="$restxq">
+				<xsl:if test="count($restxq)">
 					<span class="tag tag-success">RESTXQ</span>
 				</xsl:if>
 				<xsl:apply-templates
@@ -270,13 +268,15 @@
 						</a>
 					</h4>
 					<ul>
-					<xsl:for-each select="current-group()/../..">
-					 <li>
-					 <a href="#{ doc:name }"><xsl:value-of select="doc:name"/></a>
-					 </li>
-					</xsl:for-each>
+						<xsl:for-each select="current-group()/../..">
+							<li>
+								<a href="#{ doc:name }">
+									<xsl:value-of select="doc:name" />
+								</a>
+							</li>
+						</xsl:for-each>
 					</ul>
-					
+
 				</div>
 			</xsl:for-each-group>
 			<!-- <xsl:apply-templates select="doc:function" /> -->
@@ -295,9 +295,11 @@
 	<xsl:template match="doc:parameter">
 		<li>
 			<xsl:value-of select="doc:name" />
-			as
-			<xsl:value-of select="doc:type" />
-			<xsl:value-of select="doc:type/@occurrence" />
+			<code class="as">&#160;as&#160;</code>
+			<code class="return-type">
+				<xsl:value-of select="doc:type" />
+				<xsl:value-of select="doc:type/@occurrence" />
+			</code>
 			<xsl:variable name="name" select="string(doc:name)" />
 			<xsl:for-each
 				select="../../doc:comment/doc:param[starts-with(normalize-space(.), $name) or starts-with(normalize-space(.), concat('$',$name))]">
@@ -311,8 +313,10 @@
 		<dd>
 			<ul>
 				<li>
-					<xsl:value-of select="doc:type" />
-					<xsl:value-of select="doc:type/@occurrence" />
+					<code class="return-type">
+						<xsl:value-of select="doc:type" />
+						<xsl:value-of select="doc:type/@occurrence" />
+					</code>
 					<xsl:for-each select="../doc:comment/doc:return">
 						<xsl:text>: </xsl:text>
 						<xsl:copy-of select="node()|text()" />
@@ -332,25 +336,25 @@
 	</xsl:template>
 
 	<xsl:template match="doc:annotations">
-	<table class="data">
-	 <caption style="text-align: left;">Annotations</caption>
-	 <tbody>
-			<xsl:for-each select="doc:annotation">
-				<tr>
-				<td>
-					<code class="function">
-						<xsl:text>%</xsl:text>
-						<xsl:value-of select="@name" />
-					</code>
-					</td>
-					<td>
-					<code class="arg">
-						<xsl:value-of select="doc:literal" />
-					</code>
-					</td>
-				</tr>
-			</xsl:for-each>
-		</tbody>
+		<table class="data">
+			<caption style="text-align: left;">Annotations</caption>
+			<tbody>
+				<xsl:for-each select="doc:annotation">
+					<tr>
+						<td>
+							<code class="function">
+								<xsl:text>%</xsl:text>
+								<xsl:value-of select="@name" />
+							</code>
+						</td>
+						<td>
+							<code class="arg">
+								<xsl:value-of select="doc:literal" />
+							</code>
+						</td>
+					</tr>
+				</xsl:for-each>
+			</tbody>
 		</table>
 	</xsl:template>
 
@@ -490,7 +494,8 @@
 													</div>
 												</xsl:if>
 												<xsl:if test="qd:is-updating(current-group())">
-													<div class="tag tag-danger" title="Updating" style="float:right">U</div>
+													<div class="tag tag-danger" title="Updating" style="float:right">U
+													</div>
 												</xsl:if>
 											</span>
 										</a>
@@ -543,7 +548,7 @@
 	<xsl:function name="qd:restxq" as="element(doc:annotation)*">
 		<xsl:param name="fun" as="element(doc:function)*" />
 		<xsl:variable name="found"
-			select="$fun/doc:annotations/doc:annotation[@name=concat($restxq,':path')]" />
+			select="$fun/doc:annotations/doc:annotation[@name=(for $p in $restxq return concat($p,':path'))]" />
 		<xsl:message>
 			<xsl:copy-of select="$found" />
 		</xsl:message>
@@ -556,4 +561,59 @@
 			select="$fun/doc:annotations/doc:annotation[@name='updating']" />
 		<xsl:sequence select="not(empty($found))" />
 	</xsl:function>
+	
+	<!-- generate span with method name eg GET -->
+  <xsl:template match="method" mode="name">
+    <xsl:variable name="name" select="string(@name)" />
+    <span>
+      <xsl:attribute name="class">
+    <xsl:text>wadl-method label </xsl:text>
+      <xsl:choose>
+        <xsl:when test="$name='GET'">
+          <xsl:text>label-primary</xsl:text>
+        </xsl:when>
+        <xsl:when test="$name='POST'">
+          <xsl:text>label-success</xsl:text>
+        </xsl:when>
+        <xsl:when test="$name='DELETE'">
+          <xsl:text>label-danger</xsl:text>
+        </xsl:when>
+        <xsl:otherwise>
+          <xsl:text>label-warning</xsl:text>
+        </xsl:otherwise>
+      </xsl:choose>
+      </xsl:attribute>
+      <xsl:value-of select="if($name = '')then '(ALL)' else $name" />
+    </span>
+  </xsl:template>
+  
+  <xsl:template match="representation" mode="mediaType">
+    <xsl:variable name="mediaType" select="@mediaType" />
+    <span class="label label-default label-pill pull-xs-right" title="{$mediaType}">
+      <xsl:choose>
+        <xsl:when test="$mediaType='text/html'">
+          <xsl:text>H</xsl:text>
+        </xsl:when>
+        <xsl:when test="$mediaType='application/octet-stream'">
+          <xsl:text>B</xsl:text>
+        </xsl:when>
+        <xsl:when test="$mediaType='application/xml'">
+          <xsl:text>X</xsl:text>
+        </xsl:when>
+        <xsl:when test="$mediaType='text/plain'">
+          <xsl:text>T</xsl:text>
+        </xsl:when>
+        <xsl:when test="$mediaType='application/json'">
+          <xsl:text>J</xsl:text>
+        </xsl:when>
+        <xsl:when test="$mediaType='image/svg+xml'">
+          <xsl:text>S</xsl:text>
+        </xsl:when>
+
+        <xsl:otherwise>
+          ?
+        </xsl:otherwise>
+      </xsl:choose>
+    </span>
+  </xsl:template>
 </xsl:stylesheet>

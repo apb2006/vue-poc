@@ -8,12 +8,13 @@
  <v-btn @click="reset()">Reset</v-btn>
  </v-toolbar>
  <v-card-text>
-  <p>Read or increment a database value.</p>
+  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
   <p>Counter:{{counter}}</p>
   <table class="table">
       <thead> 
         <tr>
-          <th>Option</th>
+         <th>Action</th>
+          <th>Once</th>
           <th >Repeat</th>
           <th >Last</th>
           <th >Count</th>
@@ -27,13 +28,17 @@
 
       
           <tr>
+              <td>Get</td>
               <td>
-                   <v-btn     @click="get()" >Get count</v-btn>
+               <v-btn @click="get()" icon >
+                   <v-icon>cached</v-icon>
+                </v-btn>
+             
                </td>
                <td>
-                <v-switch  v-model="repeat.get"></v-switch>
+                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
 
-        </td>    
+             </td>    
               <td>
                   <span >{{getValues.last}}</span>
               </td>
@@ -57,12 +62,15 @@
           </tr>
           
             <tr>
+             <td>Update</td>
           <td>
-             <v-btn    @click="update()" >Update count</v-btn>
+           <v-btn @click="update()" icon >
+                   <v-icon>cached</v-icon>
+            </v-btn>
           </td>
           
           <td>
-           <v-switch  v-model="repeat.post"></v-switch>
+           <v-switch  v-on:change="pchange"  v-model="repeat.post"></v-switch>
           </td>
            <td class="col-md-1">
                         <span >{{postValues.last}}</span>
@@ -130,6 +138,12 @@
           this.get(); //does this leak??
         }
      })
+    },
+    gchange(v){
+      if(v)this.get() 
+    },
+    pchange(v){
+      if(v)this.update() 
     },
     reset(){
       Object.assign(this.getValues,this.getValues.clear());

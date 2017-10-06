@@ -20,11 +20,7 @@
 <script>{
   data(){
     return {
-      tasks: [
-       {to: "tasks/model", text: "model"},
-       {to: "tasks/xqdoc", text: "xqdoc"},
-       {to: "tasks/vuecompile", text: "vue compile"}
-      ],
+      tasks: [],      
       snackbar: false
       }
   },
@@ -33,6 +29,7 @@
         HTTP.get("tasks/list")
         .then(r=>{
 		   this.snackbar=true
+		   this.tasks=r.data
        })
     }
    },
