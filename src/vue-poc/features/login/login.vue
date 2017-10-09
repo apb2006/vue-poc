@@ -33,7 +33,7 @@
         
     <v-divider></v-divider>
     <v-card-actions class="blue-grey darken-1 mt-0">
-       <v-btn primary @click="go()">Continue</v-btn>
+       <v-btn  color="primary"  @click="go()">Continue</v-btn>
        <v-spacer></v-spacer>
     </v-card-actions>
 </v-card>

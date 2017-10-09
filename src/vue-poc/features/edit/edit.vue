@@ -11,7 +11,7 @@
 <v-tooltip top >
 <v-menu slot="activator">
 
-  <v-btn primary icon dark slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
+  <v-btn color="primary" icon  slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
   <v-list>
       <v-list-tile  v-for="item in path" :key="item">
         <v-list-tile-content @click="showfiles()">
@@ -33,8 +33,7 @@
 <span>Changed?</span>
 </v-tooltip>
 
-<v-tooltip top>
-  <v-menu left  transition="v-fade-transition" slot="activator">
+  <v-menu left  transition="v-fade-transition" >
       <v-chip label small slot="activator" >{{ mode }}</v-chip>
           <v-list dense>
               <v-list-tile v-for="(mode, mimetype) in mimeTypes"  :key="mimetype">
@@ -42,8 +41,6 @@
               </v-list-tile>           
           </v-list>         
    </v-menu>
-   <span v-text="mimetype"></span>
-   </v-tooltip>
    
   <v-tooltip top>
      <v-chip   @click="acecmd('goToNextError')" slot="activator" >
@@ -127,19 +124,7 @@ v-on:annotation="annotation"></vue-ace>
  </v-flex> 
 </v-card-text>
 </v-card>
-  <v-dialog v-model="clearDialog" >
-       <v-card >
-       <v-toolbar class="lime darken-1">
-          <v-card-title>Confirm action</v-card-title>
-          </v-toolbar>
-          <v-card-text>Delete all edit text?</v-card-text>
-        <v-card-actions>
-        <v-spacer></v-spacer>
-          <v-btn  @click="reset(false)">Cancel</v-btn>
-          <v-btn   @click="reset(true)">Ok</v-btn>
-        </v-card-actions>
-        </v-card>
-    </v-dialog>
+ <qd-confirm v-model="clearDialog" @confirm="reset">Delete all edit text?</qd-confirm>
  </v-container>
 </template>
 

@@ -22,7 +22,7 @@
               :key="year.year">
       <v-flex v-text="year.year"></v-flex> 
       <v-flex v-for="(m,i) in year.months" 
-              :key="i"><v-btn icon primary :disabled="0==m" @click="go(year.year,i)">{{m}}</v-btn></v-flex>       
+              :key="i"><v-btn icon color="primary" :disabled="0==m" @click="go(year.year,i)">{{m}}</v-btn></v-flex>       
   </v-layout>            
 </v-container>
 <v-layout>

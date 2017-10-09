@@ -83,7 +83,22 @@ var settings = {
   }
 };
 
+// error help 
+// https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify/18391400#18391400
+if (!('toJSON' in Error.prototype))
+  Object.defineProperty(Error.prototype, 'toJSON', {
+      value: function () {
+          var alt = {};
 
+          Object.getOwnPropertyNames(this).forEach(function (key) {
+              alt[key] = this[key];
+          }, this);
+
+          return alt;
+      },
+      configurable: true,
+      writable: true
+  });
 
 //Returns a function, that, as long as it continues to be invoked, will not
 //be triggered. The function will be called after it stops being called for

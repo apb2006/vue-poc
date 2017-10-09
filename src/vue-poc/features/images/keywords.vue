@@ -19,12 +19,12 @@
     <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
         <v-container v-if="!busy" fluid grid-list-md>
           <v-layout row wrap v-touch="{ left: () => pageNext(), right: () => pageBack()}">
-            <v-flex height="80px"
+            <v-flex height="80px" @click="show(keyword)"
               xs3
               v-for="keyword in items"
               :key="keyword.text"
             >
-              <v-card   class="grey lighten-2 pt-1" @click="show(keyword)">
+              <v-card   class="grey lighten-2 pt-1" >
                        <v-toolbar>
                  <v-card-title v-text="keyword.text"></v-card-title>
                 <v-spacer></v-spacer>

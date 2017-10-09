@@ -21,10 +21,10 @@
            <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
        
             Page:{{ query.page+1 }}
-          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon primary>
+          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon color="primary">
            <v-icon>arrow_back</v-icon>
            </v-btn>
-           <v-btn @click.stop="pageNext()" icon primary>
+           <v-btn @click.stop="pageNext()" icon color="primary">
             <v-icon>arrow_forward</v-icon>
            </v-btn>
            </span>
@@ -39,23 +39,31 @@
             >
               <v-card   class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)"  @dblclick="go(image)" 
-                height="80px" contain></v-card-media>
-                <v-tooltip top>
-                 <v-card-actions  slot="activator">
-              
-                <v-btn icon small>
-                  <v-icon>favorite</v-icon>
+                height="80px" contain>
+                <v-layout :justify-end="true">
+                <v-flex>
+                 <v-icon class="green--text">check_circle</v-icon>
+                 </v-flex>
+                 </v-layout>
+                </v-card-media>
+                
+                 <v-card-actions  >
+                <span>#</span>
+                 <v-btn icon small>
+                  <v-icon>place</v-icon>
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn icon  small>
-                  <v-icon>bookmark</v-icon>
+                <v-tooltip bottom >
+                <v-btn icon  small slot="activator">
+                  <v-icon>info</v-icon>
                 </v-btn>
+                <span v-text="image.path"></span>
+                </v-tooltip>
                 <v-btn icon  small @click="selected(image)">
                   <v-icon>share</v-icon>
                 </v-btn>
               </v-card-actions>
-              <span v-text="image.path"></span>
-              </v-tooltip>
+            
               </v-card>
             </v-flex>
           </v-layout>
@@ -84,9 +92,6 @@
               </template>
             </v-select>
             
-            <v-btn  @click="query.keyword=null" :disabled="!query.keyword">
-               <v-icon>close</v-icon>Clear keyword
-             </v-btn> 
           <v-menu
           lazy
           :close-on-content-click="false"
@@ -108,8 +113,8 @@
           <v-date-picker v-model="query.from" scrollable actions>
             <template scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat primary @click="cancel()">Cancel</v-btn>
-                <v-btn flat primary @click="save()">Save</v-btn>
+                <v-btn flat color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat  color="primary"  @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
             
@@ -138,8 +143,8 @@
           <v-date-picker v-model="query.until" scrollable actions>
             <template scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat primary @click="cancel()">Cancel</v-btn>
-                <v-btn flat primary @click="save()">Save</v-btn>
+                <v-btn flat  color="primary"  @click="cancel()">Cancel</v-btn>
+                <v-btn flat  color="primary"  @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
           </v-date-picker>
@@ -152,7 +157,7 @@
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn  @click="showFilter = false" primary>Apply</v-btn>
+          <v-btn  @click="showFilter = false"  color="primary" >Apply</v-btn>
         </v-card-actions>
       </v-card>
       </v-navigation-drawer>

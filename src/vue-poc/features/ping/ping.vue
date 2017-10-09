@@ -2,7 +2,7 @@
 <template id="ping">
  <v-container fluid>
  <v-card>
- <v-toolbar light>
+ <v-toolbar >
  <v-toolbar-title>Simple performance measure</v-toolbar-title>
  <v-spacer></v-spacer>
  <v-btn @click="reset()">Reset</v-btn>

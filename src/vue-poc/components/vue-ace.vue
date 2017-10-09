@@ -45,7 +45,7 @@ ace editor for vue.js
       var session=this.editor.getSession()
       session.setUseWrapMode(value)
     },
-    'settings' (value) {
+    'setting' (value) {
       console.log("--settings--",value)
       this.applySettings(value)
     }
@@ -69,7 +69,7 @@ ace editor for vue.js
     },
     
     applySettings(aceSettings){
-      console.log("apply: ",aceSettings)
+      console.log("apply: ",aceSettings.theme)
       this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
@@ -122,7 +122,7 @@ ace editor for vue.js
           }
       }
       //console.log(this.annots)
-       this.$emit('annotation',this.annots)
+       this.$emit('annotation',{error: this.annots["error"]+0, warning: this.annots["warning"]+0})
     });
     if(this.events){
       this.events.$on('eventFired', (cmd) => {

@@ -1,23 +1,23 @@
-// generated 2017-10-06T15:15:26.236+01:00
+// generated 2017-10-09T10:18:05.74+01:00
 Vue.component('qd-confirm',{template:` 
-  <v-dialog v-model="showDialog">
+  <v-dialog v-model="value">
        <v-card>
-       <v-toolbar class="lime darken-1">
+       <v-toolbar class="orange darken-1">
           <v-card-title>Confirm action</v-card-title>
           </v-toolbar>
-          <v-card-text>Delete all edit text?</v-card-text>
+          <v-card-text>
+            <slot>Test message</slot>
+          </v-card-text>
         <v-card-actions>
         <v-spacer></v-spacer>
-          <v-btn v-on:click="$emit('cancel')">Cancel</v-btn>
-          <v-btn v-on:click="$emit('ok')">Ok</v-btn>
+          <v-btn v-on:click="$emit('confirm',false)">Cancel</v-btn>
+          <v-btn v-on:click="$emit('confirm',true)">Ok</v-btn>
         </v-card-actions>
         </v-card>
     </v-dialog>
  `,
       
-  data(){
-    return {showDialog:false}
-  },
+  props: ['value']
 }
 
       );
@@ -203,7 +203,7 @@
       var session=this.editor.getSession()
       session.setUseWrapMode(value)
     },
-    'settings' (value) {
+    'setting' (value) {
       console.log("--settings--",value)
       this.applySettings(value)
     }
@@ -227,7 +227,7 @@
     },
     
     applySettings(aceSettings){
-      console.log("apply: ",aceSettings)
+      console.log("apply: ",aceSettings.theme)
       this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
@@ -280,7 +280,7 @@
           }
       }
       //console.log(this.annots)
-       this.$emit('annotation',this.annots)
+       this.$emit('annotation',{error: this.annots["error"]+0, warning: this.annots["warning"]+0})
     });
     if(this.events){
       this.events.$on('eventFired', (cmd) => {
@@ -760,7 +760,7 @@ Vue.filter('round', function(value, decimals) {
 <v-tooltip top="">
 <v-menu slot="activator">
 
-  <v-btn primary="" icon="" dark="" slot="activator"><v-icon>{{icon}}</v-icon></v-btn>
+  <v-btn color="primary" icon="" slot="activator"><v-icon>{{icon}}</v-icon></v-btn>
   <v-list>
       <v-list-tile v-for="item in path" :key="item">
         <v-list-tile-content @click="showfiles()">
@@ -782,8 +782,7 @@ Vue.filter('round', function(value, decimals) {
 <span>Changed?</span>
 </v-tooltip>
 
-<v-tooltip top="">
-  <v-menu left="" transition="v-fade-transition" slot="activator">
+  <v-menu left="" transition="v-fade-transition">
       <v-chip label="" small="" slot="activator">{{ mode }}</v-chip>
           <v-list dense="">
               <v-list-tile v-for="(mode, mimetype) in mimeTypes" :key="mimetype">
@@ -791,8 +790,6 @@ Vue.filter('round', function(value, decimals) {
               </v-list-tile>           
           </v-list>         
    </v-menu>
-   <span v-text="mimetype"></span>
-   </v-tooltip>
    
   <v-tooltip top="">
      <v-chip @click="acecmd('goToNextError')" slot="activator">
@@ -873,19 +870,7 @@ Vue.filter('round', function(value, decimals) {
  </v-flex> 
 </v-card-text>
 </v-card>
-  <v-dialog v-model="clearDialog">
-       <v-card>
-       <v-toolbar class="lime darken-1">
-          <v-card-title>Confirm action</v-card-title>
-          </v-toolbar>
-          <v-card-text>Delete all edit text?</v-card-text>
-        <v-card-actions>
-        <v-spacer></v-spacer>
-          <v-btn @click="reset(false)">Cancel</v-btn>
-          <v-btn @click="reset(true)">Ok</v-btn>
-        </v-card-actions>
-        </v-card>
-    </v-dialog>
+ <qd-confirm v-model="clearDialog" @confirm="reset">Delete all edit text?</qd-confirm>
  </v-container>
  `,
       
@@ -1082,7 +1067,7 @@ Vue.filter('round', function(value, decimals) {
     <v-icon>label</v-icon>
     Namespaces</v-btn>
      <v-menu offset-y="">
-      <v-btn icon="" primary="" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
+      <v-btn icon="" color="primary" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
       <v-list dense="">
         <v-list-tile @click="plan">Show query plan</v-list-tile>
      </v-list>
@@ -1333,7 +1318,7 @@ Vue.filter('round', function(value, decimals) {
 <v-container v-if="!busy" fluid="">
  <v-layout v-for="year in items" :key="year.year">
       <v-flex v-text="year.year"></v-flex> 
-      <v-flex v-for="(m,i) in year.months" :key="i"><v-btn icon="" primary="" :disabled="0==m" @click="go(year.year,i)">{{m}}</v-btn></v-flex>       
+      <v-flex v-for="(m,i) in year.months" :key="i"><v-btn icon="" color="primary" :disabled="0==m" @click="go(year.year,i)">{{m}}</v-btn></v-flex>       
   </v-layout>            
 </v-container>
 <v-layout>
@@ -1450,10 +1435,10 @@ Vue.filter('round', function(value, decimals) {
            <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
        
             Page:{{ query.page+1 }}
-          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon="" primary="">
+          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon="" color="primary">
            <v-icon>arrow_back</v-icon>
            </v-btn>
-           <v-btn @click.stop="pageNext()" icon="" primary="">
+           <v-btn @click.stop="pageNext()" icon="" color="primary">
             <v-icon>arrow_forward</v-icon>
            </v-btn>
            </span>
@@ -1463,23 +1448,31 @@ Vue.filter('round', function(value, decimals) {
           <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
               <v-card class="grey lighten-2 pt-1">
-                <v-card-media :src="src(image)" @dblclick="go(image)" height="80px" contain=""></v-card-media>
-                <v-tooltip top="">
-                 <v-card-actions slot="activator">
-              
-                <v-btn icon="" small="">
-                  <v-icon>favorite</v-icon>
+                <v-card-media :src="src(image)" @dblclick="go(image)" height="80px" contain="">
+                <v-layout :justify-end="true">
+                <v-flex>
+                 <v-icon class="green--text">check_circle</v-icon>
+                 </v-flex>
+                 </v-layout>
+                </v-card-media>
+                
+                 <v-card-actions>
+                <span>#</span>
+                 <v-btn icon="" small="">
+                  <v-icon>place</v-icon>
                 </v-btn>
                 <v-spacer></v-spacer>
-                <v-btn icon="" small="">
-                  <v-icon>bookmark</v-icon>
+                <v-tooltip bottom="">
+                <v-btn icon="" small="" slot="activator">
+                  <v-icon>info</v-icon>
                 </v-btn>
+                <span v-text="image.path"></span>
+                </v-tooltip>
                 <v-btn icon="" small="" @click="selected(image)">
                   <v-icon>share</v-icon>
                 </v-btn>
               </v-card-actions>
-              <span v-text="image.path"></span>
-              </v-tooltip>
+            
               </v-card>
             </v-flex>
           </v-layout>
@@ -1503,17 +1496,14 @@ Vue.filter('round', function(value, decimals) {
               </template>
             </v-select>
             
-            <v-btn @click="query.keyword=null" :disabled="!query.keyword">
-               <v-icon>close</v-icon>Clear keyword
-             </v-btn> 
           <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
              <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
          
           <v-date-picker v-model="query.from" scrollable="" actions="">
             <template scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat="" primary="" @click="cancel()">Cancel</v-btn>
-                <v-btn flat="" primary="" @click="save()">Save</v-btn>
+                <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat="" color="primary" @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
             
@@ -1527,8 +1517,8 @@ Vue.filter('round', function(value, decimals) {
           <v-date-picker v-model="query.until" scrollable="" actions="">
             <template scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat="" primary="" @click="cancel()">Cancel</v-btn>
-                <v-btn flat="" primary="" @click="save()">Save</v-btn>
+                <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat="" color="primary" @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
           </v-date-picker>
@@ -1541,7 +1531,7 @@ Vue.filter('round', function(value, decimals) {
         <v-card-actions>
           <v-spacer></v-spacer>
 
-          <v-btn @click="showFilter = false" primary="">Apply</v-btn>
+          <v-btn @click="showFilter = false" color="primary">Apply</v-btn>
         </v-card-actions>
       </v-card>
       </v-navigation-drawer>
@@ -1710,8 +1700,8 @@ body
     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
         <v-container v-if="!busy" fluid="" grid-list-md="">
           <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
-            <v-flex height="80px" xs3="" v-for="keyword in items" :key="keyword.text">
-              <v-card class="grey lighten-2 pt-1" @click="show(keyword)">
+            <v-flex height="80px" @click="show(keyword)" xs3="" v-for="keyword in items" :key="keyword.text">
+              <v-card class="grey lighten-2 pt-1">
                        <v-toolbar>
                  <v-card-title v-text="keyword.text"></v-card-title>
                 <v-spacer></v-spacer>
@@ -1960,7 +1950,7 @@ people
         
     <v-divider></v-divider>
     <v-card-actions class="blue-grey darken-1 mt-0">
-       <v-btn primary="" @click="go()">Continue</v-btn>
+       <v-btn color="primary" @click="go()">Continue</v-btn>
        <v-spacer></v-spacer>
     </v-card-actions>
 </v-card>
@@ -2268,14 +2258,49 @@ people
       );
       const Repo=Vue.extend({template:` 
  <v-container fluid="">
-repository todo
+  <v-card>
+   <v-toolbar light="">
+    <v-text-field append-icon="search" label="Filter repo" single-line="" hide-details="" v-model="search"></v-text-field>   
+      <v-spacer></v-spacer>     
+    </v-toolbar>
+<v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No repo found @todo">
+    <template slot="items" scope="props">
+    <td class="vtop">
+        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
+      </td>
+      <td class="vtop">{{ props.item.name }}</td>
+      <td class="vtop "><div>{{ props.item.permission }}</div>
+    </td></template>
+  </v-data-table>
+  </v-card>
  </v-container>
  `,
       
   data:  function(){
     return {
-      message: 'bad route!'
+      loading: false,
+      items: [],
+      search: null,
+      selected: [],
+      headers: [
+        {
+          text: 'Name',
+          left: true,
+          value: 'id'
+        },
+        { text: 'Permission', value: 'state' }
+      ] 
       }
+  },
+  methods:{
+      getUsers(){
+        this.loading=true;
+        HTTP.get("repo")
+        .then(r=>{
+           this.loading=false
+           this.items=r.data
+        })
+     }
   },
   created:function(){
     console.log("notfound",this.$route.query.q)
@@ -2508,30 +2533,32 @@ repository todo
         <v-alert color="warning" value="true">Not fully implemented</v-alert>
       
       <v-container fluid="">
+       <v-layout row="">
+          <v-flex xs6="" class="pa-3">
         <v-layout row="">
-          <v-flex xs4="">
-            <v-subheader>Theme</v-subheader>
-          </v-flex>
-          <v-flex xs8="">
+          
+          <v-flex>
             <v-select v-bind:items="themes" v-model="ace.theme" label="Theme"></v-select>
           </v-flex>
         </v-layout>
+       
         <v-layout row="">
-          <v-flex xs4="">
-            <v-subheader>Key binding</v-subheader>
-          </v-flex>
-          <v-flex xs8="">
+         
+          <v-flex>
             <v-select v-bind:items="keybindings" v-model="ace.keybinding" label="Key binding"></v-select>
            
           </v-flex>
         </v-layout>
         <v-layout row="">
-          <v-flex xs4="">
-            <v-subheader>Font size</v-subheader>
-          </v-flex>
-          <v-flex xs8="">
+         
+          <v-flex>
             <v-text-field label="Font size (px)" v-model="ace.fontsize"></v-text-field>
           </v-flex>
+        </v-layout>
+         </v-flex>
+        <v-flex xs6="" style="height:30vh" class="grey pa-3" fill-height="">
+            <vue-ace mode="xquery" content="test" :settings="ace"></vue-ace>
+        </v-flex>
         </v-layout>
        <v-divider></v-divider>
  
@@ -2665,7 +2692,7 @@ repository todo
       if(confirm("wipe localstorage? "+this.keys.length)) settings.clear();
     },
     theme(){
-     this.$emit("theme",this.dark)
+     this.$root.$emit("theme",this.dark)
     }
   },
   created(){
@@ -2675,6 +2702,23 @@ repository todo
      this.keys=v
     })
      
+  }
+}
+
+      );
+      const Svg=Vue.extend({template:` 
+ <v-container fluid="">
+svg
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'bad route!'
+      }
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
   }
 }
 
@@ -2736,7 +2780,7 @@ repository todo
       <span class="white--text">Generate <code>model.gen.xqm</code></span>      
     </v-card-title>
     <v-spacer></v-spacer>
-     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
+     <v-btn color="primary" @click="submit()" :loading="waiting" :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
     </v-toolbar>
@@ -2844,7 +2888,7 @@ repository todo
       <span class="white--text">compile</span>      
     </v-card-title>
       <v-spacer></v-spacer>
-     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
+     <v-btn color="primary" @click="submit()" :loading="waiting" :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
     </v-toolbar>
@@ -2919,7 +2963,7 @@ repository todo
       <span class="white--text">Task: Generate <code>xqdoc</code></span>      
     </v-card-title>
       <v-spacer></v-spacer>
-     <v-btn primary="" @click="submit()" :loading="waiting" :disabled="waiting">
+     <v-btn color="primary" @click="submit()" :loading="waiting" :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
     </v-toolbar>
@@ -3009,7 +3053,7 @@ repository todo
     <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
     <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required=""></v-text-field>
     </v-card>
-        <v-btn primary="" @click="step = 2">Next</v-btn>
+        <v-btn color="primary" @click="step = 2">Next</v-btn>
   </v-stepper-content>
   
   <v-stepper-content step="2" non-linear="">
@@ -3018,8 +3062,8 @@ repository todo
 		</v-card>
    
     <v-btn flat="" @click="step -= 1">Back</v-btn>
-    <v-btn primary="" @click="validate()">Validate</v-btn>
-     <v-btn primary="" @click="step = 3">Next</v-btn>  
+    <v-btn color="primary" @click="validate()">Validate</v-btn>
+     <v-btn color="primary" @click="step = 3">Next</v-btn>  
   </v-stepper-content>
 
   <v-stepper-content step="3" non-linear="">
@@ -3028,7 +3072,7 @@ repository todo
     </v-card>
 
      <v-btn flat="" @click="step -= 1">Back</v-btn>
-     <v-btn primary="" @click="go()">go</v-btn>
+     <v-btn color="primary" @click="go()">go</v-btn>
   </v-stepper-content>
   </v-stepper-items>
 </v-stepper>
@@ -3073,7 +3117,7 @@ repository todo
 	 <v-btn @click="fit">fit</v-btn>
 	 </v-toolbar>
 	 <v-card-text>
-	   <vis-time-line :items="vueState.data1" :events="Events" :options="{editable: true, clickToUse: true}" @select="select"></vis-time-line>
+	   <vis-time-line :items="vueState.data1" :events="Events" :options="{editable: true, clickToUse: false}" @select="select"></vis-time-line>
 	 </v-card-text>
  </v-card>
  
@@ -3115,7 +3159,59 @@ created(){
       );
       const Users=Vue.extend({template:` 
  <v-container fluid="">
-users todo
+  <v-card>
+   <v-toolbar light="">
+    <v-text-field append-icon="search" label="Filter user" single-line="" hide-details="" v-model="search"></v-text-field>   
+      <v-spacer></v-spacer>     
+    </v-toolbar>
+<v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No users found @todo">
+    <template slot="items" scope="props">
+    <td class="vtop">
+        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
+      </td>
+      <td class="vtop">{{ props.item.name }}</td>
+      <td class="vtop "><div>{{ props.item.permission }}</div>
+    </td></template>
+  </v-data-table>
+  </v-card>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      loading: false,
+      items: [],
+      search: null,
+      selected: [],
+      headers: [
+        {
+          text: 'Name',
+          left: true,
+          value: 'id'
+        },
+        { text: 'Permission', value: 'state' }
+      ] 
+      }
+  },
+  methods:{
+      getUsers(){
+        this.loading=true;
+        HTTP.get("user")
+        .then(r=>{
+           this.loading=false
+           this.items=r.data
+        })
+     }
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
+  }
+}
+
+      );
+      const Validate=Vue.extend({template:` 
+ <v-container fluid="">
+validate
  </v-container>
  `,
       
@@ -3126,6 +3222,106 @@ users todo
   },
   created:function(){
     console.log("notfound",this.$route.query.q)
+  }
+}
+
+      );
+      const Transform=Vue.extend({template:` 
+ <v-container fluid="">
+<v-card>
+     <v-toolbar>
+          <v-btn @click="transform" :loading="loading" :disabled="loading"><v-icon>play_circle_outline</v-icon>Run</v-btn>
+           <v-spacer></v-spacer>
+           <v-btn-toggle v-model="showOptions" multiple="">
+           <v-icon>visibility</v-icon>
+              <v-btn flat="" value="result">
+                <span :class="resultValid?'':'red'">Result</span>
+              </v-btn>
+              <v-btn flat="" value="xml">
+               <span :class="xmlValid?'':'red'">XML</span>
+              </v-btn>
+              <v-btn flat="" value="xslt">
+                 <span :class="xslValid?'':'red'">XSLT</span>
+              </v-btn>
+            </v-btn-toggle>
+             <v-btn icon=""><v-icon>settings</v-icon></v-btn>
+          </v-toolbar>
+    <v-card-text>
+     <v-card-text v-if="showOptions.includes('result')">
+       <v-layout style="height:200px" fill-height="">
+      <v-flex>
+        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
+      </v-flex>
+       </v-layout>
+      </v-card-text>
+      <v-layout style="height:200px" fill-height="">
+      <v-flex v-if="showOptions.includes('xml')" class="pa-1">
+	      <vue-ace :content="xml" mode="xml" wrap="true" v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
+     </v-flex>
+       <v-flex v-if="showOptions.includes('xslt')" class="pa-1">
+	       <vue-ace :content="xslt" mode="xml" wrap="true" v-on:change-content="v => this.xslt=v" v-on:annotation="a => this.xslValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
+      </v-flex>
+     
+      </v-layout>
+      </v-card-text>
+      
+     
+      </v-card>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      xml:"<foo />",
+      xmlValid: true,
+      xslt:'<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">\n</xsl:stylesheet>',
+      xslValid: true,
+      aceSettings: {},
+      result: "(result here)",
+      resultValid: true,
+      showOptions: ["xml","xslt"],
+      loading: false
+      }
+  },
+  methods:{
+  
+    transform(){
+      localforage.setItem('transform/xml', this.xml)
+      localforage.setItem('transform/xslt', this.xslt)
+      if(!this.showOptions.includes("result"))this.showOptions.push("result")
+      this.loading=true
+      this.resultValid=true
+      HTTPNE.post("xslt",Qs.stringify({xml:this.xml,xslt:this.xslt}))
+      .then(r=>{
+       console.log(r)
+       this.loading=false
+       if(r.data.rc==0){
+         this.result=r.data.result
+       }else{
+         this.result=r.data.info
+         this.resultValid=false
+       }
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.response.data.info
+        this.loading=false
+      });
+    }
+  },
+  beforeRouteEnter (to, from, next) {
+    settings.getItem('settings/ace')
+    .then( v =>{
+      
+      next(vm => {
+        console.log('eval settings: ',v);
+        vm.aceSettings = v;
+        })})
+     },
+  created:function(){
+    console.log("transform")
+    localforage.getItem('transform/xml').then((value) => { this.xml=value || this.xml});
+    localforage.getItem('transform/xslt').then((value) => { this.xslt=value || this.xslt});
   }
 }
 
@@ -3160,6 +3356,9 @@ users todo
     { path: '/acesettings', component: Acesettings, meta:{title:"Editor settings"} },
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
+    { path: '/svg', component: Svg, meta:{title:"SVG"} },
+    { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
+    { path: '/validate', component: Validate, meta:{title:"Validate"} },
     { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
     { path: '/tasks', component: Task, meta:{title:"Runnable tasks"} },
@@ -3194,8 +3393,20 @@ router.beforeEach((to, from, next) => {
     next() // make sure to always call next()!
   }
 });const Vuepoc=Vue.extend({template:` 
- <v-app id="app" :dark="dark" @theme="onDark">
- <v-navigation-drawer persistent="" app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" class="grey lighten-4 pb-0">
+ <v-app id="app" :dark="dark">
+  <v-navigation-drawer persistent="" v-model="drawerRight" right="" clipped="" :disable-route-watcher="true" app="">
+    <v-card>
+     <v-toolbar class="teal white--text">
+                <v-toolbar-title>Notifications</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn @click="drawerRight = false" icon=""><v-icon>close</v-icon></v-btn>
+          </v-toolbar>
+    <v-card-text>
+      TODO
+      </v-card-text>
+      </v-card>
+</v-navigation-drawer>
+ <v-navigation-drawer persistent="" app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true">
   <v-list class="pa-0">
 
           <v-list-tile avatar="" tag="div">
@@ -3264,13 +3475,14 @@ router.beforeEach((to, from, next) => {
       
   router,
   data:function(){return {
-    q:"",
-    status:{},
-    drawer:true,
+    q: "",
+    status: {},
+    drawer: true,
+    drawerRight: false,
     mini: false,
     dark: false,
-    alert:{show:false,msg:"Hello"},
-    items:[
+    alert: {show:false,msg:"Hello"},
+    items: [
       {href: '/',text: 'Home', icon: 'home'    }, 
       {
         icon: 'folder_open',
@@ -3288,6 +3500,8 @@ router.beforeEach((to, from, next) => {
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
+      {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
+      {href: '/transform',text: 'XSLT Transform',icon: 'input'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
       {
@@ -3297,6 +3511,7 @@ router.beforeEach((to, from, next) => {
         children: [
           {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
           {href: '/logs',text: 'Server logs',icon: 'dns'},
+          {href: '/timeline',text: 'Time line',icon: 'timelapse'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/ping',text: 'Ping',icon: 'update'}
@@ -3321,9 +3536,9 @@ router.beforeEach((to, from, next) => {
         children: [
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'Select',icon: 'extension'},
-      {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},
-      {href: '/timeline',text: 'Time line',icon: 'timelapse'}
+      {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
+      {href: '/svg',text: 'SVG',icon: 'extension'}, 
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
@@ -3349,13 +3564,12 @@ router.beforeEach((to, from, next) => {
       },
       onDark(dark){
         this.dark=dark
-        alert("theme")
       },
       favorite(){
         alert("@TODO")
       },
       notifications(){
-        alert("@TODO")
+        this.drawerRight=true
       }
   },
 
@@ -3363,12 +3577,14 @@ router.beforeEach((to, from, next) => {
     
     console.log("create-----------")
     var that=this
+    this.$on("theme",this.onDark)
     Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
         console.error(err, vm, info);
-        that.showAlert("vue error:\n"+err)
-        alert("vue error");
+        var msg=JSON.stringify(err)
+        that.showAlert("vue error:\n"+msg)
+        //alert("vue error");
    };
     // Add a response interceptor
 
@@ -3483,7 +3699,22 @@ var settings = {
   }
 };
 
+// error help 
+// https://stackoverflow.com/questions/18391212/is-it-not-possible-to-stringify-an-error-using-json-stringify/18391400#18391400
+if (!('toJSON' in Error.prototype))
+  Object.defineProperty(Error.prototype, 'toJSON', {
+      value: function () {
+          var alt = {};
 
+          Object.getOwnPropertyNames(this).forEach(function (key) {
+              alt[key] = this[key];
+          }, this);
+
+          return alt;
+      },
+      configurable: true,
+      writable: true
+  });
 
 //Returns a function, that, as long as it continues to be invoked, will not
 //be triggered. The function will be called after it stops being called for

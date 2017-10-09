@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="jobs">
   <v-card >
-   <v-toolbar light>
+   <v-toolbar >
      
     
      <v-btn  
@@ -18,7 +18,7 @@
       <v-spacer></v-spacer>
       
        <v-btn
-      light icon
+       icon
       :loading="loading"
       @click="getJobs()"
       @dblclick="autorefresh = !autorefresh"

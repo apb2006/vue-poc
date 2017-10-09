@@ -32,7 +32,7 @@
     <v-icon>label</v-icon>
     Namespaces</v-btn>
      <v-menu offset-y>
-      <v-btn icon primary  slot="activator"> <v-icon>more_vert</v-icon></v-btn>
+      <v-btn icon color="primary"  slot="activator"> <v-icon>more_vert</v-icon></v-btn>
       <v-list dense>
         <v-list-tile @click="plan">Show query plan</v-list-tile>
      </v-list>

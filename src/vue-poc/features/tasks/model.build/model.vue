@@ -8,7 +8,7 @@
       <span class="white--text">Generate <code>model.gen.xqm</code></span>      
     </v-card-title>
     <v-spacer></v-spacer>
-     <v-btn primary @click="submit()"   :loading="waiting"
+     <v-btn  color="primary"  @click="submit()"   :loading="waiting"
       :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>

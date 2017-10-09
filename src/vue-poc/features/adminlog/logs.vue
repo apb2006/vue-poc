@@ -2,9 +2,9 @@
 <template id="log">
  <v-container fluid>
   <v-card >
-   <v-toolbar light>
+   <v-toolbar >
        <v-btn
-      light icon
+       icon
       :loading="loading"
       @click="getItems()"
       :disabled="loading"

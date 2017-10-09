@@ -8,11 +8,11 @@
         <v-alert  color="warning" value="true">Not fully implemented</v-alert>
       
       <v-container fluid>
-        <v-layout row>
-          <v-flex xs4>
-            <v-subheader>Theme</v-subheader>
-          </v-flex>
-          <v-flex xs8>
+       <v-layout row>
+          <v-flex xs6 class="pa-3">
+        <v-layout row >
+          
+          <v-flex >
             <v-select
               v-bind:items="themes"
               v-model="ace.theme"
@@ -20,11 +20,10 @@
             ></v-select>
           </v-flex>
         </v-layout>
+       
         <v-layout row>
-          <v-flex xs4>
-            <v-subheader>Key binding</v-subheader>
-          </v-flex>
-          <v-flex xs8>
+         
+          <v-flex >
             <v-select
               v-bind:items="keybindings"
               v-model="ace.keybinding"
@@ -34,15 +33,18 @@
           </v-flex>
         </v-layout>
         <v-layout row>
-          <v-flex xs4>
-            <v-subheader>Font size</v-subheader>
-          </v-flex>
-          <v-flex xs8>
+         
+          <v-flex >
             <v-text-field
               label="Font size (px)"
                v-model="ace.fontsize"
             ></v-text-field>
           </v-flex>
+        </v-layout>
+         </v-flex>
+        <v-flex xs6 style="height:30vh" class="grey pa-3" fill-height>
+            <vue-ace mode="xquery" content="test"  :settings="ace"></vue-ace>
+        </v-flex>
         </v-layout>
        <v-divider ></v-divider>
  

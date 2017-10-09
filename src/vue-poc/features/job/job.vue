@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="job">
   <v-card >
-   <v-toolbar light>
+   <v-toolbar >
       <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ job }}</v-toolbar-title>
     
@@ -20,7 +20,7 @@
        <v-chip class="green white--text">
         <v-avatar ><v-icon>timer</v-icon></v-avatar>
        {{  jobstate.duration }}</v-chip>
-      <v-btn light icon  :loading="loading"   @click="getJob()"  :disabled="loading || finished">
+      <v-btn  icon  :loading="loading"   @click="getJob()"  :disabled="loading || finished">
          <v-icon>refresh</v-icon>
     </v-btn>     
     </v-toolbar>

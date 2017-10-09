@@ -41,7 +41,7 @@
       if(confirm("wipe localstorage? "+this.keys.length)) settings.clear();
     },
     theme(){
-     this.$emit("theme",this.dark)
+     this.$root.$emit("theme",this.dark)
     }
   },
   created(){

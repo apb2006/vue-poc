@@ -1,8 +1,27 @@
 <!DOCTYPE html>
 <template id="vuepoc">
- <v-app id="app" :dark="dark" @theme="onDark">
+ <v-app id="app" :dark="dark" >
+  <v-navigation-drawer
+      persistent
+      v-model="drawerRight"
+      right
+      clipped
+     :disable-route-watcher="true"
+      app
+    >
+    <v-card>
+     <v-toolbar class="teal white--text">
+                <v-toolbar-title >Notifications</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn  @click="drawerRight = false" icon><v-icon>close</v-icon></v-btn>
+          </v-toolbar>
+    <v-card-text>
+      TODO
+      </v-card-text>
+      </v-card>
+</v-navigation-drawer>
  <v-navigation-drawer persistent app :mini-variant.sync="mini" v-model="drawer"  
- :disable-route-watcher="true"  class="grey lighten-4 pb-0">
+ :disable-route-watcher="true"  >
   <v-list class="pa-0">
 
           <v-list-tile avatar tag="div">
@@ -73,13 +92,14 @@
 <script>{
   router,
   data:function(){return {
-    q:"",
-    status:{},
-    drawer:true,
+    q: "",
+    status: {},
+    drawer: true,
+    drawerRight: false,
     mini: false,
     dark: false,
-    alert:{show:false,msg:"Hello"},
-    items:[
+    alert: {show:false,msg:"Hello"},
+    items: [
       {href: '/',text: 'Home', icon: 'home'    }, 
       {
         icon: 'folder_open',
@@ -97,6 +117,8 @@
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
+      {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
+      {href: '/transform',text: 'XSLT Transform',icon: 'input'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
       ]},
       {
@@ -106,6 +128,7 @@
         children: [
           {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
           {href: '/logs',text: 'Server logs',icon: 'dns'},
+          {href: '/timeline',text: 'Time line',icon: 'timelapse'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/ping',text: 'Ping',icon: 'update'}
@@ -130,9 +153,9 @@
         children: [
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'Select',icon: 'extension'},
-      {href: '/puzzle',text: 'Puzzle',icon: 'extension'},       
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},
-      {href: '/timeline',text: 'Time line',icon: 'timelapse'}
+      {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
+      {href: '/svg',text: 'SVG',icon: 'extension'}, 
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
@@ -158,13 +181,12 @@
       },
       onDark(dark){
         this.dark=dark
-        alert("theme")
       },
       favorite(){
         alert("@TODO")
       },
       notifications(){
-        alert("@TODO")
+        this.drawerRight=true
       }
   },
 
@@ -172,12 +194,14 @@
     
     console.log("create-----------")
     var that=this
+    this.$on("theme",this.onDark)
     Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
         console.error(err, vm, info);
-        that.showAlert("vue error:\n"+err)
-        alert("vue error");
+        var msg=JSON.stringify(err)
+        that.showAlert("vue error:\n"+msg)
+        //alert("vue error");
    };
     // Add a response interceptor
 

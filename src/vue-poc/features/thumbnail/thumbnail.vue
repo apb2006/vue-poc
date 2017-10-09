@@ -20,7 +20,7 @@
               required
              ></v-text-field>
     </v-card>
-        <v-btn primary @click="step = 2">Next</v-btn>
+        <v-btn  color="primary"  @click="step = 2">Next</v-btn>
   </v-stepper-content>
   
   <v-stepper-content step="2" non-linear>
@@ -31,8 +31,8 @@
 		</v-card>
    
     <v-btn flat @click="step -= 1">Back</v-btn>
-    <v-btn primary @click="validate()">Validate</v-btn>
-     <v-btn primary @click="step = 3">Next</v-btn>  
+    <v-btn  color="primary"  @click="validate()">Validate</v-btn>
+     <v-btn  color="primary"  @click="step = 3">Next</v-btn>  
   </v-stepper-content>
 
   <v-stepper-content step="3" non-linear>
@@ -41,7 +41,7 @@
     </v-card>
 
      <v-btn flat @click="step -= 1">Back</v-btn>
-     <v-btn primary @click="go()">go</v-btn>
+     <v-btn  color="primary"  @click="go()">go</v-btn>
   </v-stepper-content>
   </v-stepper-items>
 </v-stepper>
