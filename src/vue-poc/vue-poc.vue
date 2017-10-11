@@ -21,7 +21,7 @@
       </v-card>
 </v-navigation-drawer>
  <v-navigation-drawer persistent app :mini-variant.sync="mini" v-model="drawer"  
- :disable-route-watcher="true"  >
+ :disable-route-watcher="true"  :enable-resize-watcher="true">
   <v-list class="pa-0">
 
           <v-list-tile avatar tag="div">

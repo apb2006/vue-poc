@@ -50,30 +50,27 @@ var settings = {
     debug: false,
     getItem (key) {
       if (this.debug) console.log('getItem',key);
-      return new Promise((resolve, reject) => {
-        localforage.getItem(key)
-        .then((value) => {
-          //console.log('GET setting', key,value);
-          resolve(value)
-        }).catch((err) => {
+      return localforage.getItem(key)
+        .then(value => {
+          console.log('GET setting', key,value);
+          return value;
+     
+        }).catch(err => {
           console.log('GET failed');
-          reject(err)
-      });
+
       });
     },
     setItem (key,value) {
       if (this.debug) console.log('setItem',key,value);
-      return new Promise((resolve, reject) => {
-      localforage.setItem(key, value) 
-      .then((value) => {
-        //console.log('SET ',key, value);
-        return new Promise((resolve, reject) => {resolve(value);})
-      }).catch((err) => {
+      return localforage.setItem(key, value) 
+      .then(value => {
+        console.log('SET ',key, value);
+        return value
+        
+      }).catch(err => {
         console.log('set failed');
-        return new Promise((resolve, reject) => {reject(err);})
       });
-    })
-},
+   },
     keys(){
       return localforage.keys() // returns array of keys 
  

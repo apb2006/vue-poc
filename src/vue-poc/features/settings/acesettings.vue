@@ -96,7 +96,7 @@
 <script>{
   data () {
     return {
-			     xace: {
+			     ace: {
 			        enableSnippets: true,
 			        enableBasicAutocompletion: true,
 			        enableLiveAutocompletion: true,
@@ -104,7 +104,6 @@
 			        keybinding: "ace",
 			        fontsize: "14"
 			    },
-			    ace: {},
 			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ],
 			    themes: [ "github", "chaos","tomorrow"]
 			    }
@@ -115,25 +114,23 @@
       return obj;
     }
   },
-  beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
-    .then( v =>{
-      next(vm => { vm.ace = v?v:vm.xace; })
-      })
-     },
-  
+   beforeRouteLeave (to, from, next) {
+     settings.setItem('settings/ace',this.ace)
+     .then(v=>{
+     next()
+     })
+   },
   mounted: function () {
- // console.log(this.ace,this.xace)
- // this.extend(this.storeace,this.storeace);
+  
  // console.log("$$$",this.ace)
-  },
-  watch: {"ace":{
-    handler:function(v){
-      settings.setItem('settings/ace',this.ace)
-      },
-    deep:true
+  settings.getItem('settings/ace')
+    .then( v =>{
+              //alert("db\n"+JSON.stringify(v))
+              this.ace = Object.assign({}, this.ace, v)
+              //alert("op\n"+JSON.stringify(this.ace))
+                  })
+
   }
-}
 }
 
 </script>

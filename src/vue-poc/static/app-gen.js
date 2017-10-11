@@ -1,4 +1,4 @@
-// generated 2017-10-09T10:18:05.74+01:00
+// generated 2017-10-11T22:21:45.072+01:00
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
        <v-card>
@@ -203,9 +203,12 @@
       var session=this.editor.getSession()
       session.setUseWrapMode(value)
     },
-    'setting' (value) {
-      console.log("--settings--",value)
-      this.applySettings(value)
+    "settings":{
+      handler:function(vnew,vold){
+        this.applySettings(vnew)
+       // alert("setting")
+        },
+      deep:true
     }
   },
   methods:{
@@ -385,8 +388,8 @@ Vue.filter('round', function(value, decimals) {
       const Log=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
-   <v-toolbar light="">
-       <v-btn light="" icon="" :loading="loading" @click="getItems()" :disabled="loading">
+   <v-toolbar>
+       <v-btn icon="" :loading="loading" @click="getItems()" :disabled="loading">
     <v-icon>refresh</v-icon>
     </v-btn>   
       <v-spacer></v-spacer>
@@ -1771,7 +1774,7 @@ people
       );
       const Job=Vue.extend({template:` 
   <v-card>
-   <v-toolbar light="">
+   <v-toolbar>
       <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ job }}</v-toolbar-title>
     
@@ -1790,7 +1793,7 @@ people
        <v-chip class="green white--text">
         <v-avatar><v-icon>timer</v-icon></v-avatar>
        {{  jobstate.duration }}</v-chip>
-      <v-btn light="" icon="" :loading="loading" @click="getJob()" :disabled="loading || finished">
+      <v-btn icon="" :loading="loading" @click="getJob()" :disabled="loading || finished">
          <v-icon>refresh</v-icon>
     </v-btn>     
     </v-toolbar>
@@ -1849,14 +1852,14 @@ people
       );
       const Jobs=Vue.extend({template:` 
   <v-card>
-   <v-toolbar light="">
+   <v-toolbar>
      
     
      <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
     <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>   
       <v-spacer></v-spacer>
       
-       <v-btn light="" icon="" :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
+       <v-btn icon="" :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
     <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
     </v-btn>
     </v-toolbar>
@@ -2025,7 +2028,7 @@ people
       const Ping=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
- <v-toolbar light="">
+ <v-toolbar>
  <v-toolbar-title>Simple performance measure</v-toolbar-title>
  <v-spacer></v-spacer>
  <v-btn @click="reset()">Reset</v-btn>
@@ -2259,7 +2262,7 @@ people
       const Repo=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
-   <v-toolbar light="">
+   <v-toolbar>
     <v-text-field append-icon="search" label="Filter repo" single-line="" hide-details="" v-model="search"></v-text-field>   
       <v-spacer></v-spacer>     
     </v-toolbar>
@@ -2609,7 +2612,7 @@ people
       
   data () {
     return {
-			     xace: {
+			     ace: {
 			        enableSnippets: true,
 			        enableBasicAutocompletion: true,
 			        enableLiveAutocompletion: true,
@@ -2617,7 +2620,6 @@ people
 			        keybinding: "ace",
 			        fontsize: "14"
 			    },
-			    ace: {},
 			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ],
 			    themes: [ "github", "chaos","tomorrow"]
 			    }
@@ -2628,25 +2630,23 @@ people
       return obj;
     }
   },
-  beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
-    .then( v =>{
-      next(vm => { vm.ace = v?v:vm.xace; })
-      })
-     },
-  
+   beforeRouteLeave (to, from, next) {
+     settings.setItem('settings/ace',this.ace)
+     .then(v=>{
+     next()
+     })
+   },
   mounted: function () {
- // console.log(this.ace,this.xace)
- // this.extend(this.storeace,this.storeace);
+  
  // console.log("$$$",this.ace)
-  },
-  watch: {"ace":{
-    handler:function(v){
-      settings.setItem('settings/ace',this.ace)
-      },
-    deep:true
+  settings.getItem('settings/ace')
+    .then( v =>{
+              //alert("db\n"+JSON.stringify(v))
+              this.ace = Object.assign({}, this.ace, v)
+              //alert("op\n"+JSON.stringify(this.ace))
+                  })
+
   }
-}
 }
 
 
@@ -2676,7 +2676,7 @@ people
    </v-card-text>
    <v-card-actions>
    <v-spacer></v-spacer>
-   <v-btn @click="wipe" error="">Wipe</v-btn></v-card-actions>
+   <v-btn @click="wipe" color="error">Wipe</v-btn></v-card-actions>
    </v-card>
  </v-container>
  `,
@@ -3160,7 +3160,7 @@ created(){
       const Users=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
-   <v-toolbar light="">
+   <v-toolbar>
     <v-text-field append-icon="search" label="Filter user" single-line="" hide-details="" v-model="search"></v-text-field>   
       <v-spacer></v-spacer>     
     </v-toolbar>
@@ -3406,7 +3406,7 @@ router.beforeEach((to, from, next) => {
       </v-card-text>
       </v-card>
 </v-navigation-drawer>
- <v-navigation-drawer persistent="" app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true">
+ <v-navigation-drawer persistent="" app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" :enable-resize-watcher="true">
   <v-list class="pa-0">
 
           <v-list-tile avatar="" tag="div">
@@ -3666,30 +3666,27 @@ var settings = {
     debug: false,
     getItem (key) {
       if (this.debug) console.log('getItem',key);
-      return new Promise((resolve, reject) => {
-        localforage.getItem(key)
-        .then((value) => {
-          //console.log('GET setting', key,value);
-          resolve(value)
-        }).catch((err) => {
+      return localforage.getItem(key)
+        .then(value => {
+          console.log('GET setting', key,value);
+          return value;
+     
+        }).catch(err => {
           console.log('GET failed');
-          reject(err)
-      });
+
       });
     },
     setItem (key,value) {
       if (this.debug) console.log('setItem',key,value);
-      return new Promise((resolve, reject) => {
-      localforage.setItem(key, value) 
-      .then((value) => {
-        //console.log('SET ',key, value);
-        return new Promise((resolve, reject) => {resolve(value);})
-      }).catch((err) => {
+      return localforage.setItem(key, value) 
+      .then(value => {
+        console.log('SET ',key, value);
+        return value
+        
+      }).catch(err => {
         console.log('set failed');
-        return new Promise((resolve, reject) => {reject(err);})
       });
-    })
-},
+   },
     keys(){
       return localforage.keys() // returns array of keys 
  

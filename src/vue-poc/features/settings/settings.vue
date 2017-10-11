@@ -24,7 +24,7 @@
    </v-card-text>
    <v-card-actions>
    <v-spacer></v-spacer>
-   <v-btn @click="wipe" error>Wipe</v-btn></v-card-actions>
+   <v-btn @click="wipe" color="error">Wipe</v-btn></v-card-actions>
    </v-card>
  </v-container>
 </template>

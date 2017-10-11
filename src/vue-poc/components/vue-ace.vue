@@ -45,9 +45,12 @@ ace editor for vue.js
       var session=this.editor.getSession()
       session.setUseWrapMode(value)
     },
-    'setting' (value) {
-      console.log("--settings--",value)
-      this.applySettings(value)
+    "settings":{
+      handler:function(vnew,vold){
+        this.applySettings(vnew)
+       // alert("setting")
+        },
+      deep:true
     }
   },
   methods:{
