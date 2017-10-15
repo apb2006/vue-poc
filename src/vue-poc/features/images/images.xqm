@@ -142,11 +142,15 @@ as element(*)*
 let $id:=$vue-api:entity?access?id($image)
 let $path:=$vue-api:entity?access?path($image)
 let $name:=$vue-api:entity?access?name($image)
+let $geo:=$vue-api:entity?access?geo($image)
+let $keywords:=$vue-api:entity?access?keywords($image)
 let $thumb:= $cfg:THUMBDIR ||  $path
 let $thumb:=if(file:exists($thumb)) then $thumb else $cfg:THUMBDIR || "missing.jpg"
 return   ( <id>{$id}</id>
          ,<name>{$name}</name>
          ,<path>{$path}</path>
+         ,<geo>{$geo}</geo>
+         ,<keywords>{$keywords}</keywords>
          ,<data>{fetch:binary($thumb)}</data>
          ,<mime>{fetch:content-type($thumb)}</mime>)
 };

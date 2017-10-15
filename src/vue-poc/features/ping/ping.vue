@@ -31,7 +31,7 @@
               <td>Get</td>
               <td>
                <v-btn @click="get()" icon >
-                   <v-icon>cached</v-icon>
+                   <v-icon>radio_button_checked</v-icon>
                 </v-btn>
              
                </td>
@@ -65,7 +65,7 @@
              <td>Update</td>
           <td>
            <v-btn @click="update()" icon >
-                   <v-icon>cached</v-icon>
+                   <v-icon>radio_button_checked</v-icon>
             </v-btn>
           </td>
           

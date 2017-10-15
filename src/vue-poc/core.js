@@ -52,7 +52,7 @@ var settings = {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)
         .then(value => {
-          console.log('GET setting', key,value);
+          //console.log('GET setting', key,value);
           return value;
      
         }).catch(err => {
@@ -64,7 +64,7 @@ var settings = {
       if (this.debug) console.log('setItem',key,value);
       return localforage.setItem(key, value) 
       .then(value => {
-        console.log('SET ',key, value);
+        //console.log('SET ',key, value);
         return value
         
       }).catch(err => {

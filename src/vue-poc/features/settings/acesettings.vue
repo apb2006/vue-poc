@@ -105,7 +105,7 @@
 			        fontsize: "14"
 			    },
 			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ],
-			    themes: [ "github", "chaos","tomorrow"]
+			    themes: [ "github","chrome" ,"tomorrow","-dark-","chaos","twilight"]
 			    }
   },
   methods:{

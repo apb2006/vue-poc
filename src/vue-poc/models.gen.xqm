@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-10-06T15:21:02.917+01:00 
+ : auto generated from xml files in entities folder at: 2017-10-15T22:56:50.395+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -185,10 +185,10 @@ declare variable $entity:list:=map {
      "name": "thumbnail",
      "description": "an image.",
      "access": map{ 
-       "geo": function($_ as element()) as xs:boolean {$_/geo },
+       "geo": function($_ as element()) as xs:boolean {$_/boolean(geo) },
        "height": function($_ as element()) as xs:integer {$_/height },
        "id": function($_ as element()) as xs:integer {$_/db:node-id(.) },
-       "keywords": function($_ as element()) as xs:integer {$_/0 },
+       "keywords": function($_ as element()) as xs:integer {$_/count(keywords/keyword) },
        "name": function($_ as element()) as xs:string {$_/file/@name },
        "path": function($_ as element()) as xs:string {$_/file/@path },
        "size": function($_ as element()) as xs:integer {$_/0 },
@@ -201,7 +201,7 @@ declare variable $entity:list:=map {
        "json":   map{ 
            "geo": function($_ as element()) as element(geo)? {
             (: xs:boolean :)
-                        fn:data($_/geo)!element geo { attribute type {'boolean'}, .} 
+                        fn:data($_/boolean(geo))!element geo { attribute type {'boolean'}, .} 
                  },
            "height": function($_ as element()) as element(height)? {
             (: xs:integer :)
@@ -213,7 +213,7 @@ declare variable $entity:list:=map {
                  },
            "keywords": function($_ as element()) as element(keywords)? {
             (: xs:integer :)
-                        fn:data($_/0)!element keywords { attribute type {'number'}, .} 
+                        fn:data($_/count(keywords/keyword))!element keywords { attribute type {'number'}, .} 
                  },
            "name": function($_ as element()) as element(name)? {
             (: xs:string :)

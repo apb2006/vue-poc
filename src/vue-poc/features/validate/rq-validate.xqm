@@ -5,35 +5,32 @@
 :)
 
 module namespace tx = 'quodatum:vue.api.transform';
+import module namespace qv = 'quodatum.validate' at "validate.xqm";
 
-(:~
- : xslt
- :)
+declare namespace cnt="http://cambridge.org/core/content";
+(:~ location of schema to use :)
+declare variable $tx:nvdl:=resolve-uri("../static/consignment/nvdl/consignment.nvdl",static-base-uri());
+
+(:~ location of schema to use :)
+declare variable $tx:schematron:=resolve-uri("../static/consignment/nvdl/core-consignment.sch",static-base-uri());
+
+declare variable $tx:validators:=(qv:schematron(?,$tx:schematron)
+                                  ,qv:nvdl(?,$tx:nvdl)
+                                  );
+                                  
+(:~ run validation doc in db :)
 declare 
-%rest:POST %rest:path("/vue-poc/api/xslt")
-%rest:query-param("xml", "{$xml}") 
-%rest:query-param("xslt", "{$xslt}")   
-%output:method("json")
-%updating   
-function tx:xslt($xml,$xslt) {
+%rest:GET %rest:path("/vue-poc/api/validate")
+%rest:query-param("doc", "{$doc}") 
+%rest:query-param("schema", "{$schema}") 
+%rest:produces("text/xml")
+%output:method("xml") 
+function tx:validate-path($doc,$schema){
+    tx:validate(doc($doc))
+};
 
-   let $result:=try{
-                let $x:=fn:parse-xml($xml)
-                let $s:=fn:parse-xml($xslt)
-                let $t:=fn:trace($xml,"xml")
-                 let $t:=fn:trace($xslt,"xml")
-                let $r:=xslt:transform($x,$s)
-                return 
-                <json objects="json">
-                   <rc>0</rc>
-                   <result>{fn:serialize($r)}</result>
-                </json>
-                } 
-                catch *{
-                 <json objects="json">
-                   <rc>1</rc>
-                   <info>{$err:description}</info>
-                </json>
-                }
-   return db:output($result)
+(:~ run validations add custom details - content-type:)
+declare function tx:validate($doc){
+  let $type:=$doc//cnt:*=>head()=>local-name()=>substring-after("content-")
+  return qv:validation($doc,$tx:validators,attribute type {$type})
 };

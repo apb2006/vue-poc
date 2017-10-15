@@ -23,10 +23,10 @@
         :key="i"
         :href="'#mobile-tabs-6-' + i"
       >
-       <v-chip  close>
-       <v-avatar class="pink">
+       <v-chip label close>
+      
        <v-icon>favorite</v-icon>
-       </v-avatar>
+
        Item {{ i }} more
        </v-chip>
       </v-tabs-item>

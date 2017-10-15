@@ -22,7 +22,7 @@
 		</field>
 		<field name="keywords" type="xs:integer">
       <description>Number of keywords</description>
-      <xpath>0</xpath>
+      <xpath>count(keywords/keyword)</xpath>
     </field>
     <field name="width" type="xs:integer">
       <description>width in pixels</description>
@@ -34,7 +34,7 @@
     </field>
     <field name="geo" type="xs:boolean">
       <description>has geo</description>
-      <xpath>geo</xpath>
+      <xpath>boolean(geo)</xpath>
     </field>
 	</fields>
 	

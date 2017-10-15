@@ -72,7 +72,6 @@ ace editor for vue.js
     },
     
     applySettings(aceSettings){
-      console.log("apply: ",aceSettings.theme)
       this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))

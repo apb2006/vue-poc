@@ -1,4 +1,4 @@
-// generated 2017-10-11T22:21:45.072+01:00
+// generated 2017-10-15T22:47:08.186+01:00
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
        <v-card>
@@ -230,7 +230,6 @@
     },
     
     applySettings(aceSettings){
-      console.log("apply: ",aceSettings.theme)
       this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
@@ -1452,7 +1451,7 @@ Vue.filter('round', function(value, decimals) {
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
               <v-card class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)" @dblclick="go(image)" height="80px" contain="">
-                <v-layout :justify-end="true">
+                <v-layout align-baseline="" align-end="" fill-height="">
                 <v-flex>
                  <v-icon class="green--text">check_circle</v-icon>
                  </v-flex>
@@ -1460,8 +1459,9 @@ Vue.filter('round', function(value, decimals) {
                 </v-card-media>
                 
                  <v-card-actions>
-                <span>#</span>
-                 <v-btn icon="" small="">
+
+						      <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
+                 <v-btn icon="" small="" v-if="image.geo">
                   <v-icon>place</v-icon>
                 </v-btn>
                 <v-spacer></v-spacer>
@@ -2057,7 +2057,7 @@ people
               <td>Get</td>
               <td>
                <v-btn @click="get()" icon="">
-                   <v-icon>cached</v-icon>
+                   <v-icon>radio_button_checked</v-icon>
                 </v-btn>
              
                </td>
@@ -2091,7 +2091,7 @@ people
              <td>Update</td>
           <td>
            <v-btn @click="update()" icon="">
-                   <v-icon>cached</v-icon>
+                   <v-icon>radio_button_checked</v-icon>
             </v-btn>
           </td>
           
@@ -2621,7 +2621,7 @@ people
 			        fontsize: "14"
 			    },
 			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ],
-			    themes: [ "github", "chaos","tomorrow"]
+			    themes: [ "github","chrome" ,"tomorrow","-dark-","chaos","twilight"]
 			    }
   },
   methods:{
@@ -2743,10 +2743,10 @@ svg
     
     <v-tabs-bar class="grey lighten-3">
       <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
-       <v-chip close="">
-       <v-avatar class="pink">
+       <v-chip label="" close="">
+      
        <v-icon>favorite</v-icon>
-       </v-avatar>
+
        Item {{ i }} more
        </v-chip>
       </v-tabs-item>
@@ -3210,15 +3210,68 @@ created(){
 
       );
       const Validate=Vue.extend({template:` 
- <v-container fluid="">
-validate
+  <v-container fluid="" v-resize="onResize">
+<v-card>
+     <v-toolbar class="orange">
+          <v-btn @click="validate" :loading="loading" :disabled="loading"><v-icon>play_circle_outline</v-icon>Validate</v-btn>
+          <span v-text="elapsed"></span>ms. Height: 
+          <span v-text="height"></span>
+            <v-spacer></v-spacer>
+         
+              <v-menu offset-y="" left="">
+             <v-btn icon="" dark="" slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-card>
+              <v-toolbar class="green">
+                  <v-card-title>Settings................</v-card-title>
+                  </v-toolbar>
+                <v-card-text>
+                stuff
+                </v-card-text>
+                </v-card>
+              </v-menu>
+          </v-toolbar>
+    <v-card-text>
+    here
+    </v-card-text>
+    </v-card>
  </v-container>
  `,
       
   data:  function(){
     return {
-      message: 'bad route!'
+      loading: false,
+      elapsed: null,
+      height: null,
+      result: null,
+      doc: "c:/test.xml",
+      schema: "c:/schema.xsd"
       }
+  },
+  methods:{
+    onResize(){
+      this.height = window.innerHeight 
+    },
+    validate(){
+    
+      this.loading=true
+      this.start = performance.now();
+      HTTPNE.get("validate",Qs.stringify({doc: this.doc, schema: this.schema}))
+      .then(r=>{
+       console.log(r)
+       this.elapsed=Math.floor(performance.now() - this.start);
+       this.loading=false
+       if(r.data.rc==0){
+         this.result=r.data.result
+       }else{
+         this.result=r.data.info
+       }
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.message + ": "+ r.config.url + "\n"+ r.response.data
+        this.loading=false
+      });
+    },
   },
   created:function(){
     console.log("notfound",this.$route.query.q)
@@ -3229,9 +3282,11 @@ validate
       const Transform=Vue.extend({template:` 
  <v-container fluid="">
 <v-card>
-     <v-toolbar>
+     <v-toolbar class="orange">
           <v-btn @click="transform" :loading="loading" :disabled="loading"><v-icon>play_circle_outline</v-icon>Run</v-btn>
-           <v-spacer></v-spacer>
+          <span v-text="elapsed"></span>ms. Height: 
+          <span v-text="height"></span>
+            <v-spacer></v-spacer>
            <v-btn-toggle v-model="showOptions" multiple="">
            <v-icon>visibility</v-icon>
               <v-btn flat="" value="result">
@@ -3244,25 +3299,35 @@ validate
                  <span :class="xslValid?'':'red'">XSLT</span>
               </v-btn>
             </v-btn-toggle>
-             <v-btn icon=""><v-icon>settings</v-icon></v-btn>
+              <v-menu offset-y="" left="">
+             <v-btn icon="" dark="" slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-card>
+              <v-toolbar class="green">
+				          <v-card-title>Settings................</v-card-title>
+				          </v-toolbar>
+				        <v-card-text>
+				        stuff
+				        </v-card-text>
+				        </v-card>
+				      </v-menu>
           </v-toolbar>
-    <v-card-text>
-     <v-card-text v-if="showOptions.includes('result')">
-       <v-layout style="height:200px" fill-height="">
-      <v-flex>
-        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
-      </v-flex>
+    <v-card-text v-resize="onResize" style="height:400px; " class="amber" ref="page">
+
+       <v-layout v-if="showOptions.includes('result')" style="height:100%" fill-height="">
+		      <v-flex>
+		        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
+		      </v-flex>
        </v-layout>
-      </v-card-text>
-      <v-layout style="height:200px" fill-height="">
+ 
+      <v-layout style="height:100%" fill-height="">
       <v-flex v-if="showOptions.includes('xml')" class="pa-1">
 	      <vue-ace :content="xml" mode="xml" wrap="true" v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
      </v-flex>
        <v-flex v-if="showOptions.includes('xslt')" class="pa-1">
 	       <vue-ace :content="xslt" mode="xml" wrap="true" v-on:change-content="v => this.xslt=v" v-on:annotation="a => this.xslValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
       </v-flex>
-     
       </v-layout>
+ 
       </v-card-text>
       
      
@@ -3280,7 +3345,10 @@ validate
       result: "(result here)",
       resultValid: true,
       showOptions: ["xml","xslt"],
-      loading: false
+      loading: false,
+      start: null,
+      elapsed: "?",
+      height: "?"
       }
   },
   methods:{
@@ -3291,9 +3359,11 @@ validate
       if(!this.showOptions.includes("result"))this.showOptions.push("result")
       this.loading=true
       this.resultValid=true
+      this.start = performance.now();
       HTTPNE.post("xslt",Qs.stringify({xml:this.xml,xslt:this.xslt}))
       .then(r=>{
        console.log(r)
+       this.elapsed=Math.floor(performance.now() - this.start);
        this.loading=false
        if(r.data.rc==0){
          this.result=r.data.result
@@ -3304,9 +3374,17 @@ validate
       })
       .catch(r=> {
         console.log("error",r)
-        this.result=r.response.data.info
+        this.result=r.message + ": "+ r.config.url + "\n"+ r.response.data
         this.loading=false
       });
+    },
+    onResize(){
+      var el=this.$refs["page"]
+      console.log("top",el.offsetTop)
+      var h=Math.max(1,window.innerHeight - el.offsetTop) -100
+       console.log("h",h)
+      this.height = h
+      el.style.height=h +"px"
     }
   },
   beforeRouteEnter (to, from, next) {
@@ -3432,11 +3510,27 @@ router.beforeEach((to, from, next) => {
  <v-toolbar class="indigo" app="" dark="">
   <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
-  <v-spacer></v-spacer>
-  <v-btn @click="favorite" icon="" flat="" title="Save location">
-       <v-icon>favorite</v-icon>
+   <v-btn @click="frmFav = !frmFav" icon="" flat="" title="Bookmark this page">
+       <v-icon>star_border</v-icon>
    </v-btn>
-  
+   <v-dialog v-model="frmFav">
+            <v-card> 
+        <v-card-title>
+            Bookmark
+          </v-card-title>
+          
+         <v-card-text>
+         <h6>{{$route.meta.title}}</h6>
+            <v-select v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-select>
+           </v-card-text>
+        <v-card-actions>
+            <v-btn color="primary" flat="" @click.stop="frmFav=false">Save</v-btn>
+            <v-btn color="primary" flat="" @click.stop="frmFav=false">Cancel</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+  <v-spacer></v-spacer>
+ 
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
    <v-menu left="" transition="v-fade-transition">
@@ -3482,17 +3576,17 @@ router.beforeEach((to, from, next) => {
     mini: false,
     dark: false,
     alert: {show:false,msg:"Hello"},
+    frmFav: false,
+    tags: [],
+    taglist: [
+      'todo',
+      'find',
+      'some',
+      'good',
+      'tags'
+    ],
     items: [
-      {href: '/',text: 'Home', icon: 'home'    }, 
-      {
-        icon: 'folder_open',
-        text: 'Collections' ,
-        model: false,
-        children: [
-       {href: '/database', text: 'Databases',icon: 'developer_mode' },
-       {href: '/files', text: 'File system',icon: 'folder' },
-      {href: '/history',text: 'history',icon: 'history'}
-      ]},
+      {href: '/',text: 'Home', icon: 'home'    },
       {
         icon: 'directions_run',
         text: 'Actions' ,
@@ -3503,6 +3597,21 @@ router.beforeEach((to, from, next) => {
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
       {href: '/transform',text: 'XSLT Transform',icon: 'input'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
+      ]},
+      {
+        icon: 'folder_open',
+        text: 'Collections' ,
+        model: false,
+        children: [
+       {href: '/database', text: 'Databases',icon: 'developer_mode' },
+       {href: '/files', text: 'File system',icon: 'folder' },
+      {href: '/history',text: 'history',icon: 'history'}
+      ]},
+      {
+        icon: 'memory',
+        text: 'Models' ,
+        model: false,
+        children: [
       ]},
       {
         icon: 'cast_connected',
@@ -3668,7 +3777,7 @@ var settings = {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)
         .then(value => {
-          console.log('GET setting', key,value);
+          //console.log('GET setting', key,value);
           return value;
      
         }).catch(err => {
@@ -3680,7 +3789,7 @@ var settings = {
       if (this.debug) console.log('setItem',key,value);
       return localforage.setItem(key, value) 
       .then(value => {
-        console.log('SET ',key, value);
+        //console.log('SET ',key, value);
         return value
         
       }).catch(err => {

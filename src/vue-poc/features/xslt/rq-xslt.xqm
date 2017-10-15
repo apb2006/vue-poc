@@ -1,22 +1,21 @@
 (:~ 
-: validation handler
+: basex web system info
 : @author andy bunce
-: @since oct 2017
+: @since oct 2012
 :)
 
-module namespace tx = 'quodatum:vue.api.validate';
+module namespace tx = 'quodatum:vue.api.transform';
 
 (:~
- : validate
+ : xslt
  :)
 declare 
-%rest:POST %rest:path("/vue-poc/api/validate")
+%rest:POST %rest:path("/vue-poc/api/xslt")
 %rest:query-param("xml", "{$xml}") 
-%rest:query-param("schema", "{$schema}")   
-%output:method("json")
-%updating   
-function tx:validate($xml,$schema) {
-   let $xslt:="fixme"
+%rest:query-param("xslt", "{$xslt}")   
+%output:method("json")  
+function tx:xslt($xml,$xslt) {
+
    let $result:=try{
                 let $x:=fn:parse-xml($xml)
                 let $s:=fn:parse-xml($xslt)
@@ -35,5 +34,5 @@ function tx:validate($xml,$schema) {
                    <info>{$err:description}</info>
                 </json>
                 }
-   return db:output($result)
+   return $result
 };

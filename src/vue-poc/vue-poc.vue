@@ -47,11 +47,33 @@
  <v-toolbar class="indigo" app dark >
   <v-toolbar-side-icon @click.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down" >{{$route.meta.title}}</v-toolbar-title>
-  <v-spacer></v-spacer>
-  <v-btn @click="favorite" icon flat title="Save location">
-       <v-icon>favorite</v-icon>
+   <v-btn @click="frmFav = !frmFav" icon flat title="Bookmark this page">
+       <v-icon>star_border</v-icon>
    </v-btn>
-  
+   <v-dialog v-model="frmFav">
+            <v-card> 
+        <v-card-title>
+            Bookmark
+          </v-card-title>
+          
+         <v-card-text>
+         <h6>{{$route.meta.title}}</h6>
+            <v-select
+              v-model="tags"
+              label="tags"
+              chips
+              tags
+              :items="taglist"
+            ></v-select>
+           </v-card-text>
+        <v-card-actions>
+            <v-btn color="primary" flat @click.stop="frmFav=false">Save</v-btn>
+            <v-btn color="primary" flat @click.stop="frmFav=false">Cancel</v-btn>
+          </v-card-actions>
+        </v-card>
+      </v-dialog>
+  <v-spacer></v-spacer>
+ 
   <v-spacer></v-spacer>
    <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.enter="search"></v-text-field>
@@ -99,17 +121,17 @@
     mini: false,
     dark: false,
     alert: {show:false,msg:"Hello"},
+    frmFav: false,
+    tags: [],
+    taglist: [
+      'todo',
+      'find',
+      'some',
+      'good',
+      'tags'
+    ],
     items: [
-      {href: '/',text: 'Home', icon: 'home'    }, 
-      {
-        icon: 'folder_open',
-        text: 'Collections' ,
-        model: false,
-        children: [
-       {href: '/database', text: 'Databases',icon: 'developer_mode' },
-       {href: '/files', text: 'File system',icon: 'folder' },
-      {href: '/history',text: 'history',icon: 'history'}
-      ]},
+      {href: '/',text: 'Home', icon: 'home'    },
       {
         icon: 'directions_run',
         text: 'Actions' ,
@@ -120,6 +142,21 @@
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
       {href: '/transform',text: 'XSLT Transform',icon: 'input'},
       {href: '/tasks',text: 'Tasks',icon: 'history'}
+      ]},
+      {
+        icon: 'folder_open',
+        text: 'Collections' ,
+        model: false,
+        children: [
+       {href: '/database', text: 'Databases',icon: 'developer_mode' },
+       {href: '/files', text: 'File system',icon: 'folder' },
+      {href: '/history',text: 'history',icon: 'history'}
+      ]},
+      {
+        icon: 'memory',
+        text: 'Models' ,
+        model: false,
+        children: [
       ]},
       {
         icon: 'cast_connected',

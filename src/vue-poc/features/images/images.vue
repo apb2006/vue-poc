@@ -40,16 +40,17 @@
               <v-card   class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)"  @dblclick="go(image)" 
                 height="80px" contain>
-                <v-layout :justify-end="true">
-                <v-flex>
+                <v-layout align-baseline align-end fill-height>
+                <v-flex >
                  <v-icon class="green--text">check_circle</v-icon>
                  </v-flex>
                  </v-layout>
                 </v-card-media>
                 
                  <v-card-actions  >
-                <span>#</span>
-                 <v-btn icon small>
+
+						      <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
+                 <v-btn icon small v-if="image.geo">
                   <v-icon>place</v-icon>
                 </v-btn>
                 <v-spacer></v-spacer>

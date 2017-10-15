@@ -1,12 +1,14 @@
 <!DOCTYPE html>
 <template id="transform">
- <v-container fluid>
+ <v-container fluid >
 <v-card>
-     <v-toolbar >
+     <v-toolbar class="orange">
           <v-btn  @click="transform"   :loading="loading"
       :disabled="loading"
           ><v-icon>play_circle_outline</v-icon>Run</v-btn>
-           <v-spacer></v-spacer>
+          <span v-text="elapsed"></span>ms. Height: 
+          <span v-text="height"></span>
+            <v-spacer></v-spacer>
            <v-btn-toggle v-model="showOptions" multiple>
            <v-icon>visibility</v-icon>
               <v-btn flat value="result" >
@@ -19,18 +21,28 @@
                  <span :class="xslValid?'':'red'">XSLT</span>
               </v-btn>
             </v-btn-toggle>
-             <v-btn icon><v-icon>settings</v-icon></v-btn>
+              <v-menu offset-y left>
+             <v-btn icon dark slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-card >
+              <v-toolbar class="green">
+				          <v-card-title >Settings................</v-card-title>
+				          </v-toolbar>
+				        <v-card-text>
+				        stuff
+				        </v-card-text>
+				        </v-card>
+				      </v-menu>
           </v-toolbar>
-    <v-card-text >
-     <v-card-text v-if="showOptions.includes('result')">
-       <v-layout style="height:200px"  fill-height >
-      <v-flex >
-        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
-      </v-flex>
+    <v-card-text v-resize="onResize" style="height:400px; " class="amber" ref="page">
+
+       <v-layout  v-if="showOptions.includes('result')" style="height:100%"  fill-height >
+		      <v-flex >
+		        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
+		      </v-flex>
        </v-layout>
-      </v-card-text>
-      <v-layout style="height:200px"  fill-height >
-      <v-flex v-if="showOptions.includes('xml')" class="pa-1">
+ 
+      <v-layout style="height:100%"  fill-height>
+      <v-flex v-if="showOptions.includes('xml')" class="pa-1"  >
 	      <vue-ace  :content="xml" mode="xml" wrap="true" 
 	      v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 && a.warning===0"
 	     :settings="aceSettings"></vue-ace>
@@ -40,8 +52,8 @@
 	       v-on:change-content="v => this.xslt=v"  v-on:annotation="a => this.xslValid=a.error===0 && a.warning===0"
 	      :settings="aceSettings"></vue-ace>
       </v-flex>
-     
       </v-layout>
+ 
       </v-card-text>
       
      
@@ -60,7 +72,10 @@
       result: "(result here)",
       resultValid: true,
       showOptions: ["xml","xslt"],
-      loading: false
+      loading: false,
+      start: null,
+      elapsed: "?",
+      height: "?"
       }
   },
   methods:{
@@ -71,9 +86,11 @@
       if(!this.showOptions.includes("result"))this.showOptions.push("result")
       this.loading=true
       this.resultValid=true
+      this.start = performance.now();
       HTTPNE.post("xslt",Qs.stringify({xml:this.xml,xslt:this.xslt}))
       .then(r=>{
        console.log(r)
+       this.elapsed=Math.floor(performance.now() - this.start);
        this.loading=false
        if(r.data.rc==0){
          this.result=r.data.result
@@ -84,9 +101,17 @@
       })
       .catch(r=> {
         console.log("error",r)
-        this.result=r.response.data.info
+        this.result=r.message + ": "+ r.config.url + "\n"+ r.response.data
         this.loading=false
       });
+    },
+    onResize(){
+      var el=this.$refs["page"]
+      console.log("top",el.offsetTop)
+      var h=Math.max(1,window.innerHeight - el.offsetTop) -100
+       console.log("h",h)
+      this.height = h
+      el.style.height=h +"px"
     }
   },
   beforeRouteEnter (to, from, next) {
