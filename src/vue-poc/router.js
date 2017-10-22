@@ -14,6 +14,8 @@ const router = new VueRouter({
     { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
     { path: '/images/people', component: People, meta:{title:"Image people"} },
     
+    { path: '/entity', component: Entity, meta:{title:"Entities"} },
+    { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },

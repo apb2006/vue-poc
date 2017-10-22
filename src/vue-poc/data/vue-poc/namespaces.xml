@@ -67,4 +67,13 @@
     <description>Geo 
     </description>
   </namespace>
+  
+  <namespace uri="http://www.w3.org/ns/xproc" prefix="xproc">
+    <description>XProc 
+    </description>
+  </namespace>
+   <namespace uri="http://www.w3.org/ns/xproc-step" prefix="c">
+    <description>XProc step
+    </description>
+  </namespace>
 </namespaces>

@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-10-15T22:56:50.395+01:00 
+ : auto generated from xml files in entities folder at: 2017-10-22T20:37:22.427+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -97,6 +97,40 @@ declare variable $entity:list:=map {
        
        "views": map{ 
        
+       }
+   },
+  "namespace": map{
+     "name": "namespace",
+     "description": "An XML namespace",
+     "access": map{ 
+       "description": function($_ as element()) as xs:string {$_/description },
+       "prefix": function($_ as element()) as xs:string {$_/@prefix },
+       "xmlns": function($_ as element()) as xs:string {$_/@uri } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( $item/@uri, $item/description) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "description": function($_ as element()) as element(description)? {
+            (: xs:string :)
+                        fn:data($_/description)!element description {  .} 
+                 },
+           "prefix": function($_ as element()) as element(prefix)? {
+            (: xs:string :)
+                        fn:data($_/@prefix)!element prefix {  .} 
+                 },
+           "xmlns": function($_ as element()) as element(xmlns)? {
+            (: xs:string :)
+                        fn:data($_/@uri)!element xmlns {  .} 
+                 } },
+       
+      "data": function() as element(namespace)*
+       { collection("vuepoc")/namespaces/namespace
+	 },
+       
+       "views": map{ 
+       'filter': 'xmlns description'
        }
    },
   "query": map{

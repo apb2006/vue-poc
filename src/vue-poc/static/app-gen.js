@@ -1,4 +1,4 @@
-// generated 2017-10-15T22:47:08.186+01:00
+// generated 2017-10-22T22:09:51.205+01:00
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
        <v-card>
@@ -131,6 +131,64 @@
   created:function(){
       console.log("qd-panel");
     }
+}
+
+      );
+      Vue.component('qd-table',{template:` 
+ <v-container fluid="">
+  <v-card>
+   <v-toolbar>
+    <v-text-field append-icon="search" label="Filter user" single-line="" hide-details="" v-model="search"></v-text-field>   
+      <v-spacer></v-spacer>
+      <v-btn @click="getData">Refresh</v-btn>   
+    </v-toolbar>
+<v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No users found @todo">
+    <template slot="items" scope="props">
+    <slot></slot>
+    </template>
+  </v-data-table>
+  </v-card>
+ </v-container>
+ `,
+      
+	  props: {
+	    headers: {
+	      default: [
+	        {
+	          text: 'Name',
+	          left: true,
+	          value: 'id'
+	        },
+	        { text: 'Permission', value: 'state' }
+	      ]
+	  },
+	  dataUri:{
+	    default: "users"
+	  }
+  },
+  data:  function(){
+    return {
+      loading: false,
+      items: [],
+      search: null,
+      selected: [],
+
+      }
+  },
+  methods:{
+      getData(){
+        this.loading=true;
+        HTTP.get(this.dataUri)
+        .then(r=>{
+           this.loading=false
+           this.items=r.data
+        })
+     }
+  },
+  created:function(){
+    console.log("qd-table")
+    this.getData()
+  }
 }
 
       );
@@ -1032,6 +1090,23 @@ Vue.filter('round', function(value, decimals) {
     // has access to `this` component instance.
     if(this.dirty && confirm("unsaved changes will be lost"))this.dirty=false;
     next(!this.dirty);
+  }
+}
+
+      );
+      const Entity=Vue.extend({template:` 
+ <v-container fluid="">
+Entities
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'bad route!'
+      }
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
   }
 }
 
@@ -2021,6 +2096,23 @@ people
   },
   created:function(){
     console.log("map")
+  }
+}
+
+      );
+      const Namespace=Vue.extend({template:` 
+ <v-container fluid="">
+namespaces
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'bad route!'
+      }
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
   }
 }
 
@@ -3159,22 +3251,10 @@ created(){
       );
       const Users=Vue.extend({template:` 
  <v-container fluid="">
-  <v-card>
-   <v-toolbar>
-    <v-text-field append-icon="search" label="Filter user" single-line="" hide-details="" v-model="search"></v-text-field>   
-      <v-spacer></v-spacer>     
-    </v-toolbar>
-<v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No users found @todo">
-    <template slot="items" scope="props">
-    <td class="vtop">
-        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
-      </td>
-      <td class="vtop">{{ props.item.name }}</td>
-      <td class="vtop "><div>{{ props.item.permission }}</div>
-    </td></template>
-  </v-data-table>
-  </v-card>
+   <qd-table :headers="headers" data-uri="data/users">
+   </qd-table>
  </v-container>
+
  `,
       
   data:  function(){
@@ -3189,22 +3269,13 @@ created(){
           left: true,
           value: 'id'
         },
-        { text: 'Permission', value: 'state' }
+        { text: 'Permissions', value: 'state' }
       ] 
       }
   },
-  methods:{
-      getUsers(){
-        this.loading=true;
-        HTTP.get("user")
-        .then(r=>{
-           this.loading=false
-           this.items=r.data
-        })
-     }
-  },
+ 
   created:function(){
-    console.log("notfound",this.$route.query.q)
+    console.log("qd-table")
   }
 }
 
@@ -3420,6 +3491,8 @@ created(){
     { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
     { path: '/images/people', component: People, meta:{title:"Image people"} },
     
+    { path: '/entity', component: Entity, meta:{title:"Entities"} },
+    { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -3588,15 +3661,15 @@ router.beforeEach((to, from, next) => {
     items: [
       {href: '/',text: 'Home', icon: 'home'    },
       {
-        icon: 'directions_run',
+        icon: 'input',
         text: 'Actions' ,
         model: false,
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
-      {href: '/transform',text: 'XSLT Transform',icon: 'input'},
-      {href: '/tasks',text: 'Tasks',icon: 'history'}
+      {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
+      {href: '/tasks',text: 'Tasks',icon: 'update'}
       ]},
       {
         icon: 'folder_open',
@@ -3612,6 +3685,8 @@ router.beforeEach((to, from, next) => {
         text: 'Models' ,
         model: false,
         children: [
+          {href: '/namespace', text: 'Namespaces',icon: 'label' },
+          {href: '/entity', text: 'Entities',icon: 'redeem' },
       ]},
       {
         icon: 'cast_connected',

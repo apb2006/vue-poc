@@ -133,15 +133,15 @@
     items: [
       {href: '/',text: 'Home', icon: 'home'    },
       {
-        icon: 'directions_run',
+        icon: 'input',
         text: 'Actions' ,
         model: false,
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
-      {href: '/transform',text: 'XSLT Transform',icon: 'input'},
-      {href: '/tasks',text: 'Tasks',icon: 'history'}
+      {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
+      {href: '/tasks',text: 'Tasks',icon: 'update'}
       ]},
       {
         icon: 'folder_open',
@@ -157,6 +157,8 @@
         text: 'Models' ,
         model: false,
         children: [
+          {href: '/namespace', text: 'Namespaces',icon: 'label' },
+          {href: '/entity', text: 'Entities',icon: 'redeem' },
       ]},
       {
         icon: 'cast_connected',

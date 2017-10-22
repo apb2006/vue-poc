@@ -1,4 +1,4 @@
-(:~
+ (:~
  : vue-poc thumbnail api.
  :
  : @author Andy Bunce may-2017

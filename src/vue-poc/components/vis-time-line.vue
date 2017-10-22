@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <!-- 
-for vis-time-line
+for vis-time-line http://visjs.org/docs/graph2d/
  -->
 <template id="vis-time-line">
   <div></div>
