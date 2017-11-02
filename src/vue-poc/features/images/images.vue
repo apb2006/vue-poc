@@ -40,31 +40,31 @@
               <v-card   class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)"  @dblclick="go(image)" 
                 height="80px" contain>
-                <v-layout align-baseline align-end fill-height>
-                <v-flex >
-                 <v-icon class="green--text">check_circle</v-icon>
-                 </v-flex>
-                 </v-layout>
+               
+                
+               
                 </v-card-media>
                 
                  <v-card-actions  >
-
-						      <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
-                 <v-btn icon small v-if="image.geo">
-                  <v-icon>place</v-icon>
-                </v-btn>
-                <v-spacer></v-spacer>
                 <v-tooltip bottom >
                 <v-btn icon  small slot="activator">
                   <v-icon>info</v-icon>
                 </v-btn>
                 <span v-text="image.path"></span>
                 </v-tooltip>
+						      <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
+                 <v-btn icon small v-if="image.geo">
+                  <v-icon>place</v-icon>
+                </v-btn>
+                <v-spacer></v-spacer>
+               
                 <v-btn icon  small @click="selected(image)">
                   <v-icon>share</v-icon>
                 </v-btn>
               </v-card-actions>
-            
+            <div style="position:absolute;right:0;top:0" >
+                 <v-icon class="white primary--text">check_circle</v-icon>
+                 </div
               </v-card>
             </v-flex>
           </v-layout>
@@ -85,7 +85,7 @@
               label="Keyword" item-value="text" item-text="text"
               autocomplete clearable
             >
-             <template slot="item" scope="data">
+             <template slot="item" slot-scope="data">
                   <v-list-tile-content>
                     <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
                     <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
@@ -112,7 +112,7 @@
           ></v-text-field>
          
           <v-date-picker v-model="query.from" scrollable actions>
-            <template scope="{ save, cancel }">
+            <template slot-scope="{ save, cancel }">
               <v-card-actions>
                 <v-btn flat color="primary" @click="cancel()">Cancel</v-btn>
                 <v-btn flat  color="primary"  @click="save()">Save</v-btn>
@@ -142,7 +142,7 @@
           ></v-text-field>
          
           <v-date-picker v-model="query.until" scrollable actions>
-            <template scope="{ save, cancel }">
+            <template slot-scope="{ save, cancel }">
               <v-card-actions>
                 <v-btn flat  color="primary"  @click="cancel()">Cancel</v-btn>
                 <v-btn flat  color="primary"  @click="save()">Save</v-btn>

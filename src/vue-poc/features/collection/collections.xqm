@@ -58,7 +58,7 @@ as element(json)
               {for $f in $items/*
               order by $f/@name/lower-case(.)
               return <_ type="object">
-               {vue-api:details($f,"folder")}
+               {vue-api:details($f=>trace("foo"),"folder")}
               </_>
               }
               </items>
@@ -73,7 +73,7 @@ as element(*)*
  ,<modified>{$f/@last-modified/string()}</modified>
  ,<size type="number">{$f/@size/string()}</size>
  ,<selected type="boolean">false</selected>
- ,<mime>unknown</mime>
+ ,<mime>{$f/@content-type/string()}</mime>
 };
 
 

@@ -35,26 +35,31 @@ as element(c:directory)
 declare  function ufile:xmldb($url as xs:string)
 as element(c:directory)
 {
-        <c:directory  name="" xml:base="xmldb:/" last-modified="2017-07-01T13:39:38.98691Z" size="4096">{
+        <c:directory  name="" xml:base="xmldb:/" last-modified="?" size="?">{
          if($url="/") then
              db:list()!
-             <c:directory name="{db:property(.,'name')}" 
+             <c:directory name="{db:property(.,'name')}" content-type="text/directory"
                      last-modified="{db:property(.,'timestamp')}" 
                      size="{db:property(.,'size')}"/>
            
         else
+          let $db:=substring-before(substring($url,2),"/")
+          let $path:=substring($url,2+string-length($db))
           let $map:=ufile:collection-next($url)
           for $name in map:keys($map)
+        
           (: db:list-details($db as xs:string, $path as xs:string) as element(resource)* :)
           return if($map($name)="file") then
-                    <c:file name="{$name}" size="0"/>
+                   let $x:=db:list-details($db , $path || $name)=>trace("detail")
+                   return <c:file name="{$name}" size="0"/>
                   else
-                    <c:directory name="{$name}"  size="0"/>
+                    <c:directory name="{$name}"  content-type="text/directory" size="0"/>
       }</c:directory>
 };
 
 (:~ return map of next level database contents
  :@param $url a database base collection e.g /dbname/fred/
+ :@result keys are names, values are "file" or "directory"
 :)
 declare function ufile:collection-next($url as xs:string)
 as map(*)

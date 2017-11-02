@@ -1,4 +1,4 @@
-// generated 2017-10-22T22:09:51.205+01:00
+// generated 2017-10-26T21:35:41.214+01:00
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
        <v-card>
@@ -516,7 +516,12 @@ Vue.filter('round', function(value, decimals) {
 <v-toolbar dense="">
     <v-btn icon="" :to="{query: { url: '/' }}">
      <v-icon>{{icon}}</v-icon>
-     </v-btn>  
+     </v-btn>
+        
+    <v-btn icon="" @click="load()">
+    <v-icon>refresh</v-icon>
+    </v-btn> 
+     
     <v-toolbar-title>
 		    <v-breadcrumbs>
 				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}" :exact="true">
@@ -540,12 +545,15 @@ Vue.filter('round', function(value, decimals) {
     </v-btn>
 </v-toolbar-items>
 
+
+  
     <v-toolbar-items v-if="selection.length">
-   <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
-        <v-icon v-text="b.icon"></v-icon>
-    </v-btn>
-   
-</v-toolbar-items>
+		   <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
+		        <v-icon v-text="b.icon"></v-icon>
+		    </v-btn>
+   </v-toolbar-items>
+ 
+    
  <v-menu offset-y="" v-if="selection.length">
       <v-btn icon="" slot="activator">
       <v-icon>more_vert</v-icon>
@@ -563,7 +571,8 @@ Vue.filter('round', function(value, decimals) {
         </v-list-tile>
       </v-list>
     </v-menu>
-   
+ 
+  
  </v-toolbar>
   
   <v-layout v-if="!busy">
@@ -578,7 +587,10 @@ Vue.filter('round', function(value, decimals) {
 	        </v-list-tile-avatar>
 	        <v-list-tile-content>
 	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
+	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}}
+	                                 size: {{ item.size | readablizeBytes}}
+	                                  mimetype: {{ item.mime}}
+	                                 </v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
 	          <v-btn icon="" @click.stop="info(item)">
@@ -597,7 +609,10 @@ Vue.filter('round', function(value, decimals) {
 	        </v-list-tile-avatar>
 	        <v-list-tile-content @click="file(item.name)">
 	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
+	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}},
+												            size:  {{item.size|readablizeBytes }},
+												            mimetype: {{ item.mime}}
+	            </v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
 	          <v-btn icon="" ripple="" @click.stop="info(item)">
@@ -1526,33 +1541,32 @@ Entities
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
               <v-card class="grey lighten-2 pt-1">
                 <v-card-media :src="src(image)" @dblclick="go(image)" height="80px" contain="">
-                <v-layout align-baseline="" align-end="" fill-height="">
-                <v-flex>
-                 <v-icon class="green--text">check_circle</v-icon>
-                 </v-flex>
-                 </v-layout>
+               
+                
+               
                 </v-card-media>
                 
                  <v-card-actions>
-
-						      <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
-                 <v-btn icon="" small="" v-if="image.geo">
-                  <v-icon>place</v-icon>
-                </v-btn>
-                <v-spacer></v-spacer>
                 <v-tooltip bottom="">
                 <v-btn icon="" small="" slot="activator">
                   <v-icon>info</v-icon>
                 </v-btn>
                 <span v-text="image.path"></span>
                 </v-tooltip>
+						      <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
+                 <v-btn icon="" small="" v-if="image.geo">
+                  <v-icon>place</v-icon>
+                </v-btn>
+                <v-spacer></v-spacer>
+               
                 <v-btn icon="" small="" @click="selected(image)">
                   <v-icon>share</v-icon>
                 </v-btn>
               </v-card-actions>
-            
-              </v-card>
-            </v-flex>
+            <div style="position:absolute;right:0;top:0">
+                 <v-icon class="white primary--text">check_circle</v-icon>
+                 </div>
+            </v-card></v-flex>
           </v-layout>
         </v-container>
 
@@ -1566,7 +1580,7 @@ Entities
           
         <v-card-text>    
          <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" autocomplete="" clearable="">
-             <template slot="item" scope="data">
+             <template slot="item" slot-scope="data">
                   <v-list-tile-content>
                     <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
                     <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
@@ -1578,7 +1592,7 @@ Entities
              <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
          
           <v-date-picker v-model="query.from" scrollable="" actions="">
-            <template scope="{ save, cancel }">
+            <template slot-scope="{ save, cancel }">
               <v-card-actions>
                 <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
                 <v-btn flat="" color="primary" @click="save()">Save</v-btn>
@@ -1593,7 +1607,7 @@ Entities
             <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly=""></v-text-field>
          
           <v-date-picker v-model="query.until" scrollable="" actions="">
-            <template scope="{ save, cancel }">
+            <template slot-scope="{ save, cancel }">
               <v-card-actions>
                 <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
                 <v-btn flat="" color="primary" @click="save()">Save</v-btn>
@@ -2835,12 +2849,13 @@ svg
     
     <v-tabs-bar class="grey lighten-3">
       <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
-       <v-chip label="" close="">
-      
+ 
        <v-icon>favorite</v-icon>
-
-       Item {{ i }} more
-       </v-chip>
+       <span>Item {{ i }} more</span>
+       <v-spacer></v-spacer>
+       <v-btn small="" icon="" class="grey">
+          <v-icon>close</v-icon>
+        </v-btn>
       </v-tabs-item>
       <v-tabs-slider class="primary"></v-tabs-slider>
     </v-tabs-bar>
@@ -3587,11 +3602,12 @@ router.beforeEach((to, from, next) => {
        <v-icon>star_border</v-icon>
    </v-btn>
    <v-dialog v-model="frmFav">
-            <v-card> 
+            <v-card>
+            <v-toolbar class="amber"> 
         <v-card-title>
-            Bookmark
+            Bookmark this page
           </v-card-title>
-          
+          </v-toolbar>
          <v-card-text>
          <h6>{{$route.meta.title}}</h6>
             <v-select v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-select>
@@ -3603,9 +3619,9 @@ router.beforeEach((to, from, next) => {
         </v-card>
       </v-dialog>
   <v-spacer></v-spacer>
- 
+  <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
   <v-spacer></v-spacer>
-   <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
+  
    <v-menu left="" transition="v-fade-transition">
       <v-btn dark="" icon="" slot="activator">
         {{$auth.user}}

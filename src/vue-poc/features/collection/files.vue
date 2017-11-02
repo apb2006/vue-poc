@@ -7,7 +7,12 @@
 <v-toolbar dense >
     <v-btn icon :to="{query: { url: '/' }}">
      <v-icon >{{icon}}</v-icon>
-     </v-btn>  
+     </v-btn>
+        
+    <v-btn icon @click="load()">
+    <v-icon>refresh</v-icon>
+    </v-btn> 
+     
     <v-toolbar-title>
 		    <v-breadcrumbs>
 				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" 
@@ -34,12 +39,15 @@
     </v-btn>
 </v-toolbar-items>
 
+
+  
     <v-toolbar-items v-if="selection.length">
-   <v-btn icon v-for="b in selopts" :key="b.icon" @click="action(b)">
-        <v-icon v-text="b.icon"></v-icon>
-    </v-btn>
-   
-</v-toolbar-items>
+		   <v-btn icon v-for="b in selopts" :key="b.icon" @click="action(b)">
+		        <v-icon v-text="b.icon"></v-icon>
+		    </v-btn>
+   </v-toolbar-items>
+ 
+    
  <v-menu offset-y v-if="selection.length">
       <v-btn  icon slot="activator">
       <v-icon>more_vert</v-icon>
@@ -57,7 +65,8 @@
         </v-list-tile>
       </v-list>
     </v-menu>
-   
+ 
+  
  </v-toolbar>
   
   <v-layout v-if="!busy">
@@ -73,7 +82,10 @@
 	        </v-list-tile-avatar>
 	        <v-list-tile-content  >
 	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}} size: {{ item.size | readablizeBytes}}</v-list-tile-sub-title>
+	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}}
+	                                 size: {{ item.size | readablizeBytes}}
+	                                  mimetype: {{ item.mime}}
+	                                 </v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
 	          <v-btn icon @click.stop="info(item)">
@@ -92,7 +104,10 @@
 	        </v-list-tile-avatar>
 	        <v-list-tile-content @click="file(item.name)">
 	          <v-list-tile-title >{{ item.name }}</v-list-tile-title>
-	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}} size:  {{item.size|readablizeBytes }}</v-list-tile-sub-title>
+	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}},
+												            size:  {{item.size|readablizeBytes }},
+												            mimetype: {{ item.mime}}
+	            </v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
 	          <v-btn icon ripple @click.stop="info(item)">

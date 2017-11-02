@@ -51,11 +51,12 @@
        <v-icon>star_border</v-icon>
    </v-btn>
    <v-dialog v-model="frmFav">
-            <v-card> 
+            <v-card>
+            <v-toolbar class="amber"> 
         <v-card-title>
-            Bookmark
+            Bookmark this page
           </v-card-title>
-          
+          </v-toolbar>
          <v-card-text>
          <h6>{{$route.meta.title}}</h6>
             <v-select
@@ -73,10 +74,10 @@
         </v-card>
       </v-dialog>
   <v-spacer></v-spacer>
- 
-  <v-spacer></v-spacer>
-   <v-text-field prepend-icon="search" label="Search..." v-model="q"
+  <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.enter="search"></v-text-field>
+  <v-spacer></v-spacer>
+  
    <v-menu left  transition="v-fade-transition">
       <v-btn dark icon slot="activator">
         {{$auth.user}}

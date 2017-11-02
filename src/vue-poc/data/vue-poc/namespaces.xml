@@ -42,7 +42,7 @@
 		<description>Scalable Vector Graphics namespace
 		</description>
 	</namespace>
-	
+
 	<namespace uri="http://docbook.org/ns/docbook" prefix="d">
 		<description>Docbook
 		</description>
@@ -52,28 +52,33 @@
 		<description>Math ML
 		</description>
 	</namespace>
-	
+
 	<namespace uri="http://www.vraweb.org/vracore4.htm" prefix="vra">
 		<description>Visual Resources Association
 		</description>
 	</namespace>
-	
+
 	<namespace uri="http://purl.oclc.org/dsdl/schematron" prefix="sch">
 		<description>Schematron
 		</description>
 	</namespace>
-	
+
 	<namespace uri="http://www.opengis.net/kml/2.2" prefix="kml">
-    <description>Geo 
-    </description>
-  </namespace>
-  
-  <namespace uri="http://www.w3.org/ns/xproc" prefix="xproc">
-    <description>XProc 
-    </description>
-  </namespace>
-   <namespace uri="http://www.w3.org/ns/xproc-step" prefix="c">
-    <description>XProc step
-    </description>
-  </namespace>
+		<description>Geo
+		</description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/ns/xproc" prefix="xproc">
+		<description>XProc
+		</description>
+	</namespace>
+	<namespace uri="http://www.w3.org/ns/xproc-step" prefix="c">
+		<description>XProc step
+		</description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/ns/xproc-step" prefix="pkg">
+		<description>EXpath packaging
+		</description>
+	</namespace>
 </namespaces>

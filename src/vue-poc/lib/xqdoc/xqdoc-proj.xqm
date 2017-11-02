@@ -1,5 +1,5 @@
 (:~
- : Update `generated/models.xqm` from files in `data/models`
+ : Genrate html xquery documntation
  : using file:///C:/Users/andy/workspace/app-doc/src/doc/data/doc/models
  : $efolder:="file:///C:/Users/andy/workspace/app-doc/src/doc/data/doc/models"
  : $target:="file:///C:/Users/andy/workspace/app-doc/src/doc/generated/models.xqm"
@@ -40,13 +40,14 @@ declare  function xqd:gendoc(
                     $params as map(*)
 )
  {
-  let $target:=file:path-to-native($target)
-  let $ip:=$f/@name/resolve-uri(.,base-uri(.))
-   let $op:=$f/ancestor-or-self::*/@name=>tail()=>string-join("/")
-   let $dest:=file:resolve-path($op,$target)
+  let $_:= if(file:is-dir($target)) then () else file:create-dir($target)
+   let $target:= file:path-to-native($target)
+  let $ip:= $f/@name/resolve-uri(.,base-uri(.))
+   let $op:= $f/ancestor-or-self::*/@name=>tail()=>string-join("/")
+   let $dest:= file:resolve-path($op,$target)
   
-   let $xqdoc:=xqd:xqdoc($ip,map{})
-   let $xq:=fetch:text($ip)
+   let $xqdoc:= xqd:xqdoc($ip,map{})
+   let $xq:= fetch:text($ip)
    let $params:=map:merge((map{
                 "source":$xq,
                 "filename":$f/@name/string(),

@@ -17,18 +17,19 @@
         </v-card-actions>
     </v-card>
     
-    <v-tabs-bar class="grey lighten-3">
+    <v-tabs-bar class="grey lighten-3" dense>
       <v-tabs-item
         v-for="i in 13"
         :key="i"
         :href="'#mobile-tabs-6-' + i"
       >
-       <v-chip label close>
-      
+ 
        <v-icon>favorite</v-icon>
-
-       Item {{ i }} more
-       </v-chip>
+       <span>Item {{ i }} more</span>
+       <v-spacer></v-spacer>
+       <v-btn small icon class="grey">
+          <v-icon>close</v-icon>
+        </v-btn>
       </v-tabs-item>
       <v-tabs-slider class="primary"></v-tabs-slider>
     </v-tabs-bar>
