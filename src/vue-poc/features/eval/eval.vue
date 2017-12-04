@@ -2,44 +2,58 @@
 <template id="eval">
  <v-container fluid>
   <v-card >
-
-     <v-toolbar>
+     <v-toolbar dense>
      
-    
-    <v-menu offset-y>
-      <v-btn  slot="activator">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-      <v-list>
-        <v-list-tile  @click="submit">
-          <v-list-tile-title>Submit</v-list-tile-title>
-        </v-list-tile>
-        <v-divider></v-divider>
-        <v-list-tile  @click="run">
-          <v-list-tile-title>Run</v-list-tile-title>
-        </v-list-tile>
-         <v-list-tile  @click="plan">
-          <v-list-tile-title>Show query plan</v-list-tile-title>
-        </v-list-tile>
-        
-      </v-list>
+     <v-menu offset-x>
+       <v-btn slot="activator" flat icon color="pink">
+              <v-icon>label_outline</v-icon>
+        </v-btn>
+        <v-card>
+       <v-card-title>Outline here</v-card-title>
+       </v-card>
     </v-menu>
-    <v-spacer></v-spacer>
-     <v-btn @click="imports">
+    
+      <v-menu offset-x>
+       <v-btn slot="activator" flat icon color="pink">
+              <v-icon>add_circle</v-icon>
+            </v-btn>
+            <v-card>
+       <v-btn @click="imports">
     <v-icon>library_books</v-icon>
     Imports</v-btn>
      <v-btn @click="namespaces">
     <v-icon>label</v-icon>
     Namespaces</v-btn>
-     <v-menu offset-y>
-      <v-btn icon color="primary"  slot="activator"> <v-icon>more_vert</v-icon></v-btn>
-      <v-list dense>
-        <v-list-tile @click="plan">Show query plan</v-list-tile>
+    </v-card>
+    </v-menu>
+      <v-spacer></v-spacer>
+    <v-btn  @click="submit">
+      <v-icon>play_circle_outline</v-icon>jobs:run
+      </v-btn>
+    <v-menu offset-y>
+      <v-btn  slot="activator" flat icon>
+         <v-icon>more_vert</v-icon>
+      </v-btn>
+      <v-list  dense>
+         <v-subheader>More actions...</v-subheader>
+        <v-divider></v-divider>
+        
+        <v-list-tile  @click="run">
+          <v-list-tile-title>xquery:eval</v-list-tile-title>
+        </v-list-tile>
+        
+         <v-list-tile  @click="plan">
+          <v-list-tile-title>Show query plan</v-list-tile-title>
+        </v-list-tile>
+        
+        <v-list-tile @click="hitme">
+         <v-list-tile-title>Test large result.</v-list-tile-title>
+         </v-list-tile>
      </v-list>
-      <v-list>
-        <v-list-tile @click="hitme">hit me</v-list-tile>
-     </v-list>
-     </v-menu>
+    </v-menu>
+   
+   
+    
    </v-toolbar>
 
   
@@ -53,7 +67,7 @@
    
      <v-card-actions v-if="show" >
 
-      <v-chip class="primary white--text">{{jobId}}</v-chip>
+      <v-chip class="primary white--text">{{job.result}}</v-chip>
       
            <v-chip label class="grey white--text"> 
            <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
@@ -91,10 +105,11 @@
       result:'',
       elapsed: null,
       show: false,
-      showError: false, //unused
+      showError: false, 
       showResult: false, //
-      jobId: null,
+      job: {}, // {id:"12",result:"job13"}
       waiting: false,
+      destroyed: false,
       start: null,
       jobState: {},
       aceSettings:{}
@@ -130,7 +145,7 @@
       HTTPNE.post("eval/submit",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
-        this.jobId=r.data.job
+        this.job=r.data
         this.show=true
         this.pollState()
         
@@ -138,14 +153,15 @@
       .catch(r=> {
         alert("catch")
         console.log("error",r)
-        this.jobId=r.response.job
+        this.job=r.response.job
         this.showError=true;
 
       });
     },
     pollState(){
+      if(this.destroyed)return;
       this.waiting=true;
-      HTTP.get("job/"+this.jobId)
+      HTTP.get("job/"+this.job.result)
       .then(r=>{
         this.jobState=r.data
         this.waiting=r.data.state!="cached";
@@ -159,7 +175,7 @@
     },
     getResult(){
       this.awaitResult(true)
-       HTTPNE.post("eval/result/"+this.jobId)
+       HTTPNE.post("eval/result/"+this.job.result)
        .then(r=>{
          this.result=r.data.result+" "
        }).catch(r=> {
@@ -182,7 +198,7 @@
       alert("@TODO namespaces")
     },
     plan(){
-      this.awaitResult(false)
+      this.awaitResult(true)
       HTTPNE.post("eval/plan",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.result=r.data.result
@@ -212,7 +228,12 @@
         })})
      },
   created:function(){
+      console.log("eval: creatd");
       localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
-  }
+  },
+  beforeDestroy:function(){
+    this.destroyed=true;
+    console.log("eval: before destroy");
+}
 }
 </script>

@@ -4,11 +4,12 @@
  :   <idref>14569796 14569818 </idref>
  : </keyword>
 :)
-import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";
+import module namespace cfg = "quodatum:media.image.configure" at "../config.xqm";
 declare %updating function local:put($data,$path){
    db:replace($cfg:DB-IMAGE,$path,$data)
 };
 declare variable $DEST:="/datetaken.xml";
+
 let $dates:=<dates   date="{current-dateTime()}">{
 for $image in collection($cfg:DB-IMAGE || "/image")/image[not(@original)]
 let $year:=substring($image/datetaken,1,4)

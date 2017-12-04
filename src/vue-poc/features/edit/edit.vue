@@ -22,16 +22,15 @@
 </v-menu>
 <span>{{ path.join('/') }}</span>
 </v-tooltip>
-  <v-toolbar-title >
-      <span >{{ name }}</span>
-  </v-toolbar-title>
-  <v-tooltip top>
-  <span slot="activator">
-  <v-chip v-if="dirty" label small class="red white--text">*</v-chip>
-<v-chip  v-if="!dirty" label small class="green white--text">.</v-chip>
-</span>
-<span>Changed?</span>
-</v-tooltip>
+  
+   <v-badge right v-model="dirty" >
+     <span slot="badge" >*</span>
+     <v-toolbar-title >{{ name }}</v-toolbar-title>
+     </v-badge>
+     <v-btn v-if="dirty" icon @click="save()">
+      <v-icon>file_upload</v-icon>
+    </v-btn>
+    <v-spacer></v-spacer>
 
   <v-menu left  transition="v-fade-transition" >
       <v-chip label small slot="activator" >{{ mode }}</v-chip>
@@ -55,7 +54,7 @@
    </v-tooltip>
 <v-spacer></v-spacer>
    <v-btn  icon @click="acecmd('outline')" title="outline -todo">
-      <v-icon>star</v-icon>
+      <v-icon>label_outline</v-icon>
     </v-btn>
 
   
@@ -67,9 +66,7 @@
       <v-icon>wrap_text</v-icon>
     </v-btn>
     
-   <v-btn  icon @click="save()">
-      <v-icon>file_upload</v-icon>
-    </v-btn>
+   
     
     <v-btn  icon @click="beautify()">
       <v-icon>format_align_center</v-icon>
@@ -77,35 +74,26 @@
     <v-btn  icon @click="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
-        <v-menu left  transition="v-fade-transition">
-        <v-btn  icon slot="activator">
-          <v-icon>help</v-icon>
-        </v-btn>     
-        <v-list>
-            <v-list-tile @click="acecmd('showSettingsMenu')" avatar >
-               <v-list-tile-avatar>
-              <v-icon >settings</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title @click="acecmd('showSettingsMenu')" >Show settings</v-list-tile-title>
-            </v-list-tile>
-                      
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
-              <v-list-tile-avatar>
-              <v-icon >keyboard</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title  @click="acecmd('showKeyboardShortcuts')" >Show keyboard commands</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-       </v-menu>
+      
     <v-menu left  transition="v-fade-transition">
       <v-btn  icon slot="activator">
         <v-icon>more_vert</v-icon>
       </v-btn>
      
           <v-list dense>
-              <v-list-tile v-for="t in mimeTypes"  :key="t">
-                <v-list-tile-title v-text="t" @click="setMode(t)"></v-list-tile-title>
-              </v-list-tile>           
+               <v-list-tile @click="acecmd('showSettingsMenu')" avatar >
+               <v-list-tile-avatar>
+              <v-icon >settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-tile-title>
+            </v-list-tile>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
+              <v-list-tile-avatar>
+              <v-icon >keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-tile-title>
+            </v-list-tile>          
           </v-list>
           
       </v-menu>

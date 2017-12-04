@@ -6275,24 +6275,14 @@ exports.StaticContext = function (parent, pos) {
             type: 'module',
             override: true
         };
-        namespaces['http://expath.org/ns/file'] = {
-            prefixes: ['file'],
-            pos: emptyPos,
-            type: 'module',
-            override: true
-        };
-        namespaces['http://expath.org/ns/http-client'] = {
-            prefixes: ['http'],
-            pos: emptyPos,
-            type: 'module',
-            override: true
-        };
+       
         namespaces['http://basex.org/modules/archive'] = {
             prefixes: ['archive'],
             pos: emptyPos,
             type: 'module',
             override: true
         };
+        
         namespaces['http://basex.org/modules/client'] = {
             prefixes: ['client'],
             pos: emptyPos,
@@ -6319,6 +6309,12 @@ exports.StaticContext = function (parent, pos) {
         };
         namespaces['http://basex.org/modules/unit'] = {
             prefixes: ['unit'],
+            pos: emptyPos,
+            type: 'module',
+            override: true
+        };
+        namespaces['http://basex.org/modules/db'] = {
+            prefixes: ['db'],
             pos: emptyPos,
             type: 'module',
             override: true
@@ -6374,30 +6370,26 @@ exports.StaticContext = function (parent, pos) {
             pos: emptyPos,
             type: 'declare'
         };
-        namespaces['http://zorba.io/annotations'] = {
-            prefixes: ['an'],
+        namespaces['http://expath.org/ns/file'] = {
+            prefixes: ['file'],
             pos: emptyPos,
-            type: 'declare',
+            type: 'module',
             override: true
         };
-        namespaces['http://www.28msec.com/annotations/rest'] = {
-            prefixes: ['rest'],
+        namespaces['http://expath.org/ns/http-client'] = {
+            prefixes: ['http'],
             pos: emptyPos,
-            type: 'declare',
+            type: 'module',
             override: true
         };
+        
         namespaces['http://www.w3.org/2005/xqt-errors'] = {
             prefixes: ['err'],
             pos: emptyPos,
             type: 'declare',
             override: true
         };
-        namespaces['http://zorba.io/errors'] = {
-            prefixes: ['zerr'],
-            pos: emptyPos,
-            type: 'declare',
-            override: true
-        };
+       
     }
 
     var s = {

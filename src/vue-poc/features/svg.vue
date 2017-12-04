@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <template id="svg">
  <v-container fluid>
-svg
+<div id="canvasqPWKOg" class="canvas"></div>
+<button id="resetButtonqPWKOg">Reset</button>
  </v-container>
 </template>
 

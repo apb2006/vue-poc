@@ -8,21 +8,57 @@ import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace util = 'vue-poc/util' at "../../lib/util.xqm";
 import module namespace ufile = 'vue-poc/file' at "../../lib/file.xqm";
 
+declare variable $vue-api:db as xs:string:="vue-poc";
+declare variable $vue-api:id as element(last-id):=db:open("vue-poc","/state.xml")/state/last-id;
+
 (:~
  : eval
  :)
 declare
+%updating
 %rest:POST %rest:path("/vue-poc/api/eval/execute")
 %rest:form-param("xq", "{$xq}")
 %output:method("json")   
 function vue-api:eval($xq )   
 {
- let $x:=fn:trace($xq,"task: ")
  let $r:=util:query($xq,())
- return <json   type="object" >
-            <result>{$r}</result>
-  </json>
+ return vue-api:response($r)
 };
+
+(:~
+ : return id and return
+ :)
+declare
+%updating 
+function vue-api:response($r)
+{
+ let $id:=$vue-api:id + 1
+ let $out:= <json   type="object" >
+              <id>{ $id }</id>
+              <result>{$r}</result>
+            </json>
+  return (
+           replace value of node $vue-api:id with $id,
+           db:output($out)
+          )          
+};
+
+(:~
+ : submit a simple job
+ :)
+declare
+%updating
+%rest:POST %rest:path("/vue-poc/api/eval/submit")
+%rest:form-param("xq", "{$xq}")
+%output:method("json")   
+function vue-api:submit($xq )   
+{
+ let $bindings:=map{}
+ let $opts:=map{"cache":true()}
+ let $r:=jobs:eval($xq,$bindings,$opts)
+ return vue-api:response($r)
+};
+
 
 (:~
  : query plan
@@ -40,22 +76,6 @@ function vue-api:plan($xq )
   </json>
 };
 
-(:~
- : submit a simple job
- :)
-declare
-%rest:POST %rest:path("/vue-poc/api/eval/submit")
-%rest:form-param("xq", "{$xq}")
-%output:method("json")   
-function vue-api:submit($xq )   
-{
- let $bindings:=map{}
- let $opts:=map{"cache":true()}
- let $r:=jobs:eval($xq,$bindings,$opts)
- return <json   type="object" >
-            <job>{$r}</job>
-  </json>
-};
 
 (:~
  : submit a simple job from path 
@@ -93,6 +113,9 @@ let $n:='import module namespace fw="quodatum:file.walker";'
   </json>
 };
 
+(:~ 
+ : get result for job with $id
+ :)
 declare 
 %rest:POST %rest:path('/vue-poc/api/eval/result/{$id}') 
 %output:method("json") 

@@ -14,7 +14,8 @@
         single-line
         hide-details
         v-model="search"
-      ></v-text-field>   
+      ></v-text-field>
+      <v-btn icon ><v-icon>add</v-icon></v-btn>   
       <v-spacer></v-spacer>
       
        <v-btn

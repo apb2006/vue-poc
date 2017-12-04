@@ -6,7 +6,7 @@
 <template id="images">
 
       <v-card>
-      <v-toolbar class="green white--text">
+      <v-toolbar dense >
       <v-btn  @click.stop="showFilter = true" icon><v-icon>search</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
         <v-tooltip top  v-if="query.keyword || query.from || query.until">      
@@ -15,19 +15,43 @@
             <v-icon>clear</v-icon>
            </v-btn>
          <span>Clear search</span>
-         </v-tooltip> 
+         </v-tooltip>
+           <v-btn icon @click="getImages">
+                    <v-avatar>
+                      <v-icon >refresh</v-icon>
+                     </v-avatar>
+                  </v-btn>
            <v-spacer></v-spacer>
            <span v-if="!busy">
-           <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
-       
-            Page:{{ query.page+1 }}
-          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon color="primary">
+              <v-toolbar-items v-if="!selection.length">
+							   <v-btn icon v-for="b in buttons" :key="b.icon" @click="action(b)">
+							      <v-avatar>
+							        <v-icon v-text="b.icon"></v-icon>
+							       </v-avatar>
+							    </v-btn>
+          </v-toolbar-items>
+          <v-toolbar-items v-if="selection.length">
+                 <v-btn icon v-for="b in selopts" :key="b.icon" @click="action(b)">
+                    <v-avatar>
+                      <v-icon v-text="b.icon"></v-icon>
+                     </v-avatar>
+                  </v-btn>
+          </v-toolbar-items>
+          </span>
+           <v-spacer></v-spacer>
+          <v-toolbar-items>
+          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon >
+           <v-avatar>
            <v-icon>arrow_back</v-icon>
+           </v-avatar>
            </v-btn>
-           <v-btn @click.stop="pageNext()" icon color="primary">
+           <v-btn @click.stop="pageNext()" icon >
+            <v-avatar>
             <v-icon>arrow_forward</v-icon>
+            </v-avatar>
            </v-btn>
-           </span>
+         </v-toolbar-items>
+        
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
         <v-container v-if="!busy" fluid grid-list-md>
@@ -37,32 +61,18 @@
               v-for="image in images"
               :key="image.name"
             >
-              <v-card   class="grey lighten-2 pt-1">
-                <v-card-media :src="src(image)"  @dblclick="go(image)" 
-                height="80px" contain>
-               
+              <v-card  flat tile class="grey lighten-2 pa-1" >
+                <v-card-media :src="src(image)"  @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected "
+                height="100px" contain>
+                 <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
+                 <v-avatar icon small v-if="image.geo">
+                  <v-icon>place</v-icon>
+                </v-avatar>
                 
                
                 </v-card-media>
                 
-                 <v-card-actions  >
-                <v-tooltip bottom >
-                <v-btn icon  small slot="activator">
-                  <v-icon>info</v-icon>
-                </v-btn>
-                <span v-text="image.path"></span>
-                </v-tooltip>
-						      <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
-                 <v-btn icon small v-if="image.geo">
-                  <v-icon>place</v-icon>
-                </v-btn>
-                <v-spacer></v-spacer>
-               
-                <v-btn icon  small @click="selected(image)">
-                  <v-icon>share</v-icon>
-                </v-btn>
-              </v-card-actions>
-            <div style="position:absolute;right:0;top:0" >
+            <div v-if="image.selected" style="position:absolute;right:0;top:0" >
                  <v-icon class="white primary--text">check_circle</v-icon>
                  </div
               </v-card>
@@ -70,7 +80,7 @@
           </v-layout>
         </v-container>
 
- <v-navigation-drawer left persistent v-model="showFilter" :disable-route-watcher="true">
+ <v-navigation-drawer left fixed  v-model="showFilter" :disable-route-watcher="true">
          <v-card>
           <v-toolbar class="green white--text">
                 <v-toolbar-title >Show images with...</v-toolbar-title>
@@ -162,14 +172,20 @@
         </v-card-actions>
       </v-card>
       </v-navigation-drawer>
-        <v-navigation-drawer left persistent v-model="showInfo" :disable-route-watcher="true">
+        <v-navigation-drawer left fixed v-model="showInfo" :disable-route-watcher="true">
                <v-card> 
                  <v-toolbar class="green white--text">
-                <v-toolbar-title >{{selitem.name}}</v-toolbar-title>
+                <v-toolbar-title >{{selection.length}} selected</v-toolbar-title>
                 <v-spacer></v-spacer>    
                  <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
               </v-toolbar>
-              <v-card-text> blah blah  </v-card-text> 
+              <v-card-text> 
+               <ul>
+            <li v-for="sel in selection" :key="sel.name">
+            {{sel.name}} {{sel.path}}
+            </li>
+          </ul>
+                </v-card-text> 
              </v-card>
       </v-navigation-drawer>
       
@@ -177,8 +193,10 @@
  
 </template>
 
-<script>{  
-  data: () => ({
+<script>{ 
+  
+  data(){ 
+    return {
     images:[],
     query: {page:0,  // current page
            from:null,
@@ -194,8 +212,18 @@
     keywords: [],
     showInfo: false,
     selitem: "TODO",
-    location: {use:false,value:true}
-  }),
+    location: {use:false,value:true},
+    buttons: [
+     
+      {method: this.selectAll, icon: "select_all"}     
+  ],
+  selopts: [
+    {method: this.selectNone, icon: "select_all"},
+    {method: ()=>{this.showInfo= ! this.showInfo}, icon: "info"},
+    {method: this.share, icon: "share"}
+ ]
+  }
+    },
   methods:{
     src(item){
         return "data:image/jpeg;base64,"+item.data
@@ -212,8 +240,13 @@
         this.total=r.data.total
         this.images=r.data.items
         var t1 = performance.now();
-        this.elapsed= 0.001 *(t1 - t0) 
+        var elapsed= 0.001 *(t1 - t0);
+        var round = Vue.filter('round');
+        this.$notification.add("Found " + this.total + " in : "+ round(elapsed,1) +" secs");
         }) 
+    },
+    slideShow(){
+      alert("slideshow not yet");
     },
     clear(){
       this.query.from=null;
@@ -221,9 +254,21 @@
       this.query.keyword=null;
       this.query.page=0;
     },
+    selectAll(){
+      this.images.forEach(item=>{item.selected=true})
+    },
+   selectNone(){
+      this.images.forEach(item=>{item.selected=false})
+    },
     selected(image){
       this.selitem=image;
       this.showInfo=true;
+    },
+    action(b){
+      b.method(b.icon)
+    },
+    share(){
+      alert("sHARE: "+ this.selection.length);
     },
     isChanged(vnew,vold){
       if(vnew.keyword != vold.keyword) return true
@@ -247,6 +292,9 @@
           var k=this.query.keyword,f=this.query.from, u=this.query.until
           var t= (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")+ (u?" until:" + u:"")
           return t?t:"(All)"
+    },
+    selection(){
+      return this.images.filter(item=>{return item.selected} ) 
     }
   },
   watch:{

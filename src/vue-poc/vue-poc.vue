@@ -2,25 +2,29 @@
 <template id="vuepoc">
  <v-app id="app" :dark="dark" >
   <v-navigation-drawer
-      persistent
-      v-model="drawerRight"
+     absolute 
+      v-model="showNotifications"
       right
       clipped
      :disable-route-watcher="true"
       app
     >
     <v-card>
-     <v-toolbar class="teal white--text">
-                <v-toolbar-title >Notifications</v-toolbar-title>
+         <v-toolbar class="teal white--text">
+                <v-toolbar-title >Notifications </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn  @click="drawerRight = false" icon><v-icon>close</v-icon></v-btn>
+          <v-btn  @click="showNotifications = false" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
-    <v-card-text>
-      TODO
+          <v-card-text>
+          <ul>
+            <li v-for="msg in $notification.messages" :key="msg.index">
+            {{msg.text}}
+            </li>
+          </ul>
       </v-card-text>
       </v-card>
 </v-navigation-drawer>
- <v-navigation-drawer persistent app :mini-variant.sync="mini" v-model="drawer"  
+ <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"  absolute 
  :disable-route-watcher="true"  :enable-resize-watcher="true">
   <v-list class="pa-0">
 
@@ -47,11 +51,17 @@
  <v-toolbar class="indigo" app dark >
   <v-toolbar-side-icon @click.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down" >{{$route.meta.title}}</v-toolbar-title>
-   <v-btn @click="frmFav = !frmFav" icon flat title="Bookmark this page">
+   <v-menu
+      offset-x
+      :close-on-content-click="false"
+      :nudge-width="200"
+      v-model="frmFav"
+    >
+      <v-btn slot="activator" @click="frmFav = !frmFav" icon flat title="Bookmark this page">
        <v-icon>star_border</v-icon>
-   </v-btn>
-   <v-dialog v-model="frmFav">
-            <v-card>
+       </v-btn>
+
+            <v-card style="width:400px;">
             <v-toolbar class="amber"> 
         <v-card-title>
             Bookmark this page
@@ -68,11 +78,12 @@
             ></v-select>
            </v-card-text>
         <v-card-actions>
-            <v-btn color="primary" flat @click.stop="frmFav=false">Save</v-btn>
+            <v-spacer></v-spacer>
             <v-btn color="primary" flat @click.stop="frmFav=false">Cancel</v-btn>
+            <v-btn color="primary" flat @click.stop="favorite();frmFav=false">Save</v-btn>
           </v-card-actions>
         </v-card>
-      </v-dialog>
+   </v-menu>
   <v-spacer></v-spacer>
   <v-text-field prepend-icon="search" label="Search..." v-model="q"
    hide-details single-line dark @keyup.enter="search"></v-text-field>
@@ -95,11 +106,11 @@
           </v-list>
       </v-menu>
       <qd-fullscreen></qd-fullscreen>
-       <v-btn  @click="notifications" icon flat title="Notifications">
+       <v-btn  @click="showNotifications = ! showNotifications" icon flat title="Notifications">
        <v-icon>notifications</v-icon>
    </v-btn>
 </v-toolbar>
- <main>
+ 
  <v-content> 
  <v-alert color="error" value="true" dismissible v-model="alert.show">
       <pre style="overflow:auto;">{{ alert.msg }}</pre>
@@ -108,7 +119,7 @@
       <router-view class="view ma-3"></router-view>
       </transition>
   </v-content>
-  </main>
+
 </v-app>
 </template>
 
@@ -118,7 +129,7 @@
     q: "",
     status: {},
     drawer: true,
-    drawerRight: false,
+    showNotifications: false,
     mini: false,
     dark: false,
     alert: {show:false,msg:"Hello"},
@@ -224,9 +235,6 @@
       },
       favorite(){
         alert("@TODO")
-      },
-      notifications(){
-        this.drawerRight=true
       }
   },
 

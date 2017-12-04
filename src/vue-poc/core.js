@@ -28,6 +28,19 @@ const Auth={
 };
 Vue.use(Auth);
 
+//Notification Object
+const Notification={
+    messages:[],
+    add(msg){
+      this.messages.unshift({text: msg, index: this.messages.length})
+    },
+    install(Vue){
+        Object.defineProperty(Vue.prototype, '$notification', {
+          get () { return Notification }
+      })  }
+};
+Vue.use(Notification);
+
 // Mimetype info
 const MimeTypes={
       "text/xml":"xml",

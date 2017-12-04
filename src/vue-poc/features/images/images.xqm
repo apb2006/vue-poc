@@ -25,6 +25,30 @@ function vue-api:id( $id as xs:integer)
      { vue-api:get-image($image) }
   </json>
 };
+
+(:~
+ : get report
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/images/report")
+%output:method("html")  %output:version("5.0") 
+function vue-api:report()   
+{
+<div>
+something
+<ol>
+<li>$cfg:IMAGEDIR: <code>{ $cfg:IMAGEDIR }</code> </li>
+<li>$cfg:THUMBDIR: <code>{ $cfg:THUMBDIR }</code> </li>
+<li><a href="#A30">A30</a></li>
+<li><a href="#A50">A50</a></li>
+</ol>
+{for $i in 1 to 50 return <p>{$i}: 
+<a name="A{$i}">Lorem ipsum</a> dolor sit amet, consectetur adipiscing elit. Morbi aliquam sodales justo, aliquet eleifend ex bibendum eget. Nullam vitae maximus ipsum. Sed maximus felis in interdum maximus. Vestibulum quis urna vel dolor placerat iaculis non at metus. Curabitur nec dictum mauris. Duis placerat magna non pellentesque pulvinar. Nam a eleifend sapien. Suspendisse potenti. Vestibulum nunc massa, eleifend a dolor quis, feugiat condimentum est. Integer diam eros, blandit in purus in, euismod ultrices felis. Donec ipsum magna, elementum non lacus vel, rutrum ornare ante. Integer egestas sapien quam, ut posuere nisi rhoncus nec. Etiam ornare enim eu tellus laoreet, in laoreet urna sodales. Donec interdum, augue non lobortis sodales, leo elit tincidunt mi, vitae varius augue libero vel lectus. Cras imperdiet quis dolor nec gravida. 
+<a href="#A1">top</a></p>
+}
+</div>
+};
+
 (:~
  : get set of thumbnails matching search
  :)
@@ -146,12 +170,15 @@ let $geo:=$vue-api:entity?json?geo($image)
 let $keywords:=$vue-api:entity?json?keywords($image)
 let $thumb:= $cfg:THUMBDIR ||  $path
 let $thumb:=if(file:exists($thumb)) then $thumb else $cfg:THUMBDIR || "missing.jpg"
-return   ( <id>{$id}</id>
+return   (
+          <id>{$id}</id>
          ,<name>{$name}</name>
          ,<path>{$path}</path>
          ,$geo,$keywords
          ,<data>{fetch:binary($thumb)}</data>
-         ,<mime>{fetch:content-type($thumb)}</mime>)
+         ,<mime>{fetch:content-type($thumb)}</mime>
+         ,<selected type="boolean">false</selected>
+         )
 };
 
 

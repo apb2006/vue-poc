@@ -13,7 +13,9 @@
     </v-card-title>
    
     <v-spacer></v-spacer> 
-  
+  <v-text-field   prepend-icon="search" label="Filter..." v-model="q" type="search"
+   hide-details single-line  @keyup.enter="setfilter"
+   :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
     </v-toolbar>
     <v-card-text>
     <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
@@ -44,7 +46,8 @@
     busy: false,
     total: 0,
     items: [],
-    elapsed: null
+    elapsed: null,
+    q:""
   }),
 
   methods:{
@@ -62,6 +65,9 @@
     },
     show(keyword){
       this.$router.push({ name: 'images', query: { keyword: keyword.text }})
+    },
+    setfilter(){
+      alert("not yet")
     }
   },
   created:function(){

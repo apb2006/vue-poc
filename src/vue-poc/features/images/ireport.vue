@@ -15,14 +15,34 @@
     <v-spacer></v-spacer> 
   
     </v-toolbar>
-    <v-card-text>
-body
- </v-card-text>
+     <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
+    <v-card-text v-if="!busy" v-html="report"></v-card-text>
  </v-card>
  </v-container>
 </template>
 
-<script>{  
- 
+<script>{
+  data: ()=>({
+    busy: false,
+    report: null,
+    elapsed: null
+  }),
+  methods:{
+    get(){
+      this.busy=true
+      var t0 = performance.now();
+      HTTP.get("images/report")
+      .then(r=>{
+        this.busy=false
+        this.report=r.data
+        var t1 = performance.now();
+        this.elapsed= 0.001 *(t1 - t0) 
+        }) 
+    }
+  },
+  created:function(){
+    console.log("reports")
+    this.get()
+  }
     }
 </script>

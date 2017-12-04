@@ -9,7 +9,7 @@
 
 	<xsl:param name="resources" as="xs:string" select="'resources/'" />
 
-	<xsl:variable name="css" select="'resources/base.css'" />
+	<xsl:variable name="css" select="concat($resources,'base.css')" />
 
 	<xsl:template match="/">
 		<html>
@@ -57,9 +57,11 @@
 
 	<xsl:template match="c:file">
 		<li>
-			<a href="{@name}/index.html">
+			<a href="F{position()}/index.html">
 				<xsl:value-of select="@name" />
+			
 			</a>
+			 <xsl:value-of select="position()" />
 		</li>
 	</xsl:template>
 

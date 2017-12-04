@@ -16,7 +16,7 @@ as xs:string
   let $file:=if(starts-with($file,"/")) then 
                 substring($file,2) 
             else 
-                error(xs:QName('vue-api:badpath'),"leading slash")
+                error(xs:QName('ufile:badpath'),"leading slash")
                  
   let $webroot:=db:system()/globaloptions/webpath/concat(.,"/")
   return file:resolve-path($file,$webroot)
@@ -25,7 +25,7 @@ as xs:string
 declare  function ufile:webfile($url as xs:string)
 as element(c:directory)
 {
-       let $path := ufile:web( $url)=>trace("vue-api:web ")
+       let $path := ufile:web( $url)=>trace("ufile:web ")
          return if( file:exists($path))then 
                    fw:directory-list($path,map{"max-depth":1,"include-info":true()})
                 else

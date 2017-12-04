@@ -7,6 +7,8 @@ Includes:
 * localforage for persistence
 
 Edit via android 
+## Bugs
+* requests not stopped after unload 
 
 ## Settings
 Global `settings` provides `getItem(name)` and `setItem(name.value)`

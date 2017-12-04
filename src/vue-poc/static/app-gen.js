@@ -1,4 +1,4 @@
-// generated 2017-10-26T21:35:41.214+01:00
+// generated 2017-12-03T22:15:08.778Z
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
        <v-card>
@@ -625,7 +625,11 @@ Vue.filter('round', function(value, decimals) {
 	
   </v-layout>
   
-    <v-navigation-drawer left="" persistent="" v-model="showInfo" :disable-route-watcher="true">
+  
+   
+</v-card>
+<v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
+ <v-navigation-drawer left="" absolute="" v-model="showInfo" :disable-route-watcher="true">
    <v-card flat="" tile=""> 
        <v-toolbar>
       <v-card-title>{{ selection[0] &amp;&amp; selection[0].name }}</v-card-title>
@@ -638,10 +642,8 @@ Vue.filter('round', function(value, decimals) {
            </v-card-actions>
     </v-card>
    </v-navigation-drawer> 
-   
-</v-card>
-<v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
  </v-container>
+  
  `,
       
   
@@ -658,7 +660,6 @@ Vue.filter('round', function(value, decimals) {
 						buttons: [ 
 						    {method: this.todo, icon: "view_quilt"},
 			          {method: this.add, icon: "add"},
-						    {method: this.load, icon: "refresh"},
 						    {method: this.todo, icon: "sort"},
 						    {method: this.selectAll, icon: "select_all"}     
 						],
@@ -846,16 +847,15 @@ Vue.filter('round', function(value, decimals) {
 </v-menu>
 <span>{{ path.join('/') }}</span>
 </v-tooltip>
-  <v-toolbar-title>
-      <span>{{ name }}</span>
-  </v-toolbar-title>
-  <v-tooltip top="">
-  <span slot="activator">
-  <v-chip v-if="dirty" label="" small="" class="red white--text">*</v-chip>
-<v-chip v-if="!dirty" label="" small="" class="green white--text">.</v-chip>
-</span>
-<span>Changed?</span>
-</v-tooltip>
+  
+   <v-badge right="" v-model="dirty">
+     <span slot="badge">*</span>
+     <v-toolbar-title>{{ name }}</v-toolbar-title>
+     </v-badge>
+     <v-btn v-if="dirty" icon="" @click="save()">
+      <v-icon>file_upload</v-icon>
+    </v-btn>
+    <v-spacer></v-spacer>
 
   <v-menu left="" transition="v-fade-transition">
       <v-chip label="" small="" slot="activator">{{ mode }}</v-chip>
@@ -879,7 +879,7 @@ Vue.filter('round', function(value, decimals) {
    </v-tooltip>
 <v-spacer></v-spacer>
    <v-btn icon="" @click="acecmd('outline')" title="outline -todo">
-      <v-icon>star</v-icon>
+      <v-icon>label_outline</v-icon>
     </v-btn>
 
   
@@ -891,9 +891,7 @@ Vue.filter('round', function(value, decimals) {
       <v-icon>wrap_text</v-icon>
     </v-btn>
     
-   <v-btn icon="" @click="save()">
-      <v-icon>file_upload</v-icon>
-    </v-btn>
+   
     
     <v-btn icon="" @click="beautify()">
       <v-icon>format_align_center</v-icon>
@@ -901,35 +899,26 @@ Vue.filter('round', function(value, decimals) {
     <v-btn icon="" @click="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
-        <v-menu left="" transition="v-fade-transition">
-        <v-btn icon="" slot="activator">
-          <v-icon>help</v-icon>
-        </v-btn>     
-        <v-list>
-            <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
-               <v-list-tile-avatar>
-              <v-icon>settings</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title @click="acecmd('showSettingsMenu')">Show settings</v-list-tile-title>
-            </v-list-tile>
-                      
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
-              <v-list-tile-avatar>
-              <v-icon>keyboard</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title @click="acecmd('showKeyboardShortcuts')">Show keyboard commands</v-list-tile-title>
-            </v-list-tile>
-          </v-list>
-       </v-menu>
+      
     <v-menu left="" transition="v-fade-transition">
       <v-btn icon="" slot="activator">
         <v-icon>more_vert</v-icon>
       </v-btn>
      
           <v-list dense="">
-              <v-list-tile v-for="t in mimeTypes" :key="t">
-                <v-list-tile-title v-text="t" @click="setMode(t)"></v-list-tile-title>
-              </v-list-tile>           
+               <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
+               <v-list-tile-avatar>
+              <v-icon>settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')">Show ACE settings</v-list-tile-title>
+            </v-list-tile>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
+              <v-list-tile-avatar>
+              <v-icon>keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showKeyboardShortcuts')">Show ACE keyboard shortcuts</v-list-tile-title>
+            </v-list-tile>          
           </v-list>
           
       </v-menu>
@@ -1129,44 +1118,58 @@ Entities
       const Eval=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
-
-     <v-toolbar>
+     <v-toolbar dense="">
      
-    
-    <v-menu offset-y="">
-      <v-btn slot="activator">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-      <v-list>
-        <v-list-tile @click="submit">
-          <v-list-tile-title>Submit</v-list-tile-title>
-        </v-list-tile>
-        <v-divider></v-divider>
-        <v-list-tile @click="run">
-          <v-list-tile-title>Run</v-list-tile-title>
-        </v-list-tile>
-         <v-list-tile @click="plan">
-          <v-list-tile-title>Show query plan</v-list-tile-title>
-        </v-list-tile>
-        
-      </v-list>
+     <v-menu offset-x="">
+       <v-btn slot="activator" flat="" icon="" color="pink">
+              <v-icon>label_outline</v-icon>
+        </v-btn>
+        <v-card>
+       <v-card-title>Outline here</v-card-title>
+       </v-card>
     </v-menu>
-    <v-spacer></v-spacer>
-     <v-btn @click="imports">
+    
+      <v-menu offset-x="">
+       <v-btn slot="activator" flat="" icon="" color="pink">
+              <v-icon>add_circle</v-icon>
+            </v-btn>
+            <v-card>
+       <v-btn @click="imports">
     <v-icon>library_books</v-icon>
     Imports</v-btn>
      <v-btn @click="namespaces">
     <v-icon>label</v-icon>
     Namespaces</v-btn>
-     <v-menu offset-y="">
-      <v-btn icon="" color="primary" slot="activator"> <v-icon>more_vert</v-icon></v-btn>
+    </v-card>
+    </v-menu>
+      <v-spacer></v-spacer>
+    <v-btn @click="submit">
+      <v-icon>play_circle_outline</v-icon>jobs:run
+      </v-btn>
+    <v-menu offset-y="">
+      <v-btn slot="activator" flat="" icon="">
+         <v-icon>more_vert</v-icon>
+      </v-btn>
       <v-list dense="">
-        <v-list-tile @click="plan">Show query plan</v-list-tile>
+         <v-subheader>More actions...</v-subheader>
+        <v-divider></v-divider>
+        
+        <v-list-tile @click="run">
+          <v-list-tile-title>xquery:eval</v-list-tile-title>
+        </v-list-tile>
+        
+         <v-list-tile @click="plan">
+          <v-list-tile-title>Show query plan</v-list-tile-title>
+        </v-list-tile>
+        
+        <v-list-tile @click="hitme">
+         <v-list-tile-title>Test large result.</v-list-tile-title>
+         </v-list-tile>
      </v-list>
-      <v-list>
-        <v-list-tile @click="hitme">hit me</v-list-tile>
-     </v-list>
-     </v-menu>
+    </v-menu>
+   
+   
+    
    </v-toolbar>
 
   
@@ -1178,7 +1181,7 @@ Entities
    
      <v-card-actions v-if="show">
 
-      <v-chip class="primary white--text">{{jobId}}</v-chip>
+      <v-chip class="primary white--text">{{job.result}}</v-chip>
       
            <v-chip label="" class="grey white--text"> 
            <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
@@ -1214,10 +1217,11 @@ Entities
       result:'',
       elapsed: null,
       show: false,
-      showError: false, //unused
+      showError: false, 
       showResult: false, //
-      jobId: null,
+      job: {}, // {id:"12",result:"job13"}
       waiting: false,
+      destroyed: false,
       start: null,
       jobState: {},
       aceSettings:{}
@@ -1253,7 +1257,7 @@ Entities
       HTTPNE.post("eval/submit",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
-        this.jobId=r.data.job
+        this.job=r.data
         this.show=true
         this.pollState()
         
@@ -1261,14 +1265,15 @@ Entities
       .catch(r=> {
         alert("catch")
         console.log("error",r)
-        this.jobId=r.response.job
+        this.job=r.response.job
         this.showError=true;
 
       });
     },
     pollState(){
+      if(this.destroyed)return;
       this.waiting=true;
-      HTTP.get("job/"+this.jobId)
+      HTTP.get("job/"+this.job.result)
       .then(r=>{
         this.jobState=r.data
         this.waiting=r.data.state!="cached";
@@ -1282,7 +1287,7 @@ Entities
     },
     getResult(){
       this.awaitResult(true)
-       HTTPNE.post("eval/result/"+this.jobId)
+       HTTPNE.post("eval/result/"+this.job.result)
        .then(r=>{
          this.result=r.data.result+" "
        }).catch(r=> {
@@ -1305,7 +1310,7 @@ Entities
       alert("@TODO namespaces")
     },
     plan(){
-      this.awaitResult(false)
+      this.awaitResult(true)
       HTTPNE.post("eval/plan",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.result=r.data.result
@@ -1335,8 +1340,13 @@ Entities
         })})
      },
   created:function(){
+      console.log("eval: creatd");
       localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
-  }
+  },
+  beforeDestroy:function(){
+    this.destroyed=true;
+    console.log("eval: before destroy");
+}
 }
 
       );
@@ -1513,7 +1523,7 @@ Entities
       const Images=Vue.extend({template:` 
 
       <v-card>
-      <v-toolbar class="green white--text">
+      <v-toolbar dense="">
       <v-btn @click.stop="showFilter = true" icon=""><v-icon>search</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
         <v-tooltip top="" v-if="query.keyword || query.from || query.until">      
@@ -1521,56 +1531,66 @@ Entities
             <v-icon>clear</v-icon>
            </v-btn>
          <span>Clear search</span>
-         </v-tooltip> 
+         </v-tooltip>
+           <v-btn icon="" @click="getImages">
+                    <v-avatar>
+                      <v-icon>refresh</v-icon>
+                     </v-avatar>
+                  </v-btn>
            <v-spacer></v-spacer>
            <span v-if="!busy">
-           <v-chip class="primary white--text">{{ total }} in {{ elapsed | round(2) }} secs </v-chip>
-       
-            Page:{{ query.page+1 }}
-          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon="" color="primary">
+              <v-toolbar-items v-if="!selection.length">
+							   <v-btn icon="" v-for="b in buttons" :key="b.icon" @click="action(b)">
+							      <v-avatar>
+							        <v-icon v-text="b.icon"></v-icon>
+							       </v-avatar>
+							    </v-btn>
+          </v-toolbar-items>
+          <v-toolbar-items v-if="selection.length">
+                 <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
+                    <v-avatar>
+                      <v-icon v-text="b.icon"></v-icon>
+                     </v-avatar>
+                  </v-btn>
+          </v-toolbar-items>
+          </span>
+           <v-spacer></v-spacer>
+          <v-toolbar-items>
+          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon="">
+           <v-avatar>
            <v-icon>arrow_back</v-icon>
+           </v-avatar>
            </v-btn>
-           <v-btn @click.stop="pageNext()" icon="" color="primary">
+           <v-btn @click.stop="pageNext()" icon="">
+            <v-avatar>
             <v-icon>arrow_forward</v-icon>
+            </v-avatar>
            </v-btn>
-           </span>
+         </v-toolbar-items>
+        
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
         <v-container v-if="!busy" fluid="" grid-list-md="">
           <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
-              <v-card class="grey lighten-2 pt-1">
-                <v-card-media :src="src(image)" @dblclick="go(image)" height="80px" contain="">
-               
+              <v-card flat="" tile="" class="grey lighten-2 pa-1">
+                <v-card-media :src="src(image)" @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected " height="100px" contain="">
+                 <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
+                 <v-avatar icon="" small="" v-if="image.geo">
+                  <v-icon>place</v-icon>
+                </v-avatar>
                 
                
                 </v-card-media>
                 
-                 <v-card-actions>
-                <v-tooltip bottom="">
-                <v-btn icon="" small="" slot="activator">
-                  <v-icon>info</v-icon>
-                </v-btn>
-                <span v-text="image.path"></span>
-                </v-tooltip>
-						      <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
-                 <v-btn icon="" small="" v-if="image.geo">
-                  <v-icon>place</v-icon>
-                </v-btn>
-                <v-spacer></v-spacer>
-               
-                <v-btn icon="" small="" @click="selected(image)">
-                  <v-icon>share</v-icon>
-                </v-btn>
-              </v-card-actions>
-            <div style="position:absolute;right:0;top:0">
+            <div v-if="image.selected" style="position:absolute;right:0;top:0">
                  <v-icon class="white primary--text">check_circle</v-icon>
                  </div>
             </v-card></v-flex>
           </v-layout>
         </v-container>
 
- <v-navigation-drawer left="" persistent="" v-model="showFilter" :disable-route-watcher="true">
+ <v-navigation-drawer left="" fixed="" v-model="showFilter" :disable-route-watcher="true">
          <v-card>
           <v-toolbar class="green white--text">
                 <v-toolbar-title>Show images with...</v-toolbar-title>
@@ -1627,22 +1647,30 @@ Entities
         </v-card-actions>
       </v-card>
       </v-navigation-drawer>
-        <v-navigation-drawer left="" persistent="" v-model="showInfo" :disable-route-watcher="true">
+        <v-navigation-drawer left="" fixed="" v-model="showInfo" :disable-route-watcher="true">
                <v-card> 
                  <v-toolbar class="green white--text">
-                <v-toolbar-title>{{selitem.name}}</v-toolbar-title>
+                <v-toolbar-title>{{selection.length}} selected</v-toolbar-title>
                 <v-spacer></v-spacer>    
                  <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
               </v-toolbar>
-              <v-card-text> blah blah  </v-card-text> 
+              <v-card-text> 
+               <ul>
+            <li v-for="sel in selection" :key="sel.name">
+            {{sel.name}} {{sel.path}}
+            </li>
+          </ul>
+                </v-card-text> 
              </v-card>
       </v-navigation-drawer>
       
       </v-card>
  
  `,
-        
-  data: () => ({
+       
+  
+  data(){ 
+    return {
     images:[],
     query: {page:0,  // current page
            from:null,
@@ -1658,8 +1686,18 @@ Entities
     keywords: [],
     showInfo: false,
     selitem: "TODO",
-    location: {use:false,value:true}
-  }),
+    location: {use:false,value:true},
+    buttons: [
+     
+      {method: this.selectAll, icon: "select_all"}     
+  ],
+  selopts: [
+    {method: this.selectNone, icon: "select_all"},
+    {method: ()=>{this.showInfo= ! this.showInfo}, icon: "info"},
+    {method: this.share, icon: "share"}
+ ]
+  }
+    },
   methods:{
     src(item){
         return "data:image/jpeg;base64,"+item.data
@@ -1676,8 +1714,13 @@ Entities
         this.total=r.data.total
         this.images=r.data.items
         var t1 = performance.now();
-        this.elapsed= 0.001 *(t1 - t0) 
+        var elapsed= 0.001 *(t1 - t0);
+        var round = Vue.filter('round');
+        this.$notification.add("Found " + this.total + " in : "+ round(elapsed,1) +" secs");
         }) 
+    },
+    slideShow(){
+      alert("slideshow not yet");
     },
     clear(){
       this.query.from=null;
@@ -1685,9 +1728,21 @@ Entities
       this.query.keyword=null;
       this.query.page=0;
     },
+    selectAll(){
+      this.images.forEach(item=>{item.selected=true})
+    },
+   selectNone(){
+      this.images.forEach(item=>{item.selected=false})
+    },
     selected(image){
       this.selitem=image;
       this.showInfo=true;
+    },
+    action(b){
+      b.method(b.icon)
+    },
+    share(){
+      alert("sHARE: "+ this.selection.length);
     },
     isChanged(vnew,vold){
       if(vnew.keyword != vold.keyword) return true
@@ -1711,6 +1766,9 @@ Entities
           var k=this.query.keyword,f=this.query.from, u=this.query.until
           var t= (k?" keyword:'"+k+"'":"")+ (f?" from:" + f:"")+ (u?" until:" + u:"")
           return t?t:"(All)"
+    },
+    selection(){
+      return this.images.filter(item=>{return item.selected} ) 
     }
   },
   watch:{
@@ -1765,14 +1823,34 @@ Entities
     <v-spacer></v-spacer> 
   
     </v-toolbar>
-    <v-card-text>
-body
- </v-card-text>
+     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+    <v-card-text v-if="!busy" v-html="report"></v-card-text>
  </v-card>
  </v-container>
  `,
-        
- 
+      
+  data: ()=>({
+    busy: false,
+    report: null,
+    elapsed: null
+  }),
+  methods:{
+    get(){
+      this.busy=true
+      var t0 = performance.now();
+      HTTP.get("images/report")
+      .then(r=>{
+        this.busy=false
+        this.report=r.data
+        var t1 = performance.now();
+        this.elapsed= 0.001 *(t1 - t0) 
+        }) 
+    }
+  },
+  created:function(){
+    console.log("reports")
+    this.get()
+  }
     }
 
       );
@@ -1786,7 +1864,7 @@ body
     </v-card-title>
    
     <v-spacer></v-spacer> 
-  
+  <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
     </v-toolbar>
     <v-card-text>
     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
@@ -1812,7 +1890,8 @@ body
     busy: false,
     total: 0,
     items: [],
-    elapsed: null
+    elapsed: null,
+    q:""
   }),
 
   methods:{
@@ -1830,6 +1909,9 @@ body
     },
     show(keyword){
       this.$router.push({ name: 'images', query: { keyword: keyword.text }})
+    },
+    setfilter(){
+      alert("not yet")
     }
   },
   created:function(){
@@ -1945,7 +2027,8 @@ people
      
     
      <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
-    <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>   
+    <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>
+      <v-btn icon=""><v-icon>add</v-icon></v-btn>   
       <v-spacer></v-spacer>
       
        <v-btn icon="" :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
@@ -2089,7 +2172,7 @@ people
       const Map=Vue.extend({template:` 
  <v-container fluid="">
      <v-layout row="" wrap="">
-      <v-flex xs12="" style="height:400px">
+      <v-flex xs12="" ref="page" v-resize="onResize" style="height:400px">
      <v-map :zoom="zoom" :center="center">
       <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
       <v-marker :lat-lng="marker"></v-marker>
@@ -2106,6 +2189,15 @@ people
       url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
       attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
       marker: L.latLng(54.320498718, -2.739663708)
+    }
+  },
+  methods:{
+    onResize(){
+      var el=this.$refs["page"]
+      console.log("top",el.offsetTop)
+      var h=Math.max(1,window.innerHeight - el.offsetTop)-60
+       console.log("h",h)
+      el.style.height=h +"px"
     }
   },
   created:function(){
@@ -2814,7 +2906,8 @@ namespaces
       );
       const Svg=Vue.extend({template:` 
  <v-container fluid="">
-svg
+<div id="canvasqPWKOg" class="canvas"></div>
+<button id="resetButtonqPWKOg">Reset</button>
  </v-container>
  `,
       
@@ -2830,8 +2923,25 @@ svg
 
       );
       const Tabs=Vue.extend({template:` 
-  <v-tabs scroll-bars="">
-    <v-card>
+  <v-tabs scroll-bars="" fixed="">
+  
+    
+    <v-tabs-bar class="grey lighten-3" dense="">
+      <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
+ 
+       <v-icon>favorite</v-icon>
+       <span>Item {{ i }} more</span>
+       <v-spacer></v-spacer>
+       <v-btn small="" icon="" class="grey">
+          <v-icon>close</v-icon>
+        </v-btn>
+      </v-tabs-item>
+       <v-btn icon="">
+            <v-icon>menu</v-icon>
+          </v-btn>
+      <v-tabs-slider class="primary"></v-tabs-slider>
+    </v-tabs-bar>
+      <v-card>
       <v-card-actions>
           <v-btn icon="">
             <v-icon>menu</v-icon>
@@ -2846,20 +2956,6 @@ svg
           </v-btn>
         </v-card-actions>
     </v-card>
-    
-    <v-tabs-bar class="grey lighten-3">
-      <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
- 
-       <v-icon>favorite</v-icon>
-       <span>Item {{ i }} more</span>
-       <v-spacer></v-spacer>
-       <v-btn small="" icon="" class="grey">
-          <v-icon>close</v-icon>
-        </v-btn>
-      </v-tabs-item>
-      <v-tabs-slider class="primary"></v-tabs-slider>
-    </v-tabs-bar>
-    
     <v-tabs-items>
      <v-tabs-content v-for="i in 13" :key="i" :id="'mobile-tabs-6-' + i">
       <v-card flat="">
@@ -3397,7 +3493,7 @@ created(){
 				        </v-card>
 				      </v-menu>
           </v-toolbar>
-    <v-card-text v-resize="onResize" style="height:400px; " class="amber" ref="page">
+    <v-card-text ref="page" v-resize="onResize" style="height:400px; " class="amber">
 
        <v-layout v-if="showOptions.includes('result')" style="height:100%" fill-height="">
 		      <v-flex>
@@ -3490,9 +3586,21 @@ created(){
 }
 
       );
-      const router = new VueRouter({
+      // vue-poc application routes
+const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
+  //
+  scrollBehavior (to, from, savedPosition) {
+    if (savedPosition) {
+      return savedPosition
+    } else if (to.hash) {
+      return { selector: to.hash, behavior: 'smooth' }
+
+    } else {
+      return { x: 0, y: 0 }
+    }
+  },
   routes: [
     { path: '/', component: Home, meta:{title:"Home"} },
     { path: '/session', component: Session ,meta: {title:"Session"}},
@@ -3560,19 +3668,23 @@ router.beforeEach((to, from, next) => {
   }
 });const Vuepoc=Vue.extend({template:` 
  <v-app id="app" :dark="dark">
-  <v-navigation-drawer persistent="" v-model="drawerRight" right="" clipped="" :disable-route-watcher="true" app="">
+  <v-navigation-drawer absolute="" v-model="showNotifications" right="" clipped="" :disable-route-watcher="true" app="">
     <v-card>
-     <v-toolbar class="teal white--text">
-                <v-toolbar-title>Notifications</v-toolbar-title>
+         <v-toolbar class="teal white--text">
+                <v-toolbar-title>Notifications </v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn @click="drawerRight = false" icon=""><v-icon>close</v-icon></v-btn>
+          <v-btn @click="showNotifications = false" icon=""><v-icon>close</v-icon></v-btn>
           </v-toolbar>
-    <v-card-text>
-      TODO
+          <v-card-text>
+          <ul>
+            <li v-for="msg in $notification.messages" :key="msg.index">
+            {{msg.text}}
+            </li>
+          </ul>
       </v-card-text>
       </v-card>
 </v-navigation-drawer>
- <v-navigation-drawer persistent="" app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" :enable-resize-watcher="true">
+ <v-navigation-drawer app="" :mini-variant.sync="mini" v-model="drawer" absolute="" :disable-route-watcher="true" :enable-resize-watcher="true">
   <v-list class="pa-0">
 
           <v-list-tile avatar="" tag="div">
@@ -3598,11 +3710,12 @@ router.beforeEach((to, from, next) => {
  <v-toolbar class="indigo" app="" dark="">
   <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
-   <v-btn @click="frmFav = !frmFav" icon="" flat="" title="Bookmark this page">
+   <v-menu offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmFav">
+      <v-btn slot="activator" @click="frmFav = !frmFav" icon="" flat="" title="Bookmark this page">
        <v-icon>star_border</v-icon>
-   </v-btn>
-   <v-dialog v-model="frmFav">
-            <v-card>
+       </v-btn>
+
+            <v-card style="width:400px;">
             <v-toolbar class="amber"> 
         <v-card-title>
             Bookmark this page
@@ -3613,11 +3726,12 @@ router.beforeEach((to, from, next) => {
             <v-select v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-select>
            </v-card-text>
         <v-card-actions>
-            <v-btn color="primary" flat="" @click.stop="frmFav=false">Save</v-btn>
+            <v-spacer></v-spacer>
             <v-btn color="primary" flat="" @click.stop="frmFav=false">Cancel</v-btn>
+            <v-btn color="primary" flat="" @click.stop="favorite();frmFav=false">Save</v-btn>
           </v-card-actions>
         </v-card>
-      </v-dialog>
+   </v-menu>
   <v-spacer></v-spacer>
   <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
   <v-spacer></v-spacer>
@@ -3639,11 +3753,11 @@ router.beforeEach((to, from, next) => {
           </v-list>
       </v-menu>
       <qd-fullscreen></qd-fullscreen>
-       <v-btn @click="notifications" icon="" flat="" title="Notifications">
+       <v-btn @click="showNotifications = ! showNotifications" icon="" flat="" title="Notifications">
        <v-icon>notifications</v-icon>
    </v-btn>
 </v-toolbar>
- <main>
+ 
  <v-content> 
  <v-alert color="error" value="true" dismissible="" v-model="alert.show">
       <pre style="overflow:auto;">{{ alert.msg }}</pre>
@@ -3652,7 +3766,7 @@ router.beforeEach((to, from, next) => {
       <router-view class="view ma-3"></router-view>
       </transition>
   </v-content>
-  </main>
+
 </v-app>
  `,
       
@@ -3661,7 +3775,7 @@ router.beforeEach((to, from, next) => {
     q: "",
     status: {},
     drawer: true,
-    drawerRight: false,
+    showNotifications: false,
     mini: false,
     dark: false,
     alert: {show:false,msg:"Hello"},
@@ -3767,9 +3881,6 @@ router.beforeEach((to, from, next) => {
       },
       favorite(){
         alert("@TODO")
-      },
-      notifications(){
-        this.drawerRight=true
       }
   },
 
@@ -3843,6 +3954,19 @@ const Auth={
       })  }
 };
 Vue.use(Auth);
+
+//Notification Object
+const Notification={
+    messages:[],
+    add(msg){
+      this.messages.unshift({text: msg, index: this.messages.length})
+    },
+    install(Vue){
+        Object.defineProperty(Vue.prototype, '$notification', {
+          get () { return Notification }
+      })  }
+};
+Vue.use(Notification);
 
 // Mimetype info
 const MimeTypes={

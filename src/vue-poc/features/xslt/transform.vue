@@ -33,7 +33,7 @@
 				        </v-card>
 				      </v-menu>
           </v-toolbar>
-    <v-card-text v-resize="onResize" style="height:400px; " class="amber" ref="page">
+    <v-card-text ref="page" v-resize="onResize" style="height:400px; " class="amber" >
 
        <v-layout  v-if="showOptions.includes('result')" style="height:100%"  fill-height >
 		      <v-flex >

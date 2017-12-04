@@ -120,7 +120,11 @@
 	
   </v-layout>
   
-    <v-navigation-drawer left persistent v-model="showInfo" :disable-route-watcher="true">
+  
+   
+</v-card>
+<v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
+ <v-navigation-drawer left absolute v-model="showInfo" :disable-route-watcher="true">
    <v-card flat tile> 
        <v-toolbar >
       <v-card-title >{{ selection[0] && selection[0].name }}</v-card-title>
@@ -133,10 +137,8 @@
            </v-card-actions>
     </v-card>
    </v-navigation-drawer> 
-   
-</v-card>
-<v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
  </v-container>
+  
 </template>
 
 <script>{
@@ -154,7 +156,6 @@
 						buttons: [ 
 						    {method: this.todo, icon: "view_quilt"},
 			          {method: this.add, icon: "add"},
-						    {method: this.load, icon: "refresh"},
 						    {method: this.todo, icon: "sort"},
 						    {method: this.selectAll, icon: "select_all"}     
 						],
