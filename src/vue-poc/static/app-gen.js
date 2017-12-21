@@ -1,4 +1,4 @@
-// generated 2017-12-03T22:15:08.778Z
+// generated 2017-12-19T21:14:02.131Z
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
        <v-card>
@@ -219,6 +219,67 @@
   }
 }
       );
+      Vue.component('vp-job',{template:` 
+ <v-card>
+     <v-toolbar dense="">
+     <v-card-title>Details:</v-card-title>
+       <v-chip class="primary white--text">{{job.id}}</v-chip>
+         <v-spacer></v-spacer>
+           <v-chip class="primary white--text">{{job.job}}</v-chip>
+      
+           <v-chip label="" class="grey white--text"> 
+           <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
+           {{ jobState.writes }}</v-chip>
+           
+            <v-chip label="" class="grey white--text"> 
+              <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
+              {{ jobState.reads }}</v-chip>
+ 
+      
+          <v-chip>{{ jobState.state }}</v-chip>
+         <v-chip class="primary white--text">
+          <v-avatar>  <v-icon>timer</v-icon></v-avatar>
+         {{elapsed}}ms</v-chip>
+    </v-toolbar>
+    <v-card-text>
+  <v-flex xs12="" style="height:60px;" fill-height="">
+  <vue-ace :content="query" mode="xquery" wrap="true" read-only="true"></vue-ace>
+    </v-flex>
+   </v-card-text>
+   <!-- result -->
+    <v-card-text>
+  <v-flex xs12="" style="height:200px;" fill-height="">
+  <vue-ace :content="aresult" mode="xquery" wrap="true" read-only="true"></vue-ace>
+    </v-flex>
+   </v-card-text>
+   </v-card>
+   
+ `,
+      
+  props: ['job',
+          'result',
+          'jobState',
+          'elapsed'],
+  data:function(){
+    return {
+      query:    "(:to do:)",
+      error:    null
+    }
+  },
+  watch:{
+    result:function(a){
+      console.log("result");
+    }
+  },
+  computed:{
+    aresult:function(){return this.result || "none"}
+  },
+  created:function(){
+      console.log("vp-job");
+    }
+}
+
+      );
       Vue.component('vue-ace',{template:` 
 <div style="width: 100%; height: 100%;"></div>
  `,
@@ -247,6 +308,7 @@
         } 
       }
   },
+  
   watch: {
     'content' (value) {
         if (this.beforeContent !== value) {
@@ -276,6 +338,14 @@
       var cm = this.editor.commands
       //console.log(cm.commands)
      cm.exec(cmd, this.editor)
+    },
+    
+    outline(){
+      var row = this.editor.selection.getCursor().row
+      var toks=this.editor.session.getTokens(row).filter(function(t) {
+          return true
+      })
+      console.log("tokens: ",toks);
     },
     
     testAnnotations(){
@@ -345,11 +415,7 @@
     if(this.events){
       this.events.$on('eventFired', (cmd) => {
       if(cmd=="outline"){
-        var row = this.editor.selection.getCursor().row
-        var toks=this.editor.session.getTokens(row).filter(function(t) {
-            return true
-        })
-        console.log(toks);
+       this.outline();
       }else this.command(cmd);
     });
     }
@@ -504,6 +570,114 @@ Vue.filter('round', function(value, decimals) {
   },
   created:function(){
     this.getItems()
+  }
+}
+
+      );
+      const Brutusin=Vue.extend({template:` 
+ <v-container fluid="">
+     <v-card>
+       <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+    </v-card>
+ </v-container>
+ `,
+      
+  components: {
+    "vue-form-generator": VueFormGenerator.component
+   },
+   data() {
+     return {
+       model: {
+           id: 1,
+           name: "John Doe",
+           password: "J0hnD03!x4",
+           age: 35,
+           skills: ["Javascript", "VueJS"],
+           email: "john.doe@gmail.com",
+           status: true
+       },
+       schema: {
+           fields: [{
+               type: "input",
+               inputType: "text",
+               label: "ID",
+               model: "id",
+               readonly: true,
+               featured: false,
+               disabled: true
+           }, {
+               type: "input",
+               inputType: "text",
+               label: "Name",
+               model: "name",
+               readonly: false,
+               featured: true,
+               required: true,
+               disabled: false,
+               placeholder: "User's name",
+               validator: VueFormGenerator.validators.string
+           }, {
+               type: "input",
+               inputType: "password",
+               label: "Password",
+               model: "password",
+               min: 6,
+               required: true,
+               hint: "Minimum 6 characters",
+               validator: VueFormGenerator.validators.string
+           }, {
+               type: "input",
+               inputType: "number",
+               label: "Age",
+               model: "age",
+               min: 18,
+               validator: VueFormGenerator.validators.number
+           }, {
+               type: "input",
+               inputType: "email",
+               label: "E-mail",
+               model: "email",
+               placeholder: "User's e-mail address",
+               validator: VueFormGenerator.validators.email
+           }, {
+               type: "checklist",
+               label: "Skills",
+               model: "skills",
+               multi: true,
+               required: true,
+               multiSelect: true,
+               values: ["HTML5", "Javascript", "CSS3", "CoffeeScript", "AngularJS", "ReactJS", "VueJS"]
+           }, {
+              type: "switch",
+               label: "Status",
+               model: "status",
+               multi: true,
+               readonly: false,
+               featured: false,
+               disabled: false,
+               default: true,
+               textOn: "Active",
+               textOff: "Inactive"
+           }]
+       },
+
+       formOptions: {
+           validateAfterLoad: true,
+           validateAfterChanged: true
+       }
+     };
+   },
+  methods:{
+    onResize(){
+      var el=this.$refs["page"]
+      console.log("top",el.offsetTop)
+      var h=Math.max(1,window.innerHeight - el.offsetTop)-60
+       console.log("h",h)
+      el.style.height=h +"px"
+    }
+  },
+  created:function(){
+    console.log("form")
   }
 }
 
@@ -838,7 +1012,7 @@ Vue.filter('round', function(value, decimals) {
 
   <v-btn color="primary" icon="" slot="activator"><v-icon>{{icon}}</v-icon></v-btn>
   <v-list>
-      <v-list-tile v-for="item in path" :key="item">
+      <v-list-tile v-for="(item,index) in path" :key="index">
         <v-list-tile-content @click="showfiles()">
         <v-list-tile-title>{{ item }}</v-list-tile-title>
         </v-list-tile-content>
@@ -1117,7 +1291,7 @@ Entities
       );
       const Eval=Vue.extend({template:` 
  <v-container fluid="">
-  <v-card>
+  <v-card @keyup.ctrl.enter="submit">
      <v-toolbar dense="">
      
      <v-menu offset-x="">
@@ -1180,15 +1354,16 @@ Entities
    </v-card-text>
    
      <v-card-actions v-if="show">
-
-      <v-chip class="primary white--text">{{job.result}}</v-chip>
+       <v-chip class="primary white--text">{{job.id}}</v-chip>
+           <v-chip class="primary white--text">{{job.job}}</v-chip>
       
            <v-chip label="" class="grey white--text"> 
            <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
            {{ jobState.writes }}</v-chip>
+           
             <v-chip label="" class="grey white--text"> 
-            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
-            {{ jobState.reads }}</v-chip>
+	            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
+	            {{ jobState.reads }}</v-chip>
  
         <v-spacer></v-spacer>
           <v-progress-circular v-if="waiting" indeterminate="" class="primary--text"></v-progress-circular>
@@ -1206,20 +1381,24 @@ Entities
         <vue-ace :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"></vue-ace>
         </v-flex> 
        </v-card-text>
+       <v-card-text>
+       BEFORE<vp-job :job="job" :result:="result" :job-state="jobState" :elapsed="elapsed">IN</vp-job>AFTER
+       </v-card-text>
     </v-card>
 
  </v-container>
  `,
       
+
   data:  function(){
     return {
       xq: '(: type your XQuery :)\n',
-      result:'',
+      result: null,
       elapsed: null,
       show: false,
       showError: false, 
       showResult: false, //
-      job: {}, // {id:"12",result:"job13"}
+      job: {}, // {id:"12",job:"job13", dateTime:""}
       waiting: false,
       destroyed: false,
       start: null,
@@ -1273,7 +1452,7 @@ Entities
     pollState(){
       if(this.destroyed)return;
       this.waiting=true;
-      HTTP.get("job/"+this.job.result)
+      HTTP.get("job/"+this.job.job)
       .then(r=>{
         this.jobState=r.data
         this.waiting=r.data.state!="cached";
@@ -1287,7 +1466,7 @@ Entities
     },
     getResult(){
       this.awaitResult(true)
-       HTTPNE.post("eval/result/"+this.job.result)
+       HTTPNE.post("eval/result/"+this.job.job)
        .then(r=>{
          this.result=r.data.result+" "
        }).catch(r=> {
@@ -1329,6 +1508,8 @@ Entities
       this.result="(Please wait..)"
       this.showResult=true
     }
+  },
+  computed: { 
   },
   beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')
@@ -3643,6 +3824,7 @@ const router = new VueRouter({
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/map', component: Map,meta:{title:"map"} },
+    { path: '/form', component: Brutusin,meta:{title:"Form demo"} },
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
@@ -3851,7 +4033,8 @@ router.beforeEach((to, from, next) => {
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
-      {href: '/svg',text: 'SVG',icon: 'extension'}, 
+      {href: '/svg',text: 'SVG',icon: 'extension'},
+      {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}
       ]},
       

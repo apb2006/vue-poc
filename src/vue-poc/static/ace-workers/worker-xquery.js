@@ -6269,6 +6269,12 @@ exports.StaticContext = function (parent, pos) {
             type: 'module',
             override: true
         };
+        namespaces['http://basex.org/modules/update'] = {
+            prefixes: ['update'],
+            pos: emptyPos,
+            type: 'module',
+            override: true
+        };
         namespaces['http://basex.org/modules/prof'] = {
             prefixes: ['prof'],
             pos: emptyPos,
@@ -6319,7 +6325,14 @@ exports.StaticContext = function (parent, pos) {
             type: 'module',
             override: true
         };
-        namespaces['http://basex.org/modules/web'] = {
+        
+          namespaces['http://basex.org/modules/json'] = {
+            prefixes: ['json'],
+            pos: emptyPos,
+            type: 'module',
+            override: true
+        };  
+          namespaces['http://basex.org/modules/web'] = {
             prefixes: ['web'],
             pos: emptyPos,
             type: 'module',

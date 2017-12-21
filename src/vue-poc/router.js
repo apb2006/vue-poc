@@ -55,6 +55,7 @@ const router = new VueRouter({
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/map', component: Map,meta:{title:"map"} },
+    { path: '/form', component: Brutusin,meta:{title:"Form demo"} },
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],

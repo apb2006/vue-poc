@@ -22,7 +22,7 @@ declare
 function vue-api:eval($xq )   
 {
  let $r:=util:query($xq,())
- return vue-api:response($r)
+ return vue-api:response($r,$xq)
 };
 
 (:~
@@ -30,15 +30,20 @@ function vue-api:eval($xq )
  :)
 declare
 %updating 
-function vue-api:response($r)
+function vue-api:response($r,$query)
 {
  let $id:=$vue-api:id + 1
  let $out:= <json   type="object" >
               <id>{ $id }</id>
-              <result>{$r}</result>
+              <job>{ $r }</job>
+              <dateTime>{ current-dateTime() }</dateTime>
             </json>
+ let $task:=<task id="{$id}">{ $out }
+              <query>{$query}</query>
+            </task>
   return (
            replace value of node $vue-api:id with $id,
+           db:replace($vue-api:db,"/tasks/" || $id || ".xml",$task),
            db:output($out)
           )          
 };
@@ -56,7 +61,7 @@ function vue-api:submit($xq )
  let $bindings:=map{}
  let $opts:=map{"cache":true()}
  let $r:=jobs:eval($xq,$bindings,$opts)
- return vue-api:response($r)
+ return vue-api:response($r,$xq)
 };
 
 

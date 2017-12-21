@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="eval">
  <v-container fluid>
-  <v-card >
+  <v-card  @keyup.ctrl.enter="submit">
      <v-toolbar dense>
      
      <v-menu offset-x>
@@ -27,7 +27,7 @@
     </v-card>
     </v-menu>
       <v-spacer></v-spacer>
-    <v-btn  @click="submit">
+    <v-btn  @click="submit" >
       <v-icon>play_circle_outline</v-icon>jobs:run
       </v-btn>
     <v-menu offset-y>
@@ -66,15 +66,16 @@
    </v-card-text>
    
      <v-card-actions v-if="show" >
-
-      <v-chip class="primary white--text">{{job.result}}</v-chip>
+       <v-chip class="primary white--text">{{job.id}}</v-chip>
+           <v-chip class="primary white--text">{{job.job}}</v-chip>
       
            <v-chip label class="grey white--text"> 
            <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
            {{ jobState.writes }}</v-chip>
+           
             <v-chip label class="grey white--text"> 
-            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
-            {{ jobState.reads }}</v-chip>
+	            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
+	            {{ jobState.reads }}</v-chip>
  
         <v-spacer></v-spacer>
           <v-progress-circular v-if="waiting" indeterminate class="primary--text"></v-progress-circular>
@@ -93,21 +94,26 @@
         ></vue-ace>
         </v-flex> 
        </v-card-text>
+       <v-card-text>
+       BEFORE<vp-job :job="job" :result:="result" 
+       :job-state="jobState" :elapsed="elapsed">IN</vp-job>AFTER
+       </v-card-text>
     </v-card>
 
  </v-container>
 </template>
 
 <script>{
+
   data:  function(){
     return {
       xq: '(: type your XQuery :)\n',
-      result:'',
+      result: null,
       elapsed: null,
       show: false,
       showError: false, 
       showResult: false, //
-      job: {}, // {id:"12",result:"job13"}
+      job: {}, // {id:"12",job:"job13", dateTime:""}
       waiting: false,
       destroyed: false,
       start: null,
@@ -161,7 +167,7 @@
     pollState(){
       if(this.destroyed)return;
       this.waiting=true;
-      HTTP.get("job/"+this.job.result)
+      HTTP.get("job/"+this.job.job)
       .then(r=>{
         this.jobState=r.data
         this.waiting=r.data.state!="cached";
@@ -175,7 +181,7 @@
     },
     getResult(){
       this.awaitResult(true)
-       HTTPNE.post("eval/result/"+this.job.result)
+       HTTPNE.post("eval/result/"+this.job.job)
        .then(r=>{
          this.result=r.data.result+" "
        }).catch(r=> {
@@ -217,6 +223,8 @@
       this.result="(Please wait..)"
       this.showResult=true
     }
+  },
+  computed: { 
   },
   beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')

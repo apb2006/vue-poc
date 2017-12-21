@@ -205,7 +205,8 @@
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
-      {href: '/svg',text: 'SVG',icon: 'extension'}, 
+      {href: '/svg',text: 'SVG',icon: 'extension'},
+      {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}
       ]},
       

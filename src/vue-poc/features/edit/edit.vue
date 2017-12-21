@@ -13,7 +13,7 @@
 
   <v-btn color="primary" icon  slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
   <v-list>
-      <v-list-tile  v-for="item in path" :key="item">
+      <v-list-tile  v-for="(item,index) in path" :key="index">
         <v-list-tile-content @click="showfiles()">
         <v-list-tile-title >{{ item }}</v-list-tile-title>
         </v-list-tile-content>

@@ -2,6 +2,8 @@
 <!-- 
 ace editor for vue.js
 //https://jsfiddle.net/bc_rikko/gbpw2q9x/3/
+events:
+event fired cmd outline
  --> 
 <template id="vue-ace">
 <div  style="width: 100%; height: 100%;"></div>
@@ -31,6 +33,7 @@ ace editor for vue.js
         } 
       }
   },
+  
   watch: {
     'content' (value) {
         if (this.beforeContent !== value) {
@@ -60,6 +63,14 @@ ace editor for vue.js
       var cm = this.editor.commands
       //console.log(cm.commands)
      cm.exec(cmd, this.editor)
+    },
+    
+    outline(){
+      var row = this.editor.selection.getCursor().row
+      var toks=this.editor.session.getTokens(row).filter(function(t) {
+          return true
+      })
+      console.log("tokens: ",toks);
     },
     
     testAnnotations(){
@@ -129,11 +140,7 @@ ace editor for vue.js
     if(this.events){
       this.events.$on('eventFired', (cmd) => {
       if(cmd=="outline"){
-        var row = this.editor.selection.getCursor().row
-        var toks=this.editor.session.getTokens(row).filter(function(t) {
-            return true
-        })
-        console.log(toks);
+       this.outline();
       }else this.command(cmd);
     });
     }
