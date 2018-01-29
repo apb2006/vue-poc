@@ -11,7 +11,7 @@ declare namespace Element="java:ch.digitalfondue.jfiveparse.Element";
 declare namespace Node="java:ch.digitalfondue.jfiveparse.Node";
 
 declare namespace functx = "http://www.functx.com";
-declare variable $vue:PROJ:="C:/Users/andy/git/vue-poc/src/vue-poc/";
+
 declare variable $vue:FEATURES:="features/";
 declare variable $vue:COMPONENTS:="components/";
 declare variable $vue:CORE:="components/core.js";
@@ -20,9 +20,10 @@ declare variable $vue:DEST:="static/app-gen.js";
 
 (:~ 
  : generate javascript vue call from vue files in source folder and core.js
- : @param $doc url for vue file
+ : @param $doc is a ch.digitalfondue.jfiveparse.Document
+ : @param $url for vue file
  :)
-declare function vue:feature($doc,$isComp as xs:boolean)
+declare function vue:feature($doc,$url as xs:string,$isComp as xs:boolean)
 as xs:string
 {
 let $p:=vue:parse($doc)
@@ -30,13 +31,18 @@ let $script:= $p?script=>substring-after("{")
 
 return if(empty($p?id)) then 
            () 
-       else if($isComp) then
-           ``[Vue.component('`{ $p?id }`',{template:` `{ $p?template }` `,
+       else 
+        if($isComp) then
+           ``[
+// src: `{ $url }`
+Vue.component('`{ $p?id }`',{template:` `{ $p?template }` `,
       `{$script}`
       );
       ]``
        else
-             ``[const `{ vue:capitalize-first($p?id) }`=Vue.extend({template:` `{ $p?template }` `,
+         ``[
+// src: `{ $url }`
+const `{ vue:capitalize-first($p?id) }`=Vue.extend({template:` `{ $p?template }` `,
       `{ $script }`
       );
       ]``
@@ -77,7 +83,7 @@ as xs:string*
 declare function vue:feature-build($url as xs:string,$isComp as xs:boolean)
 as xs:string
 {
- fetch:text($url)=>html5:doc()=>vue:feature($isComp)
+ fetch:text($url)=>html5:doc()=>vue:feature($url ,$isComp)
 };
 
 (:~
@@ -92,7 +98,7 @@ let $FILTERS:="components/filters.js"=>file:resolve-path($proj)
 
 let $CORE:="core.js"=>file:resolve-path($proj)
 let $ROUTER:="router.js"=>file:resolve-path($proj)
-let $APP:="vue-poc.vue"=>file:resolve-path($proj)
+let $APP:="app.vue"=>file:resolve-path($proj)
 
 let $DEST:="static/app-gen.js"=>file:resolve-path($proj)
 
@@ -106,9 +112,20 @@ let $comps:=$files!vue:feature-build(.,true())
 let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;"
 return file:write-text($DEST,string-join(($comment,
                                          $comps,
-                                         fetch:text($FILTERS),
+                                         vue:js-test($FILTERS),
                                          $feats,
-                                         fetch:text($ROUTER),
+                                         vue:js-test($ROUTER),
                                          $APP!vue:feature-build(.,false()),
-                                         fetch:text($CORE))))
+                                         vue:js-test($CORE))))
+};
+
+(:~
+ : javascript source with comment
+ :)
+declare function vue:js-test($url as xs:string)
+{
+ ``[
+// src: `{ $url }`
+`{ fetch:text($url) }`
+]``
 };

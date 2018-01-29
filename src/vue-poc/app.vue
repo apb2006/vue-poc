@@ -5,22 +5,37 @@
      absolute 
       v-model="showNotifications"
       right
-      clipped
      :disable-route-watcher="true"
       app
+      width="500"
     >
     <v-card>
-         <v-toolbar class="teal white--text">
+         <v-toolbar class="amber white--text">
                 <v-toolbar-title >Notifications </v-toolbar-title>
+                {{ $notification.nextId }}
           <v-spacer></v-spacer>
           <v-btn  @click="showNotifications = false" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           <v-card-text>
-          <ul>
-            <li v-for="msg in $notification.messages" :key="msg.index">
-            {{msg.text}}
-            </li>
-          </ul>
+        <v-list three-line>
+          <template v-for="msg in $notification.messages" >
+           <v-list-tile avatar  v-bind:key="msg.index" @click="">
+              <v-list-tile-avatar>
+                   <v-icon color="red">swap_horiz</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+              <v-tooltip>
+                <v-list-tile-title  slot="activator">{{ msg.created | fromNow("from") }}</v-list-tile-title>
+                <span v-text="msg.created"></span>
+                </v-tooltip>
+                <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+               <v-list-tile-action-text>{{ msg.index }}</v-list-tile-action-text>
+              </v-list-tile-action>
+            </v-list-tile>
+           </template>
+         </v-list>
       </v-card-text>
       </v-card>
 </v-navigation-drawer>
@@ -107,7 +122,10 @@
       </v-menu>
       <qd-fullscreen></qd-fullscreen>
        <v-btn  @click="showNotifications = ! showNotifications" icon flat title="Notifications">
+       <v-badge  overlap color="orange">
+      <span slot="badge" v-if=" $notification.unseen" >{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
+       </v-badge>
    </v-btn>
 </v-toolbar>
  
@@ -211,7 +229,7 @@
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About', icon: 'help'    }, 
+      {href: '/about',text: 'About (v1.1.1)' , icon: 'help'    }, 
     ]
 
   }},
@@ -238,9 +256,13 @@
         alert("@TODO")
       }
   },
-
+  watch: {
+    showNotifications: function (val) {
+      console.log("showNotifications",val);
+      if(!val)this.$notification.unseen=0;
+    }
+    },
   created(){
-    
     console.log("create-----------")
     var that=this
     this.$on("theme",this.onDark)
@@ -252,19 +274,6 @@
         that.showAlert("vue error:\n"+msg)
         //alert("vue error");
    };
-    // Add a response interceptor
-
-    HTTP.interceptors.response.use(
-    (response)=> {
-      // Do something with response data
-      return response;
-    },
-    (error) =>{
-      // interupt restxq single
-      console.log("$$$$$$$$$$$",error)
-      if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
-      return Promise.reject(error);
-    });
     
     HTTP.get("status")
     .then(r=>{

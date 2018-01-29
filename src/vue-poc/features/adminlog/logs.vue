@@ -62,7 +62,8 @@
       pagination:{sortBy: 'time',descending:true,rowsPerPage:25},
       selected:[],
       search:"",
-      loading:false
+      loading:false,
+      timer:null
       }
   },
   methods:{
@@ -74,12 +75,15 @@
         //console.log(r.data)
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         this.items=r.data.items
-        setTimeout(()=>{ this.getItems() }, 5000);
+        this.timer=setTimeout(()=>{ this.getItems() }, 5000);
         }) 
     }
   },
   created:function(){
     this.getItems()
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
   }
 }
 </script>

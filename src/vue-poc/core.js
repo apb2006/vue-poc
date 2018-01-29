@@ -11,11 +11,40 @@ const AXIOS_CONFIG={
     }
   };
 
+// time requests
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+    // Do something with response data
+  console.log("AXIOS",response);
+    return response;
+  }, function (error) {
+    // Do something with response error
+    return Promise.reject(error);
+  });
+
 // errors displayed by interceptor
 const HTTP = axios.create(AXIOS_CONFIG);
+HTTP.interceptors.request.use((config) => {
+  config.qdStartTime=performance.now();
+  return config;
+});
+HTTP.interceptors.response.use((response) => {
+  // Do something with response data
+  if(response.config && response.config.qdStartTime){
+    var s=Math.floor(performance.now() - response.config.qdStartTime);
+    var c=response.config;
+    var url=response.config.url + "?" + c.paramsSerializer(c.params);
+    console.log("interceptors time:",s, response.config);
+    Notification.add(s +" "+ url );
+  }
+  return response;
+});
+
 // errors hidden
 const HTTPNE = axios.create(AXIOS_CONFIG);
 const axios_json={ headers: {accept: 'application/json'}};
+
 
 // Authorization Object
 const Auth={
@@ -31,8 +60,18 @@ Vue.use(Auth);
 //Notification Object
 const Notification={
     messages:[],
+    nextId: 0,
+    unseen:0,
     add(msg){
-      this.messages.unshift({text: msg, index: this.messages.length})
+      var data={
+          text: msg,
+          index: ++this.nextId,
+          created: new Date()
+      };
+      this.messages.unshift(data);
+      this.messages.length = Math.min(this.messages.length, 30);
+      ++this.unseen;
+
     },
     install(Vue){
         Object.defineProperty(Vue.prototype, '$notification', {
@@ -167,9 +206,9 @@ const Fullscreen={
 Vue.use(Fullscreen);
 
 //leaflet
-Vue.component('v-map', Vue2Leaflet.Map);
-Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
-Vue.component('v-marker', Vue2Leaflet.Marker);
+//Vue.component('v-map', Vue2Leaflet.Map);
+//Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
+//Vue.component('v-marker', Vue2Leaflet.Marker);
 
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')

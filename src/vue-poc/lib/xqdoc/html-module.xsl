@@ -89,12 +89,12 @@
 
 	<xsl:template match="doc:module">
 		<h1>
-			
+			<xsl:value-of select="@type" />
+      module: &#160;
 			<span class="namespace">
 				<xsl:value-of select="doc:uri" />
 			</span>
-			&#160;<xsl:value-of select="@type" />
-      module
+			
 		</h1>
 		<dl>
 			<xsl:apply-templates select="doc:comment/doc:description" />

@@ -43,9 +43,10 @@
    
   <v-tooltip top>
      <v-chip   @click="acecmd('goToNextError')" slot="activator" >
-          <v-avatar  class="green ">{{annotations && annotations.info}}</v-avatar>
-          <v-avatar  class="yellow ">{{annotations && annotations.warning}}</v-avatar>        
-          <v-avatar   class="red " small>{{annotations && annotations.error}}</v-avatar>    
+            <span   class="red " >{{annotations && annotations.error}}</span>
+            <span  class="yellow ">{{annotations && annotations.warning}}</span>   
+            <span  class="green ">{{annotations && annotations.info}}</span>
+ 
            <v-avatar>
               <v-icon black >navigate_next</v-icon>
            </v-avatar>
@@ -57,16 +58,44 @@
       <v-icon>label_outline</v-icon>
     </v-btn>
 
-  
-   <v-btn  icon @click="togglefold" title="fold toggle">
-      <v-icon>vertical_align_center</v-icon>
-    </v-btn>
-    
-    <v-btn  icon @click="wrap=!wrap">
-      <v-icon>wrap_text</v-icon>
-    </v-btn>
-    
-   
+  <v-menu left  transition="v-fade-transition">
+      <v-btn  icon slot="activator" title="display settings">
+        <v-icon>playlist_play</v-icon>
+      </v-btn>
+     
+      <v-list dense>
+           <v-subheader>Display settings</v-subheader>
+         
+           <v-list-tile @click="togglefold"  avatar >
+             <v-list-tile-avatar>
+                   <v-icon >vertical_align_center</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title  >Toggle folds</v-list-tile-title>
+           </v-list-tile>
+           
+           <v-list-tile @click="wrap=!wrap"  avatar >
+             <v-list-tile-avatar>
+                   <v-icon >wrap_text</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title  >Soft wrap</v-list-tile-title>
+           </v-list-tile>
+             <v-divider></v-divider>
+              <v-subheader>Help</v-subheader>
+             <v-list-tile @click="acecmd('showSettingsMenu')" avatar >
+               <v-list-tile-avatar>
+              <v-icon >settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-tile-title>
+            </v-list-tile>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
+              <v-list-tile-avatar>
+              <v-icon >keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-tile-title>
+            </v-list-tile>          
+      </v-list>
+    </v-menu>
     
     <v-btn  icon @click="beautify()">
       <v-icon>format_align_center</v-icon>

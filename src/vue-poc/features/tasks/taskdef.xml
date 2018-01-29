@@ -10,4 +10,20 @@
 			<param name="target">Path to xqm file to generate</param>
 		</params>
 	</task>
+
+	<task name="tasks/xqdoc">
+		<title>XQdoc</title>
+		<description>Generate XQdoc as html</description>
+	</task>
+
+	<task name="tasks/vuecompile">
+		<title>vue compile</title>
+	</task>
+
+	<task name="tasks/newapp">
+		<title>application template</title>
+		<params>
+			<param name="appname">Name for new application</param>
+		</params>
+	</task>
 </tasks>

@@ -35,8 +35,8 @@
    </v-card-text>
    <!-- result -->
     <v-card-text   >
-  <v-flex  xs12 style="height:200px;"  fill-height>
-  <vue-ace  :content="aresult" mode="xquery" wrap="true" read-only="true" ></vue-ace>
+  <v-flex  xs12   fill-height>
+  <vue-ace  :content="aresult" mode="xquery" min-lines="1" wrap="true" read-only="true" ></vue-ace>
     </v-flex>
    </v-card-text>
    </v-card>

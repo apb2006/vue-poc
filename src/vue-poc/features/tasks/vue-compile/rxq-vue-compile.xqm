@@ -20,4 +20,3 @@ function vue-rest:vue($proj )
   let $op:=vue:compile($proj)
   return db:output(<json type="object"><msg> { $proj }.</msg></json>)
 };
-  

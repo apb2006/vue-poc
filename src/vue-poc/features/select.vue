@@ -16,16 +16,41 @@
      
     <v-flex xs6>
     <p>some text</p>
-    <multiselect v-model="value" :options="options" @search-change="asyncFind" :loading="isLoading" 
-    placeholder="select one"></multiselect>
-    <pre>{{$data.value }}</pre>
+   
+  
+     <v-select
+              label="Select"
+              v-bind:items="options"
+              v-model="value"
+               item-text="name"
+              item-value="name"
+              chips
+              max-height="auto"
+              autocomplete
+              clearable
+              deletable-chips
+            >      
+           
+       </v-select>
+         <pre>{{$data.value }}</pre>
     </v-flex>
 
     <v-flex xs6 >
     <p>multi select</p>
-    <multiselect v-model="value2" :options="options" multiple 
-    placeholder="Select many"></multiselect>
-    <pre>{{$data.value2 }}</pre>
+    
+      <v-select
+              label="Select"
+              v-bind:items="options"
+              v-model="value2"
+              item-text="name"
+              item-value="name"
+              multiple
+              chips
+              deletable-chips
+              max-height="auto"
+              autocomplete
+            >v-select</v-select>
+            <pre>{{$data.value2 }}</pre>
     </v-flex>
    </v-layout>
    </v-flex>
@@ -46,7 +71,6 @@
 </template>
 
 <script>{
-  components: { multiselect: VueMultiselect.Multiselect}, 
   data: function(){
       return {
           value: null,
@@ -66,6 +90,7 @@
         HTTP.get("test-select?q="+query,axios_json)
         .then(function(r){
           that.isLoading = false
+          console.log("data::::",r.data);
           that.options=r.data.items;
           })
           .catch(function (error) {

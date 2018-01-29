@@ -20,7 +20,7 @@ declare variable $xqd:index-xslt external :="html-index.xsl";
 declare function xqd:save-xq($files,$target)
 {
 let $params:=map{
-                  "project":"BCH" }
+                  "project":"project" }
 let $f:=  document{$files} transform with { delete  node //c:directory[not(.//c:file)]}
  
 return (

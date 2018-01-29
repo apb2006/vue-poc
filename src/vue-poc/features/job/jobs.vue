@@ -79,7 +79,8 @@
       selected: [],
       search: "",
       loading: false,
-      autorefresh: true
+      autorefresh: true,
+      timer:null
       }
   },
   methods:{
@@ -89,7 +90,7 @@
 	    .then(r=>{
 	       this.loading=false
 	       this.items=r.data
-	       if(this.autorefresh) setTimeout(()=>{ this.getJobs() }, 10000);
+	       if(this.autorefresh) this.timer=setTimeout(()=>{ this.getJobs() }, 10000);
 	    })
 	   
     },
@@ -108,6 +109,9 @@
   },
   created(){
     this.getJobs()
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
   }
 }
 </script>

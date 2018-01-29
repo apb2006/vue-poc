@@ -7,25 +7,52 @@ module namespace vue-rest = 'quodatum:vue.tasks';
  : list tasks
  :)
 declare
-%rest:GET %rest:path("/vue-poc/api/tasks/list")
+%rest:GET %rest:path("/vue-poc/api/tasks")
 %rest:produces("application/json")
 %output:method("json")
 function vue-rest:tasks()   
 {
-  let $a:=42
-  return <json type="array">
-        <_ type="object">
-          <to>tasks/model</to>
-          <text>model</text>
+  let $tasks:=doc("taskdef.xml")/tasks/task
+  return <json type="array">{
+  $tasks!<_ type="object">
+          <to>{ @name/string() }</to>
+          <text>{ title/text() }</text>
         </_>
-          <_ type="object">
-          <to>tasks/xqdoc</to>
-          <text>XQdoc</text>
-        </_>
-          <_ type="object">
-          <to>tasks/vuecompile</to>
-          <text>vue compile</text>
-        </_>
+        }</json>
+};
+  
+(:~
+ :   task details
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/tasks/{$task}")
+%rest:produces("application/json")
+%output:method("json")
+function vue-rest:task($task)   
+{
+  let $tasks:=doc("taskdef.xml")/tasks/task[@name=$task]
+  return  <json type="object">
+          <to>{ $tasks/@name/string() }</to>
+          <text>{ $tasks/title/string() }</text>
+          <params>{ count($tasks/params/*) }</params>
         </json>
 };
   
+(:~
+ :   task run
+ :)
+declare
+%rest:POST %rest:path("/vue-poc/api/tasks/{$task}")
+%rest:produces("application/json")
+%output:method("json")
+function vue-rest:runtask($task)   
+{
+  let $tasks:=doc("taskdef.xml")/tasks/task
+  return <json type="array">{
+  $tasks!<_ type="object">
+          <to>{ @name/string() }</to>
+          <text>{ title/text() }</text>
+        </_>
+        }</json>
+};
+    

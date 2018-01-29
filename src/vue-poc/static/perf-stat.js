@@ -1,4 +1,6 @@
 // performance monitoring. of value stream
+// var t=new perfStat()
+// t.log(newValue)
 // stores max min etc
 function perfStat() {   
   this.data={count:0,max:null,min:null,total:0,median:0,last:null,avg:null};

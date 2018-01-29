@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2017-10-22T20:37:22.427+01:00 
+ : auto generated from xml files in entities folder at: 2018-01-03T10:05:58.06Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -10,7 +10,7 @@ declare namespace c='http://www.w3.org/ns/xproc-step';
 declare variable $entity:list:=map { 
   "basexlog": map{
      "name": "basexlog",
-     "description": "BaseX log entry ",
+     "description": "BaseX log entry",
      "access": map{ 
        "address": function($_ as element()) as xs:string {$_/@address },
        "ms": function($_ as element()) as xs:integer {$_/@ms },
@@ -58,7 +58,7 @@ declare variable $entity:list:=map {
    },
   "filehistory": map{
      "name": "filehistory",
-     "description": "vue-poc file view events ",
+     "description": "vue-poc file view events",
      "access": map{ 
        "created": function($_ as element()) as xs:string {$_/@when },
        "id": function($_ as element()) as xs:string {$_/@id },
@@ -126,8 +126,7 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(namespace)*
-       { collection("vuepoc")/namespaces/namespace
-	 },
+       { collection("vuepoc")/namespaces/namespace },
        
        "views": map{ 
        'filter': 'xmlns description'
@@ -170,8 +169,7 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(query)*
-       { collection("replx/queries")/query
-	 },
+       { collection("replx/queries")/query },
        
        "views": map{ 
        'filter': 'name description'

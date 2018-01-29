@@ -9,7 +9,6 @@
 	<dependency name="js-beautify" version="1.6.12" />
 	<dependency name="axios" version="0.16.1" />
 	<dependency name="qs" version="6.4.0" />
-	<dependency name="vue-multiselect" version="2.0.0-beta.14" />
 	<dependency name="localforage" version="1.5.0" />
 	<dependency name="moment.js" version="2.18.1" />
 	<dependency name="file-walker" version="0.5.2" />

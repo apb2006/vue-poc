@@ -6,7 +6,9 @@
 Vue.filter("formatDate", function(date) {
     return moment(date).format("MMMM D, YYYY")
 });
-
+Vue.filter("fromNow", function(date) {
+  return moment(date).fromNow()
+});
 Vue.filter('readablizeBytes', function (bytes,decimals) {
   if(bytes == 0) return '0 Bytes';
   var k = 1000,

@@ -1,5 +1,7 @@
-// generated 2017-12-19T21:14:02.131Z
-Vue.component('qd-confirm',{template:` 
+// generated 2018-01-29T09:41:19.232Z
+
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
+Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
        <v-card>
        <v-toolbar class="orange darken-1">
@@ -21,7 +23,9 @@
 }
 
       );
-      Vue.component('qd-fullscreen',{template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-fullscreen.vue
+Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
   </a>
@@ -43,7 +47,9 @@
 }
 
       );
-      Vue.component('qd-link',{template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-link.vue
+Vue.component('qd-link',{template:` 
  <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
  `,
       
@@ -54,68 +60,48 @@
 }
 
       );
-      Vue.component('qd-navlist',{template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-navlist.vue
+Vue.component('qd-navlist',{template:` 
  <v-list dense="">
-<template v-for="(item, i) in items">
-  <v-layout row="" v-if="item.heading" align-center="" :key="i"> 
-    <v-flex xs6="">
-      <v-subheader v-if="item.heading">
-        {{ item.heading }}
-      </v-subheader>
-    </v-flex>
-    <v-flex xs6="" class="text-xs-center">
-      <a href="#!" class="body-2 black--text">EDIT</a>
-    </v-flex>
-  </v-layout>
-  <v-list-group v-else-if="item.children" v-model="item.model" no-action="">
-
-      <v-list-tile :to="item.href" ripple="" slot="item">
-       <v-list-tile-action>
-          <v-icon>{{ item.icon }}</v-icon>
-        </v-list-tile-action>
-          <v-list-tile-title>
-            {{ item.text }}
-          </v-list-tile-title>
-          <v-spacer></v-spacer>
-        <v-list-tile-action>
-          <v-icon>{{ item.model ? 'keyboard_arrow_up' : 'keyboard_arrow_down' }}</v-icon>
-        </v-list-tile-action>
-       
-      </v-list-tile>
-    <template v-for="(child, i) in item.children">
-      <v-list-tile :to="child.href" :key="i" ripple="">
-        <v-list-tile-action>
-          <v-icon></v-icon>
-        </v-list-tile-action>
-        <v-list-tile-content>
-          <v-list-tile-title>
-             <v-icon>{{ child.icon }}</v-icon>&nbsp;{{ child.text }}
-          </v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
-    </template>
-  </v-list-group>
- 
-    <v-list-tile v-else="" :to="item.href" ripple="">
-      <v-list-tile-action>
-        <v-icon>{{ item.icon }}</v-icon>
-      </v-list-tile-action>
-      <v-list-tile-content>
-        <v-list-tile-title>
-          {{ item.text }}
-        </v-list-tile-title>
-      </v-list-tile-content>
-    </v-list-tile>
-
-</template>
-</v-list>
+    <template v-for="(item, i) in items">
+          <v-list-group v-if="item.children" v-bind:key="item.text" :prepend-icon="item.icon" no-action="">
+            <v-list-tile slot="activator">
+              <v-list-tile-content>
+                <v-list-tile-title>{{ item.text }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+            
+            <v-list-tile v-for="subItem in item.children" v-bind:key="subItem.text" :prepend-icon="subItem.icon" :to="subItem.href" avatar="" ripple="">
+              <v-list-tile-avatar>
+		             <v-icon>{{ subItem.icon }}</v-icon>
+		          </v-list-tile-avatar>
+            <v-list-tile-content>
+                <v-list-tile-title>{{ subItem.text }}</v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list-group>
+          
+          <v-list-tile v-else="" v-bind:key="item.text" :to="item.href" ripple="">
+              <v-list-tile-avatar>
+                 <v-icon>{{ item.icon }}</v-icon>
+              </v-list-tile-avatar>
+          <v-list-tile-content>
+                <v-list-tile-title>{{ item.text }}</v-list-tile-title>
+              </v-list-tile-content>
+     
+          </v-list-tile>
+          </template>
+        </v-list>
  `,
       
   props: ['items']
 }
 
       );
-      Vue.component('qd-panel',{template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-panel.vue
+Vue.component('qd-panel',{template:` 
  <v-layout>
 		<v-flex>
 		<slot name="body"></slot>
@@ -134,7 +120,9 @@
 }
 
       );
-      Vue.component('qd-table',{template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-table.vue
+Vue.component('qd-table',{template:` 
  <v-container fluid="">
   <v-card>
    <v-toolbar>
@@ -192,7 +180,9 @@
 }
 
       );
-      Vue.component('vis-time-line',{template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vis-time-line.vue
+Vue.component('vis-time-line',{template:` 
   <div></div>
  `,
        
@@ -219,7 +209,9 @@
   }
 }
       );
-      Vue.component('vp-job',{template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-job.vue
+Vue.component('vp-job',{template:` 
  <v-card>
      <v-toolbar dense="">
      <v-card-title>Details:</v-card-title>
@@ -248,8 +240,8 @@
    </v-card-text>
    <!-- result -->
     <v-card-text>
-  <v-flex xs12="" style="height:200px;" fill-height="">
-  <vue-ace :content="aresult" mode="xquery" wrap="true" read-only="true"></vue-ace>
+  <v-flex xs12="" fill-height="">
+  <vue-ace :content="aresult" mode="xquery" min-lines="1" wrap="true" read-only="true"></vue-ace>
     </v-flex>
    </v-card-text>
    </v-card>
@@ -280,7 +272,9 @@
 }
 
       );
-      Vue.component('vue-ace',{template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vue-ace.vue
+Vue.component('vue-ace',{template:` 
 <div style="width: 100%; height: 100%;"></div>
  `,
       
@@ -289,7 +283,8 @@
           'wrap',
           'readOnly',
           'events',
-          'settings'
+          'settings',
+          'minLines',
           ],
   data () {
     return {
@@ -381,7 +376,10 @@
     this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
     this.editor.setValue(this.content, 1)
-    this.editor.setOptions({ readOnly:this.readOnly })
+    this.editor.setOptions({ readOnly:this.readOnly });
+    if(this.minLines){
+      this.editor.setOptions({ minLines: this.minLines})
+    };
     var session=this.editor.getSession()
     session.setMode(`ace/mode/${mode}`)
     session.setUseWrapMode(wrap)
@@ -422,7 +420,9 @@
   }
 }
       );
-      /**
+      
+// src: C:\Users\andy\git\vue-poc\src\vue-poc\components\filters.js
+/**
  * vue filters
  */
 
@@ -430,7 +430,9 @@
 Vue.filter("formatDate", function(date) {
     return moment(date).format("MMMM D, YYYY")
 });
-
+Vue.filter("fromNow", function(date) {
+  return moment(date).fromNow()
+});
 Vue.filter('readablizeBytes', function (bytes,decimals) {
   if(bytes == 0) return '0 Bytes';
   var k = 1000,
@@ -460,7 +462,10 @@ Vue.filter('round', function(value, decimals) {
 
   value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
   return value;
-});const Notfound=Vue.extend({template:` 
+});
+
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/404.vue
+const Notfound=Vue.extend({template:` 
  <v-container fluid="">
  Not found
  </v-container>
@@ -477,7 +482,9 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const About=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/about.vue
+const About=Vue.extend({template:` 
 <v-container>
 <v-parallax src="/vue-poc/ui/vue-poc.png">
 </v-parallax> 
@@ -508,7 +515,9 @@ Vue.filter('round', function(value, decimals) {
   }
 
       );
-      const Log=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logs.vue
+const Log=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
    <v-toolbar>
@@ -552,7 +561,8 @@ Vue.filter('round', function(value, decimals) {
       pagination:{sortBy: 'time',descending:true,rowsPerPage:25},
       selected:[],
       search:"",
-      loading:false
+      loading:false,
+      timer:null
       }
   },
   methods:{
@@ -564,17 +574,22 @@ Vue.filter('round', function(value, decimals) {
         //console.log(r.data)
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         this.items=r.data.items
-        setTimeout(()=>{ this.getItems() }, 5000);
+        this.timer=setTimeout(()=>{ this.getItems() }, 5000);
         }) 
     }
   },
   created:function(){
     this.getItems()
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
   }
 }
 
       );
-      const Brutusin=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/brutusin.vue
+const Brutusin=Vue.extend({template:` 
  <v-container fluid="">
      <v-card>
        <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
@@ -682,7 +697,9 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const Files=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/files.vue
+const Files=Vue.extend({template:` 
  <v-container fluid="">
  
 <v-card>
@@ -957,7 +974,9 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const History=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/history.vue
+const History=Vue.extend({template:` 
  <v-container fluid="">
     <v-list>
             <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar="">
@@ -998,7 +1017,9 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const Edit=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/edit.vue
+const Edit=Vue.extend({template:` 
 <v-container fluid="">
       <v-snackbar top="" color="error" v-model="snackbar">
       {{ message }}
@@ -1042,9 +1063,10 @@ Vue.filter('round', function(value, decimals) {
    
   <v-tooltip top="">
      <v-chip @click="acecmd('goToNextError')" slot="activator">
-          <v-avatar class="green ">{{annotations &amp;&amp; annotations.info}}</v-avatar>
-          <v-avatar class="yellow ">{{annotations &amp;&amp; annotations.warning}}</v-avatar>        
-          <v-avatar class="red " small="">{{annotations &amp;&amp; annotations.error}}</v-avatar>    
+            <span class="red ">{{annotations &amp;&amp; annotations.error}}</span>
+            <span class="yellow ">{{annotations &amp;&amp; annotations.warning}}</span>   
+            <span class="green ">{{annotations &amp;&amp; annotations.info}}</span>
+ 
            <v-avatar>
               <v-icon black="">navigate_next</v-icon>
            </v-avatar>
@@ -1056,16 +1078,44 @@ Vue.filter('round', function(value, decimals) {
       <v-icon>label_outline</v-icon>
     </v-btn>
 
-  
-   <v-btn icon="" @click="togglefold" title="fold toggle">
-      <v-icon>vertical_align_center</v-icon>
-    </v-btn>
-    
-    <v-btn icon="" @click="wrap=!wrap">
-      <v-icon>wrap_text</v-icon>
-    </v-btn>
-    
-   
+  <v-menu left="" transition="v-fade-transition">
+      <v-btn icon="" slot="activator" title="display settings">
+        <v-icon>playlist_play</v-icon>
+      </v-btn>
+     
+      <v-list dense="">
+           <v-subheader>Display settings</v-subheader>
+         
+           <v-list-tile @click="togglefold" avatar="">
+             <v-list-tile-avatar>
+                   <v-icon>vertical_align_center</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>Toggle folds</v-list-tile-title>
+           </v-list-tile>
+           
+           <v-list-tile @click="wrap=!wrap" avatar="">
+             <v-list-tile-avatar>
+                   <v-icon>wrap_text</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>Soft wrap</v-list-tile-title>
+           </v-list-tile>
+             <v-divider></v-divider>
+              <v-subheader>Help</v-subheader>
+             <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
+               <v-list-tile-avatar>
+              <v-icon>settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')">Show ACE settings</v-list-tile-title>
+            </v-list-tile>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
+              <v-list-tile-avatar>
+              <v-icon>keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showKeyboardShortcuts')">Show ACE keyboard shortcuts</v-list-tile-title>
+            </v-list-tile>          
+      </v-list>
+    </v-menu>
     
     <v-btn icon="" @click="beautify()">
       <v-icon>format_align_center</v-icon>
@@ -1272,7 +1322,9 @@ Vue.filter('round', function(value, decimals) {
 }
 
       );
-      const Entity=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/entity.vue
+const Entity=Vue.extend({template:` 
  <v-container fluid="">
 Entities
  </v-container>
@@ -1289,7 +1341,9 @@ Entities
 }
 
       );
-      const Eval=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/eval/eval.vue
+const Eval=Vue.extend({template:` 
  <v-container fluid="">
   <v-card @keyup.ctrl.enter="submit">
      <v-toolbar dense="">
@@ -1376,14 +1430,17 @@ Entities
     <v-card-text v-if="showError">
      <v-alert color="error" v-model="showError">Error </v-alert>
     </v-card-text>
+    
      <v-card-text v-if="showResult">
-     <v-flex xs12="" style="height:200px" fill-height="">
-        <vue-ace :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"></vue-ace>
+		     <v-flex xs12="" style="height:200px" fill-height="">
+		        <vue-ace :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"></vue-ace>
         </v-flex> 
-       </v-card-text>
+     </v-card-text>
+       
        <v-card-text>
        BEFORE<vp-job :job="job" :result:="result" :job-state="jobState" :elapsed="elapsed">IN</vp-job>AFTER
        </v-card-text>
+       
     </v-card>
 
  </v-container>
@@ -1531,7 +1588,9 @@ Entities
 }
 
       );
-      const Home=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/home.vue
+const Home=Vue.extend({template:` 
 
 <v-card hover="" raised=""> 
 <v-card-title class="pa-5 indigo">
@@ -1584,7 +1643,9 @@ Entities
   }
 
       );
-      const Dates=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/dates.vue
+const Dates=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
     <v-toolbar class="orange darken-1">
@@ -1648,7 +1709,9 @@ Entities
     }
 
       );
-      const Image=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/image.vue
+const Image=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
     <v-toolbar class="orange darken-1">
@@ -1701,7 +1764,9 @@ Entities
     }
 
       );
-      const Images=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/images.vue
+const Images=Vue.extend({template:` 
 
       <v-card>
       <v-toolbar dense="">
@@ -1992,7 +2057,9 @@ Entities
     }
 
       );
-      const Report=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/ireport.vue
+const Report=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
     <v-toolbar class="orange darken-1">
@@ -2035,7 +2102,9 @@ Entities
     }
 
       );
-      const Keywords=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/keywords.vue
+const Keywords=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
     <v-toolbar class="orange darken-1">
@@ -2101,7 +2170,9 @@ Entities
   }
 }
       );
-      const People=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/people.vue
+const People=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
     <v-toolbar class="orange darken-1">
@@ -2124,7 +2195,9 @@ people
     }
 
       );
-      const Job=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/job/job.vue
+const Job=Vue.extend({template:` 
   <v-card>
    <v-toolbar>
       <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
@@ -2166,7 +2239,8 @@ people
     return {
       jobstate:{state:"?",user:"?",duration:"?"},
       result:null,
-      loading:false
+      loading:false,
+      timer:null
       }
   },
   methods:{
@@ -2177,7 +2251,7 @@ people
 	       this.loading=false
 	       this.jobstate=r.data
 	       if(!this.jobstate.id) this.jobstate={state:"cached", text:"Job not found"}
-	       if(!this.finished)setTimeout(()=>{ this.getJob() }, 10000);
+	       if(!this.finished)this.timer=setTimeout(()=>{ this.getJob() }, 10000);
 	    })
 	   
     },
@@ -2198,11 +2272,16 @@ people
   },
   created(){
     this.getJob()
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
   }
 }
 
       );
-      const Jobs=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/job/jobs.vue
+const Jobs=Vue.extend({template:` 
   <v-card>
    <v-toolbar>
      
@@ -2254,7 +2333,8 @@ people
       selected: [],
       search: "",
       loading: false,
-      autorefresh: true
+      autorefresh: true,
+      timer:null
       }
   },
   methods:{
@@ -2264,7 +2344,7 @@ people
 	    .then(r=>{
 	       this.loading=false
 	       this.items=r.data
-	       if(this.autorefresh) setTimeout(()=>{ this.getJobs() }, 10000);
+	       if(this.autorefresh) this.timer=setTimeout(()=>{ this.getJobs() }, 10000);
 	    })
 	   
     },
@@ -2283,11 +2363,16 @@ people
   },
   created(){
     this.getJobs()
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
   }
 }
 
       );
-      const Login=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/login/login.vue
+const Login=Vue.extend({template:` 
 <v-card class="grey lighten-4 elevation-0">
 
       <v-card-title class="green darken-1">
@@ -2350,44 +2435,9 @@ people
 }
 
       );
-      const Map=Vue.extend({template:` 
- <v-container fluid="">
-     <v-layout row="" wrap="">
-      <v-flex xs12="" ref="page" v-resize="onResize" style="height:400px">
-     <v-map :zoom="zoom" :center="center">
-      <v-tilelayer :url="url" :attribution="attribution"></v-tilelayer>
-      <v-marker :lat-lng="marker"></v-marker>
-    </v-map>
-    </v-flex>
-    </v-layout>
- </v-container>
- `,
       
-  data:  function(){
-    return {
-      zoom: 13,
-      center: [54.320498718, -2.739663708],
-      url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
-      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
-      marker: L.latLng(54.320498718, -2.739663708)
-    }
-  },
-  methods:{
-    onResize(){
-      var el=this.$refs["page"]
-      console.log("top",el.offsetTop)
-      var h=Math.max(1,window.innerHeight - el.offsetTop)-60
-       console.log("h",h)
-      el.style.height=h +"px"
-    }
-  },
-  created:function(){
-    console.log("map")
-  }
-}
-
-      );
-      const Namespace=Vue.extend({template:` 
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespace.vue
+const Namespace=Vue.extend({template:` 
  <v-container fluid="">
 namespaces
  </v-container>
@@ -2404,7 +2454,9 @@ namespaces
 }
 
       );
-      const Ping=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/ping/ping.vue
+const Ping=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
  <v-toolbar>
@@ -2561,7 +2613,9 @@ namespaces
 }
 
       );
-      const Puzzle=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/puzzle.vue
+const Puzzle=Vue.extend({template:` 
  <v-container fluid="">
   <v-layout>
  
@@ -2638,7 +2692,9 @@ namespaces
 
 
       );
-      const Repo=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/repository.vue
+const Repo=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
    <v-toolbar>
@@ -2690,7 +2746,9 @@ namespaces
 }
 
       );
-      const Search=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/search.vue
+const Search=Vue.extend({template:` 
  <v-container fluid="">
  <v-alert color="warning" value="true">Not finished</v-alert>
  <v-text-field label="Search..." v-model="q" v-on:keyup="send"></v-text-field> 
@@ -2761,7 +2819,9 @@ namespaces
 }
 
       );
-      const Select=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/select.vue
+const Select=Vue.extend({template:` 
  <v-container fluid="">
 <v-card>
     <v-toolbar class="green darken-1">
@@ -2778,14 +2838,19 @@ namespaces
      
     <v-flex xs6="">
     <p>some text</p>
-    <multiselect v-model="value" :options="options" @search-change="asyncFind" :loading="isLoading" placeholder="select one"></multiselect>
-    <pre>{{$data.value }}</pre>
+   
+  
+     <v-select label="Select" v-bind:items="options" v-model="value" item-text="name" item-value="name" chips="" max-height="auto" autocomplete="" clearable="" deletable-chips="">      
+           
+       </v-select>
+         <pre>{{$data.value }}</pre>
     </v-flex>
 
     <v-flex xs6="">
     <p>multi select</p>
-    <multiselect v-model="value2" :options="options" multiple="" placeholder="Select many"></multiselect>
-    <pre>{{$data.value2 }}</pre>
+    
+      <v-select label="Select" v-bind:items="options" v-model="value2" item-text="name" item-value="name" multiple="" chips="" deletable-chips="" max-height="auto" autocomplete="">v-select</v-select>
+            <pre>{{$data.value2 }}</pre>
     </v-flex>
    </v-layout>
    </v-flex>
@@ -2805,7 +2870,6 @@ namespaces
  </v-card></v-card></v-container>
  `,
       
-  components: { multiselect: VueMultiselect.Multiselect}, 
   data: function(){
       return {
           value: null,
@@ -2825,6 +2889,7 @@ namespaces
         HTTP.get("test-select?q="+query,axios_json)
         .then(function(r){
           that.isLoading = false
+          console.log("data::::",r.data);
           that.options=r.data.items;
           })
           .catch(function (error) {
@@ -2838,7 +2903,9 @@ namespaces
 
 
       );
-      const Session=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/session.vue
+const Session=Vue.extend({template:` 
  <v-container fluid="">
   <v-layout>
    <v-btn v-on:click="redraw">this.$forceUpdate()</v-btn>
@@ -2906,7 +2973,9 @@ namespaces
 
 
       );
-      const Acesettings=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/acesettings.vue
+const Acesettings=Vue.extend({template:` 
 <v-container fluid="">
 
   <v-layout row="">
@@ -3030,7 +3099,9 @@ namespaces
 
 
       );
-      const Settings=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/settings.vue
+const Settings=Vue.extend({template:` 
  <v-container fluid="">
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
 <v-switch label="Dark theme" v-model="dark" @change="theme"></v-switch>
@@ -3085,7 +3156,9 @@ namespaces
 }
 
       );
-      const Svg=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/svg.vue
+const Svg=Vue.extend({template:` 
  <v-container fluid="">
 <div id="canvasqPWKOg" class="canvas"></div>
 <button id="resetButtonqPWKOg">Reset</button>
@@ -3103,7 +3176,9 @@ namespaces
 }
 
       );
-      const Tabs=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tabs.vue
+const Tabs=Vue.extend({template:` 
   <v-tabs scroll-bars="" fixed="">
   
     
@@ -3155,7 +3230,9 @@ namespaces
   }
 
       );
-      const Model=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/model.build/model.vue
+const Model=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
     <v-toolbar class="orange darken-1">
@@ -3227,13 +3304,92 @@ namespaces
 }
 
       );
-      const Task=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/task/task.vue
+const Runtask=Vue.extend({template:` 
+ <v-container fluid="">
+    <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+      <span class="white--text">Task: {{ task }}</span>      
+    </v-card-title>
+      <v-spacer></v-spacer>
+     <v-btn color="primary" @click="submit()" :loading="waiting" :disabled="waiting">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+    </v-toolbar>
+    <v-card-text>
+      <v-container fluid="">
+        <v-layout row="" wrap="">   
+          <v-flex xs12="">
+            <v-text-field v-model="params.proj" label="vue project to compile"></v-text-field>
+          </v-flex>
+        </v-layout>
+         <v-layout row="" wrap="">
+           <v-flex xs12="">
+            <code>{{code}}</code>
+          </v-flex>
+        </v-layout>
+  
+      </v-container>
+    </v-card-text>
+   
+      <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
+      {{ snackbar.msg }}
+      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
+    </v-snackbar>
+  </v-card>
+ </v-container>
+ `,
+      
+  props:["task"],
+  data:  function(){
+    return {
+      params:{
+			      proj:"C:/Users/andy/git/vue-poc/src/vue-poc/"
+			 },
+			waiting:false,
+			snackbar:{show:false,msg:"",context:"success"},
+    }
+  },
+  methods:{
+    submit(){
+      this.waiting=true
+      HTTP.post("tasks/" + this.task, Qs.stringify(this.params))
+      .then(r=>{
+        this.waiting=false      
+        this.snackbar={show:true,msg:r.data.msg,context:"success"}
+        console.log(r.data)
+         settings.setItem('tasks/vuecompile',this.params)
+      })
+      .catch(error=>{
+        this.waiting=false
+        this.snackbar={show:true,msg:"Problem",context:"error"}
+        console.log(error);
+      });
+   }
+  },
+  created:function(){
+    var task=this.task
+    HTTP.get("tasks/"+task)
+    .then(r=>{
+      console.log(r);
+      alert("OK");
+      })
+   },
+  computed:{
+    code(){return 'code here'}
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/tasks.vue
+const Task=Vue.extend({template:` 
  <v-container fluid="">
   <h3>Available Tasks</h3>
-  <v-snackbar :bottom="true" v-model="snackbar">
-     got tasks, currently ignoring
-      <v-btn flat="" class="pink--text" @click.native="snackbar = false">Close</v-btn>
-    </v-snackbar>
+  
   <ul>
   <li v-for="task in tasks" :key="task.to">
   <router-link :to="task.to" v-text="task.text"></router-link>
@@ -3244,15 +3400,13 @@ namespaces
       
   data(){
     return {
-      tasks: [],      
-      snackbar: false
+      tasks: []
       }
   },
   methods:{
     getTasks(){
-        HTTP.get("tasks/list")
+        HTTP.get("tasks")
         .then(r=>{
-		   this.snackbar=true
 		   this.tasks=r.data
        })
     }
@@ -3263,7 +3417,9 @@ namespaces
 }
 
       );
-      const Vuecompile=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/vue-compile/vuecompile.vue
+const Vuecompile=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
     <v-toolbar class="orange darken-1">
@@ -3338,7 +3494,9 @@ namespaces
 }
 
       );
-      const Xqdoc=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/xqdoc/xqdoc.vue
+const Xqdoc=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
      <v-toolbar class="orange darken-1">
@@ -3422,7 +3580,9 @@ namespaces
 }
 
       );
-      const Thumbnail=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/thumbnail/thumbnail.vue
+const Thumbnail=Vue.extend({template:` 
  <v-container fluid="">
  <v-stepper v-model="step" non-linear="">
   <v-stepper-header>
@@ -3492,7 +3652,9 @@ namespaces
 }
 
       );
-      const Timeline=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/timeline.vue
+const Timeline=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
  <v-toolbar class="lime darken-1">
@@ -3541,7 +3703,9 @@ created(){
 }
 }
       );
-      const Users=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/users/users.vue
+const Users=Vue.extend({template:` 
  <v-container fluid="">
    <qd-table :headers="headers" data-uri="data/users">
    </qd-table>
@@ -3572,7 +3736,9 @@ created(){
 }
 
       );
-      const Validate=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/validate/validate.vue
+const Validate=Vue.extend({template:` 
   <v-container fluid="" v-resize="onResize">
 <v-card>
      <v-toolbar class="orange">
@@ -3642,7 +3808,9 @@ created(){
 }
 
       );
-      const Transform=Vue.extend({template:` 
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/xslt/transform.vue
+const Transform=Vue.extend({template:` 
  <v-container fluid="">
 <v-card>
      <v-toolbar class="orange">
@@ -3767,7 +3935,9 @@ created(){
 }
 
       );
-      // vue-poc application routes
+      
+// src: C:\Users\andy\git\vue-poc\src\vue-poc\router.js
+// vue-poc application routes
 const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
@@ -3820,6 +3990,7 @@ const router = new VueRouter({
     { path: '/tasks/model', component: Model, meta:{title:"build model"} },
     { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
+    { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
     { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
@@ -3848,21 +4019,39 @@ router.beforeEach((to, from, next) => {
   } else {
     next() // make sure to always call next()!
   }
-});const Vuepoc=Vue.extend({template:` 
+});
+
+// src: C:\Users\andy\git\vue-poc\src\vue-poc\app.vue
+const Vuepoc=Vue.extend({template:` 
  <v-app id="app" :dark="dark">
-  <v-navigation-drawer absolute="" v-model="showNotifications" right="" clipped="" :disable-route-watcher="true" app="">
+  <v-navigation-drawer absolute="" v-model="showNotifications" right="" :disable-route-watcher="true" app="" width="500">
     <v-card>
-         <v-toolbar class="teal white--text">
+         <v-toolbar class="amber white--text">
                 <v-toolbar-title>Notifications </v-toolbar-title>
+                {{ $notification.nextId }}
           <v-spacer></v-spacer>
           <v-btn @click="showNotifications = false" icon=""><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           <v-card-text>
-          <ul>
-            <li v-for="msg in $notification.messages" :key="msg.index">
-            {{msg.text}}
-            </li>
-          </ul>
+        <v-list three-line="">
+          <template v-for="msg in $notification.messages">
+           <v-list-tile avatar="" v-bind:key="msg.index" @click="">
+              <v-list-tile-avatar>
+                   <v-icon color="red">swap_horiz</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+              <v-tooltip>
+                <v-list-tile-title slot="activator">{{ msg.created | fromNow("from") }}</v-list-tile-title>
+                <span v-text="msg.created"></span>
+                </v-tooltip>
+                <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+               <v-list-tile-action-text>{{ msg.index }}</v-list-tile-action-text>
+              </v-list-tile-action>
+            </v-list-tile>
+           </template>
+         </v-list>
       </v-card-text>
       </v-card>
 </v-navigation-drawer>
@@ -3936,7 +4125,10 @@ router.beforeEach((to, from, next) => {
       </v-menu>
       <qd-fullscreen></qd-fullscreen>
        <v-btn @click="showNotifications = ! showNotifications" icon="" flat="" title="Notifications">
+       <v-badge overlap="" color="orange">
+      <span slot="badge" v-if=" $notification.unseen">{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
+       </v-badge>
    </v-btn>
 </v-toolbar>
  
@@ -4039,7 +4231,7 @@ router.beforeEach((to, from, next) => {
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About', icon: 'help'    }, 
+      {href: '/about',text: 'About (v1.1.1)' , icon: 'help'    }, 
     ]
 
   }},
@@ -4066,9 +4258,13 @@ router.beforeEach((to, from, next) => {
         alert("@TODO")
       }
   },
-
+  watch: {
+    showNotifications: function (val) {
+      console.log("showNotifications",val);
+      if(!val)this.$notification.unseen=0;
+    }
+    },
   created(){
-    
     console.log("create-----------")
     var that=this
     this.$on("theme",this.onDark)
@@ -4080,19 +4276,6 @@ router.beforeEach((to, from, next) => {
         that.showAlert("vue error:\n"+msg)
         //alert("vue error");
    };
-    // Add a response interceptor
-
-    HTTP.interceptors.response.use(
-    (response)=> {
-      // Do something with response data
-      return response;
-    },
-    (error) =>{
-      // interupt restxq single
-      console.log("$$$$$$$$$$$",error)
-      if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
-      return Promise.reject(error);
-    });
     
     HTTP.get("status")
     .then(r=>{
@@ -4108,7 +4291,9 @@ router.beforeEach((to, from, next) => {
   }
 
       );
-      // base -----------------------
+      
+// src: C:\Users\andy\git\vue-poc\src\vue-poc\core.js
+// base -----------------------
 
 const AXIOS_CONFIG={
     baseURL: "/vue-poc/api/",
@@ -4121,11 +4306,40 @@ const AXIOS_CONFIG={
     }
   };
 
+// time requests
+
+// Add a response interceptor
+axios.interceptors.response.use(function (response) {
+    // Do something with response data
+  console.log("AXIOS",response);
+    return response;
+  }, function (error) {
+    // Do something with response error
+    return Promise.reject(error);
+  });
+
 // errors displayed by interceptor
 const HTTP = axios.create(AXIOS_CONFIG);
+HTTP.interceptors.request.use((config) => {
+  config.qdStartTime=performance.now();
+  return config;
+});
+HTTP.interceptors.response.use((response) => {
+  // Do something with response data
+  if(response.config && response.config.qdStartTime){
+    var s=Math.floor(performance.now() - response.config.qdStartTime);
+    var c=response.config;
+    var url=response.config.url + "?" + c.paramsSerializer(c.params);
+    console.log("interceptors time:",s, response.config);
+    Notification.add(s +" "+ url );
+  }
+  return response;
+});
+
 // errors hidden
 const HTTPNE = axios.create(AXIOS_CONFIG);
 const axios_json={ headers: {accept: 'application/json'}};
+
 
 // Authorization Object
 const Auth={
@@ -4141,8 +4355,18 @@ Vue.use(Auth);
 //Notification Object
 const Notification={
     messages:[],
+    nextId: 0,
+    unseen:0,
     add(msg){
-      this.messages.unshift({text: msg, index: this.messages.length})
+      var data={
+          text: msg,
+          index: ++this.nextId,
+          created: new Date()
+      };
+      this.messages.unshift(data);
+      this.messages.length = Math.min(this.messages.length, 30);
+      ++this.unseen;
+
     },
     install(Vue){
         Object.defineProperty(Vue.prototype, '$notification', {
@@ -4277,9 +4501,10 @@ const Fullscreen={
 Vue.use(Fullscreen);
 
 //leaflet
-Vue.component('v-map', Vue2Leaflet.Map);
-Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
-Vue.component('v-marker', Vue2Leaflet.Marker);
+//Vue.component('v-map', Vue2Leaflet.Map);
+//Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
+//Vue.component('v-marker', Vue2Leaflet.Marker);
 
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')
+

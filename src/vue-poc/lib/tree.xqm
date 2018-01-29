@@ -74,5 +74,5 @@ function tree:test(){
     "/api/suite/{$suite}/",
     "/api/execute/zz")
     let $t:=tree:build($a)
-    return unit:assert(fn:true())
+    return unit:assert(fn:true(),$t)
 };

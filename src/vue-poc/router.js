@@ -51,6 +51,7 @@ const router = new VueRouter({
     { path: '/tasks/model', component: Model, meta:{title:"build model"} },
     { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
+    { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
     { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },

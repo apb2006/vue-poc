@@ -62,7 +62,10 @@ function vue-api:test-select($q )
 {
   <json   type="object" >
             <items type="array">
-            {(1 to 100)!(<_>A{.}</_>)}              
+            {(1 to 100)!(<_ type="object">
+             <name>A{ . }</name>
+             <value>V{ . }</value>
+            </_>)}              
             </items>
   </json>
 };

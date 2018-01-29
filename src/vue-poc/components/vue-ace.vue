@@ -14,7 +14,8 @@ event fired cmd outline
           'wrap',
           'readOnly',
           'events',
-          'settings'
+          'settings',
+          'minLines',
           ],
   data () {
     return {
@@ -106,7 +107,10 @@ event fired cmd outline
     this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
     this.editor.setValue(this.content, 1)
-    this.editor.setOptions({ readOnly:this.readOnly })
+    this.editor.setOptions({ readOnly:this.readOnly });
+    if(this.minLines){
+      this.editor.setOptions({ minLines: this.minLines})
+    };
     var session=this.editor.getSession()
     session.setMode(`ace/mode/${mode}`)
     session.setUseWrapMode(wrap)

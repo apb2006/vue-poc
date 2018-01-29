@@ -42,7 +42,8 @@
     return {
       jobstate:{state:"?",user:"?",duration:"?"},
       result:null,
-      loading:false
+      loading:false,
+      timer:null
       }
   },
   methods:{
@@ -53,7 +54,7 @@
 	       this.loading=false
 	       this.jobstate=r.data
 	       if(!this.jobstate.id) this.jobstate={state:"cached", text:"Job not found"}
-	       if(!this.finished)setTimeout(()=>{ this.getJob() }, 10000);
+	       if(!this.finished)this.timer=setTimeout(()=>{ this.getJob() }, 10000);
 	    })
 	   
     },
@@ -74,6 +75,9 @@
   },
   created(){
     this.getJob()
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
   }
 }
 </script>

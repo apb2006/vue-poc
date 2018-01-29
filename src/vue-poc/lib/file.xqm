@@ -50,7 +50,7 @@ as element(c:directory)
         
           (: db:list-details($db as xs:string, $path as xs:string) as element(resource)* :)
           return if($map($name)="file") then
-                   let $x:=db:list-details($db , $path || $name)=>trace("detail")
+                   let $x:=db:list-details($db , $path || $name) 
                    return <c:file name="{$name}" size="0"/>
                   else
                     <c:directory name="{$name}"  content-type="text/directory" size="0"/>
