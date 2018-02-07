@@ -1,8 +1,5 @@
 (:~
- : Update `generated/models.xqm` from files in `data/models`
- : using file:///C:/Users/andy/workspace/app-doc/src/doc/data/doc/models
- : $efolder:="file:///C:/Users/andy/workspace/app-doc/src/doc/data/doc/models"
- : $target:="file:///C:/Users/andy/workspace/app-doc/src/doc/generated/models.xqm"
+ : Generate html for for XQuery sources
  :)
 module namespace vue-api = 'quodatum:vue.api';
 import module namespace xqd = 'quodatum:build.xqdoc' at "../../../lib/xqdoc/xqdoc-proj.xqm";
@@ -22,8 +19,9 @@ declare
 %updating   
 function vue-api:model($efolder ,$target )   
 {
+  let $project:=tokenize($efolder,"[/\\]")[last()]=>trace("DDD")
   let $files:= fw:directory-list($efolder,map{"include-filter":".*\.xqm"})
-  let $op:=xqd:save-xq($files,$target)
+  let $op:=xqd:save-xq($files,$target,map{"project":$project})
   return db:output(<json type="object"><msg> {$target}, {count($files//c:file)} files processed.</msg></json>)
 };
   

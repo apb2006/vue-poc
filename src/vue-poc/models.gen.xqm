@@ -1,16 +1,17 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-01-03T10:05:58.06Z 
+ : auto generated from xml files in entities folder at: 2018-02-05T23:02:18.036Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
-import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace h='urn:quodatum:vue-poc.history';
+import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace ent='https://github.com/Quodatum/app-doc/entity';
+declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
 declare variable $entity:list:=map { 
   "basexlog": map{
      "name": "basexlog",
-     "description": "BaseX log entry",
+     "description": "BaseX log entry ",
      "access": map{ 
        "address": function($_ as element()) as xs:string {$_/@address },
        "ms": function($_ as element()) as xs:integer {$_/@ms },
@@ -56,9 +57,130 @@ declare variable $entity:list:=map {
        
        }
    },
+  "entity.field": map{
+     "name": "entity.field",
+     "description": "About an entity field. ",
+     "access": map{ 
+       "description": function($_ as element()) as xs:string {$_/ent:description },
+       "name": function($_ as element()) as xs:string {$_/@name },
+       "parent": function($_ as element()) as xs:string {$_/../../@name },
+       "type": function($_ as element()) as xs:string {$_/@type },
+       "xpath": function($_ as element()) as xs:string {$_/ent:xpath } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( $item/@name, $item/ent:description) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "description": function($_ as element()) as element(description)? {
+            (: xs:string :)
+                        fn:data($_/ent:description)!element description {  .} 
+                 },
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element name {  .} 
+                 },
+           "parent": function($_ as element()) as element(parent)? {
+            (: xs:string :)
+                        fn:data($_/../../@name)!element parent {  .} 
+                 },
+           "type": function($_ as element()) as element(type)? {
+            (: xs:string :)
+                        fn:data($_/@type)!element type {  .} 
+                 },
+           "xpath": function($_ as element()) as element(xpath)? {
+            (: xs:string :)
+                        fn:data($_/ent:xpath)!element xpath {  .} 
+                 } },
+       
+      "data": function() as element(ent:field)*
+       { collection("doc-doc")//ent:field },
+       
+       "views": map{ 
+       'filter': 'name description'
+       }
+   },
+  "entity": map{
+     "name": "entity",
+     "description": "About an entity i.e. something described in this framework
+	",
+     "access": map{ 
+       "code": function($_ as element()) as xs:string? {$_/ent:data },
+       "description": function($_ as element()) as xs:string {$_/ent:description },
+       "fieldslink": function($_ as element()) as xs:string {$_/fn:concat("/data/entity/",@name,"/field") },
+       "iconclass": function($_ as element()) as xs:string {$_/ent:iconclass },
+       "modules": function($_ as element()) as xs:string? {$_/ent:module/concat("import module namespace ",@prefix,"='",@namespace,"';
+")=>string-join() },
+       "name": function($_ as element()) as xs:string {$_/@name },
+       "namespaces": function($_ as element()) as xs:string? {$_/ent:namespace/concat("declare namespace ",@prefix,"='",@uri,"';
+")=>string-join() },
+       "nfields": function($_ as element()) as xs:integer {$_/fn:count(ent:fields/ent:field) },
+       "parent": function($_ as element()) as xs:string? {$_/ent:parent/@name },
+       "parentlink": function($_ as element()) as xs:string? {$_/fn:concat("/data/entity/",ent:parent/@name) },
+       "type": function($_ as element()) as xs:string {$_/ent:data/@type } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( $item/@name, $item/ent:description) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "code": function($_ as element()) as element(code)? {
+            (: xs:string? :)
+                        fn:data($_/ent:data)!element code {  .} 
+                 },
+           "description": function($_ as element()) as element(description)? {
+            (: xs:string :)
+                        fn:data($_/ent:description)!element description {  .} 
+                 },
+           "fieldslink": function($_ as element()) as element(fieldslink)? {
+            (: xs:string :)
+                        fn:data($_/fn:concat("/data/entity/",@name,"/field"))!element fieldslink {  .} 
+                 },
+           "iconclass": function($_ as element()) as element(iconclass)? {
+            (: xs:string :)
+                        fn:data($_/ent:iconclass)!element iconclass {  .} 
+                 },
+           "modules": function($_ as element()) as element(modules)? {
+            (: xs:string? :)
+                        fn:data($_/ent:module/concat("import module namespace ",@prefix,"='",@namespace,"';
+")=>string-join())!element modules {  .} 
+                 },
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element name {  .} 
+                 },
+           "namespaces": function($_ as element()) as element(namespaces)? {
+            (: xs:string? :)
+                        fn:data($_/ent:namespace/concat("declare namespace ",@prefix,"='",@uri,"';
+")=>string-join())!element namespaces {  .} 
+                 },
+           "nfields": function($_ as element()) as element(nfields)? {
+            (: xs:integer :)
+                        fn:data($_/fn:count(ent:fields/ent:field))!element nfields { attribute type {'number'}, .} 
+                 },
+           "parent": function($_ as element()) as element(parent)? {
+            (: xs:string? :)
+                        fn:data($_/ent:parent/@name)!element parent {  .} 
+                 },
+           "parentlink": function($_ as element()) as element(parentlink)? {
+            (: xs:string? :)
+                        fn:data($_/fn:concat("/data/entity/",ent:parent/@name))!element parentlink {  .} 
+                 },
+           "type": function($_ as element()) as element(type)? {
+            (: xs:string :)
+                        fn:data($_/ent:data/@type)!element type {  .} 
+                 } },
+       
+      "data": function() as element(ent:entity)*
+       { collection("vue-poc")//ent:entity },
+       
+       "views": map{ 
+       'filter': 'name description'
+       }
+   },
   "filehistory": map{
      "name": "filehistory",
-     "description": "vue-poc file view events",
+     "description": "vue-poc file view events ",
      "access": map{ 
        "created": function($_ as element()) as xs:string {$_/@when },
        "id": function($_ as element()) as xs:string {$_/@id },
@@ -126,7 +248,8 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(namespace)*
-       { collection("vuepoc")/namespaces/namespace },
+       { collection("vuepoc")/namespaces/namespace
+	 },
        
        "views": map{ 
        'filter': 'xmlns description'
@@ -169,7 +292,8 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(query)*
-       { collection("replx/queries")/query },
+       { collection("replx/queries")/query
+	 },
        
        "views": map{ 
        'filter': 'name description'
@@ -211,6 +335,50 @@ declare variable $entity:list:=map {
        
        "views": map{ 
        
+       }
+   },
+  "task": map{
+     "name": "task",
+     "description": "A task",
+     "access": map{ 
+       "created": function($_ as element()) as xs:string {$_/json/dateTime },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "query": function($_ as element()) as xs:string {$_/query },
+       "result": function($_ as element()) as xs:string {$_/substring(result,0,1000) },
+       "resultlength": function($_ as element()) as xs:integer {$_/string-length(result) } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "created": function($_ as element()) as element(created)? {
+            (: xs:string :)
+                        fn:data($_/json/dateTime)!element created {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "query": function($_ as element()) as element(query)? {
+            (: xs:string :)
+                        fn:data($_/query)!element query {  .} 
+                 },
+           "result": function($_ as element()) as element(result)? {
+            (: xs:string :)
+                        fn:data($_/substring(result,0,1000))!element result {  .} 
+                 },
+           "resultlength": function($_ as element()) as element(resultlength)? {
+            (: xs:integer :)
+                        fn:data($_/string-length(result))!element resultlength { attribute type {'number'}, .} 
+                 } },
+       
+      "data": function() as element(task)*
+       { collection("vue-poc/tasks")/task
+	 },
+       
+       "views": map{ 
+       'filter': 'name description'
        }
    },
   "thumbnail": map{

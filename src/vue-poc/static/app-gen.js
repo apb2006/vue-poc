@@ -1,4 +1,4 @@
-// generated 2018-01-29T09:41:19.232Z
+// generated 2018-02-07T09:51:14.046Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -213,6 +213,7 @@ Vue.component('vis-time-line',{template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-job.vue
 Vue.component('vp-job',{template:` 
  <v-card>
+
      <v-toolbar dense="">
      <v-card-title>Details:</v-card-title>
        <v-chip class="primary white--text">{{job.id}}</v-chip>
@@ -235,13 +236,13 @@ Vue.component('vp-job',{template:`
     </v-toolbar>
     <v-card-text>
   <v-flex xs12="" style="height:60px;" fill-height="">
-  <vue-ace :content="query" mode="xquery" wrap="true" read-only="true"></vue-ace>
+  <vue-ace :content="query" mode="xquery" wrap="true" :read-only="true"></vue-ace>
     </v-flex>
    </v-card-text>
    <!-- result -->
     <v-card-text>
-  <v-flex xs12="" fill-height="">
-  <vue-ace :content="aresult" mode="xquery" min-lines="1" wrap="true" read-only="true"></vue-ace>
+  <v-flex xs12="" style="height:60px;" fill-height="">
+  <vue-ace :content="result" mode="xquery" min-lines="1" wrap="true" read-only="true"></vue-ace>
     </v-flex>
    </v-card-text>
    </v-card>
@@ -251,23 +252,26 @@ Vue.component('vp-job',{template:`
   props: ['job',
           'result',
           'jobState',
-          'elapsed'],
+          'elapsed',
+          'query' 
+          ],
   data:function(){
     return {
-      query:    "(:to do:)",
-      error:    null
+      error:    null,
+      res1: "??"
     }
   },
   watch:{
     result:function(a){
-      console.log("result");
+      if(this.res1 === "???"){ this.res1=a};
+      console.log("vp-result:",a);
     }
   },
   computed:{
-    aresult:function(){return this.result || "none"}
+    aresult:function(){return this.res1 || "none"}
   },
   created:function(){
-      console.log("vp-job");
+      console.log("vp-job: ", this.job,this.result);
     }
 }
 
@@ -375,6 +379,7 @@ Vue.component('vue-ace',{template:`
     this.editor = window.ace.edit(this.$el)
     this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
+   console.log("setValue: ",this.content)
     this.editor.setValue(this.content, 1)
     this.editor.setOptions({ readOnly:this.readOnly });
     if(this.minLines){
@@ -1323,25 +1328,6 @@ const Edit=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/entity.vue
-const Entity=Vue.extend({template:` 
- <v-container fluid="">
-Entities
- </v-container>
- `,
-      
-  data:  function(){
-    return {
-      message: 'bad route!'
-      }
-  },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
-  }
-}
-
-      );
-      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/eval/eval.vue
 const Eval=Vue.extend({template:` 
  <v-container fluid="">
@@ -1399,11 +1385,12 @@ const Eval=Vue.extend({template:`
    
     
    </v-toolbar>
-
-  
+ <v-card-text v-if="done">
+    BEFORE<vp-job :job="job" :result:="result" :query="xq" :job-state="jobState" :elapsed="elapsed">IN</vp-job>AFTER
+       </v-card-text>
   <v-card-text>
   <v-flex xs12="" style="height:200px" fill-height="">
-  <vue-ace :content="xq" mode="xquery" wrap="true" v-on:change-content="onChange" :settings="aceSettings"></vue-ace>
+  <vue-ace :content="xq" mode="xquery" wrap="true" :settings="aceSettings" v-on:change-content="onChange"></vue-ace>
     </v-flex>
    </v-card-text>
    
@@ -1437,9 +1424,7 @@ const Eval=Vue.extend({template:`
         </v-flex> 
      </v-card-text>
        
-       <v-card-text>
-       BEFORE<vp-job :job="job" :result:="result" :job-state="jobState" :elapsed="elapsed">IN</vp-job>AFTER
-       </v-card-text>
+      
        
     </v-card>
 
@@ -1450,7 +1435,8 @@ const Eval=Vue.extend({template:`
   data:  function(){
     return {
       xq: '(: type your XQuery :)\n',
-      result: null,
+      result: '',
+      done: false,
       elapsed: null,
       show: false,
       showError: false, 
@@ -1490,21 +1476,16 @@ const Eval=Vue.extend({template:`
     submit(){
       this.showError=this.showResult=this.show=false
       this.start = performance.now();
-      HTTPNE.post("eval/submit",Qs.stringify({xq:this.xq}))
+      console.log("*****",Qs.stringify({xq:this.xq}));
+      HTTP.post("eval/submit",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.job=r.data
         this.show=true
         this.pollState()
         
-      })
-      .catch(r=> {
-        alert("catch")
-        console.log("error",r)
-        this.job=r.response.job
-        this.showError=true;
-
       });
+      
     },
     pollState(){
       if(this.destroyed)return;
@@ -1526,12 +1507,14 @@ const Eval=Vue.extend({template:`
        HTTPNE.post("eval/result/"+this.job.job)
        .then(r=>{
          this.result=r.data.result+" "
+         this.done= true;
+         console.log("$$$$$",this.result);
        }).catch(r=> {
         // alert("catch")
          console.log("error",r)
          this.result=r.response.data
          this.showError=true;
-
+         this.done= true;
        });
     },
     hitme(){
@@ -1560,10 +1543,11 @@ const Eval=Vue.extend({template:`
     },
     awaitResult(show){
       // ace slow when setting large text while hidden
-      this.showError=false
-      this.show=show
-      this.result="(Please wait..)"
-      this.showResult=true
+
+      this.showError= false
+      this.show= show
+      this.result= "(Please wait..)"
+      this.showResult= true
     }
   },
   computed: { 
@@ -2436,6 +2420,75 @@ const Login=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/entity.vue
+const Entity=Vue.extend({template:` 
+<v-card>
+	<v-toolbar>
+	 <v-toolbar-title>Entities</v-toolbar-title>
+	 <v-spacer></v-spacer>
+	 <v-btn @click="reset()">Reset</v-btn>
+	 </v-toolbar>
+
+  <v-container fluid="" grid-list-md="">
+  
+    <v-data-iterator content-tag="v-layout" row="" wrap="" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination">
+      <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
+        <v-card>
+       
+          <v-card-title>
+           <router-link :to="{path:'entity/'+ props.item.name}">
+            <h4>
+            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
+            </h4>
+            </router-link>
+         </v-card-title>
+          
+          <v-card-text>{{ props.item.description }}<!--<v-card-text-->
+          <v-card-actions>
+          <v-list dense="">
+            <v-list-tile>
+              <v-list-tile-content>Fields:</v-list-tile-content>
+              <v-list-tile-content class="align-end">{{ props.item.nfields }}</v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+          </v-card-actions>
+        </v-card-text></v-card>
+      </v-flex>
+    </v-data-iterator>
+  </v-container>
+   </v-card>
+ `,
+      
+  data:  function(){
+    return {
+      q: 'filter',
+      items: [],
+      loading: false,
+      rowsPerPageItems: [4, 8, 20],
+      pagination: {
+        rowsPerPage: 20
+      },
+      }
+  },
+  methods:{
+    getItems(){
+      this.loading=true
+      HTTP.get("data/entity",{params:this.q})
+      .then(r=>{
+        this.loading=false
+        //console.log(r.data)
+        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
+        this.items=r.data.items
+        }) 
+    }
+  },
+  created:function(){
+    this.getItems()
+  },
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespace.vue
 const Namespace=Vue.extend({template:` 
  <v-container fluid="">
@@ -3162,17 +3215,38 @@ const Svg=Vue.extend({template:`
  <v-container fluid="">
 <div id="canvasqPWKOg" class="canvas"></div>
 <button id="resetButtonqPWKOg">Reset</button>
+<div>
+    <svg width="500" height="300"></svg>
+    <br>
+    <input type="range" v-model="circleSize" min="1" max="100" step="1">
+</div>
  </v-container>
  `,
       
   data:  function(){
     return {
-      message: 'bad route!'
+      message: 'bad route!',
+      circleSize: 50
       }
   },
   created:function(){
     console.log("notfound",this.$route.query.q)
+  },
+  mounted: function(createElement) {
+    var svg = d3.select(this.$el).select('svg');
+    this.circle = svg
+      .append('circle')
+      .attr('cx', '250')
+      .attr('cy', '150')
+      .attr('r', this.circleSize)
+  },
+  watch: {
+    circleSize: function(newValue) {
+      this.circle
+        .attr('r', newValue)
+    }
   }
+
 }
 
       );
@@ -4024,7 +4098,7 @@ router.beforeEach((to, from, next) => {
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\app.vue
 const Vuepoc=Vue.extend({template:` 
  <v-app id="app" :dark="dark">
-  <v-navigation-drawer absolute="" v-model="showNotifications" right="" :disable-route-watcher="true" app="" width="500">
+  <v-navigation-drawer stateless="" v-model="showNotifications" right="" :disable-route-watcher="true" app="" width="500">
     <v-card>
          <v-toolbar class="amber white--text">
                 <v-toolbar-title>Notifications </v-toolbar-title>
@@ -4061,7 +4135,9 @@ const Vuepoc=Vue.extend({template:`
           <v-list-tile avatar="" tag="div">
             <v-list-tile-avatar>
               <v-btn icon="" @click="session">
+              <v-avatar size="36">
               <img src="/vue-poc/ui/quodatum.gif">
+              </v-avatar>
               </v-btn>
             </v-list-tile-avatar>
             <v-list-tile-content>
@@ -4104,7 +4180,9 @@ const Vuepoc=Vue.extend({template:`
         </v-card>
    </v-menu>
   <v-spacer></v-spacer>
-  <v-text-field prepend-icon="search" label="Search..." v-model="q" hide-details="" single-line="" dark="" @keyup.enter="search"></v-text-field>
+   <v-select placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" combobox="" clearable="" cache-items="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q"></v-select>
+            
+  
   <v-spacer></v-spacer>
   
    <v-menu left="" transition="v-fade-transition">
@@ -4147,6 +4225,10 @@ const Vuepoc=Vue.extend({template:`
   router,
   data:function(){return {
     q: "",
+    loading: false,
+    searchItems:[],
+    si: '',
+    items2:["todo","set","search"],
     status: {},
     drawer: true,
     showNotifications: false,
@@ -4231,15 +4313,24 @@ const Vuepoc=Vue.extend({template:`
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v1.1.1)' , icon: 'help'    }, 
+      {href: '/about',text: 'About (v1.1.3)' , icon: 'help'    }, 
     ]
 
   }},
   methods: {
+    querySelections (v) {
+      this.loading = true
+      // Simulated ajax query
+      setTimeout(() => {
+        this.items2 = ["aa","bb",this.si],
+        this.loading = false
+      }, 500)
+    },
+
       session(){
         this.$router.push({path: '/session'})
       },
-      search(){
+      goSearch(){
         this.$router.push({path: '/search',query: { q: this.q }})
       },
       logout(){
@@ -4259,11 +4350,19 @@ const Vuepoc=Vue.extend({template:`
       }
   },
   watch: {
-    showNotifications: function (val) {
-      console.log("showNotifications",val);
-      if(!val)this.$notification.unseen=0;
-    }
+	    showNotifications: function (val) {
+	      console.log("showNotifications",val);
+	      if(!val)this.$notification.unseen=0;
+	    },
+	    search (val) {
+	      val && this.querySelections(val)
+	    },
+	    si:function(val){
+	      console.log("si: ",val);
+	      this.querySelections();
+	    }
     },
+    
   created(){
     console.log("create-----------")
     var that=this
@@ -4276,7 +4375,20 @@ const Vuepoc=Vue.extend({template:`
         that.showAlert("vue error:\n"+msg)
         //alert("vue error");
    };
-    
+   
+// Add a response interceptor
+   HTTP.interceptors.response.use(
+   (response)=> {
+     // Do something with response data
+     return response;
+   },
+   (error) =>{
+     // interupt restxq single
+     console.log("HTTP.interceptors.response.use ",error)
+     if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
+     return Promise.reject(error);
+   });
+   
     HTTP.get("status")
     .then(r=>{
       console.log("status",r.data)
@@ -4284,6 +4396,7 @@ const Vuepoc=Vue.extend({template:`
       this.$forceUpdate()
     }) 
   },
+  
   beforeDestroy(){
     console.log("destory-----------")
     
@@ -4311,7 +4424,7 @@ const AXIOS_CONFIG={
 // Add a response interceptor
 axios.interceptors.response.use(function (response) {
     // Do something with response data
-  console.log("AXIOS",response);
+  //console.log("AXIOS",response);
     return response;
   }, function (error) {
     // Do something with response error
@@ -4330,7 +4443,7 @@ HTTP.interceptors.response.use((response) => {
     var s=Math.floor(performance.now() - response.config.qdStartTime);
     var c=response.config;
     var url=response.config.url + "?" + c.paramsSerializer(c.params);
-    console.log("interceptors time:",s, response.config);
+    //console.log("interceptors time:",s, response.config);
     Notification.add(s +" "+ url );
   }
   return response;

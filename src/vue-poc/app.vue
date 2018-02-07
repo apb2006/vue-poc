@@ -2,7 +2,7 @@
 <template id="vuepoc">
  <v-app id="app" :dark="dark" >
   <v-navigation-drawer
-     absolute 
+     stateless 
       v-model="showNotifications"
       right
      :disable-route-watcher="true"
@@ -46,7 +46,9 @@
           <v-list-tile avatar tag="div">
             <v-list-tile-avatar >
               <v-btn icon @click="session">
+              <v-avatar size="36">
               <img src="/vue-poc/ui/quodatum.gif" />
+              </v-avatar>
               </v-btn>
             </v-list-tile-avatar>
             <v-list-tile-content>
@@ -100,8 +102,20 @@
         </v-card>
    </v-menu>
   <v-spacer></v-spacer>
-  <v-text-field prepend-icon="search" label="Search..." v-model="q"
-   hide-details single-line dark @keyup.enter="search"></v-text-field>
+   <v-select
+              placeholder="Search..." prepend-icon="search"
+              autocomplete
+              :loading="loading"
+              combobox
+              clearable
+              cache-items
+              :items="items2"
+              @keyup.enter="goSearch"
+              :search-input.sync="si" 
+              v-model="q"
+            ></v-select>
+            
+  
   <v-spacer></v-spacer>
   
    <v-menu left  transition="v-fade-transition">
@@ -145,6 +159,10 @@
   router,
   data:function(){return {
     q: "",
+    loading: false,
+    searchItems:[],
+    si: '',
+    items2:["todo","set","search"],
     status: {},
     drawer: true,
     showNotifications: false,
@@ -229,15 +247,24 @@
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v1.1.1)' , icon: 'help'    }, 
+      {href: '/about',text: 'About (v1.1.3)' , icon: 'help'    }, 
     ]
 
   }},
   methods: {
+    querySelections (v) {
+      this.loading = true
+      // Simulated ajax query
+      setTimeout(() => {
+        this.items2 = ["aa","bb",this.si],
+        this.loading = false
+      }, 500)
+    },
+
       session(){
         this.$router.push({path: '/session'})
       },
-      search(){
+      goSearch(){
         this.$router.push({path: '/search',query: { q: this.q }})
       },
       logout(){
@@ -257,11 +284,19 @@
       }
   },
   watch: {
-    showNotifications: function (val) {
-      console.log("showNotifications",val);
-      if(!val)this.$notification.unseen=0;
-    }
+	    showNotifications: function (val) {
+	      console.log("showNotifications",val);
+	      if(!val)this.$notification.unseen=0;
+	    },
+	    search (val) {
+	      val && this.querySelections(val)
+	    },
+	    si:function(val){
+	      console.log("si: ",val);
+	      this.querySelections();
+	    }
     },
+    
   created(){
     console.log("create-----------")
     var that=this
@@ -274,7 +309,20 @@
         that.showAlert("vue error:\n"+msg)
         //alert("vue error");
    };
-    
+   
+// Add a response interceptor
+   HTTP.interceptors.response.use(
+   (response)=> {
+     // Do something with response data
+     return response;
+   },
+   (error) =>{
+     // interupt restxq single
+     console.log("HTTP.interceptors.response.use ",error)
+     if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
+     return Promise.reject(error);
+   });
+   
     HTTP.get("status")
     .then(r=>{
       console.log("status",r.data)
@@ -282,6 +330,7 @@
       this.$forceUpdate()
     }) 
   },
+  
   beforeDestroy(){
     console.log("destory-----------")
     

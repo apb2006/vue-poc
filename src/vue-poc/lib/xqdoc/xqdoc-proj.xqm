@@ -17,10 +17,8 @@ declare variable $xqd:index-xslt external :="html-index.xsl";
 (:~ save documentation for files to target
  :
  :)
-declare function xqd:save-xq($files,$target)
+declare function xqd:save-xq($files,$target,$params as map(*))
 {
-let $params:=map{
-                  "project":"project" }
 let $f:=  document{$files} transform with { delete  node //c:directory[not(.//c:file)]}
  
 return (

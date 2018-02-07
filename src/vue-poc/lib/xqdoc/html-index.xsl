@@ -43,9 +43,20 @@
 						<xsl:value-of select="$project" />
 					</h1>
 					<xsl:call-template name="toc" />
-					<ul>
-						<xsl:apply-templates select=".//c:file" />
-					</ul>
+
+					<div id="file">
+						<h1>Files</h1>
+						<ul>
+							<xsl:apply-templates select=".//c:file" />
+						</ul>
+					</div>
+
+					<div id="ns">
+						<h1>Namespace</h1>
+						<ul>
+							<xsl:apply-templates select=".//c:file" />
+						</ul>
+					</div>
 
 					<div class="footer">
 						<p style="text-align:right">
@@ -55,7 +66,6 @@
 						</p>
 					</div>
 				</div>
-
 
 			</body>
 		</html>
@@ -101,7 +111,7 @@
 			</ol>
 		</nav>
 	</xsl:template>
-	
+
 	<!-- path -->
 	<xsl:function name="qd:path" as="xs:string">
 		<xsl:param name="file" />

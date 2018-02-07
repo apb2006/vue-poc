@@ -55,12 +55,14 @@
    
     
    </v-toolbar>
-
-  
+ <v-card-text v-if="done">
+    BEFORE<vp-job :job="job" :result:="result"  :query="xq"
+       :job-state="jobState" :elapsed="elapsed" >IN</vp-job>AFTER
+       </v-card-text>
   <v-card-text   >
   <v-flex xs12 style="height:200px"  fill-height>
   <vue-ace  :content="xq" mode="xquery" wrap="true"
-    v-on:change-content="onChange" :settings="aceSettings"
+     :settings="aceSettings" v-on:change-content="onChange" 
     ></vue-ace>
     </v-flex>
    </v-card-text>
@@ -96,10 +98,7 @@
         </v-flex> 
      </v-card-text>
        
-       <v-card-text>
-       BEFORE<vp-job :job="job" :result:="result" 
-       :job-state="jobState" :elapsed="elapsed">IN</vp-job>AFTER
-       </v-card-text>
+      
        
     </v-card>
 
@@ -111,7 +110,8 @@
   data:  function(){
     return {
       xq: '(: type your XQuery :)\n',
-      result: null,
+      result: '',
+      done: false,
       elapsed: null,
       show: false,
       showError: false, 
@@ -151,21 +151,16 @@
     submit(){
       this.showError=this.showResult=this.show=false
       this.start = performance.now();
-      HTTPNE.post("eval/submit",Qs.stringify({xq:this.xq}))
+      console.log("*****",Qs.stringify({xq:this.xq}));
+      HTTP.post("eval/submit",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.job=r.data
         this.show=true
         this.pollState()
         
-      })
-      .catch(r=> {
-        alert("catch")
-        console.log("error",r)
-        this.job=r.response.job
-        this.showError=true;
-
       });
+      
     },
     pollState(){
       if(this.destroyed)return;
@@ -187,12 +182,14 @@
        HTTPNE.post("eval/result/"+this.job.job)
        .then(r=>{
          this.result=r.data.result+" "
+         this.done= true;
+         console.log("$$$$$",this.result);
        }).catch(r=> {
         // alert("catch")
          console.log("error",r)
          this.result=r.response.data
          this.showError=true;
-
+         this.done= true;
        });
     },
     hitme(){
@@ -221,10 +218,11 @@
     },
     awaitResult(show){
       // ace slow when setting large text while hidden
-      this.showError=false
-      this.show=show
-      this.result="(Please wait..)"
-      this.showResult=true
+
+      this.showError= false
+      this.show= show
+      this.result= "(Please wait..)"
+      this.showResult= true
     }
   },
   computed: { 

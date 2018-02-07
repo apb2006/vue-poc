@@ -16,7 +16,7 @@ const AXIOS_CONFIG={
 // Add a response interceptor
 axios.interceptors.response.use(function (response) {
     // Do something with response data
-  console.log("AXIOS",response);
+  //console.log("AXIOS",response);
     return response;
   }, function (error) {
     // Do something with response error
@@ -35,7 +35,7 @@ HTTP.interceptors.response.use((response) => {
     var s=Math.floor(performance.now() - response.config.qdStartTime);
     var c=response.config;
     var url=response.config.url + "?" + c.paramsSerializer(c.params);
-    console.log("interceptors time:",s, response.config);
+    //console.log("interceptors time:",s, response.config);
     Notification.add(s +" "+ url );
   }
   return response;

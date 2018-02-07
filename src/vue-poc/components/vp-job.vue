@@ -6,7 +6,8 @@
  -->
 <template id="vp-job">
  <v-card  >
-     <v-toolbar dense>
+
+     <v-toolbar  dense>
      <v-card-title>Details:</v-card-title>
        <v-chip class="primary white--text">{{job.id}}</v-chip>
          <v-spacer></v-spacer>
@@ -28,15 +29,15 @@
     </v-toolbar>
     <v-card-text   >
   <v-flex xs12 style="height:60px;"  fill-height>
-  <vue-ace  :content="query" mode="xquery" wrap="true" read-only="true"
+  <vue-ace  :content="query" mode="xquery" wrap="true" :read-only="true"
      
     ></vue-ace>
     </v-flex>
    </v-card-text>
    <!-- result -->
-    <v-card-text   >
-  <v-flex  xs12   fill-height>
-  <vue-ace  :content="aresult" mode="xquery" min-lines="1" wrap="true" read-only="true" ></vue-ace>
+    <v-card-text  >
+  <v-flex  xs12  style="height:60px;" fill-height>
+  <vue-ace  :content="result" mode="xquery" min-lines="1" wrap="true" read-only="true" ></vue-ace>
     </v-flex>
    </v-card-text>
    </v-card>
@@ -47,23 +48,26 @@
   props: ['job',
           'result',
           'jobState',
-          'elapsed'],
+          'elapsed',
+          'query' 
+          ],
   data:function(){
     return {
-      query:    "(:to do:)",
-      error:    null
+      error:    null,
+      res1: "??"
     }
   },
   watch:{
     result:function(a){
-      console.log("result");
+      if(this.res1 === "???"){ this.res1=a};
+      console.log("vp-result:",a);
     }
   },
   computed:{
-    aresult:function(){return this.result || "none"}
+    aresult:function(){return this.res1 || "none"}
   },
   created:function(){
-      console.log("vp-job");
+      console.log("vp-job: ", this.job,this.result);
     }
 }
 </script>
