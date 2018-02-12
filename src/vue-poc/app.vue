@@ -39,7 +39,7 @@
       </v-card-text>
       </v-card>
 </v-navigation-drawer>
- <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"  absolute 
+ <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   
  :disable-route-watcher="true"  :enable-resize-watcher="true">
   <v-list class="pa-0">
 
@@ -78,14 +78,15 @@
        <v-icon>star_border</v-icon>
        </v-btn>
 
-            <v-card style="width:400px;">
+       <v-card style="width:400px;">
             <v-toolbar class="amber"> 
         <v-card-title>
             Bookmark this page
           </v-card-title>
           </v-toolbar>
+          
          <v-card-text>
-         <h6>{{$route.meta.title}}</h6>
+            <h6>{{$route.meta.title}}</h6>
             <v-select
               v-model="tags"
               label="tags"
@@ -93,8 +94,9 @@
               tags
               :items="taglist"
             ></v-select>
-           </v-card-text>
-        <v-card-actions>
+         </v-card-text>
+         
+         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" flat @click.stop="frmFav=false">Cancel</v-btn>
             <v-btn color="primary" flat @click.stop="favorite();frmFav=false">Save</v-btn>
@@ -247,7 +249,7 @@
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v1.1.3)' , icon: 'help'    }, 
+      {href: '/about',text: 'About (v0.2.1)' , icon: 'help'    }, 
     ]
 
   }},

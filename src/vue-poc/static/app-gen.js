@@ -1,4 +1,4 @@
-// generated 2018-02-07T09:51:14.046Z
+// generated 2018-02-12T11:07:53.063Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -2426,12 +2426,12 @@ const Entity=Vue.extend({template:`
 	<v-toolbar>
 	 <v-toolbar-title>Entities</v-toolbar-title>
 	 <v-spacer></v-spacer>
-	 <v-btn @click="reset()">Reset</v-btn>
+	 <v-btn @click="getItems" :loading="loading" :disabled="loading">Refresh</v-btn>
 	 </v-toolbar>
 
   <v-container fluid="" grid-list-md="">
   
-    <v-data-iterator content-tag="v-layout" row="" wrap="" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination">
+    <v-data-iterator content-tag="v-layout" row="" wrap="" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
       <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
         <v-card>
        
@@ -2468,6 +2468,7 @@ const Entity=Vue.extend({template:`
       pagination: {
         rowsPerPage: 20
       },
+      selected:[]
       }
   },
   methods:{
@@ -3253,56 +3254,71 @@ const Svg=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tabs.vue
 const Tabs=Vue.extend({template:` 
-  <v-tabs scroll-bars="" fixed="">
-  
-    
-    <v-tabs-bar class="grey lighten-3" dense="">
-      <v-tabs-item v-for="i in 13" :key="i" :href="'#mobile-tabs-6-' + i">
- 
+<div>
+  <v-toolbar tabs="">
+      <v-toolbar-side-icon></v-toolbar-side-icon>
+      <v-toolbar-title>{{ currentItem }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+        <qd-fullscreen></qd-fullscreen>
+      <v-btn icon="">
+        <v-icon>search</v-icon>
+      </v-btn>
+      <v-btn icon="">
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+  <v-tabs fixed-tabs="" v-model="currentItem" slot="extension">
+        
+      <v-tab v-for="i in items" :key="i" :href="'#tab-' + i">
+       <v-avatar :tile="tile" size="20px">
        <v-icon>favorite</v-icon>
-       <span>Item {{ i }} more</span>
+       </v-avatar>
+       <span>{{ i }}</span>
        <v-spacer></v-spacer>
-       <v-btn small="" icon="" class="grey">
+       <v-btn icon="">
           <v-icon>close</v-icon>
         </v-btn>
-      </v-tabs-item>
-       <v-btn icon="">
-            <v-icon>menu</v-icon>
-          </v-btn>
-      <v-tabs-slider class="primary"></v-tabs-slider>
-    </v-tabs-bar>
-      <v-card>
-      <v-card-actions>
-          <v-btn icon="">
-            <v-icon>menu</v-icon>
-          </v-btn>
-          <v-card-title>Page Title</v-card-title>
-          <v-spacer></v-spacer>
-          <v-btn icon="">
-            <v-icon>search</v-icon>
-          </v-btn>
-          <v-btn icon="">
-            <v-icon>more_vert</v-icon>
-          </v-btn>
-        </v-card-actions>
-    </v-card>
-    <v-tabs-items>
-     <v-tabs-content v-for="i in 13" :key="i" :id="'mobile-tabs-6-' + i">
+      </v-tab>
+      
+     <v-menu left="" bottom="" class="tabs__div">
+          <a class="tabs__item" slot="activator">
+          More
+            <v-icon>arrow_drop_down</v-icon>
+          </a>
+          <v-list class="grey lighten-3">
+            <v-list-tile avatar="" v-for="item in items" :key="item" @click="currentItem = 'tab-' +item">
+             <v-list-tile-avatar>
+               <v-icon v-if="currentItem === ('tab-' + item)">close</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+              {{ item }}
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+     </v-tabs>
+  </v-toolbar>
+        
+ <v-tabs-items v-model="currentItem">
+       <v-tab-item v-for="item in items" :key="item" :id="'tab-' + item">
       <v-card flat="">
-        <v-card-text>{{i}} - {{ text }}</v-card-text>
+        <v-card-text>{{ item }} - {{ text }}</v-card-text>
       </v-card>
-      </v-tabs-content>
-    </v-tabs-items>
-</v-tabs>
+      </v-tab-item>
+ </v-tabs-items>
+</div>
  `,
       
     data () {
       return {
+        currentItem: 'tab-News',
+        items: [
+          'Web', 'Shopping', 'Videos', 'Images', 'News', 'Maps', 'Books', 'Flights', 'Apps'
+        ],
+       
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      }
     }
   }
-
+}
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/model.build/model.vue
@@ -3463,7 +3479,7 @@ const Runtask=Vue.extend({template:`
 const Task=Vue.extend({template:` 
  <v-container fluid="">
   <h3>Available Tasks</h3>
-  
+  <v-progress-linear v-if="loading" v-bind:indeterminate="true" height="2"></v-progress-linear>
   <ul>
   <li v-for="task in tasks" :key="task.to">
   <router-link :to="task.to" v-text="task.text"></router-link>
@@ -3474,14 +3490,17 @@ const Task=Vue.extend({template:`
       
   data(){
     return {
-      tasks: []
+      tasks: [],
+      loading: false
       }
   },
   methods:{
     getTasks(){
+        this.loading= true;
         HTTP.get("tasks")
         .then(r=>{
-		   this.tasks=r.data
+		   this.tasks=r.data;
+		   this.loading= false;
        })
     }
    },
@@ -4129,7 +4148,7 @@ const Vuepoc=Vue.extend({template:`
       </v-card-text>
       </v-card>
 </v-navigation-drawer>
- <v-navigation-drawer app="" :mini-variant.sync="mini" v-model="drawer" absolute="" :disable-route-watcher="true" :enable-resize-watcher="true">
+ <v-navigation-drawer app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" :enable-resize-watcher="true">
   <v-list class="pa-0">
 
           <v-list-tile avatar="" tag="div">
@@ -4162,17 +4181,19 @@ const Vuepoc=Vue.extend({template:`
        <v-icon>star_border</v-icon>
        </v-btn>
 
-            <v-card style="width:400px;">
+       <v-card style="width:400px;">
             <v-toolbar class="amber"> 
         <v-card-title>
             Bookmark this page
           </v-card-title>
           </v-toolbar>
+          
          <v-card-text>
-         <h6>{{$route.meta.title}}</h6>
+            <h6>{{$route.meta.title}}</h6>
             <v-select v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-select>
-           </v-card-text>
-        <v-card-actions>
+         </v-card-text>
+         
+         <v-card-actions>
             <v-spacer></v-spacer>
             <v-btn color="primary" flat="" @click.stop="frmFav=false">Cancel</v-btn>
             <v-btn color="primary" flat="" @click.stop="favorite();frmFav=false">Save</v-btn>
@@ -4313,7 +4334,7 @@ const Vuepoc=Vue.extend({template:`
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v1.1.3)' , icon: 'help'    }, 
+      {href: '/about',text: 'About (v0.2.1)' , icon: 'help'    }, 
     ]
 
   }},

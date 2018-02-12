@@ -27,7 +27,7 @@ function vue-api:id( $id as xs:integer)
 };
 
 (:~
- : get report
+ : generate html report
  :)
 declare
 %rest:GET %rest:path("/vue-poc/api/images/report")

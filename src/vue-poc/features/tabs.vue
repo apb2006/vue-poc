@@ -1,59 +1,84 @@
 <!DOCTYPE html>
 <template id="tabs">
-  <v-tabs  scroll-bars fixed>
-  
-    
-    <v-tabs-bar class="grey lighten-3" dense>
-      <v-tabs-item
-        v-for="i in 13"
+<div>
+  <v-toolbar   tabs>
+      <v-toolbar-side-icon></v-toolbar-side-icon>
+      <v-toolbar-title>{{ currentItem }}</v-toolbar-title>
+      <v-spacer></v-spacer>
+        <qd-fullscreen></qd-fullscreen>
+      <v-btn icon>
+        <v-icon>search</v-icon>
+      </v-btn>
+      <v-btn icon>
+        <v-icon>more_vert</v-icon>
+      </v-btn>
+  <v-tabs fixed-tabs  
+        v-model="currentItem"
+
+        slot="extension">
+        
+      <v-tab
+        v-for="i in items"
         :key="i"
-        :href="'#mobile-tabs-6-' + i"
+        :href="'#tab-' + i"
       >
- 
+       <v-avatar  :tile="tile"
+               size="20px">
        <v-icon>favorite</v-icon>
-       <span>Item {{ i }} more</span>
+       </v-avatar>
+       <span>{{ i }}</span>
        <v-spacer></v-spacer>
-       <v-btn small icon class="grey">
+       <v-btn icon>
           <v-icon>close</v-icon>
         </v-btn>
-      </v-tabs-item>
-       <v-btn icon >
-            <v-icon>menu</v-icon>
-          </v-btn>
-      <v-tabs-slider class="primary"></v-tabs-slider>
-    </v-tabs-bar>
-      <v-card >
-      <v-card-actions>
-          <v-btn icon >
-            <v-icon>menu</v-icon>
-          </v-btn>
-          <v-card-title>Page Title</v-card-title>
-          <v-spacer></v-spacer>
-          <v-btn icon >
-            <v-icon>search</v-icon>
-          </v-btn>
-          <v-btn icon >
-            <v-icon>more_vert</v-icon>
-          </v-btn>
-        </v-card-actions>
-    </v-card>
-    <v-tabs-items>
-     <v-tabs-content v-for="i in 13"
-      :key="i"
-      :id="'mobile-tabs-6-' + i">
+      </v-tab>
+      
+     <v-menu left bottom class="tabs__div" >
+          <a class="tabs__item" slot="activator">
+          More
+            <v-icon>arrow_drop_down</v-icon>
+          </a>
+          <v-list   class="grey lighten-3">
+            <v-list-tile avatar
+              v-for="item in items"
+              :key="item"
+              @click="currentItem = 'tab-' +item"
+            >
+             <v-list-tile-avatar>
+               <v-icon v-if="currentItem === ('tab-' + item)">close</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+              {{ item }}
+              </v-list-tile-content>
+            </v-list-tile>
+          </v-list>
+        </v-menu>
+     </v-tabs>
+  </v-toolbar>
+        
+ <v-tabs-items v-model="currentItem">
+       <v-tab-item
+        v-for="item in items"
+        :key="item"
+        :id="'tab-' + item"
+      >
       <v-card flat  >
-        <v-card-text>{{i}} - {{ text }}</v-card-text>
+        <v-card-text>{{ item }} - {{ text }}</v-card-text>
       </v-card>
-      </v-tabs-content>
-    </v-tabs-items>
-</v-tabs>
+      </v-tab-item>
+ </v-tabs-items>
+</div>
 </template>
 
 <script>{
     data () {
       return {
+        currentItem: 'tab-News',
+        items: [
+          'Web', 'Shopping', 'Videos', 'Images', 'News', 'Maps', 'Books', 'Flights', 'Apps'
+        ],
+       
         text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-      }
     }
   }
-</script>
+}</script>

@@ -4,7 +4,10 @@
 	<v-toolbar >
 	 <v-toolbar-title>Entities</v-toolbar-title>
 	 <v-spacer></v-spacer>
-	 <v-btn @click="reset()">Reset</v-btn>
+	 <v-btn @click="getItems"
+	  :loading="loading"
+      :disabled="loading"
+	 >Refresh</v-btn>
 	 </v-toolbar>
 
   <v-container fluid grid-list-md>
@@ -16,6 +19,8 @@
       :items="items"
       :rows-per-page-items="rowsPerPageItems"
       :pagination.sync="pagination"
+      select-all 
+      :value="selected"
     >
       <v-flex
         slot="item"
@@ -61,6 +66,7 @@
       pagination: {
         rowsPerPage: 20
       },
+      selected:[]
       }
   },
   methods:{
