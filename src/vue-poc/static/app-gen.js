@@ -1,4 +1,4 @@
-// generated 2018-02-12T11:07:53.063Z
+// generated 2018-02-13T22:26:57.352Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -210,6 +210,60 @@ Vue.component('vis-time-line',{template:`
 }
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-favorite.vue
+Vue.component('vp-favorite',{template:` 
+  <v-menu offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
+      <v-btn slot="activator" @click="set(!frmfav)" icon="" flat="" title="Bookmark this page">
+       <v-icon>star_border</v-icon>
+       </v-btn>
+
+       <v-card style="width:400px;">
+            <v-toolbar class="green"> 
+        <v-card-title>
+            Bookmark this page
+          </v-card-title>
+          </v-toolbar>
+          
+         <v-card-text>
+            <h6>{{$route.meta.title}}</h6>
+            <v-select v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-select>
+         </v-card-text>
+         
+         <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" flat="" @click.stop="set(false)">Cancel</v-btn>
+            <v-btn color="primary" flat="" @click.stop="favorite(); set(false)">Save</v-btn>
+          </v-card-actions>
+        </v-card>
+   </v-menu> `,
+       
+  props: { 
+    frmfav: Boolean
+  },
+  data(){
+    return {
+      tags: [],
+      taglist: [
+        'todo',
+        'find',
+        'some',
+        'good',
+        'tags'
+      ],
+    }
+  },
+  methods:{
+    set(v){
+      this.$emit('update:frmfav', v)
+    },
+    
+    favorite(){
+      alert("save");
+    }
+  }
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-job.vue
 Vue.component('vp-job',{template:` 
  <v-card>
@@ -275,6 +329,55 @@ Vue.component('vp-job',{template:`
     }
 }
 
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-notifications.vue
+Vue.component('vp-notifications',{template:` 
+   <v-card>
+         <v-toolbar class="amber white--text">
+                <v-toolbar-title>Notifications </v-toolbar-title>
+                {{ $notification.nextId }}
+                 <v-btn @click="refresh" icon=""><v-icon>refresh</v-icon></v-btn>
+          <v-spacer></v-spacer>
+          <v-btn @click="set(false)" icon=""><v-icon>close</v-icon></v-btn>
+          </v-toolbar>
+          <v-card-text>
+        <v-list three-line="">
+          <template v-for="msg in $notification.messages">
+           <v-list-tile avatar="" v-bind:key="msg.index" @click="">
+              <v-list-tile-avatar>
+                   <v-icon color="red">swap_horiz</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+              <v-tooltip>
+                <v-list-tile-title slot="activator">{{ msg.created | fromNow("from") }}</v-list-tile-title>
+                <span v-text="msg.created"></span>
+                </v-tooltip>
+                <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+               <v-list-tile-action-text>{{ msg.index }}</v-list-tile-action-text>
+              </v-list-tile-action>
+            </v-list-tile>
+           </template>
+         </v-list>
+      </v-card-text>
+
+      </v-card>
+ `,
+      
+  props: { 
+    showNotifications: Boolean
+  },
+  methods:{
+    set(v){
+      this.$emit('update:showNotifications', v)
+    },
+    refresh(){
+      this.$forceUpdate();
+    }
+  }
+}
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vue-ace.vue
@@ -2056,7 +2159,7 @@ const Report=Vue.extend({template:`
   
     </v-toolbar>
      <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-    <v-card-text v-if="!busy" v-html="report"></v-card-text>
+    <v-card-text v-if="!busy" v-html="report" @click.capture="onClick($event)"></v-card-text>
  </v-card>
  </v-container>
  `,
@@ -2077,6 +2180,19 @@ const Report=Vue.extend({template:`
         var t1 = performance.now();
         this.elapsed= 0.001 *(t1 - t0) 
         }) 
+    },
+    onClick(event){
+      console.log("event",event);
+      var isA= "a"== event.originalTarget.localName
+     
+      if(isA) {
+       // alert("stop this"+ event.originalTarget.hash);
+        console.log("tar",event.originalTarget.hash,document.querySelector(event.originalTarget.hash));
+        event.preventDefault();
+          this.$router.push({"hash":event.originalTarget.hash});
+        //  this.$vuetify.goTo(event.originalTarget.hash, { duration: 600,   offset: -200, easing: 'easeInOutCubic'});
+
+      }
     }
   },
   created:function(){
@@ -4039,7 +4155,7 @@ const router = new VueRouter({
     if (savedPosition) {
       return savedPosition
     } else if (to.hash) {
-      return { selector: to.hash, behavior: 'smooth' }
+      return { selector: to.hash, behavior: 'smooth',offset: {x:0, y: 80} }
 
     } else {
       return { x: 0, y: 0 }
@@ -4118,35 +4234,7 @@ router.beforeEach((to, from, next) => {
 const Vuepoc=Vue.extend({template:` 
  <v-app id="app" :dark="dark">
   <v-navigation-drawer stateless="" v-model="showNotifications" right="" :disable-route-watcher="true" app="" width="500">
-    <v-card>
-         <v-toolbar class="amber white--text">
-                <v-toolbar-title>Notifications </v-toolbar-title>
-                {{ $notification.nextId }}
-          <v-spacer></v-spacer>
-          <v-btn @click="showNotifications = false" icon=""><v-icon>close</v-icon></v-btn>
-          </v-toolbar>
-          <v-card-text>
-        <v-list three-line="">
-          <template v-for="msg in $notification.messages">
-           <v-list-tile avatar="" v-bind:key="msg.index" @click="">
-              <v-list-tile-avatar>
-                   <v-icon color="red">swap_horiz</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-              <v-tooltip>
-                <v-list-tile-title slot="activator">{{ msg.created | fromNow("from") }}</v-list-tile-title>
-                <span v-text="msg.created"></span>
-                </v-tooltip>
-                <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-               <v-list-tile-action-text>{{ msg.index }}</v-list-tile-action-text>
-              </v-list-tile-action>
-            </v-list-tile>
-           </template>
-         </v-list>
-      </v-card-text>
-      </v-card>
+    <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
 </v-navigation-drawer>
  <v-navigation-drawer app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" :enable-resize-watcher="true">
   <v-list class="pa-0">
@@ -4176,30 +4264,8 @@ const Vuepoc=Vue.extend({template:`
  <v-toolbar class="indigo" app="" dark="">
   <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
-   <v-menu offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmFav">
-      <v-btn slot="activator" @click="frmFav = !frmFav" icon="" flat="" title="Bookmark this page">
-       <v-icon>star_border</v-icon>
-       </v-btn>
-
-       <v-card style="width:400px;">
-            <v-toolbar class="amber"> 
-        <v-card-title>
-            Bookmark this page
-          </v-card-title>
-          </v-toolbar>
-          
-         <v-card-text>
-            <h6>{{$route.meta.title}}</h6>
-            <v-select v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-select>
-         </v-card-text>
-         
-         <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" flat="" @click.stop="frmFav=false">Cancel</v-btn>
-            <v-btn color="primary" flat="" @click.stop="favorite();frmFav=false">Save</v-btn>
-          </v-card-actions>
-        </v-card>
-   </v-menu>
+  <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
+ 
   <v-spacer></v-spacer>
    <v-select placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" combobox="" clearable="" cache-items="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q"></v-select>
             
@@ -4256,15 +4322,8 @@ const Vuepoc=Vue.extend({template:`
     mini: false,
     dark: false,
     alert: {show:false,msg:"Hello"},
-    frmFav: false,
-    tags: [],
-    taglist: [
-      'todo',
-      'find',
-      'some',
-      'good',
-      'tags'
-    ],
+    frmfav: false,
+  
     items: [
       {href: '/',text: 'Home', icon: 'home'    },
       {
@@ -4365,9 +4424,6 @@ const Vuepoc=Vue.extend({template:`
       },
       onDark(dark){
         this.dark=dark
-      },
-      favorite(){
-        alert("@TODO")
       }
   },
   watch: {

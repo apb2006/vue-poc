@@ -16,7 +16,7 @@
   
     </v-toolbar>
      <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
-    <v-card-text v-if="!busy" v-html="report"></v-card-text>
+    <v-card-text v-if="!busy" v-html="report" @click.capture="onClick($event)"></v-card-text>
  </v-card>
  </v-container>
 </template>
@@ -38,6 +38,19 @@
         var t1 = performance.now();
         this.elapsed= 0.001 *(t1 - t0) 
         }) 
+    },
+    onClick(event){
+      console.log("event",event);
+      var isA= "a"== event.originalTarget.localName
+     
+      if(isA) {
+       // alert("stop this"+ event.originalTarget.hash);
+        console.log("tar",event.originalTarget.hash,document.querySelector(event.originalTarget.hash));
+        event.preventDefault();
+          this.$router.push({"hash":event.originalTarget.hash});
+        //  this.$vuetify.goTo(event.originalTarget.hash, { duration: 600,   offset: -200, easing: 'easeInOutCubic'});
+
+      }
     }
   },
   created:function(){

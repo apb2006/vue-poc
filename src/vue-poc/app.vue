@@ -9,35 +9,7 @@
       app
       width="500"
     >
-    <v-card>
-         <v-toolbar class="amber white--text">
-                <v-toolbar-title >Notifications </v-toolbar-title>
-                {{ $notification.nextId }}
-          <v-spacer></v-spacer>
-          <v-btn  @click="showNotifications = false" icon><v-icon>close</v-icon></v-btn>
-          </v-toolbar>
-          <v-card-text>
-        <v-list three-line>
-          <template v-for="msg in $notification.messages" >
-           <v-list-tile avatar  v-bind:key="msg.index" @click="">
-              <v-list-tile-avatar>
-                   <v-icon color="red">swap_horiz</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-              <v-tooltip>
-                <v-list-tile-title  slot="activator">{{ msg.created | fromNow("from") }}</v-list-tile-title>
-                <span v-text="msg.created"></span>
-                </v-tooltip>
-                <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-               <v-list-tile-action-text>{{ msg.index }}</v-list-tile-action-text>
-              </v-list-tile-action>
-            </v-list-tile>
-           </template>
-         </v-list>
-      </v-card-text>
-      </v-card>
+    <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
 </v-navigation-drawer>
  <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   
  :disable-route-watcher="true"  :enable-resize-watcher="true">
@@ -68,41 +40,8 @@
  <v-toolbar class="indigo" app dark >
   <v-toolbar-side-icon @click.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down" >{{$route.meta.title}}</v-toolbar-title>
-   <v-menu
-      offset-x
-      :close-on-content-click="false"
-      :nudge-width="200"
-      v-model="frmFav"
-    >
-      <v-btn slot="activator" @click="frmFav = !frmFav" icon flat title="Bookmark this page">
-       <v-icon>star_border</v-icon>
-       </v-btn>
-
-       <v-card style="width:400px;">
-            <v-toolbar class="amber"> 
-        <v-card-title>
-            Bookmark this page
-          </v-card-title>
-          </v-toolbar>
-          
-         <v-card-text>
-            <h6>{{$route.meta.title}}</h6>
-            <v-select
-              v-model="tags"
-              label="tags"
-              chips
-              tags
-              :items="taglist"
-            ></v-select>
-         </v-card-text>
-         
-         <v-card-actions>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" flat @click.stop="frmFav=false">Cancel</v-btn>
-            <v-btn color="primary" flat @click.stop="favorite();frmFav=false">Save</v-btn>
-          </v-card-actions>
-        </v-card>
-   </v-menu>
+  <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
+ 
   <v-spacer></v-spacer>
    <v-select
               placeholder="Search..." prepend-icon="search"
@@ -171,15 +110,8 @@
     mini: false,
     dark: false,
     alert: {show:false,msg:"Hello"},
-    frmFav: false,
-    tags: [],
-    taglist: [
-      'todo',
-      'find',
-      'some',
-      'good',
-      'tags'
-    ],
+    frmfav: false,
+  
     items: [
       {href: '/',text: 'Home', icon: 'home'    },
       {
@@ -280,9 +212,6 @@
       },
       onDark(dark){
         this.dark=dark
-      },
-      favorite(){
-        alert("@TODO")
       }
   },
   watch: {
