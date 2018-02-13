@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<!-- 
+ show notifications
+ -->
+<template id="vp-notifications">
+   <v-card>
+         <v-toolbar class="amber white--text">
+                <v-toolbar-title >Notifications </v-toolbar-title>
+                {{ $notification.nextId }}
+                 <v-btn  @click="refresh" icon><v-icon>refresh</v-icon></v-btn>
+          <v-spacer></v-spacer>
+          <v-btn  @click="set(false)" icon><v-icon>close</v-icon></v-btn>
+          </v-toolbar>
+          <v-card-text>
+        <v-list three-line>
+          <template v-for="msg in $notification.messages" >
+           <v-list-tile avatar  v-bind:key="msg.index" @click="">
+              <v-list-tile-avatar>
+                   <v-icon color="red">swap_horiz</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-content>
+              <v-tooltip>
+                <v-list-tile-title  slot="activator">{{ msg.created | fromNow("from") }}</v-list-tile-title>
+                <span v-text="msg.created"></span>
+                </v-tooltip>
+                <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
+              </v-list-tile-content>
+              <v-list-tile-action>
+               <v-list-tile-action-text>{{ msg.index }}</v-list-tile-action-text>
+              </v-list-tile-action>
+            </v-list-tile>
+           </template>
+         </v-list>
+      </v-card-text>
+
+      </v-card>
+</template>
+
+<script>{
+  props: { 
+    showNotifications: Boolean
+  },
+  methods:{
+    set(v){
+      this.$emit('update:showNotifications', v)
+    },
+    refresh(){
+      this.$forceUpdate();
+    }
+  }
+}</script>
