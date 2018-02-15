@@ -169,7 +169,7 @@ let $name:=$vue-api:entity?access?name($image)
 let $geo:=$vue-api:entity?json?geo($image)
 let $keywords:=$vue-api:entity?json?keywords($image)
 let $thumb:= $cfg:THUMBDIR ||  $path
-let $thumb:=if(file:exists($thumb)) then $thumb else $cfg:THUMBDIR || "missing.jpg"
+let $thumb:=if(file:exists($thumb)) then $thumb else resolve-uri("missing.jpg")
 return   (
           <id>{$id}</id>
          ,<name>{$name}</name>

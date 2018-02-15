@@ -76,7 +76,7 @@
           </v-list>
       </v-menu>
       <qd-fullscreen></qd-fullscreen>
-       <v-btn  @click="showNotifications = ! showNotifications" icon flat title="Notifications">
+       <v-btn  @click.stop="showNotifications = ! showNotifications" icon flat title="Notifications">
        <v-badge  overlap color="orange">
       <span slot="badge" v-if=" $notification.unseen" >{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>

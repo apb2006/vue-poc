@@ -1,4 +1,4 @@
-// generated 2018-02-13T22:26:57.352Z
+// generated 2018-02-15T22:49:15.318Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -369,6 +369,9 @@ Vue.component('vp-notifications',{template:`
   props: { 
     showNotifications: Boolean
   },
+  data:function(){
+    return {timer:null};
+  },
   methods:{
     set(v){
       this.$emit('update:showNotifications', v)
@@ -376,6 +379,18 @@ Vue.component('vp-notifications',{template:`
     refresh(){
       this.$forceUpdate();
     }
+  },
+  watch:{showNotifications(v){
+    if(v){
+       this.refresh();
+       if(!this.timer) this.timer=setInterval(()=>{ this.refresh() }, 1000);
+    }
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
+    alert("notifi gone")
+  }
+    
   }
 }
       );
@@ -483,7 +498,7 @@ Vue.component('vue-ace',{template:`
     this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
    console.log("setValue: ",this.content)
-    this.editor.setValue(this.content, 1)
+    this.editor.setValue((this.content == null)?"NULL":this.content, 1);
     this.editor.setOptions({ readOnly:this.readOnly });
     if(this.minLines){
       this.editor.setOptions({ minLines: this.minLines})
@@ -4289,7 +4304,7 @@ const Vuepoc=Vue.extend({template:`
           </v-list>
       </v-menu>
       <qd-fullscreen></qd-fullscreen>
-       <v-btn @click="showNotifications = ! showNotifications" icon="" flat="" title="Notifications">
+       <v-btn @click.stop="showNotifications = ! showNotifications" icon="" flat="" title="Notifications">
        <v-badge overlap="" color="orange">
       <span slot="badge" v-if=" $notification.unseen">{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>

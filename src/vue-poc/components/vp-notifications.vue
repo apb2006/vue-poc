@@ -40,6 +40,9 @@
   props: { 
     showNotifications: Boolean
   },
+  data:function(){
+    return {timer:null};
+  },
   methods:{
     set(v){
       this.$emit('update:showNotifications', v)
@@ -47,5 +50,17 @@
     refresh(){
       this.$forceUpdate();
     }
+  },
+  watch:{showNotifications(v){
+    if(v){
+       this.refresh();
+       if(!this.timer) this.timer=setInterval(()=>{ this.refresh() }, 1000);
+    }
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
+    alert("notifi gone")
+  }
+    
   }
 }</script>
