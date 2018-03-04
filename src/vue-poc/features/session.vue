@@ -12,7 +12,7 @@
     item-value="suburb" 
     @selected="handleSelected"
      strict="Unknown">
-<template slot="item" scope="data">
+<template slot="item" slot-scope="data">
       <v-list-tile-content>
         <v-list-tile-title>{{data.item.suburb}}</v-list-tile-title>
         <template v-if="!data.item.generatedItem">

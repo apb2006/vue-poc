@@ -124,7 +124,7 @@
    
 </v-card>
 <v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
- <v-navigation-drawer left absolute v-model="showInfo" :disable-route-watcher="true">
+ <v-navigation-drawer left app v-model="showInfo" :disable-route-watcher="true">
    <v-card flat tile> 
        <v-toolbar >
       <v-card-title >{{ selection[0] && selection[0].name }}</v-card-title>

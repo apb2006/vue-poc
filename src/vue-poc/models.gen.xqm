@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-02-12T09:42:15.78Z 
+ : auto generated from xml files in entities folder at: 2018-03-01T21:54:58.72Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -248,7 +248,7 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(namespace)*
-       { collection("vuepoc")/namespaces/namespace
+       { collection("vue-poc")/namespaces/namespace
 	 },
        
        "views": map{ 
@@ -437,6 +437,34 @@ declare variable $entity:list:=map {
        
        "views": map{ 
        'filter': 'name'
+       }
+   },
+  "xqdoc": map{
+     "name": "xqdoc",
+     "description": "XQuery documentation set ",
+     "access": map{ 
+       "root": function($_ as element()) as xs:string {$_/@root },
+       "time": function($_ as element()) as xs:string {$_/@time } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "root": function($_ as element()) as element(root)? {
+            (: xs:string :)
+                        fn:data($_/@root)!element root {  .} 
+                 },
+           "time": function($_ as element()) as element(time)? {
+            (: xs:string :)
+                        fn:data($_/@time)!element time {  .} 
+                 } },
+       
+      "data": function() as element(entry)*
+       { () },
+       
+       "views": map{ 
+       
        }
    }
 };

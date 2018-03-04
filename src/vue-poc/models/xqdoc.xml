@@ -1,0 +1,18 @@
+<entity name="xqdoc" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>XQuery documentation set </description>
+
+	<fields>
+		<field name="time" type="xs:string">
+			<description>time of generation</description>
+			<xpath>@time</xpath>
+		</field>
+		<field name="root" type="xs:string">
+			<description>root folder to scan</description>
+			<xpath>@root</xpath>
+		</field>
+	</fields>
+	<views>
+	</views>
+	<iconclass>fa fa-calendar</iconclass>
+	<data type="element(entry)">()</data>
+</entity>

@@ -26,12 +26,25 @@ function vue-api:history( )
  return dice:response($items,$entity,web:dice())
 };
 
+(:~
+ : xqdoc list 
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/xqdoc")
+%rest:produces("application/json")
+%output:method("json")   
+function vue-api:xqdoc( )   
+{
+ let $entity:=$entity:list("xqdoc")
+  let $items:= $entity("data")()
+ return dice:response($items,$entity,web:dice())
+};
 
 (:~
  : Returns folder info.
  :)
 declare
-%rest:path("/vue-poc/api/collection")
+%rest:GET %rest:path("/vue-poc/api/collection")
 %rest:query-param("url", "{$url}")
 %rest:query-param("protocol", "{$protocol}","webfile")
 %rest:produces("application/json")

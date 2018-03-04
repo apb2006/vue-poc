@@ -100,6 +100,16 @@ localforage.config({
 // https://vuejs.org/v2/guide/state-management.html
 var settings = {
     debug: false,
+    defaults:{
+      "settings/ace": {
+        theme: "github",
+        keybinding: "ace",
+        fontsize: 16,
+        enableSnippets:true,
+        enableBasicAutocompletion:true,
+        enableLiveAutocompletion:true
+        },
+    },
     getItem (key) {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)
@@ -209,6 +219,9 @@ Vue.use(Fullscreen);
 //Vue.component('v-map', Vue2Leaflet.Map);
 //Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
 //Vue.component('v-marker', Vue2Leaflet.Marker);
-
+//function install (Vue) {
+//  Vue.component('form-schema', window["vue-json-schema"].default);
+//};
+//Vue.use({ install: install });
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')

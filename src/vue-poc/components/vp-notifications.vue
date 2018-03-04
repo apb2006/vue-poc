@@ -26,7 +26,7 @@
                 <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
-               <v-list-tile-action-text>{{ msg.index }}</v-list-tile-action-text>
+               <v-list-tile-action-text>#{{ msg.index }}</v-list-tile-action-text>
               </v-list-tile-action>
             </v-list-tile>
            </template>

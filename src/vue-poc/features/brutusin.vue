@@ -2,6 +2,7 @@
 <template id="brutusin">
  <v-container fluid>
      <v-card>
+     <v-card-title>vue-form-generator</v-card-title>
        <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
     </v-card>
  </v-container>

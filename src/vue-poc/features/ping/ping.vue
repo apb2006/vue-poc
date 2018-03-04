@@ -9,7 +9,7 @@
  </v-toolbar>
  <v-card-text>
   <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
-  <p>Counter:{{counter}}</p>
+  <h3>Counter: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
   <table class="table">
       <thead> 
         <tr>

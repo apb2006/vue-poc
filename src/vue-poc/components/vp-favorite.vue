@@ -3,16 +3,15 @@
 display button that invokes a  save favorite form
  -->
 <template id="vp-favorite">
-  <v-menu
+  <v-menu :close-on-click="false"
       offset-x
       :close-on-content-click="false"
       :nudge-width="200"
       v-model="frmfav"
     >
-      <v-btn slot="activator" @click="set(!frmfav)" icon flat title="Bookmark this page">
+      <v-btn slot="activator" @click.stop="set(!frmfav)" icon flat title="Bookmark this page">
        <v-icon>star_border</v-icon>
        </v-btn>
-
        <v-card style="width:400px;">
             <v-toolbar class="green"> 
         <v-card-title>

@@ -124,6 +124,9 @@ height: 100%;
     overflow: hidden;
     text-overflow: ellipsis;
 } 
+.qd-active {
+	  background-color: green;
+}
 .canvas {
   overflow: hidden;
 }

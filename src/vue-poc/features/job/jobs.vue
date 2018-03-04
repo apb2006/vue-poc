@@ -37,7 +37,7 @@
       class="elevation-1"
       no-data-text="No Jobs currently running"
     >
-    <template slot="items" scope="props">
+    <template slot="items" slot-scope="props">
     <td class="vtop">
         <v-checkbox
           primary

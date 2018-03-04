@@ -51,6 +51,22 @@ function vue-api:search($q )
 };
 
 (:~
+ : Returns data results
+ :)
+declare
+%rest:path("/vue-poc/api/data/{$entity}")
+%rest:query-param("q", "{$q}")
+%rest:produces("application/json")
+%output:method("json")   
+function vue-api:data($entity as xs:string,$q )   
+{
+  let $entity:=$entity:list($entity)
+  let $items:=$entity("data")()
+  
+ return dice:response($items,$entity,web:dice())
+};
+
+(:~
  : Returns test list for select.
  :)
 declare

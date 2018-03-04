@@ -21,7 +21,7 @@
       class="elevation-1"
       no-data-text="No repo found @todo"
     >
-    <template slot="items" scope="props">
+    <template slot="items" slot-scope="props">
     <td class="vtop">
         <v-checkbox
           primary

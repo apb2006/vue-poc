@@ -19,6 +19,6 @@
         <view name="filter">xmlns description</view>
     </views>
 	<iconclass>label</iconclass>
-	<data type="element(namespace)">collection("vuepoc")/namespaces/namespace
+	<data type="element(namespace)">collection("vue-poc")/namespaces/namespace
 	</data>
 </entity>

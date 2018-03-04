@@ -8,6 +8,7 @@
 	  :loading="loading"
       :disabled="loading"
 	 >Refresh</v-btn>
+	 Text
 	 </v-toolbar>
 
   <v-container fluid grid-list-md>
@@ -16,6 +17,7 @@
       content-tag="v-layout"
       row
       wrap
+      :loading="loading"
       :items="items"
       :rows-per-page-items="rowsPerPageItems"
       :pagination.sync="pagination"
@@ -30,25 +32,24 @@
         md4
         lg3
       >
-        <v-card>
-       
-          <v-card-title>
-           <router-link :to="{path:'entity/'+ props.item.name}">
-            <h4>
-            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
-            </h4>
-            </router-link>
-         </v-card-title>
-          
+        <v-card hover="true" active-class="default-class qd-active" >
+        
+          <v-toolbar  color="amber">
+		          <v-card-title >
+		           <router-link :to="{path:'entity/'+ props.item.name}">
+		            <h3>
+		            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
+		            </h3>
+		            </router-link>
+		         </v-card-title>
+          </v-toolbar>
           <v-card-text>{{ props.item.description }}</<v-card-text>
-          <v-card-actions>
-          <v-list dense>
-            <v-list-tile>
-              <v-list-tile-content>Fields:</v-list-tile-content>
-              <v-list-tile-content class="align-end">{{ props.item.nfields }}</v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-          </v-card-actions>
+          <v-card-text>
+           <v-badge color="red">
+			      <span slot="badge">{{ props.item.nfields }}</span>
+			      Fields
+			    </v-badge>
+          </v-card-text>
         </v-card>
       </v-flex>
     </v-data-iterator>

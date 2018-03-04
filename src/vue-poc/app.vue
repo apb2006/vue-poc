@@ -34,7 +34,7 @@
           </v-list-tile>
 
       </v-list>
-    <qd-navlist  :items="items"></qd-navlist>
+    <qd-navlist  :items="items" :mini="mini"></qd-navlist>
  </v-navigation-drawer>
   
  <v-toolbar class="indigo" app dark >
@@ -43,19 +43,7 @@
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
  
   <v-spacer></v-spacer>
-   <v-select
-              placeholder="Search..." prepend-icon="search"
-              autocomplete
-              :loading="loading"
-              combobox
-              clearable
-              cache-items
-              :items="items2"
-              @keyup.enter="goSearch"
-              :search-input.sync="si" 
-              v-model="q"
-            ></v-select>
-            
+  <qd-search></qd-search>
   
   <v-spacer></v-spacer>
   
@@ -75,13 +63,25 @@
             
           </v-list>
       </v-menu>
-      <qd-fullscreen></qd-fullscreen>
        <v-btn  @click.stop="showNotifications = ! showNotifications" icon flat title="Notifications">
        <v-badge  overlap color="orange">
       <span slot="badge" v-if=" $notification.unseen" >{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
+    <v-menu bottom left min-width="300px">
+            <v-btn icon slot="activator" dark>
+              <v-icon>more_vert</v-icon>
+            </v-btn>
+            <v-list>
+              <v-list-tile  >
+                <v-list-tile-title><qd-fullscreen></qd-fullscreen> Full screen</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile  >
+                <v-list-tile-title><v-switch label="Dark theme" v-model="dark"></v-switch></v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
 </v-toolbar>
  
  <v-content> 
@@ -99,8 +99,7 @@
 <script>{
   router,
   data:function(){return {
-    q: "",
-    loading: false,
+
     searchItems:[],
     si: '',
     items2:["todo","set","search"],
@@ -132,6 +131,7 @@
         children: [
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
+    
       {href: '/history',text: 'history',icon: 'history'}
       ]},
       {
@@ -139,6 +139,7 @@
         text: 'Models' ,
         model: false,
         children: [
+          {href: '/documentation', text: 'Documentation',icon: 'library_books' },
           {href: '/namespace', text: 'Namespaces',icon: 'label' },
           {href: '/entity', text: 'Entities',icon: 'redeem' },
       ]},
@@ -177,6 +178,7 @@
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
       {href: '/svg',text: 'SVG',icon: 'extension'},
       {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
+      {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  },
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}
       ]},
       
@@ -186,21 +188,12 @@
 
   }},
   methods: {
-    querySelections (v) {
-      this.loading = true
-      // Simulated ajax query
-      setTimeout(() => {
-        this.items2 = ["aa","bb",this.si],
-        this.loading = false
-      }, 500)
-    },
+   
 
       session(){
         this.$router.push({path: '/session'})
       },
-      goSearch(){
-        this.$router.push({path: '/search',query: { q: this.q }})
-      },
+      
       logout(){
         HTTP.get("logout").then(r=>{
           alert("logout")
@@ -219,13 +212,7 @@
 	      console.log("showNotifications",val);
 	      if(!val)this.$notification.unseen=0;
 	    },
-	    search (val) {
-	      val && this.querySelections(val)
-	    },
-	    si:function(val){
-	      console.log("si: ",val);
-	      this.querySelections();
-	    }
+	   
     },
     
   created(){

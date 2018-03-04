@@ -16,7 +16,7 @@ for nav drawer
               </v-list-tile-content>
             </v-list-tile>
             
-            <v-list-tile v-for="subItem in item.children" v-bind:key="subItem.text"
+            <v-list-tile v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text"
              :prepend-icon="subItem.icon" 
              :to="subItem.href"  avatar ripple >
               <v-list-tile-avatar>
@@ -42,6 +42,6 @@ for nav drawer
 </template>
 
 <script>{
-  props: ['items']
+  props: ['items','mini']
 }
 </script>

@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html xmlns="http://www.w3.org/1999/xhtml"><head><title>https://shkspr.mobi/svg/calendar.svg</title><link rel="stylesheet" type="text/css" href="https%20_shkspr.mobi_svg_calendar_files/viewsource.css" /></head><body id="viewsource" class="highlight" style="-moz-tab-size: 4" contextmenu="actions"><pre id="line1"><span></span><span>&lt;<span class="start-tag">svg</span> <span class="attribute-name">onload</span>="<a class="attribute-value">init(evt)</a>" <span class="attribute-name">xmlns</span>="<a class="attribute-value">http://www.w3.org/2000/svg</a>"
+<span id="line2"></span><span class="attribute-name">aria-label</span>="<a class="attribute-value">Calendar</a>" <span class="attribute-name">role</span>="<a class="attribute-value">img</a>"
+<span id="line3"></span><span class="attribute-name">viewBox</span>="<a class="attribute-value">0 0 512 512</a>"&gt;</span><span>
+<span id="line4"></span></span><span>&lt;<span class="start-tag">script</span> <span class="attribute-name">type</span>="<a class="attribute-value">text/ecmascript</a>"&gt;</span><span></span><span class="cdata">&lt;![CDATA[
+<span id="line5"></span>function init(evt) {
+<span id="line6"></span>  var time = new Date();
+<span id="line7"></span>  var locale = "en-gb";
+<span id="line8"></span>  var DD   = time.getDate();
+<span id="line9"></span>  var DDD  = time.toLocaleString(locale, { weekday: "short" });
+<span id="line10"></span>  var DDDD = time.toLocaleString(locale, { weekday: "long" });
+<span id="line11"></span>  var MM   = time.getMonth() + 1;
+<span id="line12"></span>  var MMM  = time.toLocaleString(locale, {month: "short"});
+<span id="line13"></span>  var MMMM = time.toLocaleString(locale, {month: "long"});
+<span id="line14"></span>  var YYYY = time.getFullYear();
+<span id="line15"></span>  
+<span id="line16"></span>  var svgDocument = evt.target.ownerDocument;
+<span id="line17"></span>  var dayNode = svgDocument.createTextNode(DD);
+<span id="line18"></span>  svgDocument.getElementById("day").appendChild(dayNode);
+<span id="line19"></span>  var weekdayNode = svgDocument.createTextNode(DDDD);
+<span id="line20"></span>  svgDocument.getElementById("weekday").appendChild(weekdayNode);
+<span id="line21"></span>  var monthNode = svgDocument.createTextNode(MMM.toUpperCase());
+<span id="line22"></span>  svgDocument.getElementById("month").appendChild(monthNode);
+<span id="line23"></span>  
+<span id="line24"></span>}
+<span id="line25"></span>]]&gt;</span><span></span><span>&lt;/<span class="end-tag">script</span>&gt;</span><span>
+<span id="line26"></span>
+<span id="line27"></span></span><span>&lt;<span class="start-tag">path</span> <span class="attribute-name">d</span>="<a class="attribute-value">M512 455c0 32-25 57-57 57H57c-32 0-57-25-57-57V128c0-31 25-57 57-57h398c32 0 57 26 57 57z</a>" <span class="attribute-name">fill</span>="<a class="attribute-value">#e0e7ec</a>"<span>/</span>&gt;</span><span>
+<span id="line28"></span></span><span>&lt;<span class="start-tag">path</span> <span class="attribute-name">d</span>="<a class="attribute-value">M484 0h-47c2 4 4 9 4 14a28 28 0 1 1-53-14H124c3 4 4 9 4 14A28 28 0 1 1 75 0H28C13 0 0 13 0 28v157h512V28c0-15-13-28-28-28z</a>" <span class="attribute-name">fill</span>="<a class="attribute-value">#dd2f45</a>"<span>/</span>&gt;</span><span>
+<span id="line29"></span>
+<span id="line30"></span></span><span>&lt;<span class="start-tag">g</span> <span class="attribute-name">fill</span>="<a class="attribute-value">#f3aab9</a>"&gt;</span><span>
+<span id="line31"></span>  </span><span>&lt;<span class="start-tag">circle</span> <span class="attribute-name">cx</span>="<a class="attribute-value">470</a>" <span class="attribute-name">cy</span>="<a class="attribute-value">142</a>" <span class="attribute-name">r</span>="<a class="attribute-value">14</a>"<span>/</span>&gt;</span><span>
+<span id="line32"></span>  </span><span>&lt;<span class="start-tag">circle</span> <span class="attribute-name">cx</span>="<a class="attribute-value">470</a>" <span class="attribute-name">cy</span>="<a class="attribute-value">100</a>" <span class="attribute-name">r</span>="<a class="attribute-value">14</a>"<span>/</span>&gt;</span><span>
+<span id="line33"></span>  </span><span>&lt;<span class="start-tag">circle</span> <span class="attribute-name">cx</span>="<a class="attribute-value">427</a>" <span class="attribute-name">cy</span>="<a class="attribute-value">142</a>" <span class="attribute-name">r</span>="<a class="attribute-value">14</a>"<span>/</span>&gt;</span><span>
+<span id="line34"></span>  </span><span>&lt;<span class="start-tag">circle</span> <span class="attribute-name">cx</span>="<a class="attribute-value">427</a>" <span class="attribute-name">cy</span>="<a class="attribute-value">100</a>" <span class="attribute-name">r</span>="<a class="attribute-value">14</a>"<span>/</span>&gt;</span><span>
+<span id="line35"></span>  </span><span>&lt;<span class="start-tag">circle</span> <span class="attribute-name">cx</span>="<a class="attribute-value">384</a>" <span class="attribute-name">cy</span>="<a class="attribute-value">142</a>" <span class="attribute-name">r</span>="<a class="attribute-value">14</a>"<span>/</span>&gt;</span><span>
+<span id="line36"></span>  </span><span>&lt;<span class="start-tag">circle</span> <span class="attribute-name">cx</span>="<a class="attribute-value">384</a>" <span class="attribute-name">cy</span>="<a class="attribute-value">100</a>" <span class="attribute-name">r</span>="<a class="attribute-value">14</a>"<span>/</span>&gt;</span><span>
+<span id="line37"></span></span><span>&lt;/<span class="end-tag">g</span>&gt;</span><span>
+<span id="line38"></span>
+<span id="line39"></span></span><span>&lt;<span class="start-tag">text</span> <span class="attribute-name">id</span>="<a class="attribute-value">month</a>"
+<span id="line40"></span>  <span class="attribute-name">x</span>="<a class="attribute-value">32</a>" 
+<span id="line41"></span>  <span class="attribute-name">y</span>="<a class="attribute-value">164</a>" 
+<span id="line42"></span>  <span class="attribute-name">fill</span>="<a class="attribute-value">#fff</a>" 
+<span id="line43"></span>  <span class="attribute-name">font-family</span>="<a class="attribute-value">monospace</a>"
+<span id="line44"></span>  <span class="attribute-name">font-size</span>="<a class="attribute-value">140px</a>"
+<span id="line45"></span>  <span class="attribute-name">style</span>="<a class="attribute-value">text-anchor: left</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">text</span>&gt;</span><span>
+<span id="line46"></span></span><span>&lt;<span class="start-tag">text</span> <span class="attribute-name">id</span>="<a class="attribute-value">day</a>"
+<span id="line47"></span>  <span class="attribute-name">x</span>="<a class="attribute-value">256</a>" 
+<span id="line48"></span>  <span class="attribute-name">y</span>="<a class="attribute-value">400</a>" 
+<span id="line49"></span>  <span class="attribute-name">fill</span>="<a class="attribute-value">#66757f</a>" 
+<span id="line50"></span>  <span class="attribute-name">font-family</span>="<a class="attribute-value">monospace</a>"
+<span id="line51"></span>  <span class="attribute-name">font-size</span>="<a class="attribute-value">256px</a>"
+<span id="line52"></span>  <span class="attribute-name">style</span>="<a class="attribute-value">text-anchor: middle</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">text</span>&gt;</span><span>
+<span id="line53"></span></span><span>&lt;<span class="start-tag">text</span> <span class="attribute-name">id</span>="<a class="attribute-value">weekday</a>"
+<span id="line54"></span>  <span class="attribute-name">x</span>="<a class="attribute-value">256</a>" 
+<span id="line55"></span>  <span class="attribute-name">y</span>="<a class="attribute-value">480</a>" 
+<span id="line56"></span>  <span class="attribute-name">fill</span>="<a class="attribute-value">#66757f</a>" 
+<span id="line57"></span>  <span class="attribute-name">font-family</span>="<a class="attribute-value">monospace</a>"
+<span id="line58"></span>  <span class="attribute-name">font-size</span>="<a class="attribute-value">64px</a>"
+<span id="line59"></span>  <span class="attribute-name">style</span>="<a class="attribute-value">text-anchor: middle</a>"&gt;</span><span></span><span>&lt;/<span class="end-tag">text</span>&gt;</span><span>
+<span id="line60"></span>
+<span id="line61"></span></span><span>&lt;/<span class="end-tag">svg</span>&gt;</span><span></span></pre><menu type="context" id="actions"><menuitem id="goToLine" label="Go to Line…" accesskey="L"></menuitem><menuitem id="wrapLongLines" label="Wrap Long Lines" type="checkbox"></menuitem><menuitem id="highlightSyntax" label="Syntax Highlighting" type="checkbox" checked="true"></menuitem></menu></body></html>

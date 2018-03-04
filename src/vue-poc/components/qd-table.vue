@@ -23,7 +23,7 @@
       class="elevation-1"
       no-data-text="No users found @todo"
     >
-    <template slot="items" scope="props">
+    <template slot="items" slot-scope="props">
     <slot></slot>
     </template>
   </v-data-table>

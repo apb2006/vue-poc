@@ -1,4 +1,4 @@
-// generated 2018-02-15T22:49:15.318Z
+// generated 2018-03-04T18:03:42.736Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -72,7 +72,7 @@ Vue.component('qd-navlist',{template:`
               </v-list-tile-content>
             </v-list-tile>
             
-            <v-list-tile v-for="subItem in item.children" v-bind:key="subItem.text" :prepend-icon="subItem.icon" :to="subItem.href" avatar="" ripple="">
+            <v-list-tile v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text" :prepend-icon="subItem.icon" :to="subItem.href" avatar="" ripple="">
               <v-list-tile-avatar>
 		             <v-icon>{{ subItem.icon }}</v-icon>
 		          </v-list-tile-avatar>
@@ -95,7 +95,7 @@ Vue.component('qd-navlist',{template:`
         </v-list>
  `,
       
-  props: ['items']
+  props: ['items','mini']
 }
 
       );
@@ -121,6 +121,42 @@ Vue.component('qd-panel',{template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-search.vue
+Vue.component('qd-search',{template:` 
+  <v-select placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" combobox="" clearable="" cache-items="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q"></v-select>
+ `,
+      
+  data:function(){return {
+    q: "",
+    loading: false,
+    searchItems:[],
+    si: '',
+    items2:["todo","set","search"]
+  }
+  },
+  methods: {
+    querySelections (v) {
+      this.loading = true
+      // Simulated ajax query
+      setTimeout(() => {
+        this.items2 = ["aa","bb",this.si],
+        this.loading = false
+      }, 500)
+    },
+    
+    goSearch(){
+        this.$router.push({path: '/search',query: { q: this.q }})
+      },
+  },
+  watch: {
+    si:function(val){
+      console.log("si: ",val);
+      this.querySelections();
+    }
+  }
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-table.vue
 Vue.component('qd-table',{template:` 
  <v-container fluid="">
@@ -131,7 +167,7 @@ Vue.component('qd-table',{template:`
       <v-btn @click="getData">Refresh</v-btn>   
     </v-toolbar>
 <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No users found @todo">
-    <template slot="items" scope="props">
+    <template slot="items" slot-scope="props">
     <slot></slot>
     </template>
   </v-data-table>
@@ -212,11 +248,10 @@ Vue.component('vis-time-line',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-favorite.vue
 Vue.component('vp-favorite',{template:` 
-  <v-menu offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
-      <v-btn slot="activator" @click="set(!frmfav)" icon="" flat="" title="Bookmark this page">
+  <v-menu :close-on-click="false" offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
+      <v-btn slot="activator" @click.stop="set(!frmfav)" icon="" flat="" title="Bookmark this page">
        <v-icon>star_border</v-icon>
        </v-btn>
-
        <v-card style="width:400px;">
             <v-toolbar class="green"> 
         <v-card-title>
@@ -262,6 +297,27 @@ Vue.component('vp-favorite',{template:`
     }
   }
 }
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-filepick.vue
+Vue.component('vp-filepicker',{template:` 
+ <v-layout>
+		<v-flex>
+		<slot name="body"></slot>
+		</v-flex>
+		
+		<v-flex v-if="show" xs4="" grey="" lighten-3="">
+		<slot name="aside"></slot>
+		</v-flex>
+</v-layout>
+ `,
+      
+  props: ['show'],
+  created:function(){
+      console.log("vp-filepicker");
+    }
+}
+
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-job.vue
@@ -356,7 +412,7 @@ Vue.component('vp-notifications',{template:`
                 <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
               </v-list-tile-content>
               <v-list-tile-action>
-               <v-list-tile-action-text>{{ msg.index }}</v-list-tile-action-text>
+               <v-list-tile-action-text>#{{ msg.index }}</v-list-tile-action-text>
               </v-list-tile-action>
             </v-list-tile>
            </template>
@@ -652,7 +708,7 @@ const Log=Vue.extend({template:`
      
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" v-bind:pagination.sync="pagination">
-    <template slot="items" scope="props">
+    <template slot="items" slot-scope="props">
       <td class="text-xs-right">{{ props.item.time }}</td>
       <td class="text-xs-right">{{ props.item.user }}</td>
       <td class="text-xs-right">{{ props.item.type }}</td>
@@ -715,6 +771,7 @@ const Log=Vue.extend({template:`
 const Brutusin=Vue.extend({template:` 
  <v-container fluid="">
      <v-card>
+     <v-card-title>vue-form-generator</v-card-title>
        <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
     </v-card>
  </v-container>
@@ -943,7 +1000,7 @@ const Files=Vue.extend({template:`
    
 </v-card>
 <v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
- <v-navigation-drawer left="" absolute="" v-model="showInfo" :disable-route-watcher="true">
+ <v-navigation-drawer left="" app="" v-model="showInfo" :disable-route-watcher="true">
    <v-card flat="" tile=""> 
        <v-toolbar>
       <v-card-title>{{ selection[0] &amp;&amp; selection[0].name }}</v-card-title>
@@ -1691,6 +1748,74 @@ const Eval=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/formschema.vue
+const Formsjson=Vue.extend({template:` 
+ <v-container fluid="">
+     <v-card>
+        <v-card-title>vue-json-schema@1.1.0 https://github.com/formschema/native</v-card-title>
+       <form-schema ref="formSchema" :schema="schema" v-model="model">
+              <v-btn color="success" @click.stop="submit">Subscribe</v-btn>
+  </form-schema>
+    </v-card>
+ </v-container>
+ `,
+      
+
+  components: { 
+    "form-schema": window["vue-json-schema"].default
+    },
+ 
+  data: () => ({
+    schema: {
+      "$schema": "http://json-schema.org/draft-04/schema#",
+      "type": "object",
+      "title": "Newsletter Subscription",
+      "properties": {
+          "name": {
+              "type": "string", 
+              "minLength": 8, 
+              "maxLength": 80, 
+              "attrs": {
+                "placeholder": "Full Name",
+                "title": "Please enter your full name"
+              }
+          },
+          "email": {
+              "type": "string", 
+              "maxLength": 120, 
+              "attrs": {
+                  "type": "email",
+                  "placeholder": "Email"
+              }
+          },
+          "lists": {
+              "type": "string",
+              "enum": ["Daily New", "Promotion"]
+          },
+          "arrayInput": {
+            "type": "array",
+            "items": {
+              "type": "string"
+            }
+          }
+      },
+      "additionalProperties": false,
+      "required": ["name", "email", "lists"]
+  },
+    model: {}
+  }),
+  methods: {
+    submit (e) {
+      // this.model contains the valid data according your JSON Schema.
+      // You can submit your model to the server here
+      console.log(this.model);
+      alert("hi")
+    }
+  }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/home.vue
 const Home=Vue.extend({template:` 
 
@@ -2411,7 +2536,7 @@ const Jobs=Vue.extend({template:`
     </v-btn>
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No Jobs currently running">
-    <template slot="items" scope="props">
+    <template slot="items" slot-scope="props">
     <td class="vtop">
         <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
       </td>
@@ -2551,6 +2676,49 @@ const Login=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/documentation.vue
+const Documentation=Vue.extend({template:` 
+ <v-container fluid="">
+    <v-list>
+            <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar="">
+              <v-list-tile-action>
+               <v-chip v-text="item.protocol">Example Chip</v-chip>
+              </v-list-tile-action>
+              <v-list-tile-content>
+                <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
+              </v-list-tile-content>
+            </v-list-tile>
+   </v-list>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'Hello Vue.js!',
+      items:[]
+      }
+  },
+  methods:{
+    get() {
+      HTTP.get('xqdoc')
+      .then((res) => {
+        this.items = res.data.items;
+        console.log("items",this.items)
+      });
+    },
+    doEdit(item){
+      console.log("history: ",item)
+        router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
+    }
+  },
+  created:function(){
+    this.get()
+    console.log("history")
+  }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/entity.vue
 const Entity=Vue.extend({template:` 
 <v-card>
@@ -2558,31 +2726,31 @@ const Entity=Vue.extend({template:`
 	 <v-toolbar-title>Entities</v-toolbar-title>
 	 <v-spacer></v-spacer>
 	 <v-btn @click="getItems" :loading="loading" :disabled="loading">Refresh</v-btn>
+	 Text
 	 </v-toolbar>
 
   <v-container fluid="" grid-list-md="">
   
-    <v-data-iterator content-tag="v-layout" row="" wrap="" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
+    <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
       <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
-        <v-card>
-       
-          <v-card-title>
-           <router-link :to="{path:'entity/'+ props.item.name}">
-            <h4>
-            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
-            </h4>
-            </router-link>
-         </v-card-title>
-          
+        <v-card hover="true" active-class="default-class qd-active">
+        
+          <v-toolbar color="amber">
+		          <v-card-title>
+		           <router-link :to="{path:'entity/'+ props.item.name}">
+		            <h3>
+		            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
+		            </h3>
+		            </router-link>
+		         </v-card-title>
+          </v-toolbar>
           <v-card-text>{{ props.item.description }}<!--<v-card-text-->
-          <v-card-actions>
-          <v-list dense="">
-            <v-list-tile>
-              <v-list-tile-content>Fields:</v-list-tile-content>
-              <v-list-tile-content class="align-end">{{ props.item.nfields }}</v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-          </v-card-actions>
+          <v-card-text>
+           <v-badge color="red">
+			      <span slot="badge">{{ props.item.nfields }}</span>
+			      Fields
+			    </v-badge>
+          </v-card-text>
         </v-card-text></v-card>
       </v-flex>
     </v-data-iterator>
@@ -2623,18 +2791,69 @@ const Entity=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespace.vue
 const Namespace=Vue.extend({template:` 
- <v-container fluid="">
-namespaces
+ <v-container fluid="" grid-list-md="">
+<v-toolbar>
+   <v-toolbar-title>Namespaces</v-toolbar-title>
+   <v-spacer></v-spacer>
+   <v-btn @click="load" :loading="loading" :disabled="loading">Refresh</v-btn>
+   Text
+   </v-toolbar>
+     <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
+      <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
+        <v-card hover="true" active-class="default-class qd-active" height="200px">
+        
+          <v-toolbar color="amber">
+              <v-card-title>
+               <router-link :to="{path:'entity/'+ props.item.name}">
+                <h3>
+                <v-icon>star</v-icon> {{ props.item.xmlns }}
+                </h3>
+                </router-link>
+             </v-card-title>
+          </v-toolbar>
+          <v-card-text>{{ props.item.description }}<!--<v-card-text-->
+          <v-card-text>
+           <v-badge color="red">
+            <span slot="badge">{{ props.item.prefix }}</span>
+            Fields
+          </v-badge>
+          </v-card-text>
+        </v-card-text></v-card>
+      </v-flex>
+    </v-data-iterator>
  </v-container>
  `,
       
   data:  function(){
     return {
+      items: [],
+      loading: false,
+      q: "",
       message: 'bad route!'
       }
   },
+  methods: {
+    load(){
+    
+      this.loading= true
+      HTTP.get("data/namespace",{params:{}})
+      .then(r=>{
+        this.items= r.data.items
+        this.q= null
+        this.loading= false
+        })
+        .catch(error=> {
+          console.log(error);
+          this.loading= false
+          alert("Get query error"+url)
+        });
+      
+    },
+  },
   created:function(){
-    console.log("notfound",this.$route.query.q)
+    this.q=this.$route.query.q || this.q;
+    this.load();
+    console.log("namespaces")
   }
 }
 
@@ -2651,7 +2870,7 @@ const Ping=Vue.extend({template:`
  </v-toolbar>
  <v-card-text>
   <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
-  <p>Counter:{{counter}}</p>
+  <h3>Counter: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
   <table class="table">
       <thead> 
         <tr>
@@ -2887,7 +3106,7 @@ const Repo=Vue.extend({template:`
       <v-spacer></v-spacer>     
     </v-toolbar>
 <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No repo found @todo">
-    <template slot="items" scope="props">
+    <template slot="items" slot-scope="props">
     <td class="vtop">
         <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
       </td>
@@ -3103,7 +3322,7 @@ const Session=Vue.extend({template:`
     item-value="suburb" 
     @selected="handleSelected"
      strict="Unknown">
-<template slot="item" scope="data">
+<template slot="item" slot-scope="data">
       <v-list-tile-content>
         <v-list-tile-title>{{data.item.suburb}}</v-list-tile-title>
         <template v-if="!data.item.generatedItem">
@@ -4189,6 +4408,7 @@ const router = new VueRouter({
     { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
     { path: '/images/people', component: People, meta:{title:"Image people"} },
     
+    { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
     { path: '/entity', component: Entity, meta:{title:"Entities"} },
     { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
@@ -4206,6 +4426,7 @@ const router = new VueRouter({
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/svg', component: Svg, meta:{title:"SVG"} },
+   /* { path: '/svg2', component: Svg2, meta:{title:"SVG2"} }, */
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
@@ -4219,7 +4440,8 @@ const router = new VueRouter({
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/map', component: Map,meta:{title:"map"} },
-    { path: '/form', component: Brutusin,meta:{title:"Form demo"} },
+    { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
+    { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
@@ -4273,7 +4495,7 @@ const Vuepoc=Vue.extend({template:`
           </v-list-tile>
 
       </v-list>
-    <qd-navlist :items="items"></qd-navlist>
+    <qd-navlist :items="items" :mini="mini"></qd-navlist>
  </v-navigation-drawer>
   
  <v-toolbar class="indigo" app="" dark="">
@@ -4282,8 +4504,7 @@ const Vuepoc=Vue.extend({template:`
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
  
   <v-spacer></v-spacer>
-   <v-select placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" combobox="" clearable="" cache-items="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q"></v-select>
-            
+  <qd-search></qd-search>
   
   <v-spacer></v-spacer>
   
@@ -4303,13 +4524,25 @@ const Vuepoc=Vue.extend({template:`
             
           </v-list>
       </v-menu>
-      <qd-fullscreen></qd-fullscreen>
        <v-btn @click.stop="showNotifications = ! showNotifications" icon="" flat="" title="Notifications">
        <v-badge overlap="" color="orange">
       <span slot="badge" v-if=" $notification.unseen">{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
+    <v-menu bottom="" left="" min-width="300px">
+            <v-btn icon="" slot="activator" dark="">
+              <v-icon>more_vert</v-icon>
+            </v-btn>
+            <v-list>
+              <v-list-tile>
+                <v-list-tile-title><qd-fullscreen></qd-fullscreen> Full screen</v-list-tile-title>
+              </v-list-tile>
+              <v-list-tile>
+                <v-list-tile-title><v-switch label="Dark theme" v-model="dark"></v-switch></v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
 </v-toolbar>
  
  <v-content> 
@@ -4326,8 +4559,7 @@ const Vuepoc=Vue.extend({template:`
       
   router,
   data:function(){return {
-    q: "",
-    loading: false,
+
     searchItems:[],
     si: '',
     items2:["todo","set","search"],
@@ -4359,6 +4591,7 @@ const Vuepoc=Vue.extend({template:`
         children: [
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
+    
       {href: '/history',text: 'history',icon: 'history'}
       ]},
       {
@@ -4366,6 +4599,7 @@ const Vuepoc=Vue.extend({template:`
         text: 'Models' ,
         model: false,
         children: [
+          {href: '/documentation', text: 'Documentation',icon: 'library_books' },
           {href: '/namespace', text: 'Namespaces',icon: 'label' },
           {href: '/entity', text: 'Entities',icon: 'redeem' },
       ]},
@@ -4404,6 +4638,7 @@ const Vuepoc=Vue.extend({template:`
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
       {href: '/svg',text: 'SVG',icon: 'extension'},
       {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
+      {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  },
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}
       ]},
       
@@ -4413,21 +4648,12 @@ const Vuepoc=Vue.extend({template:`
 
   }},
   methods: {
-    querySelections (v) {
-      this.loading = true
-      // Simulated ajax query
-      setTimeout(() => {
-        this.items2 = ["aa","bb",this.si],
-        this.loading = false
-      }, 500)
-    },
+   
 
       session(){
         this.$router.push({path: '/session'})
       },
-      goSearch(){
-        this.$router.push({path: '/search',query: { q: this.q }})
-      },
+      
       logout(){
         HTTP.get("logout").then(r=>{
           alert("logout")
@@ -4446,13 +4672,7 @@ const Vuepoc=Vue.extend({template:`
 	      console.log("showNotifications",val);
 	      if(!val)this.$notification.unseen=0;
 	    },
-	    search (val) {
-	      val && this.querySelections(val)
-	    },
-	    si:function(val){
-	      console.log("si: ",val);
-	      this.querySelections();
-	    }
+	   
     },
     
   created(){
@@ -4600,6 +4820,16 @@ localforage.config({
 // https://vuejs.org/v2/guide/state-management.html
 var settings = {
     debug: false,
+    defaults:{
+      "settings/ace": {
+        theme: "github",
+        keybinding: "ace",
+        fontsize: 16,
+        enableSnippets:true,
+        enableBasicAutocompletion:true,
+        enableLiveAutocompletion:true
+        },
+    },
     getItem (key) {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)
@@ -4709,7 +4939,10 @@ Vue.use(Fullscreen);
 //Vue.component('v-map', Vue2Leaflet.Map);
 //Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
 //Vue.component('v-marker', Vue2Leaflet.Marker);
-
+//function install (Vue) {
+//  Vue.component('form-schema', window["vue-json-schema"].default);
+//};
+//Vue.use({ install: install });
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')
 
