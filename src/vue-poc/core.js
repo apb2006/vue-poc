@@ -114,6 +114,7 @@ var settings = {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)
         .then(value => {
+          value=value?value:this.defaults[key];
           //console.log('GET setting', key,value);
           return value;
      

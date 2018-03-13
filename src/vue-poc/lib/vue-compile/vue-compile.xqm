@@ -6,9 +6,7 @@ module namespace vue = 'quodatum:vue.compile';
 import module namespace html5="text.html5" at "html5parse.xqm";
 import module namespace fw="quodatum:file.walker";
 declare namespace c="http://www.w3.org/ns/xproc-step";
-declare namespace Document="java:ch.digitalfondue.jfiveparse.Document";
-declare namespace Element="java:ch.digitalfondue.jfiveparse.Element";
-declare namespace Node="java:ch.digitalfondue.jfiveparse.Node";
+
 
 declare namespace functx = "http://www.functx.com";
 
@@ -56,11 +54,11 @@ declare function vue:parse($doc)
 as map(*)
 {
   let $tempNode:= html5:getElementFirstByTagName($doc,"template")
-  let $template:= Node:getInnerHTML($tempNode)
-  let $id  := Element:getAttribute($tempNode,"id")=>trace("ID")
+  let $template:= html5:getInnerHTML($tempNode)
+  let $id  := html5:getAttribute($tempNode,"id")=>trace("ID")
 
   let $script:= html5:getElementFirstByTagName($doc,"script")
-  let $script:= Node:getInnerHTML($script)
+  let $script:= html5:getInnerHTML($script)
   return map{"id":$id,"template":$template,"script":$script}
 };
 

@@ -29,7 +29,7 @@
         md4
         lg3
       >
-        <v-card hover="true" active-class="default-class qd-active" height="200px">
+        <v-card :hover="true" active-class="default-class qd-active" height="200px">
         
           <v-toolbar  color="amber">
               <v-card-title >
@@ -59,7 +59,12 @@
       items: [],
       loading: false,
       q: "",
-      message: 'bad route!'
+      message: 'bad route!',
+      rowsPerPageItems: [4, 8, 20],
+      pagination: {
+        rowsPerPage: 20
+      },
+      selected:[]
       }
   },
   methods: {

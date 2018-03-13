@@ -27,7 +27,10 @@ const router = new VueRouter({
     { path: '/images/people', component: People, meta:{title:"Image people"} },
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
+    
     { path: '/entity', component: Entity, meta:{title:"Entities"} },
+    { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
+    
     { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
@@ -47,15 +50,21 @@ const router = new VueRouter({
    /* { path: '/svg2', component: Svg2, meta:{title:"SVG2"} }, */
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
+    
     { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
+    { path: '/eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
+    
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
+    
     { path: '/tasks', component: Task, meta:{title:"Runnable tasks"} },
     { path: '/tasks/model', component: Model, meta:{title:"build model"} },
     { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
     { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
+    
     { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+    
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/map', component: Map,meta:{title:"map"} },
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },

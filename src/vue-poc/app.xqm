@@ -47,13 +47,24 @@ declare function vue-poc:get-file($file)
 {
   let $path := resolve-uri( 'static/' || $file,static-base-uri())
   let $path:=if(file:exists($path))then $path else $vue-poc:index
-       
   return (
-    web:response-header(map { 'media-type': web:content-type($path) }),
+    web:response-header(map { 'media-type': vue-poc:content-type($path) }),
     file:read-binary($path)
   )
 };
 
+(:~ 
+ : content type for path 
+ :)
+declare function vue-poc:content-type($path as xs:string) 
+as xs:string
+{
+ let $ct:=web:content-type($path)
+ return if($ct = "text/ecmascript") then "text/javascript" else $ct
+};
+
+(:~ unused
+ :)
 declare function vue-poc:get-filex($file)
 {
   let $path := resolve-uri( 'static/' || $file,static-base-uri())

@@ -38,12 +38,12 @@ function vue-api:response($r,$query)
               <job>{ $r }</job>
               <dateTime>{ current-dateTime() }</dateTime>
             </json>
- let $task:=<task id="{$id}">{ $out }
+ let $jobrun:=<jobrun id="{$id}" >{ $out }
               <query>{$query}</query>
-            </task>
+            </jobrun>
   return (
            replace value of node $vue-api:id with $id,
-           db:replace($vue-api:db,"/tasks/" || $id || ".xml",$task),
+           db:replace($vue-api:db,"/jobruns/" || $id || ".xml",$jobrun),
            db:output($out)
           )          
 };

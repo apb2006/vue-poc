@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-03-01T21:54:58.72Z 
+ : auto generated from xml files in entities folder at: 2018-03-12T22:33:57.01Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -221,6 +221,50 @@ declare variable $entity:list:=map {
        
        }
    },
+  "jobrun": map{
+     "name": "jobrun",
+     "description": "About the running of a job",
+     "access": map{ 
+       "created": function($_ as element()) as xs:string {$_/json/dateTime },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "query": function($_ as element()) as xs:string {$_/query },
+       "result": function($_ as element()) as xs:string {$_/substring(result,0,1000) },
+       "resultlength": function($_ as element()) as xs:integer {$_/string-length(result) } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "created": function($_ as element()) as element(created)? {
+            (: xs:string :)
+                        fn:data($_/json/dateTime)!element created {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "query": function($_ as element()) as element(query)? {
+            (: xs:string :)
+                        fn:data($_/query)!element query {  .} 
+                 },
+           "result": function($_ as element()) as element(result)? {
+            (: xs:string :)
+                        fn:data($_/substring(result,0,1000))!element result {  .} 
+                 },
+           "resultlength": function($_ as element()) as element(resultlength)? {
+            (: xs:integer :)
+                        fn:data($_/string-length(result))!element resultlength { attribute type {'number'}, .} 
+                 } },
+       
+      "data": function() as element(jobrun)*
+       { collection("vue-poc/jobrun")/jobrun
+	 },
+       
+       "views": map{ 
+       'filter': 'name description'
+       }
+   },
   "namespace": map{
      "name": "namespace",
      "description": "An XML namespace",
@@ -337,50 +381,6 @@ declare variable $entity:list:=map {
        
        }
    },
-  "task": map{
-     "name": "task",
-     "description": "A task",
-     "access": map{ 
-       "created": function($_ as element()) as xs:string {$_/json/dateTime },
-       "id": function($_ as element()) as xs:string {$_/@id },
-       "query": function($_ as element()) as xs:string {$_/query },
-       "result": function($_ as element()) as xs:string {$_/substring(result,0,1000) },
-       "resultlength": function($_ as element()) as xs:integer {$_/string-length(result) } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( ) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "created": function($_ as element()) as element(created)? {
-            (: xs:string :)
-                        fn:data($_/json/dateTime)!element created {  .} 
-                 },
-           "id": function($_ as element()) as element(id)? {
-            (: xs:string :)
-                        fn:data($_/@id)!element id {  .} 
-                 },
-           "query": function($_ as element()) as element(query)? {
-            (: xs:string :)
-                        fn:data($_/query)!element query {  .} 
-                 },
-           "result": function($_ as element()) as element(result)? {
-            (: xs:string :)
-                        fn:data($_/substring(result,0,1000))!element result {  .} 
-                 },
-           "resultlength": function($_ as element()) as element(resultlength)? {
-            (: xs:integer :)
-                        fn:data($_/string-length(result))!element resultlength { attribute type {'number'}, .} 
-                 } },
-       
-      "data": function() as element(task)*
-       { collection("vue-poc/tasks")/task
-	 },
-       
-       "views": map{ 
-       'filter': 'name description'
-       }
-   },
   "thumbnail": map{
      "name": "thumbnail",
      "description": "an image.",
@@ -437,6 +437,34 @@ declare variable $entity:list:=map {
        
        "views": map{ 
        'filter': 'name'
+       }
+   },
+  "user": map{
+     "name": "user",
+     "description": "users ",
+     "access": map{ 
+       "name": function($_ as element()) as xs:string {$_/@name },
+       "permission": function($_ as element()) as xs:string {$_/@permission } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element name {  .} 
+                 },
+           "permission": function($_ as element()) as element(permission)? {
+            (: xs:string :)
+                        fn:data($_/@permission)!element permission {  .} 
+                 } },
+       
+      "data": function() as element(user)*
+       { user:list-details() },
+       
+       "views": map{ 
+       
        }
    },
   "xqdoc": map{

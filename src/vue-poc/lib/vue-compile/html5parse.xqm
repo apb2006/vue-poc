@@ -1,4 +1,6 @@
-
+(:~
+ : wrapper for https://github.com/digitalfondue/jfiveparse A java html5 compliant parser 
+ :)
 
 module namespace html5="text.html5";
 declare namespace Document="java:ch.digitalfondue.jfiveparse.Document";
@@ -36,6 +38,23 @@ declare function html5:getElementFirstByTagName($doc,$tag as xs:string)
  =>list:get(xs:int(0))
 };
 
+(:~ 
+ : get attribute from node 
+ :)
+declare function html5:getAttribute($node,$atname as xs:string)
+as xs:string
+{
+ Element:getAttribute($node,$atname)
+};
+
+(:~ 
+ : get html from node 
+ :)
+declare function html5:getInnerHTML($node)
+as xs:string
+{
+ Node:getInnerHTML($node)
+};
 (:~ 
  : @return matcher for given element and attribute with value
  :)

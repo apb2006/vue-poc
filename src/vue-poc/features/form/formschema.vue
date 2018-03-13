@@ -2,10 +2,12 @@
 <template id="formsjson">
  <v-container fluid>
      <v-card>
-        <v-card-title>vue-json-schema@1.1.0 https://github.com/formschema/native</v-card-title>
-       <form-schema  ref="formSchema" :schema="schema" v-model="model" >
-              <v-btn color="success" @click.stop="submit">Subscribe</v-btn>
+        <v-card-title><qd-link href="https://github.com/formschema/native">vue-json-schema@1.1.0</qd-link> </v-card-title>
+        
+       <form-schema  ref="formSchema" :schema="schema" v-model="model" input-wrapping-class="fooclass">
+              <v-btn color="success" @click.stop="submit">Send</v-btn>
   </form-schema>
+  
     </v-card>
  </v-container>
 </template>
@@ -20,10 +22,11 @@
     schema: {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "type": "object",
-      "title": "Newsletter Subscription",
+      "title": "Sample form title",
       "properties": {
           "name": {
-              "type": "string", 
+              "type": "string",
+              "title": "Name ",
               "minLength": 8, 
               "maxLength": 80, 
               "attrs": {
@@ -32,7 +35,8 @@
               }
           },
           "email": {
-              "type": "string", 
+              "type": "string",
+              "title": "Email label ", 
               "maxLength": 120, 
               "attrs": {
                   "type": "email",
@@ -41,10 +45,12 @@
           },
           "lists": {
               "type": "string",
-              "enum": ["Daily New", "Promotion"]
+              "title": "List label ",
+              "enum": ["Daily New", "Promotion", "Another"]
           },
           "arrayInput": {
             "type": "array",
+            "title": "Array label ",
             "items": {
               "type": "string"
             }

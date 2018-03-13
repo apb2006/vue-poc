@@ -3,7 +3,10 @@
  simple link test component
  -->
 <template id="qd-link">
- <a :href="href" :target="href" > {{href}}<v-icon>link</v-icon></a>
+ <a :href="href" :target="href" >
+		 <v-icon>link</v-icon> 
+		 <slot>{{href}}</slot>
+ </a>
 </template>
 
 <script>{

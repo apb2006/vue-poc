@@ -1,4 +1,4 @@
-// generated 2018-03-04T18:03:42.736Z
+// generated 2018-03-13T22:19:53.996Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -50,7 +50,10 @@ Vue.component('qd-fullscreen',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-link.vue
 Vue.component('qd-link',{template:` 
- <a :href="href" :target="href"> {{href}}<v-icon>link</v-icon></a>
+ <a :href="href" :target="href">
+		 <v-icon>link</v-icon> 
+		 <slot>{{href}}</slot>
+ </a>
  `,
       
   props: ['href'],
@@ -762,117 +765,6 @@ const Log=Vue.extend({template:`
   },
   beforeDestroy(){
     if(this.timer) clearTimeout(this.timer);
-  }
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/brutusin.vue
-const Brutusin=Vue.extend({template:` 
- <v-container fluid="">
-     <v-card>
-     <v-card-title>vue-form-generator</v-card-title>
-       <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
-    </v-card>
- </v-container>
- `,
-      
-  components: {
-    "vue-form-generator": VueFormGenerator.component
-   },
-   data() {
-     return {
-       model: {
-           id: 1,
-           name: "John Doe",
-           password: "J0hnD03!x4",
-           age: 35,
-           skills: ["Javascript", "VueJS"],
-           email: "john.doe@gmail.com",
-           status: true
-       },
-       schema: {
-           fields: [{
-               type: "input",
-               inputType: "text",
-               label: "ID",
-               model: "id",
-               readonly: true,
-               featured: false,
-               disabled: true
-           }, {
-               type: "input",
-               inputType: "text",
-               label: "Name",
-               model: "name",
-               readonly: false,
-               featured: true,
-               required: true,
-               disabled: false,
-               placeholder: "User's name",
-               validator: VueFormGenerator.validators.string
-           }, {
-               type: "input",
-               inputType: "password",
-               label: "Password",
-               model: "password",
-               min: 6,
-               required: true,
-               hint: "Minimum 6 characters",
-               validator: VueFormGenerator.validators.string
-           }, {
-               type: "input",
-               inputType: "number",
-               label: "Age",
-               model: "age",
-               min: 18,
-               validator: VueFormGenerator.validators.number
-           }, {
-               type: "input",
-               inputType: "email",
-               label: "E-mail",
-               model: "email",
-               placeholder: "User's e-mail address",
-               validator: VueFormGenerator.validators.email
-           }, {
-               type: "checklist",
-               label: "Skills",
-               model: "skills",
-               multi: true,
-               required: true,
-               multiSelect: true,
-               values: ["HTML5", "Javascript", "CSS3", "CoffeeScript", "AngularJS", "ReactJS", "VueJS"]
-           }, {
-              type: "switch",
-               label: "Status",
-               model: "status",
-               multi: true,
-               readonly: false,
-               featured: false,
-               disabled: false,
-               default: true,
-               textOn: "Active",
-               textOff: "Inactive"
-           }]
-       },
-
-       formOptions: {
-           validateAfterLoad: true,
-           validateAfterChanged: true
-       }
-     };
-   },
-  methods:{
-    onResize(){
-      var el=this.$refs["page"]
-      console.log("top",el.offsetTop)
-      var h=Math.max(1,window.innerHeight - el.offsetTop)-60
-       console.log("h",h)
-      el.style.height=h +"px"
-    }
-  },
-  created:function(){
-    console.log("form")
   }
 }
 
@@ -1748,14 +1640,165 @@ const Eval=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/eval/evalid.vue
+const Evalid=Vue.extend({template:` 
+ <v-container fluid="">
+ todo {{id}}
+ </v-container>
+ `,
+      
+  props:["id"],
+  data:  function(){
+    return {
+      xq: '(: type your XQuery :)\n'
+     
+      }
+  }
+ 
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/brutusin.vue
+const Brutusin=Vue.extend({template:` 
+ <v-container fluid="">
+     <v-card>
+     <v-card-title><qd-link href="https://github.com/vue-generators/vue-form-generator">vue-form-generator@2.2.1</qd-link> </v-card-title>
+     <v-card-text>
+      <v-container grid-list-md="" text-xs-center="">
+    <v-layout row="" wrap="">
+      <v-flex xs8="">
+      <v-form>
+       <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+       </v-form>
+       </v-flex>
+       
+       <v-flex xs4="">
+        <pre style="text-align:left">{{ model | pretty }}</pre>
+       </v-flex>
+       </v-layout>
+       </v-container>
+       </v-card-text>
+    </v-card>
+ </v-container>
+ `,
+      
+  components: {
+    "vue-form-generator": VueFormGenerator.component
+   },
+   data() {
+     return {
+       model: {
+           id: 1,
+           name: "John Doe",
+           password: "J0hnD03!x4",
+           age: 35,
+           skills: ["Javascript", "VueJS"],
+           email: "john.doe@gmail.com",
+           status: true
+       },
+       schema: {
+           fields: [{
+               type: "input",
+               inputType: "text",
+               label: "ID",
+               model: "id",
+               readonly: true,
+               featured: false,
+               disabled: true
+           }, {
+               type: "input",
+               inputType: "text",
+               label: "Name",
+               model: "name",
+               readonly: false,
+               featured: true,
+               required: true,
+               disabled: false,
+               placeholder: "User's name",
+               validator: VueFormGenerator.validators.string
+           }, {
+               type: "input",
+               inputType: "password",
+               label: "Password",
+               model: "password",
+               min: 6,
+               required: true,
+               hint: "Minimum 6 characters",
+               validator: VueFormGenerator.validators.string
+           }, {
+               type: "input",
+               inputType: "number",
+               label: "Age",
+               model: "age",
+               min: 18,
+               validator: VueFormGenerator.validators.number
+           }, {
+               type: "input",
+               inputType: "email",
+               label: "E-mail",
+               model: "email",
+               placeholder: "User's e-mail address",
+               validator: VueFormGenerator.validators.email
+           }, {
+               type: "checklist",
+               label: "Skills",
+               model: "skills",
+               multi: true,
+               required: true,
+               multiSelect: true,
+               values: ["HTML5", "Javascript", "CSS3", "CoffeeScript", "AngularJS", "ReactJS", "VueJS"]
+           }, {
+              type: "switch",
+               label: "Status",
+               model: "status",
+               multi: true,
+               readonly: false,
+               featured: false,
+               disabled: false,
+               default: true,
+               textOn: "Active",
+               textOff: "Inactive"
+           }]
+       },
+
+       formOptions: {
+           validateAfterLoad: true,
+           validateAfterChanged: true
+       }
+     };
+   },
+  methods:{
+    onResize(){
+      var el=this.$refs["page"]
+      console.log("top",el.offsetTop)
+      var h=Math.max(1,window.innerHeight - el.offsetTop)-60
+       console.log("h",h)
+      el.style.height=h +"px"
+    }
+  },
+  filters: {
+    pretty: function(value) {
+      return JSON.stringify(value, null, 2);
+    }
+  },
+  created:function(){
+    console.log("form")
+  }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/formschema.vue
 const Formsjson=Vue.extend({template:` 
  <v-container fluid="">
      <v-card>
-        <v-card-title>vue-json-schema@1.1.0 https://github.com/formschema/native</v-card-title>
-       <form-schema ref="formSchema" :schema="schema" v-model="model">
-              <v-btn color="success" @click.stop="submit">Subscribe</v-btn>
+        <v-card-title><qd-link href="https://github.com/formschema/native">vue-json-schema@1.1.0</qd-link> </v-card-title>
+        
+       <form-schema ref="formSchema" :schema="schema" v-model="model" input-wrapping-class="fooclass">
+              <v-btn color="success" @click.stop="submit">Send</v-btn>
   </form-schema>
+  
     </v-card>
  </v-container>
  `,
@@ -1769,10 +1812,11 @@ const Formsjson=Vue.extend({template:`
     schema: {
       "$schema": "http://json-schema.org/draft-04/schema#",
       "type": "object",
-      "title": "Newsletter Subscription",
+      "title": "Sample form title",
       "properties": {
           "name": {
-              "type": "string", 
+              "type": "string",
+              "title": "Name ",
               "minLength": 8, 
               "maxLength": 80, 
               "attrs": {
@@ -1781,7 +1825,8 @@ const Formsjson=Vue.extend({template:`
               }
           },
           "email": {
-              "type": "string", 
+              "type": "string",
+              "title": "Email label ", 
               "maxLength": 120, 
               "attrs": {
                   "type": "email",
@@ -1790,10 +1835,12 @@ const Formsjson=Vue.extend({template:`
           },
           "lists": {
               "type": "string",
-              "enum": ["Daily New", "Promotion"]
+              "title": "List label ",
+              "enum": ["Daily New", "Promotion", "Another"]
           },
           "arrayInput": {
             "type": "array",
+            "title": "Array label ",
             "items": {
               "type": "string"
             }
@@ -2733,7 +2780,7 @@ const Entity=Vue.extend({template:`
   
     <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
       <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
-        <v-card hover="true" active-class="default-class qd-active">
+        <v-card :hover="true" active-class="default-class qd-active">
         
           <v-toolbar color="amber">
 		          <v-card-title>
@@ -2789,6 +2836,50 @@ const Entity=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/entity1.vue
+const Entity1=Vue.extend({template:` 
+<v-card>
+	<v-toolbar>
+	 <v-toolbar-title> Entity: {{ entity }}</v-toolbar-title>
+	 <v-spacer></v-spacer>
+	 <v-btn @click="getItem" :loading="loading" :disabled="loading">Refresh</v-btn>
+	 </v-toolbar>
+
+  <v-container fluid="" grid-list-md="">
+  
+  
+      hello
+  </v-container>
+   </v-card>
+ `,
+      
+  props: ['entity'],
+  data:  function(){
+    return {
+      q: 'filter',
+      item: {},
+      loading: false
+      }
+  },
+  methods:{
+    getItem(){
+      this.loading=true
+      HTTP.get("data/entity",{params:this.q})
+      .then(r=>{
+        this.loading=false
+        //console.log(r.data)
+        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
+        this.item=r.data.items
+        }) 
+    }
+  },
+  created:function(){
+    this.getItem()
+  },
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespace.vue
 const Namespace=Vue.extend({template:` 
  <v-container fluid="" grid-list-md="">
@@ -2800,7 +2891,7 @@ const Namespace=Vue.extend({template:`
    </v-toolbar>
      <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
       <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
-        <v-card hover="true" active-class="default-class qd-active" height="200px">
+        <v-card :hover="true" active-class="default-class qd-active" height="200px">
         
           <v-toolbar color="amber">
               <v-card-title>
@@ -2829,7 +2920,12 @@ const Namespace=Vue.extend({template:`
       items: [],
       loading: false,
       q: "",
-      message: 'bad route!'
+      message: 'bad route!',
+      rowsPerPageItems: [4, 8, 20],
+      pagination: {
+        rowsPerPage: 20
+      },
+      selected:[]
       }
   },
   methods: {
@@ -3011,8 +3107,15 @@ const Ping=Vue.extend({template:`
       this.$forceUpdate()
     }
   },
-  computed: {
-   
+  beforeRouteLeave(to, from, next){
+    var on=this.repeat.get || this.repeat.post
+
+    if (on) {
+      alert("running!") //<--undefined
+      return next(false)
+    } else {
+      return next()
+    }
   }
 }
 
@@ -3619,7 +3722,7 @@ const Tabs=Vue.extend({template:`
   <v-tabs fixed-tabs="" v-model="currentItem" slot="extension">
         
       <v-tab v-for="i in items" :key="i" :href="'#tab-' + i">
-       <v-avatar :tile="tile" size="20px">
+       <v-avatar size="20px">
        <v-icon>favorite</v-icon>
        </v-avatar>
        <span>{{ i }}</span>
@@ -4252,6 +4355,78 @@ const Validate=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/xqdoc/xqdoc.vue
+const Xqdoc2=Vue.extend({template:` 
+  <v-container fluid="" v-resize="onResize">
+<v-card>
+     <v-toolbar class="orange">
+          <v-btn @click="validate" :loading="loading" :disabled="loading"><v-icon>play_circle_outline</v-icon>xqdoc</v-btn>
+          <span v-text="elapsed"></span>ms. Height: 
+          <span v-text="height"></span>
+            <v-spacer></v-spacer>
+         
+              <v-menu offset-y="" left="">
+             <v-btn icon="" dark="" slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-card>
+              <v-toolbar class="green">
+                  <v-card-title>Settings................</v-card-title>
+                  </v-toolbar>
+                <v-card-text>
+                stuff
+                </v-card-text>
+                </v-card>
+              </v-menu>
+          </v-toolbar>
+    <v-card-text>
+    here
+    </v-card-text>
+    </v-card>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      loading: false,
+      elapsed: null,
+      height: null,
+      result: null,
+      doc: "c:/test.xml",
+      schema: "c:/schema.xsd"
+      }
+  },
+  methods:{
+    onResize(){
+      this.height = window.innerHeight 
+    },
+    validate(){
+    
+      this.loading=true
+      this.start = performance.now();
+      HTTPNE.get("validate",Qs.stringify({doc: this.doc, schema: this.schema}))
+      .then(r=>{
+       console.log(r)
+       this.elapsed=Math.floor(performance.now() - this.start);
+       this.loading=false
+       if(r.data.rc==0){
+         this.result=r.data.result
+       }else{
+         this.result=r.data.info
+       }
+      })
+      .catch(r=> {
+        console.log("error",r)
+        this.result=r.message + ": "+ r.config.url + "\n"+ r.response.data
+        this.loading=false
+      });
+    },
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
+  }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/xslt/transform.vue
 const Transform=Vue.extend({template:` 
  <v-container fluid="">
@@ -4409,7 +4584,10 @@ const router = new VueRouter({
     { path: '/images/people', component: People, meta:{title:"Image people"} },
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
+    
     { path: '/entity', component: Entity, meta:{title:"Entities"} },
+    { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
+    
     { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
@@ -4429,15 +4607,21 @@ const router = new VueRouter({
    /* { path: '/svg2', component: Svg2, meta:{title:"SVG2"} }, */
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
+    
     { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
+    { path: '/eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
+    
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
+    
     { path: '/tasks', component: Task, meta:{title:"Runnable tasks"} },
     { path: '/tasks/model', component: Model, meta:{title:"build model"} },
     { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
     { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
+    
     { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+    
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/map', component: Map,meta:{title:"map"} },
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
@@ -4628,18 +4812,25 @@ const Vuepoc=Vue.extend({template:`
           {href: '/map',text: 'Map',icon: 'place'}, 
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
+          {
+            icon: 'format_list_bulleted',
+            text: 'Forms' ,
+            model: false,
+            children: [
+         
+          {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
+          {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  }
+          ]},   
       {
         icon: 'more_horiz',
         text: 'More' ,
         model: false,
         children: [
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
-      {href: '/svg',text: 'SVG',icon: 'extension'},
-      {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
-      {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  },
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}
+      {href: '/svg',text: 'SVG',icon: 'extension'}
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
@@ -4834,6 +5025,7 @@ var settings = {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)
         .then(value => {
+          value=value?value:this.defaults[key];
           //console.log('GET setting', key,value);
           return value;
      

@@ -22,7 +22,7 @@
         :key="i"
         :href="'#tab-' + i"
       >
-       <v-avatar  :tile="tile"
+       <v-avatar 
                size="20px">
        <v-icon>favorite</v-icon>
        </v-avatar>

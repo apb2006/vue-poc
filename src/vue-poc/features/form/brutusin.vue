@@ -2,8 +2,22 @@
 <template id="brutusin">
  <v-container fluid>
      <v-card>
-     <v-card-title>vue-form-generator</v-card-title>
+     <v-card-title><qd-link href="https://github.com/vue-generators/vue-form-generator">vue-form-generator@2.2.1</qd-link> </v-card-title>
+     <v-card-text>
+      <v-container grid-list-md text-xs-center>
+    <v-layout row wrap>
+      <v-flex xs8>
+      <v-form>
        <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+       </v-form>
+       </v-flex>
+       
+       <v-flex xs4>
+        <pre style="text-align:left">{{ model | pretty }}</pre>
+       </v-flex>
+       </v-layout>
+       </v-container>
+       </v-card-text>
     </v-card>
  </v-container>
 </template>
@@ -101,6 +115,11 @@
       var h=Math.max(1,window.innerHeight - el.offsetTop)-60
        console.log("h",h)
       el.style.height=h +"px"
+    }
+  },
+  filters: {
+    pretty: function(value) {
+      return JSON.stringify(value, null, 2);
     }
   },
   created:function(){

@@ -1,5 +1,5 @@
-<entity name="task" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>A task</description>
+<entity name="jobrun" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>About the running of a job</description>
 	<namespace prefix="xqdoc" uri="http://www.xqdoc.org/1.0"/>
 
 	<fields>
@@ -28,6 +28,6 @@
         <view name="filter">name description</view>
     </views>
 	<iconclass>fa fa-file-code-o</iconclass>
-	<data type="element(task)">collection("vue-poc/tasks")/task
+	<data type="element(jobrun)">collection("vue-poc/jobrun")/jobrun
 	</data>
 </entity>

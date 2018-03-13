@@ -151,8 +151,15 @@
       this.$forceUpdate()
     }
   },
-  computed: {
-   
+  beforeRouteLeave(to, from, next){
+    var on=this.repeat.get || this.repeat.post
+
+    if (on) {
+      alert("running!") //<--undefined
+      return next(false)
+    } else {
+      return next()
+    }
   }
 }
 </script>

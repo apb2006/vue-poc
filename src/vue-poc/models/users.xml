@@ -1,0 +1,18 @@
+<entity name="user" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>users </description>
+
+	<fields>
+		<field name="name" type="xs:string">
+			<description>user name</description>
+			<xpath>@name</xpath>
+		</field>
+		<field name="permission" type="xs:string">
+			<description>user permission</description>
+			<xpath>@permission</xpath>
+		</field>
+	</fields>
+	<views>
+	</views>
+	<iconclass>fa fa-calendar</iconclass>
+	<data type="element(user)">user:list-details()</data>
+</entity>

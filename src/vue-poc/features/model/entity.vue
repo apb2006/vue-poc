@@ -32,7 +32,7 @@
         md4
         lg3
       >
-        <v-card hover="true" active-class="default-class qd-active" >
+        <v-card :hover="true" active-class="default-class qd-active" >
         
           <v-toolbar  color="amber">
 		          <v-card-title >

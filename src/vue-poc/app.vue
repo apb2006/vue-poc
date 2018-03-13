@@ -168,18 +168,25 @@
           {href: '/map',text: 'Map',icon: 'place'}, 
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
+          {
+            icon: 'format_list_bulleted',
+            text: 'Forms' ,
+            model: false,
+            children: [
+         
+          {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
+          {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  }
+          ]},   
       {
         icon: 'more_horiz',
         text: 'More' ,
         model: false,
         children: [
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/session',text: 'Session',icon: 'person'}, 
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
-      {href: '/svg',text: 'SVG',icon: 'extension'},
-      {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
-      {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  },
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'}
+      {href: '/svg',text: 'SVG',icon: 'extension'}
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },

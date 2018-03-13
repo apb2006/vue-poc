@@ -11,12 +11,17 @@
 		</params>
 	</task>
 
+<task name="tasks/import">
+    <title>Load files into database</title>
+    <description>Load files into database</description>
+  </task>
+  
 	<task name="tasks/xqdoc">
 		<title>XQdoc</title>
 		<description>Generate XQdoc as html</description>
 	</task>
 	
-<task name="tasks/xqdoc">
+<task name="tasks/xqdocdb">
     <title>XQdoc to db</title>
     <description>Generate XQdoc to save</description>
   </task>

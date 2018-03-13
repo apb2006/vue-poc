@@ -30,7 +30,10 @@ return $zip
 : @param $dbname name of database
 : @param $path file path contain files
 :)
-declare %updating function dbtools:sync-from-path($dbname as xs:string,$path as xs:string){
+declare %updating function dbtools:sync-from-path(
+                   $dbname as xs:string,
+                   $path as xs:string)
+{
    dbtools:sync-from-files($dbname,
                   $path,
                   file:list($path,fn:true()),
