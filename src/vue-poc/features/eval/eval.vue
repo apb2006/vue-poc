@@ -67,7 +67,7 @@
     </v-flex>
    </v-card-text>
    
-     <v-card-actions v-if="show" >
+     <v-card-actions v-if="showJob" >
        <v-chip class="primary white--text">{{job.id}}</v-chip>
            <v-chip class="primary white--text">{{job.job}}</v-chip>
       
@@ -113,7 +113,7 @@
       result: '',
       done: false,
       elapsed: null,
-      show: false,
+      showJob: false,
       showError: false, 
       showResult: false, //
       job: {}, // {id:"12",job:"job13", dateTime:""}
@@ -130,14 +130,16 @@
         this.xq = val
       }
     },
-    
+    // execute imediatly
     run(){
-      this.awaitResult(false)
+
+      this.showResult= true;
       this.start = performance.now();
       HTTPNE.post("eval/execute",Qs.stringify({xq:this.xq}))
       .then(r=>{
+        console.log("exec:",r);
         this.elapsed=Math.floor(performance.now() - this.start);
-        this.result=r.data.result
+        this.result=r.data.job
         this.jobId=null
       })
       .catch(r=> {
@@ -148,15 +150,16 @@
       });
       localforage.setItem('eval/xq', this.xq)
     },
+    // 
     submit(){
-      this.showError=this.showResult=this.show=false
+      this.showError=this.showResult=this.showJob=false
       this.start = performance.now();
       console.log("*****",Qs.stringify({xq:this.xq}));
       HTTP.post("eval/submit",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.job=r.data
-        this.show=true
+        this.showJob=true
         this.pollState()
         
       });

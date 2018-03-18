@@ -1,4 +1,4 @@
-// generated 2018-03-13T22:19:53.996Z
+// generated 2018-03-18T22:12:38.816Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -28,6 +28,7 @@ Vue.component('qd-confirm',{template:`
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
+  <slot></slot>
   </a>
  `,
       
@@ -454,6 +455,92 @@ Vue.component('vp-notifications',{template:`
 }
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-selectpath.vue
+Vue.component('vp-selectpath',{template:` 
+  <v-menu :close-on-click="false" offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
+      <v-btn slot="activator" @click.stop="set(!frmfav)" icon="" flat="" title="Add ">
+      <slot>
+      <v-icon>add_circle</v-icon>
+       </slot>
+       </v-btn>
+       <v-card>
+            <v-toolbar> 
+        <v-card-title>
+            Add a new tab
+          </v-card-title>
+          <v-spacer></v-spacer>
+              <v-btn color="primary" flat="" @click.stop="set(false)">Cancel</v-btn>
+          </v-toolbar>
+          
+         <v-card-text>
+         Content:
+          <v-tabs icons-and-text="" centered="">
+   
+    <v-tab>
+      Empty
+      <v-icon>fiber_new</v-icon>
+    </v-tab>
+    <v-tab>
+      XMLDB
+      <v-icon>favorite</v-icon>
+    </v-tab>
+    <v-tab>
+      Webfile
+      <v-icon>account_box</v-icon>
+    </v-tab>
+    <v-tab-item>
+      <v-card flat="">
+        <v-card-text>empty</v-card-text>
+      </v-card>
+    </v-tab-item>
+     <v-tab-item>
+      <v-card flat="">
+        <v-card-text>
+            <v-text-field label="database url" v-model="xmldb"></v-text-field>
+        </v-card-text>
+      </v-card>
+    </v-tab-item>
+    <v-tab-item>
+      <v-card flat="">
+        <v-card-text>
+             <v-text-field label="webfile url" v-model="webfile"></v-text-field>
+        </v-card-text>
+      </v-card>
+    </v-tab-item>
+  </v-tabs>
+           
+          
+         </v-card-text>
+         
+         <v-card-actions>
+            <v-spacer></v-spacer>
+            <v-btn color="primary" flat="" @click.stop="favorite(); set(false)">Add tab</v-btn>
+          </v-card-actions>
+        </v-card>
+   </v-menu> `,
+       
+  props: { 
+    frmfav: Boolean
+  },
+  data(){
+    return {
+      type: 0, 
+      xmldb: "",
+      webfile:""
+      }
+  },
+  methods:{
+    set(v){
+      this.$emit('update:frmfav', v)
+    },
+    
+    favorite(){
+      this.$emit('selectpath', {type:this.type})
+    }
+  }
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vue-ace.vue
 Vue.component('vue-ace',{template:` 
 <div style="width: 100%; height: 100%;"></div>
@@ -781,9 +868,7 @@ const Files=Vue.extend({template:`
      <v-icon>{{icon}}</v-icon>
      </v-btn>
         
-    <v-btn icon="" @click="load()">
-    <v-icon>refresh</v-icon>
-    </v-btn> 
+   
      
     <v-toolbar-title>
 		    <v-breadcrumbs>
@@ -792,6 +877,9 @@ const Files=Vue.extend({template:`
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
     </v-toolbar-title>
+     <v-btn icon="" @click="load()">
+    <v-icon>refresh</v-icon>
+    </v-btn> 
    <v-btn v-if="clipboard" @click="clipboard=null" icon=""><v-icon>content_paste</v-icon></v-btn>
     <v-spacer></v-spacer>
      <v-btn v-if="selection.length" @click="selectNone">S: {{selection.length}}</v-btn>
@@ -892,19 +980,21 @@ const Files=Vue.extend({template:`
    
 </v-card>
 <v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
- <v-navigation-drawer left="" app="" v-model="showInfo" :disable-route-watcher="true">
-   <v-card flat="" tile=""> 
-       <v-toolbar>
-      <v-card-title>{{ selection[0] &amp;&amp; selection[0].name }}</v-card-title>
+<!--
+ <v-navigation-drawer left app v-model="showInfo" :disable-route-watcher="true">
+   <v-card flat tile> 
+       <v-toolbar >
+      <v-card-title >{{ selection[0] && selection[0].name }}</v-card-title>
       <v-spacer></v-spacer>    
-       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+       <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-toolbar>
     <v-card-text> Things to do with  </v-card-text>
     <v-card-actions> 
-           <v-btn flat="" @click="invoke()"><v-icon>run</v-icon>run</v-btn>
+           <v-btn flat @click="invoke()"><v-icon>run</v-icon>run</v-btn>
            </v-card-actions>
     </v-card>
-   </v-navigation-drawer> 
+   </v-navigation-drawer>
+   -->   
  </v-container>
   
  `,
@@ -1049,7 +1139,10 @@ const Files=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/history.vue
 const History=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container>
+ <v-card>
+ <vcard-text>
+ <v-card-title>History</v-card-title>
     <v-list>
             <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar="">
               <v-list-tile-action>
@@ -1060,6 +1153,8 @@ const History=Vue.extend({template:`
               </v-list-tile-content>
             </v-list-tile>
    </v-list>
+   </vcard-text>
+   </v-card>
  </v-container>
  `,
       
@@ -1395,6 +1490,126 @@ const Edit=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/tabs.vue
+const Tabs=Vue.extend({template:` 
+<div>
+  <v-toolbar tabs="">
+      <v-toolbar-side-icon></v-toolbar-side-icon>
+      <v-toolbar-title>{{ currentItem   }}</v-toolbar-title>
+        <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
+      <v-spacer></v-spacer>
+
+        <v-menu left="" bottom="">
+          <a class="tabs__item" slot="activator">
+          {{ items.length }}
+            <v-icon>arrow_drop_down</v-icon>
+          </a>
+          <v-card>
+	          <v-card-actions>
+	           <v-select :items="sorted" v-model="a1" label="File" class="input-group--focused" autocomplete="" @change="setItem"></v-select>
+	        </v-card-actions>
+	        </v-card>
+        </v-menu>
+        
+        <v-tabs v-model="currentItem" slot="extension">
+ 
+		      <v-tab v-for="item in items" :key="item.id" :href="'#tab-' + item.id" ripple="" style="text-transform: none;text-align:left">
+			       <v-avatar>
+			          <v-icon size="16px">insert_drive_file</v-icon>
+			       </v-avatar>
+			       <span style="text-transform: none;">{{ item.name }}</span>
+			       <v-spacer></v-spacer>
+			       <v-btn icon="" @click.stop="tabClose(item)">
+			          <v-icon size="16px">close</v-icon>
+			        </v-btn>
+		      </v-tab>
+      
+     </v-tabs>
+     
+
+  </v-toolbar>
+        
+ <v-tabs-items v-model="currentItem">
+       <v-tab-item v-for="item in items" :key="item.id" :id="'tab-' + item.id">
+      <v-card flat="">
+        <div style="height:200px" ref="ace" v-resize="onResize">
+        <v-flex xs12="" fill-height="">
+			    <vue-ace :content="item.text" :mode="item.mode" :wrap="wrap" :settings="aceSettings"></vue-ace>
+			  </v-flex>
+        </div> 
+      </v-card>
+      </v-tab-item>
+ </v-tabs-items>
+</div>
+ `,
+      
+    data () {
+      return {
+        showadd: false,
+        nextId:4,
+        a1:"",
+        currentItem: null,
+        items: [
+          {name:"web.txt", id:"1", mode:"text", 
+            text:"1 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+        
+          {name:"Shopping.xq", id:"2", mode: "xquery" ,
+            text:"2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+       
+          {name:"videos.xml", id:"3", mode:"xml",
+            text:"2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+      
+        ],
+      wrap: true,
+      mode: "xquery",
+      aceSettings: {}
+      }
+  },
+  
+  methods:{
+    tabClose(item){
+      alert("close:"+ item.id);
+    },
+    setItem(v){
+      //alert(v);
+      this.currentItem=v;
+    },
+    
+    addItem(){
+      var tab={name: "AA"+this.nextId, 
+               id: ""+this.nextId,
+               mode: "xml",
+               text: "New text" +this.nextId
+               };
+      this.items.push (tab);
+      this.currentItem="tab-" + this.nextId 
+      this.nextId++;
+    },
+    onResize(){
+      var el=this.$refs["ace"];
+      for (e of el){
+      console.log("top",e.offsetTop)
+      var h=Math.max(1,window.innerHeight - e.offsetTop -200) 
+       console.log("h",h)
+      e.style.height=h +"px";
+    }
+    },
+  },
+  
+  computed:{
+    sorted(){
+      return this.items.slice(0).sort()
+      }
+  },
+  beforeRouteEnter (to, from, next) {
+    settings.getItem('settings/ace')
+    .then( v =>{
+      next(vm => {vm.aceSettings = v;})
+        })
+     },
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/eval/eval.vue
 const Eval=Vue.extend({template:` 
  <v-container fluid="">
@@ -1461,7 +1676,7 @@ const Eval=Vue.extend({template:`
     </v-flex>
    </v-card-text>
    
-     <v-card-actions v-if="show">
+     <v-card-actions v-if="showJob">
        <v-chip class="primary white--text">{{job.id}}</v-chip>
            <v-chip class="primary white--text">{{job.job}}</v-chip>
       
@@ -1505,7 +1720,7 @@ const Eval=Vue.extend({template:`
       result: '',
       done: false,
       elapsed: null,
-      show: false,
+      showJob: false,
       showError: false, 
       showResult: false, //
       job: {}, // {id:"12",job:"job13", dateTime:""}
@@ -1522,14 +1737,16 @@ const Eval=Vue.extend({template:`
         this.xq = val
       }
     },
-    
+    // execute imediatly
     run(){
-      this.awaitResult(false)
+
+      this.showResult= true;
       this.start = performance.now();
       HTTPNE.post("eval/execute",Qs.stringify({xq:this.xq}))
       .then(r=>{
+        console.log("exec:",r);
         this.elapsed=Math.floor(performance.now() - this.start);
-        this.result=r.data.result
+        this.result=r.data.job
         this.jobId=null
       })
       .catch(r=> {
@@ -1540,15 +1757,16 @@ const Eval=Vue.extend({template:`
       });
       localforage.setItem('eval/xq', this.xq)
     },
+    // 
     submit(){
-      this.showError=this.showResult=this.show=false
+      this.showError=this.showResult=this.showJob=false
       this.start = performance.now();
       console.log("*****",Qs.stringify({xq:this.xq}));
       HTTP.post("eval/submit",Qs.stringify({xq:this.xq}))
       .then(r=>{
         this.elapsed=Math.floor(performance.now() - this.start);
         this.job=r.data
-        this.show=true
+        this.showJob=true
         this.pollState()
         
       });
@@ -3705,75 +3923,6 @@ const Svg=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tabs.vue
-const Tabs=Vue.extend({template:` 
-<div>
-  <v-toolbar tabs="">
-      <v-toolbar-side-icon></v-toolbar-side-icon>
-      <v-toolbar-title>{{ currentItem }}</v-toolbar-title>
-      <v-spacer></v-spacer>
-        <qd-fullscreen></qd-fullscreen>
-      <v-btn icon="">
-        <v-icon>search</v-icon>
-      </v-btn>
-      <v-btn icon="">
-        <v-icon>more_vert</v-icon>
-      </v-btn>
-  <v-tabs fixed-tabs="" v-model="currentItem" slot="extension">
-        
-      <v-tab v-for="i in items" :key="i" :href="'#tab-' + i">
-       <v-avatar size="20px">
-       <v-icon>favorite</v-icon>
-       </v-avatar>
-       <span>{{ i }}</span>
-       <v-spacer></v-spacer>
-       <v-btn icon="">
-          <v-icon>close</v-icon>
-        </v-btn>
-      </v-tab>
-      
-     <v-menu left="" bottom="" class="tabs__div">
-          <a class="tabs__item" slot="activator">
-          More
-            <v-icon>arrow_drop_down</v-icon>
-          </a>
-          <v-list class="grey lighten-3">
-            <v-list-tile avatar="" v-for="item in items" :key="item" @click="currentItem = 'tab-' +item">
-             <v-list-tile-avatar>
-               <v-icon v-if="currentItem === ('tab-' + item)">close</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-content>
-              {{ item }}
-              </v-list-tile-content>
-            </v-list-tile>
-          </v-list>
-        </v-menu>
-     </v-tabs>
-  </v-toolbar>
-        
- <v-tabs-items v-model="currentItem">
-       <v-tab-item v-for="item in items" :key="item" :id="'tab-' + item">
-      <v-card flat="">
-        <v-card-text>{{ item }} - {{ text }}</v-card-text>
-      </v-card>
-      </v-tab-item>
- </v-tabs-items>
-</div>
- `,
-      
-    data () {
-      return {
-        currentItem: 'tab-News',
-        items: [
-          'Web', 'Shopping', 'Videos', 'Images', 'News', 'Maps', 'Books', 'Flights', 'Apps'
-        ],
-       
-        text: 'Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.'
-    }
-  }
-}
-      );
-      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/model.build/model.vue
 const Model=Vue.extend({template:` 
  <v-container fluid="">
@@ -4656,7 +4805,8 @@ const Vuepoc=Vue.extend({template:`
  <v-app id="app" :dark="dark">
   <v-navigation-drawer stateless="" v-model="showNotifications" right="" :disable-route-watcher="true" app="" width="500">
     <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
-</v-navigation-drawer>
+  </v-navigation-drawer>
+  
  <v-navigation-drawer app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" :enable-resize-watcher="true">
   <v-list class="pa-0">
 
@@ -4720,7 +4870,7 @@ const Vuepoc=Vue.extend({template:`
             </v-btn>
             <v-list>
               <v-list-tile>
-                <v-list-tile-title><qd-fullscreen></qd-fullscreen> Full screen</v-list-tile-title>
+                <v-list-tile-title><qd-fullscreen> Full screen</qd-fullscreen></v-list-tile-title>
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-title><v-switch label="Dark theme" v-model="dark"></v-switch></v-list-tile-title>
@@ -4764,6 +4914,7 @@ const Vuepoc=Vue.extend({template:`
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
       {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
       {href: '/tasks',text: 'Tasks',icon: 'update'}
@@ -4794,7 +4945,6 @@ const Vuepoc=Vue.extend({template:`
         children: [
           {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
           {href: '/logs',text: 'Server logs',icon: 'dns'},
-          {href: '/timeline',text: 'Time line',icon: 'timelapse'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/ping',text: 'Ping',icon: 'update'}
@@ -4826,8 +4976,9 @@ const Vuepoc=Vue.extend({template:`
         text: 'More' ,
         model: false,
         children: [
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
-      {href: '/session',text: 'Session',icon: 'person'}, 
+    
+      {href: '/session',text: 'Session',icon: 'person'},
+      {href: '/timeline',text: 'Time line',icon: 'timelapse'},
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
       {href: '/svg',text: 'SVG',icon: 'extension'}

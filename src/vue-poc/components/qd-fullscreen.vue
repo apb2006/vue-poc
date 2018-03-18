@@ -5,6 +5,7 @@
 <template id="qd-fullscreen">
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
+  <slot></slot>
   </a>
 </template>
 

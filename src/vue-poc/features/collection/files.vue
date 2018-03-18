@@ -9,9 +9,7 @@
      <v-icon >{{icon}}</v-icon>
      </v-btn>
         
-    <v-btn icon @click="load()">
-    <v-icon>refresh</v-icon>
-    </v-btn> 
+   
      
     <v-toolbar-title>
 		    <v-breadcrumbs>
@@ -21,6 +19,9 @@
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
     </v-toolbar-title>
+     <v-btn icon @click="load()">
+    <v-icon>refresh</v-icon>
+    </v-btn> 
    <v-btn v-if="clipboard" @click="clipboard=null" icon><v-icon>content_paste</v-icon></v-btn>
     <v-spacer></v-spacer>
      <v-btn v-if="selection.length"  @click="selectNone">S: {{selection.length}}</v-btn>
@@ -124,6 +125,7 @@
    
 </v-card>
 <v-progress-linear v-if="busy" v-bind:indeterminate="true" height="2"></v-progress-linear>
+<!--
  <v-navigation-drawer left app v-model="showInfo" :disable-route-watcher="true">
    <v-card flat tile> 
        <v-toolbar >
@@ -136,7 +138,8 @@
            <v-btn flat @click="invoke()"><v-icon>run</v-icon>run</v-btn>
            </v-card-actions>
     </v-card>
-   </v-navigation-drawer> 
+   </v-navigation-drawer>
+   -->   
  </v-container>
   
 </template>

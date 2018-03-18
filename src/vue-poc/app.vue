@@ -10,7 +10,8 @@
       width="500"
     >
     <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
-</v-navigation-drawer>
+  </v-navigation-drawer>
+  
  <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   
  :disable-route-watcher="true"  :enable-resize-watcher="true">
   <v-list class="pa-0">
@@ -75,7 +76,7 @@
             </v-btn>
             <v-list>
               <v-list-tile  >
-                <v-list-tile-title><qd-fullscreen></qd-fullscreen> Full screen</v-list-tile-title>
+                <v-list-tile-title><qd-fullscreen> Full screen</qd-fullscreen></v-list-tile-title>
               </v-list-tile>
               <v-list-tile  >
                 <v-list-tile-title><v-switch label="Dark theme" v-model="dark"></v-switch></v-list-tile-title>
@@ -120,6 +121,7 @@
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
+      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
       {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
       {href: '/tasks',text: 'Tasks',icon: 'update'}
@@ -150,7 +152,6 @@
         children: [
           {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
           {href: '/logs',text: 'Server logs',icon: 'dns'},
-          {href: '/timeline',text: 'Time line',icon: 'timelapse'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/ping',text: 'Ping',icon: 'update'}
@@ -182,8 +183,9 @@
         text: 'More' ,
         model: false,
         children: [
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
-      {href: '/session',text: 'Session',icon: 'person'}, 
+    
+      {href: '/session',text: 'Session',icon: 'person'},
+      {href: '/timeline',text: 'Time line',icon: 'timelapse'},
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
       {href: '/svg',text: 'SVG',icon: 'extension'}

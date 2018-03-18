@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <template id="history">
- <v-container fluid>
+ <v-container >
+ <v-card>
+ <vcard-text>
+ <v-card-title>History</v-card-title>
     <v-list>
             <v-list-tile  v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar>
               <v-list-tile-action>
@@ -11,6 +14,8 @@
               </v-list-tile-content>
             </v-list-tile>
    </v-list>
+   </vcard-text>
+   </v-card>
  </v-container>
 </template>
 
