@@ -1,7 +1,11 @@
 <!DOCTYPE html>
 <!-- 
 display button that invokes a  select path form
- emits selectpath
+ emits selectpath event
+  {  type:this.type,
+	    name: "Newname",
+	    text:"Some text"
+	    }
  -->
 <template id="vp-selectpath">
   <v-menu :close-on-click="false"
@@ -20,13 +24,12 @@ display button that invokes a  select path form
         <v-card-title>
             Add a new tab
           </v-card-title>
-          <v-spacer></v-spacer>
-              <v-btn color="primary" flat @click.stop="set(false)">Cancel</v-btn>
+          
           </v-toolbar>
           
          <v-card-text>
          Content:
-          <v-tabs icons-and-text centered >
+          <v-tabs v-model="type" icons-and-text centered >
    
     <v-tab >
       Empty
@@ -60,16 +63,16 @@ display button that invokes a  select path form
       </v-card>
     </v-tab-item>
   </v-tabs>
-           
-          
          </v-card-text>
          
          <v-card-actions>
+            <v-btn color="primary" flat @click.stop="set(false)">Cancel</v-btn>
             <v-spacer></v-spacer>
             <v-btn color="primary" flat @click.stop="favorite(); set(false)">Add tab</v-btn>
           </v-card-actions>
         </v-card>
-   </v-menu></template>
+   </v-menu>
+</template>
 <script>{ 
   props: { 
     frmfav: Boolean
@@ -87,7 +90,11 @@ display button that invokes a  select path form
     },
     
     favorite(){
-      this.$emit('selectpath', {type:this.type})
+      this.$emit('selectpath', {
+          type:this.type,
+          name: "doc" + moment().format("YYYY-MM-DDThh:mm:ss") ,
+          text:"Some text"
+          })
     }
   }
 }</script>
