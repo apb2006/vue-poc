@@ -61,20 +61,19 @@
               v-for="image in images"
               :key="image.name"
             >
-              <v-card  flat tile class="grey lighten-2 pa-1" >
-                <v-card-media :src="src(image)"  @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected "
+              <v-card  flat tile  >
+                <v-card-media :src="src(image)" v-bind:class="{ selcard: image.selected}" 
+                @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected "
                 height="100px" contain>
                  <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
                  <v-avatar icon small v-if="image.geo">
                   <v-icon>place</v-icon>
                 </v-avatar>
-                
-               
                 </v-card-media>
                 
-            <div v-if="image.selected" style="position:absolute;right:0;top:0" >
+                <div v-if="image.selected" style="position:absolute;right:0;top:0" >
                  <v-icon class="white primary--text">check_circle</v-icon>
-                 </div
+                 </div>
               </v-card>
             </v-flex>
           </v-layout>
@@ -280,7 +279,7 @@
       this.$router.push({ name: 'image', params: { id: image.id }})
     },
     pageBack(){
-      this.query.page=Math.min(0,this.query.page-1)
+      this.query.page=Math.max(0,this.query.page-1)
     },
     pageNext(){
       this.query.page+=1

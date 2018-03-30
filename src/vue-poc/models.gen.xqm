@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-03-12T22:33:57.01Z 
+ : auto generated from xml files in entities folder at: 2018-03-25T22:09:48.189+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -227,6 +227,7 @@ declare variable $entity:list:=map {
      "access": map{ 
        "created": function($_ as element()) as xs:string {$_/json/dateTime },
        "id": function($_ as element()) as xs:string {$_/@id },
+       "job": function($_ as element()) as xs:string {$_/json/job },
        "query": function($_ as element()) as xs:string {$_/query },
        "result": function($_ as element()) as xs:string {$_/substring(result,0,1000) },
        "resultlength": function($_ as element()) as xs:integer {$_/string-length(result) } },
@@ -243,6 +244,10 @@ declare variable $entity:list:=map {
            "id": function($_ as element()) as element(id)? {
             (: xs:string :)
                         fn:data($_/@id)!element id {  .} 
+                 },
+           "job": function($_ as element()) as element(job)? {
+            (: xs:string :)
+                        fn:data($_/json/job)!element job {  .} 
                  },
            "query": function($_ as element()) as element(query)? {
             (: xs:string :)

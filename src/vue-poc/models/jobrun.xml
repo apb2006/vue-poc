@@ -1,6 +1,6 @@
 <entity name="jobrun" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>About the running of a job</description>
-	<namespace prefix="xqdoc" uri="http://www.xqdoc.org/1.0"/>
+	<namespace prefix="xqdoc" uri="http://www.xqdoc.org/1.0" />
 
 	<fields>
 		<field name="id" type="xs:string">
@@ -11,22 +11,26 @@
 			<description>date</description>
 			<xpath>json/dateTime</xpath>
 		</field>
+		  <field name="job" type="xs:string">
+      <description>eval job id</description>
+      <xpath>json/job</xpath>
+    </field>
 		<field name="query" type="xs:string">
-            <description>query</description>
-            <xpath>query</xpath>
-        </field>
-        <field name="result" type="xs:string">
-            <description>result</description>
-            <xpath>substring(result,0,1000)</xpath>
-        </field>
-         <field name="resultlength" type="xs:integer">
-            <description>result</description>
-            <xpath>string-length(result)</xpath>
-        </field>
+			<description>query</description>
+			<xpath>query</xpath>
+		</field>
+		<field name="result" type="xs:string">
+			<description>result</description>
+			<xpath>substring(result,0,1000)</xpath>
+		</field>
+		<field name="resultlength" type="xs:integer">
+			<description>result</description>
+			<xpath>string-length(result)</xpath>
+		</field>
 	</fields>
-	   <views>
-        <view name="filter">name description</view>
-    </views>
+	<views>
+		<view name="filter">name description</view>
+	</views>
 	<iconclass>fa fa-file-code-o</iconclass>
 	<data type="element(jobrun)">collection("vue-poc/jobrun")/jobrun
 	</data>

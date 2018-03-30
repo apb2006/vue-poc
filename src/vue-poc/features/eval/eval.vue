@@ -150,7 +150,7 @@
       });
       localforage.setItem('eval/xq', this.xq)
     },
-    // 
+    // request run
     submit(){
       this.showError=this.showResult=this.showJob=false
       this.start = performance.now();
@@ -165,6 +165,7 @@
       });
       
     },
+    // 
     pollState(){
       if(this.destroyed)return;
       this.waiting=true;

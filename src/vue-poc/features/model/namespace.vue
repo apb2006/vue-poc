@@ -33,7 +33,7 @@
         
           <v-toolbar  color="amber">
               <v-card-title >
-               <router-link :to="{path:'entity/'+ props.item.name}">
+               <router-link :to="{path:'namespace/'+ props.item.name}">
                 <h3>
                 <v-icon>star</v-icon> {{ props.item.xmlns }}
                 </h3>

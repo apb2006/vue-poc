@@ -4,6 +4,9 @@
 	<v-toolbar >
 	 <v-toolbar-title>Entities</v-toolbar-title>
 	 <v-spacer></v-spacer>
+	 <v-text-field  prepend-icon="search" label="Filter..." v-model="q" type="search"
+   hide-details single-line  @keyup.enter="setfilter"
+   :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
 	 <v-btn @click="getItems"
 	  :loading="loading"
       :disabled="loading"
@@ -18,7 +21,7 @@
       row
       wrap
       :loading="loading"
-      :items="items"
+      :items="filtered"
       :rows-per-page-items="rowsPerPageItems"
       :pagination.sync="pagination"
       select-all 
@@ -60,7 +63,7 @@
 <script>{
   data:  function(){
     return {
-      q: 'filter',
+      q: '',
       items: [],
       loading: false,
       rowsPerPageItems: [4, 8, 20],
@@ -80,7 +83,17 @@
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         this.items=r.data.items
         }) 
+    },
+    setfilter(){
+      console.log("TODO",this.q);
+      this.$router.push({ query: {url: this.url,
+                                   q: this.q }})
     }
+  },
+  computed: {
+		  filtered(){
+		    return this.items.filter(item=>{return ((!this.q) || item.name.includes(this.q))})
+		  }
   },
   created:function(){
     this.getItems()

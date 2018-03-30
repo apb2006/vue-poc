@@ -66,6 +66,7 @@ const router = new VueRouter({
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
+    { path: '/tree', component: Tree,meta:{title:"tree"} },
     { path: '/map', component: Map,meta:{title:"map"} },
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },

@@ -1,4 +1,4 @@
-// generated 2018-03-22T22:55:38.143Z
+// generated 2018-03-28T21:33:37.464+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -394,7 +394,7 @@ Vue.component('vp-job',{template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-notifications.vue
 Vue.component('vp-notifications',{template:` 
    <v-card>
-         <v-toolbar class="amber white--text">
+         <v-toolbar class="amber white--text" scroll-toolbar-off-screen="">
                 <v-toolbar-title>Notifications </v-toolbar-title>
                 {{ $notification.nextId }}
                  <v-btn @click="refresh" icon=""><v-icon>refresh</v-icon></v-btn>
@@ -1786,7 +1786,7 @@ const Eval=Vue.extend({template:`
       });
       localforage.setItem('eval/xq', this.xq)
     },
-    // 
+    // request run
     submit(){
       this.showError=this.showResult=this.showJob=false
       this.start = performance.now();
@@ -1801,6 +1801,7 @@ const Eval=Vue.extend({template:`
       });
       
     },
+    // 
     pollState(){
       if(this.destroyed)return;
       this.waiting=true;
@@ -2340,20 +2341,19 @@ const Images=Vue.extend({template:`
         <v-container v-if="!busy" fluid="" grid-list-md="">
           <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
             <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
-              <v-card flat="" tile="" class="grey lighten-2 pa-1">
-                <v-card-media :src="src(image)" @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected " height="100px" contain="">
+              <v-card flat="" tile="">
+                <v-card-media :src="src(image)" v-bind:class="{ selcard: image.selected}" @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected " height="100px" contain="">
                  <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
                  <v-avatar icon="" small="" v-if="image.geo">
                   <v-icon>place</v-icon>
                 </v-avatar>
-                
-               
                 </v-card-media>
                 
-            <div v-if="image.selected" style="position:absolute;right:0;top:0">
+                <div v-if="image.selected" style="position:absolute;right:0;top:0">
                  <v-icon class="white primary--text">check_circle</v-icon>
                  </div>
-            </v-card></v-flex>
+              </v-card>
+            </v-flex>
           </v-layout>
         </v-container>
 
@@ -2521,7 +2521,7 @@ const Images=Vue.extend({template:`
       this.$router.push({ name: 'image', params: { id: image.id }})
     },
     pageBack(){
-      this.query.page=Math.min(0,this.query.page-1)
+      this.query.page=Math.max(0,this.query.page-1)
     },
     pageNext(){
       this.query.page+=1
@@ -3019,13 +3019,14 @@ const Entity=Vue.extend({template:`
 	<v-toolbar>
 	 <v-toolbar-title>Entities</v-toolbar-title>
 	 <v-spacer></v-spacer>
+	 <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
 	 <v-btn @click="getItems" :loading="loading" :disabled="loading">Refresh</v-btn>
 	 Text
 	 </v-toolbar>
 
   <v-container fluid="" grid-list-md="">
   
-    <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
+    <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="filtered" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
       <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
         <v-card :hover="true" active-class="default-class qd-active">
         
@@ -3054,7 +3055,7 @@ const Entity=Vue.extend({template:`
       
   data:  function(){
     return {
-      q: 'filter',
+      q: '',
       items: [],
       loading: false,
       rowsPerPageItems: [4, 8, 20],
@@ -3074,7 +3075,17 @@ const Entity=Vue.extend({template:`
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         this.items=r.data.items
         }) 
+    },
+    setfilter(){
+      console.log("TODO",this.q);
+      this.$router.push({ query: {url: this.url,
+                                   q: this.q }})
     }
+  },
+  computed: {
+		  filtered(){
+		    return this.items.filter(item=>{return ((!this.q) || item.name.includes(this.q))})
+		  }
   },
   created:function(){
     this.getItems()
@@ -3127,7 +3138,7 @@ const Entity1=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespace.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace.vue
 const Namespace=Vue.extend({template:` 
  <v-container fluid="" grid-list-md="">
 <v-toolbar>
@@ -3142,7 +3153,7 @@ const Namespace=Vue.extend({template:`
         
           <v-toolbar color="amber">
               <v-card-title>
-               <router-link :to="{path:'entity/'+ props.item.name}">
+               <router-link :to="{path:'namespace/'+ props.item.name}">
                 <h3>
                 <v-icon>star</v-icon> {{ props.item.xmlns }}
                 </h3>
@@ -3198,6 +3209,50 @@ const Namespace=Vue.extend({template:`
     this.load();
     console.log("namespaces")
   }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace1.vue
+const Namespace1=Vue.extend({template:` 
+<v-card>
+	<v-toolbar>
+	 <v-toolbar-title> Namespace: {{ namespace }}</v-toolbar-title>
+	 <v-spacer></v-spacer>
+	 <v-btn @click="getItem" :loading="loading" :disabled="loading">Refresh</v-btn>
+	 </v-toolbar>
+
+  <v-container fluid="" grid-list-md="">
+  
+  
+      hello
+  </v-container>
+   </v-card>
+ `,
+      
+  props: ['namespace'],
+  data:  function(){
+    return {
+      q: 'filter',
+      item: {},
+      loading: false
+      }
+  },
+  methods:{
+    getItem(){
+      this.loading=true
+      HTTP.get("data/namespace",{params:this.q})
+      .then(r=>{
+        this.loading=false
+        //console.log(r.data)
+        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
+        this.item=r.data.items
+        }) 
+    }
+  },
+  created:function(){
+    this.getItem()
+  },
 }
 
       );
@@ -4428,6 +4483,48 @@ created(){
 }
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tree.vue
+const Tree=Vue.extend({template:` 
+ <v-container fluid="">
+ TREE
+<div id="canvasqPWKOg" class="canvas"></div>
+<button id="resetButtonqPWKOg">Reset</button>
+<div>
+    <svg width="500" height="300"></svg>
+    <br>
+    <input type="range" v-model="circleSize" min="1" max="100" step="1">
+</div>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'bad route!',
+      circleSize: 50
+      }
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
+  },
+  mounted: function(createElement) {
+    var svg = d3.select(this.$el).select('svg');
+    this.circle = svg
+      .append('circle')
+      .attr('cx', '250')
+      .attr('cy', '150')
+      .attr('r', this.circleSize)
+  },
+  watch: {
+    circleSize: function(newValue) {
+      this.circle
+        .attr('r', newValue)
+    }
+  }
+
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/users/users.vue
 const Users=Vue.extend({template:` 
  <v-container fluid="">
@@ -4801,6 +4898,7 @@ const router = new VueRouter({
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
+    { path: '/tree', component: Tree,meta:{title:"tree"} },
     { path: '/map', component: Map,meta:{title:"map"} },
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },

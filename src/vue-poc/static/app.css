@@ -127,6 +127,10 @@ height: 100%;
 .qd-active {
 	  background-color: green;
 }
+.selcard {
+	 background-color: green;
+	 border: thick double #32a1ce;
+}
 .canvas {
   overflow: hidden;
 }
