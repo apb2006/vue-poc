@@ -11,8 +11,8 @@
   </v-toolbar>
   <qd-panel :show="showInfo">
   
-    <v-flex slot="body">
-    <v-layout>
+
+    <v-layout  slot="body">
      
     <v-flex xs6>
     <p>some text</p>
@@ -53,7 +53,6 @@
             <pre>{{$data.value2 }}</pre>
     </v-flex>
    </v-layout>
-   </v-flex>
    
    <v-card slot="aside" flat> 
        <v-card-actions >

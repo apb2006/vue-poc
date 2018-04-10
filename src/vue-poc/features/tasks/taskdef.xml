@@ -1,10 +1,8 @@
 <tasks>
 	<task name="tasks/model">
-		<title>
-			Generate
-			<code>model.gen.xqm</code>
-		</title>
-		<description></description>
+		<title>Generate model.gen.xqm</title>
+		<description> Generate
+      <code>model.gen.xqm</code></description>
 		<params>
 			<param name="efolder">Folder containing model definitions as xml</param>
 			<param name="target">Path to xqm file to generate</param>
@@ -18,7 +16,7 @@
   
 	<task name="tasks/xqdoc">
 		<title>XQdoc</title>
-		<description>Generate XQdoc as html</description>
+		<description>Generate XQdoc to db</description>
 	</task>
 	
 <task name="tasks/xqdocdb">
@@ -28,10 +26,12 @@
   
 	<task name="tasks/vuecompile">
 		<title>vue compile</title>
+		 <description>compile</description>
 	</task>
 
 	<task name="tasks/newapp">
 		<title>application template</title>
+		 <description>application template</description>
 		<params>
 			<param name="appname">Name for new application</param>
 		</params>

@@ -16,7 +16,8 @@ function vue-rest:tasks()
   return <json type="array">{
   $tasks!<_ type="object">
           <to>{ @name/string() }</to>
-          <text>{ title/text() }</text>
+          <title>{ title/text() }</title>
+          <description>{ fn:serialize(description/node()) }</description>
         </_>
         }</json>
 };

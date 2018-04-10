@@ -188,7 +188,8 @@
       {href: '/timeline',text: 'Time line',icon: 'timelapse'},
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
-      {href: '/svg',text: 'SVG',icon: 'extension'}
+      {href: '/svg',text: 'SVG',icon: 'extension'},
+      {href: '/tree',text: 'Tree',icon: 'nature'}
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },

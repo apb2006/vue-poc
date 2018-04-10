@@ -3,22 +3,25 @@
 <div>
   <v-toolbar   tabs>
       <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
-      <v-toolbar-title>{{ currentItem   }} : {{ active && active.name }}</v-toolbar-title>
+      <v-toolbar-title>{{ currentItem   }} : {{ active && active.name }}{{ dirty?'*':'' }}</v-toolbar-title>
+       <v-btn @click="showInfo = !showInfo" icon><v-icon>info</v-icon></v-btn>
           <v-spacer></v-spacer>
-       <v-btn>unused</v-btn>
+     
        <v-btn>{{ active && active.mode }}</v-btn>
-       <v-btn>{{ active && active.dirty }}</v-btn>
-        <v-menu left bottom  >
+       
+        <v-menu left bottom  :close-on-content-click="false" >
           <a class="tabs__item" slot="activator">
           {{ items.length }}
             <v-icon>arrow_drop_down</v-icon>
           </a>
           <v-card>
+            <v-card-title>Select Tab</v-card-title>
 	          <v-card-actions>
 	           <v-select :items="sorted" v-model="a1"
 	          label="File"   class="input-group--focused"
 	          item-text="name" item-value="id"
 	          autocomplete @change="setItem"
+	          clearable open-on-clear
 	        ></v-select>
 	        </v-card-actions>
 	        </v-card>
@@ -35,7 +38,7 @@
 			       <v-avatar >
 			          <v-icon  size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
-			       <span >{{ item.name }}</span>
+			       <span >{{ item.name + (item.dirty?"*":"") }}</span>
 			       <v-spacer></v-spacer>
 			       <v-btn icon @click.stop="tabClose(item)">
 			          <v-icon  size="16px">close</v-icon>
@@ -46,8 +49,9 @@
      
 
   </v-toolbar>
-        
- <v-tabs-items  v-model="currentItem">
+    <qd-panel :show="showInfo">
+      
+ <v-tabs-items slot="body" v-model="currentItem">
        <v-tab-item
         v-for="item in items"
         :key="item.id"
@@ -63,6 +67,15 @@
       </v-card>
       </v-tab-item>
  </v-tabs-items>
+  <v-card slot="aside" flat> 
+       <v-card-actions >
+      <v-toolbar-title >test</v-toolbar-title>
+      <v-spacer></v-spacer>    
+       <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+    </v-card-actions>
+    <v-card-text> blah blah protocol:  </v-card-text> 
+    </v-card>
+ </qd-panel>
 </div>
 </template>
 
@@ -70,6 +83,7 @@
     data () {
       return {
         showadd: false,
+        showInfo: false,
         nextId:4,
         a1:"",
         currentItem: null, //href of current
@@ -104,7 +118,7 @@
       }
     },
     setItem(v){
-      this.currentItem="T"+v;
+      if(v) this.currentItem="T"+v;
     },
     
     addItem(tab){
@@ -147,6 +161,9 @@
   computed:{
     sorted(){
       return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name)) ;
+      },
+    dirty(){
+        return this.active && this.active.dirty
       }
   },
   

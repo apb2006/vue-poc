@@ -1,4 +1,4 @@
-// generated 2018-03-28T21:33:37.464+01:00
+// generated 2018-04-09T23:17:40.773+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -465,10 +465,11 @@ Vue.component('vp-selectpath',{template:`
        </v-btn>
        <v-card>
             <v-toolbar> 
-        <v-card-title>
-            Add a new tab
-          </v-card-title>
-          
+		           <v-card-title>
+		            Add a new tab {{type}}
+		          </v-card-title>
+		          <v-spacer></v-spacer>
+		           <v-btn color="primary" flat="" @click.stop="set(false)">Cancel</v-btn>
           </v-toolbar>
           
          <v-card-text>
@@ -536,6 +537,7 @@ Vue.component('vp-selectpath',{template:`
     favorite(){
       this.$emit('selectpath', {
           type:this.type,
+          uri: this.xmldb,
           name: "doc" + moment().format("YYYY-MM-DDThh:mm:ss") ,
           text:"Some text"
           })
@@ -1498,19 +1500,21 @@ const Tabs=Vue.extend({template:`
 <div>
   <v-toolbar tabs="">
       <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
-      <v-toolbar-title>{{ currentItem   }} : {{ active &amp;&amp; active.name }}</v-toolbar-title>
+      <v-toolbar-title>{{ currentItem   }} : {{ active &amp;&amp; active.name }}{{ dirty?'*':'' }}</v-toolbar-title>
+       <v-btn @click="showInfo = !showInfo" icon=""><v-icon>info</v-icon></v-btn>
           <v-spacer></v-spacer>
-       <v-btn>unused</v-btn>
+     
        <v-btn>{{ active &amp;&amp; active.mode }}</v-btn>
-       <v-btn>{{ active &amp;&amp; active.dirty }}</v-btn>
-        <v-menu left="" bottom="">
+       
+        <v-menu left="" bottom="" :close-on-content-click="false">
           <a class="tabs__item" slot="activator">
           {{ items.length }}
             <v-icon>arrow_drop_down</v-icon>
           </a>
           <v-card>
+            <v-card-title>Select Tab</v-card-title>
 	          <v-card-actions>
-	           <v-select :items="sorted" v-model="a1" label="File" class="input-group--focused" item-text="name" item-value="id" autocomplete="" @change="setItem"></v-select>
+	           <v-select :items="sorted" v-model="a1" label="File" class="input-group--focused" item-text="name" item-value="id" autocomplete="" @change="setItem" clearable="" open-on-clear=""></v-select>
 	        </v-card-actions>
 	        </v-card>
         </v-menu>
@@ -1521,7 +1525,7 @@ const Tabs=Vue.extend({template:`
 			       <v-avatar>
 			          <v-icon size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
-			       <span>{{ item.name }}</span>
+			       <span>{{ item.name + (item.dirty?"*":"") }}</span>
 			       <v-spacer></v-spacer>
 			       <v-btn icon="" @click.stop="tabClose(item)">
 			          <v-icon size="16px">close</v-icon>
@@ -1532,8 +1536,9 @@ const Tabs=Vue.extend({template:`
      
 
   </v-toolbar>
-        
- <v-tabs-items v-model="currentItem">
+    <qd-panel :show="showInfo">
+      
+ <v-tabs-items slot="body" v-model="currentItem">
        <v-tab-item v-for="item in items" :key="item.id" :id="'T' + item.id">
       <v-card flat="">
         <div style="height:200px" ref="ace" v-resize="onResize">
@@ -1544,12 +1549,22 @@ const Tabs=Vue.extend({template:`
       </v-card>
       </v-tab-item>
  </v-tabs-items>
+  <v-card slot="aside" flat=""> 
+       <v-card-actions>
+      <v-toolbar-title>test</v-toolbar-title>
+      <v-spacer></v-spacer>    
+       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+    </v-card-actions>
+    <v-card-text> blah blah protocol:  </v-card-text> 
+    </v-card>
+ </qd-panel>
 </div>
  `,
       
     data () {
       return {
         showadd: false,
+        showInfo: false,
         nextId:4,
         a1:"",
         currentItem: null, //href of current
@@ -1584,7 +1599,7 @@ const Tabs=Vue.extend({template:`
       }
     },
     setItem(v){
-      this.currentItem="T"+v;
+      if(v) this.currentItem="T"+v;
     },
     
     addItem(tab){
@@ -1627,6 +1642,9 @@ const Tabs=Vue.extend({template:`
   computed:{
     sorted(){
       return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name)) ;
+      },
+    dirty(){
+        return this.active && this.active.dirty
       }
   },
   
@@ -3642,8 +3660,8 @@ const Select=Vue.extend({template:`
   </v-toolbar>
   <qd-panel :show="showInfo">
   
-    <v-flex slot="body">
-    <v-layout>
+
+    <v-layout slot="body">
      
     <v-flex xs6="">
     <p>some text</p>
@@ -3662,7 +3680,6 @@ const Select=Vue.extend({template:`
             <pre>{{$data.value2 }}</pre>
     </v-flex>
    </v-layout>
-   </v-flex>
    
    <v-card slot="aside" flat=""> 
        <v-card-actions>
@@ -4168,7 +4185,8 @@ const Task=Vue.extend({template:`
   <v-progress-linear v-if="loading" v-bind:indeterminate="true" height="2"></v-progress-linear>
   <ul>
   <li v-for="task in tasks" :key="task.to">
-  <router-link :to="task.to" v-text="task.text"></router-link>
+  <router-link :to="task.to" v-text="task.title"></router-link>
+  <div v-html="task.description"></div>
   </li>
   </ul>
  </v-container>
@@ -4486,40 +4504,99 @@ created(){
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tree.vue
 const Tree=Vue.extend({template:` 
  <v-container fluid="">
- TREE
-<div id="canvasqPWKOg" class="canvas"></div>
-<button id="resetButtonqPWKOg">Reset</button>
-<div>
-    <svg width="500" height="300"></svg>
-    <br>
-    <input type="range" v-model="circleSize" min="1" max="100" step="1">
-</div>
+ <v-card>
+ <v-toolbar class="lime darken-1">
+   <v-card-title><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@1.0.11</qd-link> </v-card-title>
+   <v-spacer></v-spacer>
+   <v-btn>todo</v-btn>
+   </v-toolbar>
+   <v-card-text>
+    <v-jstree :data="data" show-checkbox="" multiple="" allow-batch="" whole-row="" @item-click="itemClick"></v-jstree>
+
+   </v-card-text>
+ </v-card>
  </v-container>
  `,
       
-  data:  function(){
+  data:function(){
     return {
-      message: 'bad route!',
-      circleSize: 50
-      }
-  },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
-  },
-  mounted: function(createElement) {
-    var svg = d3.select(this.$el).select('svg');
-    this.circle = svg
-      .append('circle')
-      .attr('cx', '250')
-      .attr('cy', '150')
-      .attr('r', this.circleSize)
-  },
-  watch: {
-    circleSize: function(newValue) {
-      this.circle
-        .attr('r', newValue)
+  data: [
+    {
+      "text": "Same but with checkboxes",
+      "children": [
+        {
+          "text": "initially selected",
+          "selected": true
+        },
+        {
+          "text": "custom icon",
+          "icon": "fa fa-warning icon-state-danger"
+        },
+        {
+          "text": "initially open",
+          "icon": "fa fa-folder icon-state-default",
+          "opened": true,
+          "children": [
+            {
+              "text": "Another node"
+            }
+          ]
+        },
+        {
+          "text": "custom icon",
+          "icon": "fa fa-warning icon-state-warning"
+        },
+        {
+          "text": "disabled node",
+          "icon": "fa fa-check icon-state-success",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "text": "Same but with checkboxes",
+      "opened": true,
+      "children": [
+        {
+          "text": "initially selected",
+          "selected": true
+        },
+        {
+          "text": "custom icon",
+          "icon": "fa fa-warning icon-state-danger"
+        },
+        {
+          "text": "initially open",
+          "icon": "fa fa-folder icon-state-default",
+          "opened": true,
+          "children": [
+            {
+              "text": "Another node"
+            }
+          ]
+        },
+        {
+          "text": "custom icon",
+          "icon": "fa fa-warning icon-state-warning"
+        },
+        {
+          "text": "disabled node",
+          "icon": "fa fa-check icon-state-success",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "text": "And wholerow selection"
     }
+  ]
+}
+  },
+methods: {
+  itemClick (node) {
+    console.log(node.model.text + ' clicked !')
   }
+}
 
 }
 
@@ -5108,7 +5185,8 @@ const Vuepoc=Vue.extend({template:`
       {href: '/timeline',text: 'Time line',icon: 'timelapse'},
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
-      {href: '/svg',text: 'SVG',icon: 'extension'}
+      {href: '/svg',text: 'SVG',icon: 'extension'},
+      {href: '/tree',text: 'Tree',icon: 'nature'}
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },

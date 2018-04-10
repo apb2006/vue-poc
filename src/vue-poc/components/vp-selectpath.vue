@@ -21,10 +21,11 @@ display button that invokes a  select path form
        </v-btn>
        <v-card >
             <v-toolbar > 
-        <v-card-title>
-            Add a new tab
-          </v-card-title>
-          
+		           <v-card-title>
+		            Add a new tab {{type}}
+		          </v-card-title>
+		          <v-spacer></v-spacer>
+		           <v-btn color="primary" flat @click.stop="set(false)">Cancel</v-btn>
           </v-toolbar>
           
          <v-card-text>
@@ -92,6 +93,7 @@ display button that invokes a  select path form
     favorite(){
       this.$emit('selectpath', {
           type:this.type,
+          uri: this.xmldb,
           name: "doc" + moment().format("YYYY-MM-DDThh:mm:ss") ,
           text:"Some text"
           })

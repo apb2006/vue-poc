@@ -2,10 +2,11 @@
 <template id="task">
  <v-container fluid>
   <h3>Available Tasks</h3>
-  <v-progress-linear v-if="loading" v-bind:indeterminate="true" height="2"></v-progress-linear>
+  <v-progress-linear v-if="loading" v-bind:indeterminate="true" ></v-progress-linear>
   <ul>
   <li  v-for="task in tasks" :key="task.to">
-  <router-link :to="task.to" v-text="task.text"></router-link>
+  <router-link :to="task.to" v-text="task.title"></router-link>
+  <div v-html="task.description"></div>
   </li>
   </ul>
  </v-container>
