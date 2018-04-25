@@ -47,7 +47,7 @@ const router = new VueRouter({
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/svg', component: Svg, meta:{title:"SVG"} },
-   /* { path: '/svg2', component: Svg2, meta:{title:"SVG2"} }, */
+    { path: '/svg2', component: Svg2, meta:{title:"SVG2"} },
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     
@@ -66,10 +66,14 @@ const router = new VueRouter({
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
-    { path: '/tree', component: Tree,meta:{title:"tree"} },
+    { path: '/tree', component: Tree, meta:{title:"tree"} },
+    { path: '/tree2', component: Tree2, meta:{title:"tree2"} },
     { path: '/map', component: Map,meta:{title:"map"} },
+    
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
+    { path: '/form3', component: Formsschema, meta:{title:"vue-form-json-schema"} },
+    
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],

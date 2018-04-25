@@ -1,4 +1,4 @@
-// generated 2018-04-09T23:17:40.773+01:00
+// generated 2018-04-25T23:09:21.192+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -457,7 +457,7 @@ Vue.component('vp-notifications',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-selectpath.vue
 Vue.component('vp-selectpath',{template:` 
-  <v-menu :close-on-click="false" offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
+   <v-dialog v-model="frmfav" persistent="" max-width="600">
       <v-btn slot="activator" @click.stop="set(!frmfav)" icon="" flat="" title="Add ">
       <slot>
       <v-icon>add_circle</v-icon>
@@ -466,57 +466,38 @@ Vue.component('vp-selectpath',{template:`
        <v-card>
             <v-toolbar> 
 		           <v-card-title>
-		            Add a new tab {{type}}
+		            Content of new tab {{type}}
 		          </v-card-title>
-		          <v-spacer></v-spacer>
-		           <v-btn color="primary" flat="" @click.stop="set(false)">Cancel</v-btn>
+		          
           </v-toolbar>
           
          <v-card-text>
          Content:
-          <v-tabs v-model="type" icons-and-text="" centered="">
-   
-    <v-tab>
-      Empty
-      <v-icon>fiber_new</v-icon>
-    </v-tab>
-    <v-tab>
-      XMLDB
-      <v-icon>favorite</v-icon>
-    </v-tab>
-    <v-tab>
-      Webfile
-      <v-icon>account_box</v-icon>
-    </v-tab>
-    <v-tab-item>
-      <v-card flat="">
-        <v-card-text>empty</v-card-text>
-      </v-card>
-    </v-tab-item>
-     <v-tab-item>
-      <v-card flat="">
-        <v-card-text>
-            <v-text-field label="database url" v-model="xmldb"></v-text-field>
-        </v-card-text>
-      </v-card>
-    </v-tab-item>
-    <v-tab-item>
-      <v-card flat="">
-        <v-card-text>
-             <v-text-field label="webfile url" v-model="webfile"></v-text-field>
-        </v-card-text>
-      </v-card>
-    </v-tab-item>
-  </v-tabs>
-         </v-card-text>
          
-         <v-card-actions>
-            <v-btn color="primary" flat="" @click.stop="set(false)">Cancel</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn color="primary" flat="" @click.stop="favorite(); set(false)">Add tab</v-btn>
-          </v-card-actions>
+          <v-tabs v-model="type" icons-and-text="" centered="">
+					   <v-tab v-for="item in protocols" :key="item.name">
+					    {{item.name}}
+					      <v-icon>{{item.icon}}</v-icon>
+					    </v-tab>
+    
+ 
+					    <v-tab-item v-for="item in protocols" :key="item.name">
+					      <v-card flat="">
+					        <v-card-text>
+					          <v-text-field v-for="f in item.fields" :key="f.model" :label="f.label" :v-model="f.model"></v-text-field>
+					        </v-card-text>
+					      </v-card>
+					    </v-tab-item>
+          </v-tabs>
+          
+         </v-card-text>
+        <v-card-actions>
+               <v-spacer></v-spacer>
+               <v-btn color="primary" flat="" @click.stop="set(false)">Cancel</v-btn>
+               <v-btn color="primary" flat="" @click.stop="favorite(); set(false)">Add tab</v-btn>
+         </v-card-actions>
         </v-card>
-   </v-menu>
+   </v-dialog>
  `,
        
   props: { 
@@ -526,7 +507,13 @@ Vue.component('vp-selectpath',{template:`
     return {
       type: 0, 
       xmldb: "",
-      webfile:""
+      webfile:"",
+      protocols:[
+        {name: "new",icon: "fiber_new",fields: [{label: "test gg", model: "webfile"}]},
+        {name:"xmldb",icon:"favorite", fields: [{label: "test2", model: "webfile"}]},
+        {name:"webfile",icon:"account_box", fields: [{label: "test3", model: "webfile"}]},
+        {name:"file",icon:"fiber_new", fields: [{label: "test 4", model: "webfile"}]} 
+        ]
       }
   },
   methods:{
@@ -648,7 +635,7 @@ Vue.component('vue-ace',{template:`
     this.editor = window.ace.edit(this.$el)
     this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
-   console.log("setValue: ",this.content)
+   //console.log("setValue: ",this.content)
     this.editor.setValue((this.content == null)?"NULL":this.content, 1);
     this.editor.setOptions({ readOnly:this.readOnly });
     if(this.minLines){
@@ -1227,8 +1214,8 @@ const Edit=Vue.extend({template:`
   <v-menu left="" transition="v-fade-transition">
       <v-chip label="" small="" slot="activator">{{ mode }}</v-chip>
           <v-list dense="">
-              <v-list-tile v-for="(mode, mimetype) in mimeTypes" :key="mimetype">
-                <v-list-tile-title v-text="mimetype" @click="setMode(mimetype)"></v-list-tile-title>
+              <v-list-tile v-for="type in mimeTypes" :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
    </v-menu>
@@ -1450,9 +1437,9 @@ const Edit=Vue.extend({template:`
       this.annotations=counts
       //console.log("annotations: ",counts)
     },
-    setMode(mimetype){
-      this.mimetype=mimetype
-      var r=MimeTypes[mimetype]
+    setMode(type){
+      this.mimetype=type.name
+      var r=type.mode
       this.mode=r?r:"text"
     },
     onResize(){
@@ -1498,14 +1485,23 @@ const Edit=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/tabs.vue
 const Tabs=Vue.extend({template:` 
 <div>
-  <v-toolbar tabs="">
+  <v-toolbar tabs="" dense="">
       <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
       <v-toolbar-title>{{ currentItem   }} : {{ active &amp;&amp; active.name }}{{ dirty?'*':'' }}</v-toolbar-title>
-       <v-btn @click="showInfo = !showInfo" icon=""><v-icon>info</v-icon></v-btn>
-          <v-spacer></v-spacer>
-     
-       <v-btn>{{ active &amp;&amp; active.mode }}</v-btn>
-       
+      
+       <v-menu left="" transition="v-fade-transition">
+      <v-chip label="" small="" slot="activator">{{ active &amp;&amp; active.mode }}</v-chip>
+          <v-list dense="">
+              <v-list-tile v-for="type in mimeTypes" :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="alert('todo')"></v-list-tile-title>
+              </v-list-tile>           
+          </v-list>         
+   </v-menu>
+       <v-spacer></v-spacer>
+       <v-btn @click="showInfo = !showInfo" icon="">
+              <v-icon v-if="showInfo">info</v-icon>
+              <v-icon v-else="">mode_edit</v-icon>
+        </v-btn>
         <v-menu left="" bottom="" :close-on-content-click="false">
           <a class="tabs__item" slot="activator">
           {{ items.length }}
@@ -1520,7 +1516,6 @@ const Tabs=Vue.extend({template:`
         </v-menu>
         
         <v-tabs v-model="currentItem" slot="extension">
- 
 		      <v-tab v-for="item in items" :key="item.id" :href="'#T' + item.id" ripple="" style="text-transform: none;text-align:left">
 			       <v-avatar>
 			          <v-icon size="16px">insert_drive_file</v-icon>
@@ -1531,57 +1526,72 @@ const Tabs=Vue.extend({template:`
 			          <v-icon size="16px">close</v-icon>
 			        </v-btn>
 		      </v-tab>
-      
      </v-tabs>
-     
-
   </v-toolbar>
-    <qd-panel :show="showInfo">
-      
- <v-tabs-items slot="body" v-model="currentItem">
+  
+   
+      <v-tabs-items slot="body" v-model="currentItem">
        <v-tab-item v-for="item in items" :key="item.id" :id="'T' + item.id">
-      <v-card flat="">
-        <div style="height:200px" ref="ace" v-resize="onResize">
-        <v-flex xs12="" fill-height="">
-			    <vue-ace :content="item.text" v-on:change-content="changeContent" :mode="item.mode" :wrap="wrap" :settings="aceSettings"></vue-ace>
-			  </v-flex>
-        </div> 
-      </v-card>
+		      <v-card flat="" v-if="showInfo">
+					  <v-card-actions>
+				      <v-toolbar-title>Metadata for tab id: '{{ currentItem }}'</v-toolbar-title>
+				      <v-spacer></v-spacer>    
+				       <v-btn flat=""> <v-icon>highlight_off</v-icon>todo</v-btn>
+			      </v-card-actions>
+			      
+			       <v-card-text v-if="active"> 
+									<v-layout row="" v-for="x in ['name','id','mode','dirty','location']" :key="x">
+							      <v-flex xs3="">
+							        <v-subheader>{{ x}}</v-subheader>
+							      </v-flex>
+							      <v-flex xs9="">
+							        <v-text-field :name="x" label="Hint Text" :value="active[x]" single-line=""></v-text-field>
+							      </v-flex>
+							    </v-layout>
+				    </v-card-text>
+			    </v-card>
+			    
+			    <v-card v-else="">
+		        <div style="height:200px" ref="ace" v-resize="onResize">
+		        <v-flex xs12="" fill-height="">
+					    <vue-ace :content="item.text" v-on:change-content="changeContent" :mode="item.mode" :wrap="wrap" :settings="aceSettings"></vue-ace>
+					  </v-flex>
+		        </div> 
+		      </v-card>
       </v-tab-item>
- </v-tabs-items>
-  <v-card slot="aside" flat=""> 
-       <v-card-actions>
-      <v-toolbar-title>test</v-toolbar-title>
-      <v-spacer></v-spacer>    
-       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
-    </v-card-actions>
-    <v-card-text> blah blah protocol:  </v-card-text> 
-    </v-card>
- </qd-panel>
+   </v-tabs-items>
+ 
 </div>
  `,
       
     data () {
       return {
-        showadd: false,
-        showInfo: false,
+        showadd: false,  // showing add form
+        showInfo: false, // showing info
         nextId:4,
         a1:"",
         currentItem: null, //href of current
         active: null,
         items: [
           {name:"web.txt", id:"1", mode:"text", dirty: false, 
-            text:"1 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+            text:`Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
+ut aliquip ex ea commodo consequat.`},
         
           {name:"Shopping.xq", id:"2", mode: "xquery" ,dirty: false,
-            text:"2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+            text:`let $a:=1 to 5
+return $a   `},
        
-          {name:"videos.xml", id:"3", mode:"xml",dirty: false,
-            text:"2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+          {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "/aaa/bca/",
+            text:`<foo version="1.0">
+   <node>hello</node>
+</foo>`},
       
         ],
       wrap: true,
-      aceSettings: {}
+      aceSettings: {},
+      mimeTypes:MimeTypes
       }
   },
   
@@ -1603,7 +1613,7 @@ const Tabs=Vue.extend({template:`
     },
     
     addItem(tab){
-      console.log("TABS: ",tab);
+      console.log("new: ",tab);
       var def={name: "AA"+this.nextId, 
                id: ""+this.nextId,
                contentType: "text/xml",
@@ -2053,6 +2063,55 @@ const Brutusin=Vue.extend({template:`
   }
 }
 
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/form-json-schema.vue
+const Formsschema=Vue.extend({template:` 
+ <v-container fluid="">
+     <v-card>
+        <v-card-title><qd-link href="https://jarvelov.gitbooks.io/vue-form-json-schema/">vue-form-json-schema@1.13.4</qd-link> </v-card-title>
+        
+     <vue-form-json-schema :model="model" :schema="schema" :ui-schema="uiSchema" :on-change="onChange">
+	  </vue-form-json-schema>
+	  </v-card>
+  </v-container>
+ `,
+      
+  
+  data: () => ({
+    model: {},
+    
+    // A valid JSON Schema object
+    schema: {
+      type: 'object',
+      properties: {
+        firstName: {
+          type: 'string',
+        },
+      },
+    },
+    
+    // Array of HTML elements or Vue components
+    uiSchema: [{
+      component: 'input',
+      model: 'firstName',
+      // Same API as [Vue's render functions](https://vuejs.org/v2/guide/render-function.html#The-Data-Object-In-Depth)
+      fieldOptions: {
+        class: ['form-control'],
+        on: ['input'],
+        attrs: {
+          placeholder: 'Please enter your first name',
+        },
+      },
+    }]
+  }),
+  methods: {
+    onChange(value) {
+      this.model = value;
+    }
+  }
+  
+}
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/formschema.vue
@@ -4024,6 +4083,28 @@ const Svg=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/svg2.vue
+const Svg2=Vue.extend({template:` 
+ <v-container fluid="">
+<!-- UI controls that can are used to manipulate the display of the chart -->
+    
+   todo
+ </v-container>
+ `,
+      
+  data: function() {
+    return {
+
+    };
+  },
+  mounted: function() {
+  alert("mounted");
+  }
+
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/model.build/model.vue
 const Model=Vue.extend({template:` 
  <v-container fluid="">
@@ -4182,7 +4263,7 @@ const Runtask=Vue.extend({template:`
 const Task=Vue.extend({template:` 
  <v-container fluid="">
   <h3>Available Tasks</h3>
-  <v-progress-linear v-if="loading" v-bind:indeterminate="true" height="2"></v-progress-linear>
+  <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
   <ul>
   <li v-for="task in tasks" :key="task.to">
   <router-link :to="task.to" v-text="task.title"></router-link>
@@ -4602,6 +4683,54 @@ methods: {
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tree2.vue
+const Tree2=Vue.extend({template:` 
+ <v-container fluid="">
+ <v-card>
+ <v-toolbar class="lime darken-1">
+   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.19</qd-link> </v-card-title>
+   <v-spacer></v-spacer>
+   <v-btn>todo</v-btn>
+   </v-toolbar>
+   <v-card-text>
+    <treeselect v-model="value" :multiple="true" :options="source">
+
+   </treeselect></v-card-text>
+ </v-card>
+ </v-container>
+ `,
+      
+  data:function(){
+    return {
+      value: null,
+      source: [
+        {
+          id: 'node-1',
+          label: 'Node 1',
+          children: [
+            {
+              id: 'node-1-a',
+              label: 'Node 1-A',
+            } 
+          ],
+        },
+        {
+          id: 'node-2',
+          label: 'Node 2',
+        } 
+      ] 
+    }
+  },
+methods: {
+  itemClick (node) {
+    console.log(node.model.text + ' clicked !')
+  }
+}
+
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/users/users.vue
 const Users=Vue.extend({template:` 
  <v-container fluid="">
@@ -4956,7 +5085,7 @@ const router = new VueRouter({
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/svg', component: Svg, meta:{title:"SVG"} },
-   /* { path: '/svg2', component: Svg2, meta:{title:"SVG2"} }, */
+    { path: '/svg2', component: Svg2, meta:{title:"SVG2"} },
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     
@@ -4975,10 +5104,14 @@ const router = new VueRouter({
     { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
     
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
-    { path: '/tree', component: Tree,meta:{title:"tree"} },
+    { path: '/tree', component: Tree, meta:{title:"tree"} },
+    { path: '/tree2', component: Tree2, meta:{title:"tree2"} },
     { path: '/map', component: Map,meta:{title:"map"} },
+    
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
+    { path: '/form3', component: Formsschema, meta:{title:"vue-form-json-schema"} },
+    
     { path: '/about', component: About,meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound,meta:{title:"Page not found"} }
   ],
@@ -5011,7 +5144,7 @@ const Vuepoc=Vue.extend({template:`
     <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
   </v-navigation-drawer>
   
- <v-navigation-drawer app="" :mini-variant.sync="mini" v-model="drawer" :disable-route-watcher="true" :enable-resize-watcher="true">
+ <v-navigation-drawer app="" :mini-variant.sync="mini" v-model="drawer" :enable-resize-watcher="true">
   <v-list class="pa-0">
 
           <v-list-tile avatar="" tag="div">
@@ -5173,7 +5306,8 @@ const Vuepoc=Vue.extend({template:`
             children: [
          
           {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
-          {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  }
+          {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  },
+          {href: '/form3',text: 'vue-form-json-schema',icon: 'format_list_bulleted'  }
           ]},   
       {
         icon: 'more_horiz',
@@ -5186,7 +5320,8 @@ const Vuepoc=Vue.extend({template:`
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
       {href: '/svg',text: 'SVG',icon: 'extension'},
-      {href: '/tree',text: 'Tree',icon: 'nature'}
+      {href: '/tree',text: 'Tree',icon: 'nature'},
+      {href: '/tree2',text: 'Tree 2',icon: 'nature'}
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
@@ -5348,17 +5483,17 @@ const Notification={
 Vue.use(Notification);
 
 // Mimetype info
-const MimeTypes={
-      "text/xml":"xml",
-      "application/xml":"xml",
-      "application/xquery":"xquery",
-      "text/ecmascript":"javascript",
-      "application/sparql-query":"sparql",
-      "text/html":"html",
-      "text/turtle":"turtle",
-      "text/css":"css",
-      "image/svg+xml":"svg"
-};
+const MimeTypes=[
+            {name: "text/xml", mode: "xml"},
+            {name: "application/xml", mode:"xml"},
+            {name: "application/xquery", mode:"xquery"},
+            {name: "text/ecmascript", mode:"javascript"},
+            {name: "application/sparql-query", mode:"sparql"},
+            {name: "text/html", mode:"html"},
+            {name: "text/turtle", mode:"turtle"},
+            {name: "text/css", mode:"css"},
+            {name: "image/svg+xml", mode:"svg"}
+];
 
 // Settings read and write list clear
 localforage.config({
@@ -5482,6 +5617,12 @@ const Fullscreen={
     })  }
 };
 Vue.use(Fullscreen);
+Vue.use(VueTreeselect);
+//Vue.use( VueFormJsonSchema);
+function install (Vue) {
+ Vue.component('vue-form-json-schema', VueFormJsonSchema);
+};
+Vue.use({ install: install });
 
 //leaflet
 //Vue.component('v-map', Vue2Leaflet.Map);

@@ -106,7 +106,7 @@ event fired cmd outline
     this.editor = window.ace.edit(this.$el)
     this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
-   console.log("setValue: ",this.content)
+   //console.log("setValue: ",this.content)
     this.editor.setValue((this.content == null)?"NULL":this.content, 1);
     this.editor.setOptions({ readOnly:this.readOnly });
     if(this.minLines){

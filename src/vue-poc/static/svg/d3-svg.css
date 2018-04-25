@@ -1,5 +1,13 @@
+html, body {
+  font-family: Arial, sans-serif;
+}
+
+.title {
+  font-size: 12px;
+}
 .canvas {
   overflow: hidden;
+  background-color:green;
 }
 .canvas .wrapper.outer > .background {
   fill: #000000;

@@ -13,7 +13,7 @@
   </v-navigation-drawer>
   
  <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   
- :disable-route-watcher="true"  :enable-resize-watcher="true">
+    :enable-resize-watcher="true">
   <v-list class="pa-0">
 
           <v-list-tile avatar tag="div">
@@ -176,7 +176,8 @@
             children: [
          
           {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
-          {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  }
+          {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  },
+          {href: '/form3',text: 'vue-form-json-schema',icon: 'format_list_bulleted'  }
           ]},   
       {
         icon: 'more_horiz',
@@ -189,7 +190,8 @@
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
       {href: '/svg',text: 'SVG',icon: 'extension'},
-      {href: '/tree',text: 'Tree',icon: 'nature'}
+      {href: '/tree',text: 'Tree',icon: 'nature'},
+      {href: '/tree2',text: 'Tree 2',icon: 'nature'}
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },

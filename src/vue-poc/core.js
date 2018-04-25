@@ -81,17 +81,17 @@ const Notification={
 Vue.use(Notification);
 
 // Mimetype info
-const MimeTypes={
-      "text/xml":"xml",
-      "application/xml":"xml",
-      "application/xquery":"xquery",
-      "text/ecmascript":"javascript",
-      "application/sparql-query":"sparql",
-      "text/html":"html",
-      "text/turtle":"turtle",
-      "text/css":"css",
-      "image/svg+xml":"svg"
-};
+const MimeTypes=[
+            {name: "text/xml", mode: "xml"},
+            {name: "application/xml", mode:"xml"},
+            {name: "application/xquery", mode:"xquery"},
+            {name: "text/ecmascript", mode:"javascript"},
+            {name: "application/sparql-query", mode:"sparql"},
+            {name: "text/html", mode:"html"},
+            {name: "text/turtle", mode:"turtle"},
+            {name: "text/css", mode:"css"},
+            {name: "image/svg+xml", mode:"svg"}
+];
 
 // Settings read and write list clear
 localforage.config({
@@ -215,6 +215,12 @@ const Fullscreen={
     })  }
 };
 Vue.use(Fullscreen);
+Vue.use(VueTreeselect);
+//Vue.use( VueFormJsonSchema);
+function install (Vue) {
+ Vue.component('vue-form-json-schema', VueFormJsonSchema);
+};
+Vue.use({ install: install });
 
 //leaflet
 //Vue.component('v-map', Vue2Leaflet.Map);

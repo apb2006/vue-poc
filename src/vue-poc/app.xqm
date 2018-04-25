@@ -46,7 +46,7 @@ function vue-poc:file(
 declare function vue-poc:get-file($file)
 {
   let $path := resolve-uri( 'static/' || $file,static-base-uri())
-  let $path:=if(file:exists($path))then $path else $vue-poc:index
+  let $path:=if(file:exists($path))then $path else ($vue-poc:index,prof:dump($path," Not found"))
   return (
     web:response-header(map { 'media-type': vue-poc:content-type($path) }),
     file:read-binary($path)

@@ -35,8 +35,8 @@
   <v-menu left  transition="v-fade-transition" >
       <v-chip label small slot="activator" >{{ mode }}</v-chip>
           <v-list dense>
-              <v-list-tile v-for="(mode, mimetype) in mimeTypes"  :key="mimetype">
-                <v-list-tile-title v-text="mimetype" @click="setMode(mimetype)"></v-list-tile-title>
+              <v-list-tile v-for="type in mimeTypes"  :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
    </v-menu>
@@ -262,9 +262,9 @@ v-on:annotation="annotation"></vue-ace>
       this.annotations=counts
       //console.log("annotations: ",counts)
     },
-    setMode(mimetype){
-      this.mimetype=mimetype
-      var r=MimeTypes[mimetype]
+    setMode(type){
+      this.mimetype=type.name
+      var r=type.mode
       this.mode=r?r:"text"
     },
     onResize(){

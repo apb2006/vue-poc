@@ -1,5 +1,4 @@
-// http://www.billdwhite.com/wordpress/2017/09/12/d3-v4-zooming-understanding-zoombehavior-in-the-pan-and-zoom-minimap/
-d3.demo = {};
+ d3.demo = {};
 
 /** CANVAS **/
 d3.demo.canvas = function() {

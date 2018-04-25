@@ -1,14 +1,23 @@
 <!DOCTYPE html>
 <template id="tabs">
 <div>
-  <v-toolbar   tabs>
+  <v-toolbar   tabs dense>
       <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
       <v-toolbar-title>{{ currentItem   }} : {{ active && active.name }}{{ dirty?'*':'' }}</v-toolbar-title>
-       <v-btn @click="showInfo = !showInfo" icon><v-icon>info</v-icon></v-btn>
-          <v-spacer></v-spacer>
-     
-       <v-btn>{{ active && active.mode }}</v-btn>
-       
+      
+       <v-menu left  transition="v-fade-transition" >
+      <v-chip label small slot="activator" >{{ active && active.mode }}</v-chip>
+          <v-list dense>
+              <v-list-tile v-for="type in mimeTypes"  :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="alert('todo')"></v-list-tile-title>
+              </v-list-tile>           
+          </v-list>         
+   </v-menu>
+       <v-spacer></v-spacer>
+       <v-btn @click="showInfo = !showInfo" icon>
+              <v-icon v-if="showInfo">info</v-icon>
+              <v-icon v-else>mode_edit</v-icon>
+        </v-btn>
         <v-menu left bottom  :close-on-content-click="false" >
           <a class="tabs__item" slot="activator">
           {{ items.length }}
@@ -28,7 +37,6 @@
         </v-menu>
         
         <v-tabs   v-model="currentItem" slot="extension">
- 
 		      <v-tab
 		        v-for="item in items"
 		        :key="item.id"
@@ -44,63 +52,83 @@
 			          <v-icon  size="16px">close</v-icon>
 			        </v-btn>
 		      </v-tab>
-      
      </v-tabs>
-     
-
   </v-toolbar>
-    <qd-panel :show="showInfo">
-      
- <v-tabs-items slot="body" v-model="currentItem">
+  
+   
+      <v-tabs-items slot="body" v-model="currentItem">
        <v-tab-item
         v-for="item in items"
         :key="item.id"
         :id="'T' + item.id"
       >
-      <v-card flat  >
-        <div style="height:200px" ref="ace" v-resize="onResize" >
-        <v-flex xs12  fill-height >
-			    <vue-ace  :content="item.text"  v-on:change-content="changeContent"
-			    :mode="item.mode" :wrap="wrap"  :settings="aceSettings"></vue-ace>
-			  </v-flex>
-        </div> 
-      </v-card>
+		      <v-card flat v-if="showInfo" >
+					  <v-card-actions >
+				      <v-toolbar-title >Metadata for tab id: '{{ currentItem }}'</v-toolbar-title>
+				      <v-spacer></v-spacer>    
+				       <v-btn flat > <v-icon>highlight_off</v-icon>todo</v-btn>
+			      </v-card-actions>
+			      
+			       <v-card-text v-if="active"> 
+									<v-layout row v-for="x in ['name','id','mode','dirty','location']" :key="x">
+							      <v-flex xs3>
+							        <v-subheader>{{ x}}</v-subheader>
+							      </v-flex>
+							      <v-flex xs9>
+							        <v-text-field
+							          :name="x"
+							          label="Hint Text"
+							          :value="active[x]"
+							          single-line
+							        ></v-text-field>
+							      </v-flex>
+							    </v-layout>
+				    </v-card-text>
+			    </v-card>
+			    
+			    <v-card v-else>
+		        <div style="height:200px" ref="ace" v-resize="onResize" >
+		        <v-flex xs12  fill-height >
+					    <vue-ace  :content="item.text"  v-on:change-content="changeContent"
+					    :mode="item.mode" :wrap="wrap"  :settings="aceSettings"></vue-ace>
+					  </v-flex>
+		        </div> 
+		      </v-card>
       </v-tab-item>
- </v-tabs-items>
-  <v-card slot="aside" flat> 
-       <v-card-actions >
-      <v-toolbar-title >test</v-toolbar-title>
-      <v-spacer></v-spacer>    
-       <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
-    </v-card-actions>
-    <v-card-text> blah blah protocol:  </v-card-text> 
-    </v-card>
- </qd-panel>
+   </v-tabs-items>
+ 
 </div>
 </template>
 
 <script>{
     data () {
       return {
-        showadd: false,
-        showInfo: false,
+        showadd: false,  // showing add form
+        showInfo: false, // showing info
         nextId:4,
         a1:"",
         currentItem: null, //href of current
         active: null,
         items: [
           {name:"web.txt", id:"1", mode:"text", dirty: false, 
-            text:"1 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+            text:`Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
+ut aliquip ex ea commodo consequat.`},
         
           {name:"Shopping.xq", id:"2", mode: "xquery" ,dirty: false,
-            text:"2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+            text:`let $a:=1 to 5
+return $a   `},
        
-          {name:"videos.xml", id:"3", mode:"xml",dirty: false,
-            text:"2 Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat."},
+          {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "/aaa/bca/",
+            text:`<foo version="1.0">
+   <node>hello</node>
+</foo>`},
       
         ],
       wrap: true,
-      aceSettings: {}
+      aceSettings: {},
+      mimeTypes:MimeTypes
       }
   },
   
@@ -122,7 +150,7 @@
     },
     
     addItem(tab){
-      console.log("TABS: ",tab);
+      console.log("new: ",tab);
       var def={name: "AA"+this.nextId, 
                id: ""+this.nextId,
                contentType: "text/xml",
