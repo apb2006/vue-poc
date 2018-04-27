@@ -1,4 +1,4 @@
-// generated 2018-04-25T23:09:21.192+01:00
+// generated 2018-04-27T23:10:49.032+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -4086,19 +4086,40 @@ const Svg=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/svg2.vue
 const Svg2=Vue.extend({template:` 
  <v-container fluid="">
-<!-- UI controls that can are used to manipulate the display of the chart -->
-    
-   todo
+   <h5 class="title">Svg.</h5>
+	<div ref="svgcanvas" class="canvas"></div>
+	<v-btn @click="view.reset()">Reset</v-btn>
  </v-container>
  `,
       
   data: function() {
     return {
-
+      canvasd3:null,
+      view:null,
+      url:"https://gist.githubusercontent.com/billdwhite/496a140e7ab26cef02635449b3563e54/raw/50a49bfbcafbe1005cba39a118e8b609c4d4ca29/butterfly.svg"
     };
   },
+  methods:{
+    
+  },
   mounted: function() {
-  alert("mounted");
+    this.canvasd3 = d3.select(this.$refs.svgcanvas);
+    /** RUN SCRIPT **/
+    var canvasWidth = 800;
+
+    var canvas = d3.demo.canvas().width(435).height(400);
+    this.view=canvas;
+    this.canvasd3.call(canvas);
+    function addItem(item) {
+      canvas.addItem(d3.select(item));
+    };
+
+    d3.xml(this.url,
+          function(error, xml) {
+        if (error) throw error;
+        addItem(xml.documentElement);
+    });
+
   }
 
 }

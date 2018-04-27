@@ -397,22 +397,3 @@ d3.demo.minimap = function() {
     return minimap;
 };
 
-/** RUN SCRIPT **/
-var canvasWidth = 800;
-
-var canvas = d3.demo.canvas().width(435).height(400);
-d3.select("#canvasqPWKOg").call(canvas);
-
-d3.select("#resetButtonqPWKOg").on("click", function() {
-    canvas.reset();
-});
-
-//d3.xml("https://upload.wikimedia.org/wikipedia/en/1/15/Logo_D3.svg",function(error, xml) {
-  d3.xml("https://gist.githubusercontent.com/billdwhite/496a140e7ab26cef02635449b3563e54/raw/50a49bfbcafbe1005cba39a118e8b609c4d4ca29/butterfly.svg",function(error, xml) {
-    if (error) throw error;
-    addItem(xml.documentElement);
-});
-
-function addItem(item) {
-    canvas.addItem(d3.select(item));
-}
