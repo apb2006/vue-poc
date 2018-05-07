@@ -1,6 +1,6 @@
 <history next-id="13" xmlns="urn:quodatum:vue-poc.history">
 	<event id="1" user="admin" when="">
-		<file mode="webfile" url="/vue-poc/vue-poc.xqm" />
+		<file mode="webfile" url="/vue-poc/app.xqm" />
 	</event>
 	<event id="2">
 		<file mode="webfile" url="/vue-poc/data/vue-poc/samples/ch4d1.xml" />

@@ -6,7 +6,7 @@ import module namespace fw="quodatum:file.walker";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
 (: declare variable $DEST:="c:\tmp\pics2.xml"; :)
-declare variable $DEST:="/pics.xml";
+declare variable $DEST:=format-date(current-date(),"/[Y0001][M01][D01]-pics.xml");
 
 declare %updating function local:put($data,$path){
    db:replace($cfg:DB-IMAGE,$path,$data)

@@ -1,4 +1,4 @@
-// generated 2018-04-27T23:10:49.032+01:00
+// generated 2018-05-07T22:46:00.067+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -684,7 +684,11 @@ Vue.component('vue-ace',{template:`
       
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\components\filters.js
 /**
- * vue filters
+ * some vue filters, requires moment
+ *  formatDate
+ *  fromNow
+ *  readablizeBytes
+ *  round 
  */
 
 //Define the date time format filter
@@ -864,6 +868,7 @@ const Files=Vue.extend({template:`
      
     <v-toolbar-title>
 		    <v-breadcrumbs>
+		        <span slot="divider" style="padding:0;"></span>
 				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}" :exact="true">
 				    {{ item.name }}
 				    </v-breadcrumbs-item>
@@ -1098,11 +1103,11 @@ const Files=Vue.extend({template:`
       },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
-        var parts=this.url.split("/").filter((a)=>a.length>0)
-        var a=parts.map(
-            function(v,i,a){return {name:v,  path:"/"+a.slice(0,i+1).join("/")+"/"}}
-            )
-        return a  
+     var url=this.url
+     return url.split("/").slice(0,-1).map(
+         function(v,i,a){return {name:v +"/",  
+                                 path:a.slice(0,i+1).join("/")+"/"}}
+         ) 
       },
    selection(){
         return this.items.filter(item=>{return item.selected} ) 
@@ -1572,23 +1577,7 @@ const Tabs=Vue.extend({template:`
         a1:"",
         currentItem: null, //href of current
         active: null,
-        items: [
-          {name:"web.txt", id:"1", mode:"text", dirty: false, 
-            text:`Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
-ut aliquip ex ea commodo consequat.`},
-        
-          {name:"Shopping.xq", id:"2", mode: "xquery" ,dirty: false,
-            text:`let $a:=1 to 5
-return $a   `},
-       
-          {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "/aaa/bca/",
-            text:`<foo version="1.0">
-   <node>hello</node>
-</foo>`},
-      
-        ],
+        items: [],
       wrap: true,
       aceSettings: {},
       mimeTypes:MimeTypes
@@ -1644,11 +1633,13 @@ return $a   `},
     }
     },
   },
+  
   watch:{
     currentItem: function (val) {
       this.active = this.items.find(e=> val=="T"+e.id)
     }
   },
+  
   computed:{
     sorted(){
       return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name)) ;
@@ -1663,7 +1654,20 @@ return $a   `},
     .then( v =>{
       next(vm => {vm.aceSettings = v;})
         })
-     },
+     settings.getItem('edit/items')
+    .then( v =>{
+      next(vm => {vm.items = v;})
+        })   
+   },
+     
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    settings.setItem('edit/items',this.items);
+    next(true);
+  }
+  
 }
       );
       
@@ -2069,7 +2073,7 @@ const Brutusin=Vue.extend({template:`
 const Formsschema=Vue.extend({template:` 
  <v-container fluid="">
      <v-card>
-        <v-card-title><qd-link href="https://jarvelov.gitbooks.io/vue-form-json-schema/">vue-form-json-schema@1.13.4</qd-link> </v-card-title>
+        <v-card-title><qd-link href="https://github.com/jarvelov/vue-form-json-schema">vue-form-json-schema@1.15.3</qd-link> </v-card-title>
         
      <vue-form-json-schema :model="model" :schema="schema" :ui-schema="uiSchema" :on-change="onChange">
 	  </vue-form-json-schema>
@@ -4085,40 +4089,87 @@ const Svg=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/svg2.vue
 const Svg2=Vue.extend({template:` 
- <v-container fluid="">
-   <h5 class="title">Svg.</h5>
-	<div ref="svgcanvas" class="canvas"></div>
-	<v-btn @click="view.reset()">Reset</v-btn>
- </v-container>
+<div ref="panel" v-resize="onResize">
+  <v-toolbar dense="">
+	  <v-btn @click="view.reset()">Reset</v-btn>
+	   <v-btn @click="size()">Size</v-btn>
+	     <v-select v-model="url" combobox="" clearable="" open-on-clear="" :items="svgs"></v-select>
+	   
+	    <v-btn @click="load()">set</v-btn>
+	</v-toolbar>
+	
+	 <div ref="svgcanvas" style="width:100%;height:100%;background-color:yellow;"></div>
+</div>
  `,
       
   data: function() {
     return {
       canvasd3:null,
       view:null,
-      url:"https://gist.githubusercontent.com/billdwhite/496a140e7ab26cef02635449b3563e54/raw/50a49bfbcafbe1005cba39a118e8b609c4d4ca29/butterfly.svg"
+      url:"/vue-poc/ui/resources/svg/butterfly.svg",
+      svgs:["/vue-poc/ui/resources/svg/butterfly.svg",
+            "/vue-poc/ui/resources/svg/tiger.svg"]
     };
   },
   methods:{
+    size(){
+      this.view.width(200).height(200).render();
+    },
     
+    load(){
+      var that=this;
+      d3.xml(this.url,
+          function(error, xml) {
+        if (error) {
+          //alert("load err");
+          throw error;
+        }
+        var d=d3.select(xml.documentElement)
+        that.view.setItem(d);
+    });
+    },
+    
+    onResize(){
+      var el=this.$refs["panel"];
+       
+      //console.log("top",e.offsetTop)
+      var h=Math.max(1,window.innerHeight - el.offsetTop -10);
+      var w=Math.max(1,window.innerWidth- el.offsetLeft ) 
+      console.log("resize:",w,h)
+      el.style.height=h +"px";
+      if(this.view ){
+        this.view.height(h-20);
+       this.view.render();
+      }
+    }
+
   },
+  
+  watch:{
+    url(v){
+      this.$router.push({  query: { url: this.url }})
+      },
+      $route(vnew,vold){
+        //console.log("ROUTE",vnew,vold)    
+        var url=this.$route.query.url
+        this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
+        if(vnew.query.url != vold.query.url) this.load() 
+      }
+  },
+  
   mounted: function() {
+    var url=this.$route.query.url
+    this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
     this.canvasd3 = d3.select(this.$refs.svgcanvas);
     /** RUN SCRIPT **/
     var canvasWidth = 800;
 
-    var canvas = d3.demo.canvas().width(435).height(400);
+    var canvas = d3.demo.canvas().width(canvasWidth).height(400);
     this.view=canvas;
     this.canvasd3.call(canvas);
-    function addItem(item) {
-      canvas.addItem(d3.select(item));
-    };
-
-    d3.xml(this.url,
-          function(error, xml) {
-        if (error) throw error;
-        addItem(xml.documentElement);
-    });
+    
+    this.load();
+   
 
   }
 
@@ -4709,18 +4760,23 @@ const Tree2=Vue.extend({template:`
  <v-container fluid="">
  <v-card>
  <v-toolbar class="lime darken-1">
-   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.19</qd-link> </v-card-title>
+   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.25</qd-link> </v-card-title>
    <v-spacer></v-spacer>
    <v-btn>todo</v-btn>
    </v-toolbar>
    <v-card-text>
+     <v-layout row="" wrap="">
+      <v-flex xs6="" offset-xs6="">
     <treeselect v-model="value" :multiple="true" :options="source">
-
-   </treeselect></v-card-text>
+    </treeselect></v-flex>
+   </v-layout>
+   </v-card-text>
  </v-card>
  </v-container>
  `,
       
+  //components: { Treeselect },
+  
   data:function(){
     return {
       value: null,
@@ -5341,6 +5397,7 @@ const Vuepoc=Vue.extend({template:`
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
       {href: '/svg',text: 'SVG',icon: 'extension'},
+      {href: '/svg2',text: 'SVG2',icon: 'extension'},
       {href: '/tree',text: 'Tree',icon: 'nature'},
       {href: '/tree2',text: 'Tree 2',icon: 'nature'}
       ]},
@@ -5379,9 +5436,15 @@ const Vuepoc=Vue.extend({template:`
     },
     
   created(){
-    console.log("create-----------")
+    console.log("create-----------");
+		
     var that=this
-    this.$on("theme",this.onDark)
+    this.$on("theme",this.onDark);
+    window.addEventListener('error', function (err) {
+      var msg=JSON.stringify(err)
+      that.showAlert("vue error:\n"+msg);
+      //alert('window.onerrora-\n' + err.message);
+  });
     Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
@@ -5524,14 +5587,33 @@ localforage.config({
 var settings = {
     debug: false,
     defaults:{
+      
       "settings/ace": {
-        theme: "github",
-        keybinding: "ace",
-        fontsize: 16,
-        enableSnippets:true,
-        enableBasicAutocompletion:true,
-        enableLiveAutocompletion:true
-        },
+                      theme: "github",
+                      keybinding: "ace",
+                      fontsize: 16,
+                      enableSnippets:true,
+                      enableBasicAutocompletion:true,
+                      enableLiveAutocompletion:true
+                      },
+        
+       "features/serviceworker": true,
+       "edit/items":[
+         {name:"web.txt", id:"1", mode:"text", dirty: false, 
+           text:`Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
+ut aliquip ex ea commodo consequat.`},
+       
+         {name:"Shopping.xq", id:"2", mode: "xquery" ,dirty: false,
+           text:`let $a:=1 to 5
+return $a   `},
+      
+         {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "/aaa/bca/",
+           text:`<foo version="1.0">
+  <node>hello</node>
+</foo>`}
+       ]
     },
     getItem (key) {
       if (this.debug) console.log('getItem',key);
@@ -5638,7 +5720,9 @@ const Fullscreen={
     })  }
 };
 Vue.use(Fullscreen);
-Vue.use(VueTreeselect);
+
+Vue.component('treeselect', VueTreeselect.Treeselect);
+
 //Vue.use( VueFormJsonSchema);
 function install (Vue) {
  Vue.component('vue-form-json-schema', VueFormJsonSchema);

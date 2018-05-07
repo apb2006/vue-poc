@@ -101,14 +101,33 @@ localforage.config({
 var settings = {
     debug: false,
     defaults:{
+      
       "settings/ace": {
-        theme: "github",
-        keybinding: "ace",
-        fontsize: 16,
-        enableSnippets:true,
-        enableBasicAutocompletion:true,
-        enableLiveAutocompletion:true
-        },
+                      theme: "github",
+                      keybinding: "ace",
+                      fontsize: 16,
+                      enableSnippets:true,
+                      enableBasicAutocompletion:true,
+                      enableLiveAutocompletion:true
+                      },
+        
+       "features/serviceworker": true,
+       "edit/items":[
+         {name:"web.txt", id:"1", mode:"text", dirty: false, 
+           text:`Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
+sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
+Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
+ut aliquip ex ea commodo consequat.`},
+       
+         {name:"Shopping.xq", id:"2", mode: "xquery" ,dirty: false,
+           text:`let $a:=1 to 5
+return $a   `},
+      
+         {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "/aaa/bca/",
+           text:`<foo version="1.0">
+  <node>hello</node>
+</foo>`}
+       ]
     },
     getItem (key) {
       if (this.debug) console.log('getItem',key);
@@ -215,7 +234,9 @@ const Fullscreen={
     })  }
 };
 Vue.use(Fullscreen);
-Vue.use(VueTreeselect);
+
+Vue.component('treeselect', VueTreeselect.Treeselect);
+
 //Vue.use( VueFormJsonSchema);
 function install (Vue) {
  Vue.component('vue-form-json-schema', VueFormJsonSchema);

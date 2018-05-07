@@ -12,7 +12,8 @@
    
      
     <v-toolbar-title>
-		    <v-breadcrumbs>
+		    <v-breadcrumbs >
+		        <span slot="divider" style="padding:0;"></span>
 				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" 
 				    :to="{ query: { url:  item.path }}" :exact="true">
 				    {{ item.name }}
@@ -252,11 +253,11 @@
       },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
-        var parts=this.url.split("/").filter((a)=>a.length>0)
-        var a=parts.map(
-            function(v,i,a){return {name:v,  path:"/"+a.slice(0,i+1).join("/")+"/"}}
-            )
-        return a  
+     var url=this.url
+     return url.split("/").slice(0,-1).map(
+         function(v,i,a){return {name:v +"/",  
+                                 path:a.slice(0,i+1).join("/")+"/"}}
+         ) 
       },
    selection(){
         return this.items.filter(item=>{return item.selected} ) 

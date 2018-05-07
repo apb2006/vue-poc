@@ -160,7 +160,18 @@ d3.demo.canvas = function() {
             panCanvas.node().appendChild(item.node());
             minimap.render();
         };
-
+        
+        /** SET SHAPE **/
+        canvas.setItem=function(item){
+          var tn=panCanvas.node();
+          while (tn.hasChildNodes()) {
+            tn.removeChild(tn.lastChild);
+           };
+           panCanvas.node().appendChild(item.node());
+           canvas.reset();
+           minimap.render();
+        };
+        
         /** RENDER **/
         canvas.render = function() {
             svgDefs

@@ -1,5 +1,9 @@
 /**
- * vue filters
+ * some vue filters, requires moment
+ *  formatDate
+ *  fromNow
+ *  readablizeBytes
+ *  round 
  */
 
 //Define the date time format filter

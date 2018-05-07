@@ -2,7 +2,7 @@
 <template id="formsschema">
  <v-container fluid>
      <v-card>
-        <v-card-title><qd-link href="https://jarvelov.gitbooks.io/vue-form-json-schema/">vue-form-json-schema@1.13.4</qd-link> </v-card-title>
+        <v-card-title><qd-link href="https://github.com/jarvelov/vue-form-json-schema">vue-form-json-schema@1.15.3</qd-link> </v-card-title>
         
      <vue-form-json-schema
       :model="model"

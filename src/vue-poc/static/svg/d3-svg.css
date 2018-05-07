@@ -7,7 +7,6 @@ html, body {
 }
 .canvas {
   overflow: hidden;
-  background-color:green;
 }
 .canvas .wrapper.outer > .background {
   fill: #000000;

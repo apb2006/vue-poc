@@ -190,6 +190,7 @@
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
       {href: '/svg',text: 'SVG',icon: 'extension'},
+      {href: '/svg2',text: 'SVG2',icon: 'extension'},
       {href: '/tree',text: 'Tree',icon: 'nature'},
       {href: '/tree2',text: 'Tree 2',icon: 'nature'}
       ]},
@@ -228,9 +229,15 @@
     },
     
   created(){
-    console.log("create-----------")
+    console.log("create-----------");
+		
     var that=this
-    this.$on("theme",this.onDark)
+    this.$on("theme",this.onDark);
+    window.addEventListener('error', function (err) {
+      var msg=JSON.stringify(err)
+      that.showAlert("vue error:\n"+msg);
+      //alert('window.onerrora-\n' + err.message);
+  });
     Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook

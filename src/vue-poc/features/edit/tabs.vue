@@ -109,23 +109,7 @@
         a1:"",
         currentItem: null, //href of current
         active: null,
-        items: [
-          {name:"web.txt", id:"1", mode:"text", dirty: false, 
-            text:`Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
-sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
-Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
-ut aliquip ex ea commodo consequat.`},
-        
-          {name:"Shopping.xq", id:"2", mode: "xquery" ,dirty: false,
-            text:`let $a:=1 to 5
-return $a   `},
-       
-          {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "/aaa/bca/",
-            text:`<foo version="1.0">
-   <node>hello</node>
-</foo>`},
-      
-        ],
+        items: [],
       wrap: true,
       aceSettings: {},
       mimeTypes:MimeTypes
@@ -181,11 +165,13 @@ return $a   `},
     }
     },
   },
+  
   watch:{
     currentItem: function (val) {
       this.active = this.items.find(e=> val=="T"+e.id)
     }
   },
+  
   computed:{
     sorted(){
       return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name)) ;
@@ -200,5 +186,18 @@ return $a   `},
     .then( v =>{
       next(vm => {vm.aceSettings = v;})
         })
-     },
+     settings.getItem('edit/items')
+    .then( v =>{
+      next(vm => {vm.items = v;})
+        })   
+   },
+     
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    settings.setItem('edit/items',this.items);
+    next(true);
+  }
+  
 }</script>
