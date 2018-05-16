@@ -1,4 +1,4 @@
-// generated 2018-05-07T22:46:00.067+01:00
+// generated 2018-05-16T22:38:13.701+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -464,30 +464,29 @@ Vue.component('vp-selectpath',{template:`
        </slot>
        </v-btn>
        <v-card>
-            <v-toolbar> 
-		           <v-card-title>
-		            Content of new tab {{type}}
-		          </v-card-title>
-		          
+          <v-toolbar> 
+               <v-card-title>
+                Content of new tab {{type}}
+              </v-card-title>
           </v-toolbar>
           
          <v-card-text>
          Content:
          
           <v-tabs v-model="type" icons-and-text="" centered="">
-					   <v-tab v-for="item in protocols" :key="item.name">
-					    {{item.name}}
-					      <v-icon>{{item.icon}}</v-icon>
-					    </v-tab>
+             <v-tab v-for="item in protocols" :key="item.name">
+              {{item.name}}
+                <v-icon>{{item.icon}}</v-icon>
+              </v-tab>
     
  
-					    <v-tab-item v-for="item in protocols" :key="item.name">
-					      <v-card flat="">
-					        <v-card-text>
-					          <v-text-field v-for="f in item.fields" :key="f.model" :label="f.label" :v-model="f.model"></v-text-field>
-					        </v-card-text>
-					      </v-card>
-					    </v-tab-item>
+              <v-tab-item v-for="item in protocols" :key="item.name">
+                <v-card flat="">
+                  <v-card-text>
+                    <v-text-field v-for="f in item.fields" :key="f.model" :label="f.label" :v-model="f.model"></v-text-field>
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
           </v-tabs>
           
          </v-card-text>
@@ -542,7 +541,7 @@ Vue.component('vue-ace',{template:`
           'mode', 
           'wrap',
           'readOnly',
-          'events',
+          'events',  // event bus if set handles "eventFired",cmd 
           'settings',
           'minLines',
           ],
@@ -653,7 +652,7 @@ Vue.component('vue-ace',{template:`
               editor.showKeyboardShortcuts()
           })
       }
-  })
+    });
     this.editor.on('change', () => {
         this.beforeContent = this.editor.getValue()
       this.$emit('change-content', this.beforeContent)
@@ -671,6 +670,14 @@ Vue.component('vue-ace',{template:`
       //console.log(this.annots)
        this.$emit('annotation',{error: this.annots["error"]+0, warning: this.annots["warning"]+0})
     });
+    
+    this.editor.getSession().selection.on('changeCursor', (e) => {
+      var position = this.editor.selection.cursor;
+      var token =  this.editor.getSession().getTokenAt(position.row, position.column);
+      console.log("token",token);
+      this.$emit('token', token);
+    });
+    
     if(this.events){
       this.events.$on('eventFired', (cmd) => {
       if(cmd=="outline"){
@@ -1491,17 +1498,30 @@ const Edit=Vue.extend({template:`
 const Tabs=Vue.extend({template:` 
 <div>
   <v-toolbar tabs="" dense="">
-      <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
-      <v-toolbar-title>{{ currentItem   }} : {{ active &amp;&amp; active.name }}{{ dirty?'*':'' }}</v-toolbar-title>
+     <v-toolbar-items>
+	      <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
+	      <v-btn icon="" @click="openUri"><v-icon>insert_drive_file</v-icon></v-btn>
+      </v-toolbar-items>
+      <v-toolbar-title>{{ currentId   }} </v-toolbar-title>
       
-       <v-menu left="" transition="v-fade-transition">
-      <v-chip label="" small="" slot="activator">{{ active &amp;&amp; active.mode }}</v-chip>
+       <v-menu v-if="active" left="" transition="v-fade-transition">
+       <v-chip label="" small="" slot="activator">{{ active.mode }}</v-chip>
           <v-list dense="">
               <v-list-tile v-for="type in mimeTypes" :key="type.name">
                 <v-list-tile-title v-text="type.name" @click="alert('todo')"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
-   </v-menu>
+      </v-menu>
+      
+       <v-menu v-if="active" left="" transition="v-fade-transition">
+        <v-btn icon="" slot="activator"><v-icon>lightbulb_outline</v-icon></v-btn>
+          <v-list dense="">
+              <v-list-tile v-for="type in mimeTypes" :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="lightbulb(type.name)"></v-list-tile-title>
+              </v-list-tile>           
+          </v-list>         
+      </v-menu>
+      
        <v-spacer></v-spacer>
        <v-btn @click="showInfo = !showInfo" icon="">
               <v-icon v-if="showInfo">info</v-icon>
@@ -1520,12 +1540,13 @@ const Tabs=Vue.extend({template:`
 	        </v-card>
         </v-menu>
         
-        <v-tabs v-model="currentItem" slot="extension">
+        <v-tabs v-model="currentId" slot="extension">
 		      <v-tab v-for="item in items" :key="item.id" :href="'#T' + item.id" ripple="" style="text-transform: none;text-align:left">
 			       <v-avatar>
 			          <v-icon size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
-			       <span>{{ item.name + (item.dirty?"*":"") }}</span>
+			       <span>{{ item.name  }}</span>
+			       <span>{{ (item.dirty?"*":"") }}</span>
 			       <v-spacer></v-spacer>
 			       <v-btn icon="" @click.stop="tabClose(item)">
 			          <v-icon size="16px">close</v-icon>
@@ -1535,11 +1556,11 @@ const Tabs=Vue.extend({template:`
   </v-toolbar>
   
    
-      <v-tabs-items slot="body" v-model="currentItem">
+      <v-tabs-items slot="body" v-model="currentId">
        <v-tab-item v-for="item in items" :key="item.id" :id="'T' + item.id">
 		      <v-card flat="" v-if="showInfo">
 					  <v-card-actions>
-				      <v-toolbar-title>Metadata for tab id: '{{ currentItem }}'</v-toolbar-title>
+				      <v-toolbar-title>Metadata for tab id: '{{ currentId }}'</v-toolbar-title>
 				      <v-spacer></v-spacer>    
 				       <v-btn flat=""> <v-icon>highlight_off</v-icon>todo</v-btn>
 			      </v-card-actions>
@@ -1575,7 +1596,7 @@ const Tabs=Vue.extend({template:`
         showInfo: false, // showing info
         nextId:4,
         a1:"",
-        currentItem: null, //href of current
+        currentId: null, //href of current
         active: null,
         items: [],
       wrap: true,
@@ -1593,14 +1614,19 @@ const Tabs=Vue.extend({template:`
       if (index > -1) {
         this.items.splice(index, 1);
         index=(index==0)?0:index-1;
-        this.currentItem=(this.items.length)?"T"+this.items[index].id : null;
+        this.currentId=(this.items.length)?"T"+this.items[index].id : null;
     }
       }
     },
     setItem(v){
-      if(v) this.currentItem="T"+v;
+      if(v) this.currentId="T"+v;
     },
-    
+    openUri(){
+      alert("openUri TODO")
+    },
+    lightbulb(d){
+      alert("lightbulb TODO: " + d)
+    },
     addItem(tab){
       console.log("new: ",tab);
       var def={name: "AA"+this.nextId, 
@@ -1611,7 +1637,7 @@ const Tabs=Vue.extend({template:`
                };
       var etab = Object.assign(def,tab);
       this.items.push (etab);
-      this.currentItem="T" + this.nextId 
+      this.currentId="T" + this.nextId 
       this.nextId++;
     },
     changeContent(val){
@@ -1635,7 +1661,7 @@ const Tabs=Vue.extend({template:`
   },
   
   watch:{
-    currentItem: function (val) {
+    currentId: function (val) {
       this.active = this.items.find(e=> val=="T"+e.id)
     }
   },
@@ -1650,21 +1676,26 @@ const Tabs=Vue.extend({template:`
   },
   
   beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
-    .then( v =>{
-      next(vm => {vm.aceSettings = v;})
-        })
-     settings.getItem('edit/items')
-    .then( v =>{
-      next(vm => {vm.items = v;})
-        })   
-   },
+    Promise.all([settings.getItem('settings/ace'), 
+                 settings.getItem('edit/items'),
+                 settings.getItem('edit/currentId'),
+                 ])
+    .then(function(values) {
+      next(vm => {
+          vm.aceSettings = values[0];
+          vm.items = values[1];
+          vm.currentId = values[2];
+          //console.log("done all",values);
+          })
+          })
+    },
      
   beforeRouteLeave (to, from, next) {
     // called when the route that renders this component is about to
     // be navigated away from.
     // has access to `this` component instance.
     settings.setItem('edit/items',this.items);
+    settings.setItem('edit/currentId',this.currentId);
     next(true);
   }
   
@@ -5613,7 +5644,8 @@ return $a   `},
            text:`<foo version="1.0">
   <node>hello</node>
 </foo>`}
-       ]
+       ],
+       "edit/currentId": "?"
     },
     getItem (key) {
       if (this.debug) console.log('getItem',key);

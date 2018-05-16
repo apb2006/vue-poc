@@ -1,20 +1,20 @@
 <mimetypes xmlns="urn:quodatum:vue-poc.mimetypes">
- <type name="css">
-      <mime type="css" ext="css" />
-  </type>
-  <type name="html">
-      <mime type="text/html" ext="htm html" />
-  </type>
+	<type name="css">
+		<mime type="css" ext="css" />
+	</type>
+	<type name="html">
+		<mime type="text/html" ext="htm html" />
+	</type>
 	<type name="javascript">
-    <mime type="text/ecmascript" ext="js" />
-  </type>
-  <type name="xml">
-    <mime type="text/xml" ext="xml xsd" />
-  </type>
-  <type name="sparql">
-    <mime type="application/sparql-query" ext="rq" />
-  </type>
-    <type name="xquery">
-    <mime type="application/xquery" ext="xq xqm" />
-  </type>
+		<mime type="text/ecmascript" ext="js" />
+	</type>
+	<type name="xml">
+		<mime type="text/xml" ext="xml xsd" />
+	</type>
+	<type name="sparql">
+		<mime type="application/sparql-query" ext="rq" />
+	</type>
+	<type name="xquery">
+		<mime type="application/xquery" ext="xq xqm" />
+	</type>
 </mimetypes>

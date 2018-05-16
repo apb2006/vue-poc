@@ -13,7 +13,7 @@ event fired cmd outline
           'mode', 
           'wrap',
           'readOnly',
-          'events',
+          'events',  // event bus if set handles "eventFired",cmd 
           'settings',
           'minLines',
           ],
@@ -124,7 +124,7 @@ event fired cmd outline
               editor.showKeyboardShortcuts()
           })
       }
-  })
+    });
     this.editor.on('change', () => {
         this.beforeContent = this.editor.getValue()
       this.$emit('change-content', this.beforeContent)
@@ -142,6 +142,14 @@ event fired cmd outline
       //console.log(this.annots)
        this.$emit('annotation',{error: this.annots["error"]+0, warning: this.annots["warning"]+0})
     });
+    
+    this.editor.getSession().selection.on('changeCursor', (e) => {
+      var position = this.editor.selection.cursor;
+      var token =  this.editor.getSession().getTokenAt(position.row, position.column);
+      console.log("token",token);
+      this.$emit('token', token);
+    });
+    
     if(this.events){
       this.events.$on('eventFired', (cmd) => {
       if(cmd=="outline"){

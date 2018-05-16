@@ -127,7 +127,8 @@ return $a   `},
            text:`<foo version="1.0">
   <node>hello</node>
 </foo>`}
-       ]
+       ],
+       "edit/currentId": "?"
     },
     getItem (key) {
       if (this.debug) console.log('getItem',key);

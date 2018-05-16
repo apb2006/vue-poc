@@ -2,17 +2,30 @@
 <template id="tabs">
 <div>
   <v-toolbar   tabs dense>
-      <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
-      <v-toolbar-title>{{ currentItem   }} : {{ active && active.name }}{{ dirty?'*':'' }}</v-toolbar-title>
+     <v-toolbar-items>
+	      <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
+	      <v-btn icon @click="openUri"><v-icon>insert_drive_file</v-icon></v-btn>
+      </v-toolbar-items>
+      <v-toolbar-title>{{ currentId   }} </v-toolbar-title>
       
-       <v-menu left  transition="v-fade-transition" >
-      <v-chip label small slot="activator" >{{ active && active.mode }}</v-chip>
+       <v-menu v-if="active"  left  transition="v-fade-transition" >
+       <v-chip label small slot="activator" >{{ active.mode }}</v-chip>
           <v-list dense>
               <v-list-tile v-for="type in mimeTypes"  :key="type.name">
                 <v-list-tile-title v-text="type.name" @click="alert('todo')"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
-   </v-menu>
+      </v-menu>
+      
+       <v-menu v-if="active" left  transition="v-fade-transition" >
+        <v-btn icon  slot="activator" ><v-icon>lightbulb_outline</v-icon></v-btn>
+          <v-list dense>
+              <v-list-tile v-for="type in mimeTypes"  :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="lightbulb(type.name)"></v-list-tile-title>
+              </v-list-tile>           
+          </v-list>         
+      </v-menu>
+      
        <v-spacer></v-spacer>
        <v-btn @click="showInfo = !showInfo" icon>
               <v-icon v-if="showInfo">info</v-icon>
@@ -36,7 +49,7 @@
 	        </v-card>
         </v-menu>
         
-        <v-tabs   v-model="currentItem" slot="extension">
+        <v-tabs   v-model="currentId" slot="extension">
 		      <v-tab
 		        v-for="item in items"
 		        :key="item.id"
@@ -46,7 +59,8 @@
 			       <v-avatar >
 			          <v-icon  size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
-			       <span >{{ item.name + (item.dirty?"*":"") }}</span>
+			       <span >{{ item.name  }}</span>
+			       <span >{{ (item.dirty?"*":"") }}</span>
 			       <v-spacer></v-spacer>
 			       <v-btn icon @click.stop="tabClose(item)">
 			          <v-icon  size="16px">close</v-icon>
@@ -56,7 +70,7 @@
   </v-toolbar>
   
    
-      <v-tabs-items slot="body" v-model="currentItem">
+      <v-tabs-items slot="body" v-model="currentId">
        <v-tab-item
         v-for="item in items"
         :key="item.id"
@@ -64,7 +78,7 @@
       >
 		      <v-card flat v-if="showInfo" >
 					  <v-card-actions >
-				      <v-toolbar-title >Metadata for tab id: '{{ currentItem }}'</v-toolbar-title>
+				      <v-toolbar-title >Metadata for tab id: '{{ currentId }}'</v-toolbar-title>
 				      <v-spacer></v-spacer>    
 				       <v-btn flat > <v-icon>highlight_off</v-icon>todo</v-btn>
 			      </v-card-actions>
@@ -107,7 +121,7 @@
         showInfo: false, // showing info
         nextId:4,
         a1:"",
-        currentItem: null, //href of current
+        currentId: null, //href of current
         active: null,
         items: [],
       wrap: true,
@@ -125,14 +139,19 @@
       if (index > -1) {
         this.items.splice(index, 1);
         index=(index==0)?0:index-1;
-        this.currentItem=(this.items.length)?"T"+this.items[index].id : null;
+        this.currentId=(this.items.length)?"T"+this.items[index].id : null;
     }
       }
     },
     setItem(v){
-      if(v) this.currentItem="T"+v;
+      if(v) this.currentId="T"+v;
     },
-    
+    openUri(){
+      alert("openUri TODO")
+    },
+    lightbulb(d){
+      alert("lightbulb TODO: " + d)
+    },
     addItem(tab){
       console.log("new: ",tab);
       var def={name: "AA"+this.nextId, 
@@ -143,7 +162,7 @@
                };
       var etab = Object.assign(def,tab);
       this.items.push (etab);
-      this.currentItem="T" + this.nextId 
+      this.currentId="T" + this.nextId 
       this.nextId++;
     },
     changeContent(val){
@@ -167,7 +186,7 @@
   },
   
   watch:{
-    currentItem: function (val) {
+    currentId: function (val) {
       this.active = this.items.find(e=> val=="T"+e.id)
     }
   },
@@ -182,21 +201,26 @@
   },
   
   beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
-    .then( v =>{
-      next(vm => {vm.aceSettings = v;})
-        })
-     settings.getItem('edit/items')
-    .then( v =>{
-      next(vm => {vm.items = v;})
-        })   
-   },
+    Promise.all([settings.getItem('settings/ace'), 
+                 settings.getItem('edit/items'),
+                 settings.getItem('edit/currentId'),
+                 ])
+    .then(function(values) {
+      next(vm => {
+          vm.aceSettings = values[0];
+          vm.items = values[1];
+          vm.currentId = values[2];
+          //console.log("done all",values);
+          })
+          })
+    },
      
   beforeRouteLeave (to, from, next) {
     // called when the route that renders this component is about to
     // be navigated away from.
     // has access to `this` component instance.
     settings.setItem('edit/items',this.items);
+    settings.setItem('edit/currentId',this.currentId);
     next(true);
   }
   

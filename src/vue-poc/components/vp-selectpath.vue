@@ -3,9 +3,9 @@
 display button that invokes a  select path form
  emits selectpath event
   {  type:this.type,
-	    name: "Newname",
-	    text:"Some text"
-	    }
+      name: "Newname",
+      text:"Some text"
+      }
  -->
 <template id="vp-selectpath">
    <v-dialog v-model="frmfav" persistent max-width="600">
@@ -15,31 +15,30 @@ display button that invokes a  select path form
        </slot>
        </v-btn>
        <v-card >
-            <v-toolbar > 
-		           <v-card-title>
-		            Content of new tab {{type}}
-		          </v-card-title>
-		          
+          <v-toolbar > 
+               <v-card-title>
+                Content of new tab {{type}}
+              </v-card-title>
           </v-toolbar>
           
          <v-card-text>
          Content:
          
           <v-tabs v-model="type" icons-and-text centered >
-					   <v-tab v-for="item in protocols" :key="item.name">
-					    {{item.name}}
-					      <v-icon>{{item.icon}}</v-icon>
-					    </v-tab>
+             <v-tab v-for="item in protocols" :key="item.name">
+              {{item.name}}
+                <v-icon>{{item.icon}}</v-icon>
+              </v-tab>
     
  
-					    <v-tab-item v-for="item in protocols" :key="item.name">
-					      <v-card flat>
-					        <v-card-text>
-					          <v-text-field v-for="f in item.fields" :key="f.model"
-					          :label="f.label" :v-model="f.model"></v-text-field>
-					        </v-card-text>
-					      </v-card>
-					    </v-tab-item>
+              <v-tab-item v-for="item in protocols" :key="item.name">
+                <v-card flat>
+                  <v-card-text>
+                    <v-text-field v-for="f in item.fields" :key="f.model"
+                    :label="f.label" :v-model="f.model"></v-text-field>
+                  </v-card-text>
+                </v-card>
+              </v-tab-item>
           </v-tabs>
           
          </v-card-text>

@@ -56,7 +56,7 @@ as element(json)
               "webfile":ufile:webfile#1,
               "xmldb":ufile:xmldb#1
               }
-   let $items:=$reader($protocol)($url)
+   let $items:=$reader($protocol=>trace("PROTO"))($url)
    return vue-api:items($items)
 };        
 
