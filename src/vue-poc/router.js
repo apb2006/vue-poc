@@ -42,8 +42,24 @@ const router = new VueRouter({
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
-    { path: '/settings', component: Settings, meta:{title:"Settings"} },
-    { path: '/acesettings', component: Acesettings, meta:{title:"Editor settings"} },
+    { path: '/settings', component: { template: '<router-view/>' }
+         ,children: [
+           {
+             path: '',
+             component: Settings, meta:{title:"Settings"}
+           },
+          {
+            path: 'keys',
+            component: Keys, 
+            meta:{title:"keys"} 
+          },
+          {
+            path: 'ace',
+            component: Acesettings, 
+            meta:{title:"Editor settings"} 
+          }
+          ]
+    },
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/svg', component: Svg, meta:{title:"SVG"} },

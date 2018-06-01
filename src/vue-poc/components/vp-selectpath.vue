@@ -74,7 +74,7 @@ display button that invokes a  select path form
     
     favorite(){
       this.$emit('selectpath', {
-          type:this.type,
+          type:this.protocols[this.type],
           uri: this.xmldb,
           name: "doc" + moment().format("YYYY-MM-DDThh:mm:ss") ,
           text:"Some text"

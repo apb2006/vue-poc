@@ -3,13 +3,16 @@
  <v-container fluid>
  <v-card>
  <v-toolbar class="lime darken-1">
-   <v-card-title ><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.25</qd-link> </v-card-title>
+   <v-card-title ><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.28</qd-link> </v-card-title>
    <v-spacer></v-spacer>
    <v-btn>todo</v-btn>
    </v-toolbar>
    <v-card-text>
      <v-layout row wrap>
-      <v-flex xs6 offset-xs6>
+     <v-flex xs6 >
+     Select some things
+     </v-flex>
+      <v-flex xs6 >
     <treeselect
     v-model="value"
     :multiple="true"

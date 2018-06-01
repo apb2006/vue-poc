@@ -1,19 +1,21 @@
 <!DOCTYPE html>
-<template id="settings">
+<template id="keys">
  <v-container fluid>
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
-<v-switch label="Dark theme" v-model="dark" @change="theme"></v-switch>
 	 <v-card>
-	   <v-card-title class="lime darken-1">Available settings</v-card-title>
-	  
+	   <v-card-title class="lime darken-1">keys</v-card-title>
 
-
-	 <v-card-text>
-	   <router-link to="settings/ace">Editor</router-link>
-	   <router-link to="settings/keys">Keys</router-link>
+   <v-card-text>keys
+   <ul >
+  <li v-for="key in keys">
+    {{ key }}
+  </li>
+</ul>
    </v-card-text>
+     <v-card-actions>
+   <v-spacer></v-spacer>
+   <v-btn @click="wipe" color="error">Wipe</v-btn></v-card-actions>
    </v-card>
-   
  </v-container>
 </template>
 

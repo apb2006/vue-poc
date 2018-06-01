@@ -1,4 +1,4 @@
-// generated 2018-05-16T22:38:13.701+01:00
+// generated 2018-06-01T23:15:21.554+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
@@ -522,7 +522,7 @@ Vue.component('vp-selectpath',{template:`
     
     favorite(){
       this.$emit('selectpath', {
-          type:this.type,
+          type:this.protocols[this.type],
           uri: this.xmldb,
           name: "doc" + moment().format("YYYY-MM-DDThh:mm:ss") ,
           text:"Some text"
@@ -748,8 +748,8 @@ const Notfound=Vue.extend({template:`
       message: 'bad route!'
       }
   },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
+ mounted:function(){
+    console.log("notfound",this.$route.path)
   }
 }
 
@@ -1508,7 +1508,7 @@ const Tabs=Vue.extend({template:`
        <v-chip label="" small="" slot="activator">{{ active.mode }}</v-chip>
           <v-list dense="">
               <v-list-tile v-for="type in mimeTypes" :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="alert('todo')"></v-list-tile-title>
+                <v-list-tile-title v-text="type.name" @click="mimetype(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
       </v-menu>
@@ -1623,6 +1623,9 @@ const Tabs=Vue.extend({template:`
     },
     openUri(){
       alert("openUri TODO")
+    },
+    mimetype(type){
+      this.active.mode=type.mode
     },
     lightbulb(d){
       alert("lightbulb TODO: " + d)
@@ -4020,6 +4023,53 @@ const Acesettings=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/keys.vue
+const Keys=Vue.extend({template:` 
+ <v-container fluid="">
+ <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
+	 <v-card>
+	   <v-card-title class="lime darken-1">keys</v-card-title>
+
+   <v-card-text>keys
+   <ul>
+  <li v-for="key in keys">
+    {{ key }}
+  </li>
+</ul>
+   </v-card-text>
+     <v-card-actions>
+   <v-spacer></v-spacer>
+   <v-btn @click="wipe" color="error">Wipe</v-btn></v-card-actions>
+   </v-card>
+ </v-container>
+ `,
+      
+  data(){return {
+    keys: ["?"],
+    showDev: false,
+    dark:false
+  }
+  },
+  methods:{
+    wipe(){
+      if(confirm("wipe localstorage? "+this.keys.length)) settings.clear();
+    },
+    theme(){
+     this.$root.$emit("theme",this.dark)
+    }
+  },
+  created(){
+    console.log("settings")
+    settings.keys()
+    .then( v =>{
+     this.keys=v
+    })
+     
+  }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/settings.vue
 const Settings=Vue.extend({template:` 
  <v-container fluid="">
@@ -4031,23 +4081,11 @@ const Settings=Vue.extend({template:`
 
 
 	 <v-card-text>
-	   <router-link to="/acesettings">Editor</router-link>
+	   <router-link to="settings/ace">Editor</router-link>
+	   <router-link to="settings/keys">Keys</router-link>
    </v-card-text>
    </v-card>
-    <v-switch label="Show advanced options" v-model="showDev"></v-switch>
-   <v-card v-if="showDev">
-   <v-card-title class="amber darken-1">System information</v-card-title>
-   <v-card-text>keys
-   <ul>
-  <li v-for="key in keys">
-    {{ key }}
-  </li>
-</ul>
-   </v-card-text>
-   <v-card-actions>
-   <v-spacer></v-spacer>
-   <v-btn @click="wipe" color="error">Wipe</v-btn></v-card-actions>
-   </v-card>
+   
  </v-container>
  `,
       
@@ -4791,13 +4829,16 @@ const Tree2=Vue.extend({template:`
  <v-container fluid="">
  <v-card>
  <v-toolbar class="lime darken-1">
-   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.25</qd-link> </v-card-title>
+   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.28</qd-link> </v-card-title>
    <v-spacer></v-spacer>
    <v-btn>todo</v-btn>
    </v-toolbar>
    <v-card-text>
      <v-layout row="" wrap="">
-      <v-flex xs6="" offset-xs6="">
+     <v-flex xs6="">
+     Select some things
+     </v-flex>
+      <v-flex xs6="">
     <treeselect v-model="value" :multiple="true" :options="source">
     </treeselect></v-flex>
    </v-layout>
@@ -5188,8 +5229,24 @@ const router = new VueRouter({
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/ping', component: Ping,meta:{title:"Ping"} },
-    { path: '/settings', component: Settings, meta:{title:"Settings"} },
-    { path: '/acesettings', component: Acesettings, meta:{title:"Editor settings"} },
+    { path: '/settings', component: { template: '<router-view/>' }
+         ,children: [
+           {
+             path: '',
+             component: Settings, meta:{title:"Settings"}
+           },
+          {
+            path: 'keys',
+            component: Keys, 
+            meta:{title:"keys"} 
+          },
+          {
+            path: 'ace',
+            component: Acesettings, 
+            meta:{title:"Editor settings"} 
+          }
+          ]
+    },
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/svg', component: Svg, meta:{title:"SVG"} },

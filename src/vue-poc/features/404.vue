@@ -11,8 +11,8 @@
       message: 'bad route!'
       }
   },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
+ mounted:function(){
+    console.log("notfound",this.$route.path)
   }
 }
 </script>

@@ -12,7 +12,7 @@
        <v-chip label small slot="activator" >{{ active.mode }}</v-chip>
           <v-list dense>
               <v-list-tile v-for="type in mimeTypes"  :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="alert('todo')"></v-list-tile-title>
+                <v-list-tile-title v-text="type.name" @click="mimetype(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
       </v-menu>
@@ -148,6 +148,9 @@
     },
     openUri(){
       alert("openUri TODO")
+    },
+    mimetype(type){
+      this.active.mode=type.mode
     },
     lightbulb(d){
       alert("lightbulb TODO: " + d)
