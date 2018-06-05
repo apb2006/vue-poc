@@ -27,7 +27,7 @@
     <v-spacer></v-spacer>
      <v-btn v-if="selection.length"  @click="selectNone">S: {{selection.length}}</v-btn>
      
- <v-text-field v-if="!selection.length" prepend-icon="search" label="Filter..." v-model="q" type="search"
+ <v-text-field v-if="!selection.length" prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"
    :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
    
@@ -246,10 +246,10 @@
         return (this.protocol=="xmldb")?"developer_mode":"folder"
       },
    xfiles(){
-        return this.items.filter(item=>{return item.type!="folder" &&((!this.q) || item.name.includes(this.q))})
+        return this.items.filter(item=>{return item.type!="folder" &&((!this.q) || item.name.toLowerCase().includes(this.q.toLowerCase()))})
       },
    xfolders(){
-        return this.items.filter(item=>{return item.type=="folder" &&((!this.q) || item.name.includes(this.q))})
+        return this.items.filter(item=>{return item.type=="folder" &&((!this.q) || item.name.toLowerCase().includes(this.q.toLowerCase()))})
       },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){

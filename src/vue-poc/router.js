@@ -32,6 +32,8 @@ const router = new VueRouter({
     { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
     
     { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
+    { path: '/namespace/item', component: Namespace1, meta:{title:"Namespace"} },
+    
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -90,8 +92,9 @@ const router = new VueRouter({
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
     { path: '/form3', component: Formsschema, meta:{title:"vue-form-json-schema"} },
     
-    { path: '/about', component: About,meta:{title:"About Vue-poc"} },
-    { path: '*', component: Notfound,meta:{title:"Page not found"} }
+    { path: '/scratch', component: Scratch, meta:{title:"scratch"} },
+    { path: '/about', component: About, meta:{title:"About Vue-poc"} },
+    { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],
 });
 router.afterEach(function(route) {

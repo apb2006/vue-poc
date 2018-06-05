@@ -10,46 +10,27 @@
    >Refresh</v-btn>
    Text
    </v-toolbar>
-     <v-data-iterator
-      content-tag="v-layout"
-      row
-      wrap
-      :loading="loading"
-      :items="items"
-      :rows-per-page-items="rowsPerPageItems"
-      :pagination.sync="pagination"
-      select-all 
-      :value="selected"
-    >
-      <v-flex
-        slot="item"
-        slot-scope="props"
-        xs12
-        sm6
-        md4
-        lg3
-      >
-        <v-card :hover="true" active-class="default-class qd-active" height="200px">
-        
-          <v-toolbar  color="amber">
-              <v-card-title >
-               <router-link :to="{path:'namespace/'+ props.item.name}">
-                <h3>
-                <v-icon>star</v-icon> {{ props.item.xmlns }}
-                </h3>
-                </router-link>
-             </v-card-title>
-          </v-toolbar>
-          <v-card-text>{{ props.item.description }}</<v-card-text>
-          <v-card-text>
-           <v-badge color="red">
-            <span slot="badge">{{ props.item.prefix }}</span>
-            Fields
-          </v-badge>
-          </v-card-text>
-        </v-card>
-      </v-flex>
-    </v-data-iterator>
+    <v-data-table
+    :headers="headers"
+    :items="items"
+    hide-actions
+    class="elevation-1"
+  >
+    <template slot="items" slot-scope="props">
+      <td ><router-link :to="{path:'namespace/item?xmlns='+ props.item.xmlns}">
+                 {{ props.item.xmlns }}
+                </router-link></td>
+      <td >{{ props.item.description }}</td>
+      <td >{{ props.item.prefix }}</td>
+     
+    </template>
+    <template slot="no-data">
+      <v-alert :value="true" color="error" icon="warning">
+        Sorry, nothing to display here :(
+      </v-alert>
+    </template>
+  </v-data-table>
+   
  </v-container>
 </template>
 
@@ -64,7 +45,14 @@
       pagination: {
         rowsPerPage: 20
       },
-      selected:[]
+      selected:[],
+      headers: [
+        
+        { text: 'xmlns', value: 'xmlns' },
+        
+        { text: 'Description', value: 'description' },
+        { text: 'Prefix', value: 'prefix' }
+        ]
       }
   },
   methods: {
@@ -84,6 +72,7 @@
         });
       
     },
+    
   },
   created:function(){
     this.q=this.$route.query.q || this.q;

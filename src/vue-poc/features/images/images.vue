@@ -7,7 +7,7 @@
 
       <v-card>
       <v-toolbar dense >
-      <v-btn  @click.stop="showFilter = true" icon><v-icon>search</v-icon></v-btn>
+      <v-btn  @click.stop="showFilter = true" icon><v-icon>filter_list</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
         <v-tooltip top  v-if="query.keyword || query.from || query.until">      
         <v-btn @click="clear" icon slot="activator"

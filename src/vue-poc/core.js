@@ -36,7 +36,8 @@ HTTP.interceptors.response.use((response) => {
     var c=response.config;
     var url=response.config.url + "?" + c.paramsSerializer(c.params);
     //console.log("interceptors time:",s, response.config);
-    Notification.add(s +" "+ url );
+    var b=`<a href="${url}" target="vp-notification" >${url}</a> Time: ${s}`
+    Notification.add(b);
   }
   return response;
 });

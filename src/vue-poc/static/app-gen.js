@@ -1,5 +1,30 @@
-// generated 2018-06-01T23:15:21.554+01:00
+// generated 2018-06-05T22:46:09.838+01:00
 
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
+Vue.component('qd-autoheight',{template:` 
+	<div style="height:200px;overflow:hidden;" ref="auto" v-resize="onResize" class="green">
+			<slot>i will auto2</slot>
+	</div>
+ `,
+      
+  props: ['show'],
+  created:function(){
+      console.log("qd-auto");
+    },
+    methods:{
+      onResize(){
+        var el=this.$refs["auto"];
+        var e=el;
+        //console.log("top",e.offsetTop)
+        var h=Math.max(1,window.innerHeight - e.offsetTop -40) 
+        // console.log("h",h)
+        e.style.height=h +"px"; 
+    }
+    }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
@@ -888,7 +913,7 @@ const Files=Vue.extend({template:`
     <v-spacer></v-spacer>
      <v-btn v-if="selection.length" @click="selectNone">S: {{selection.length}}</v-btn>
      
- <v-text-field v-if="!selection.length" prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+ <v-text-field v-if="!selection.length" prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
    
  
     <v-toolbar-items v-if="!selection.length">
@@ -1103,10 +1128,10 @@ const Files=Vue.extend({template:`
         return (this.protocol=="xmldb")?"developer_mode":"folder"
       },
    xfiles(){
-        return this.items.filter(item=>{return item.type!="folder" &&((!this.q) || item.name.includes(this.q))})
+        return this.items.filter(item=>{return item.type!="folder" &&((!this.q) || item.name.toLowerCase().includes(this.q.toLowerCase()))})
       },
    xfolders(){
-        return this.items.filter(item=>{return item.type=="folder" &&((!this.q) || item.name.includes(this.q))})
+        return this.items.filter(item=>{return item.type=="folder" &&((!this.q) || item.name.toLowerCase().includes(this.q.toLowerCase()))})
       },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
@@ -2407,7 +2432,7 @@ const Images=Vue.extend({template:`
 
       <v-card>
       <v-toolbar dense="">
-      <v-btn @click.stop="showFilter = true" icon=""><v-icon>search</v-icon></v-btn>
+      <v-btn @click.stop="showFilter = true" icon=""><v-icon>filter_list</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
         <v-tooltip top="" v-if="query.keyword || query.from || query.until">      
         <v-btn @click="clear" icon="" slot="activator">
@@ -3262,29 +3287,22 @@ const Namespace=Vue.extend({template:`
    <v-btn @click="load" :loading="loading" :disabled="loading">Refresh</v-btn>
    Text
    </v-toolbar>
-     <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
-      <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
-        <v-card :hover="true" active-class="default-class qd-active" height="200px">
-        
-          <v-toolbar color="amber">
-              <v-card-title>
-               <router-link :to="{path:'namespace/'+ props.item.name}">
-                <h3>
-                <v-icon>star</v-icon> {{ props.item.xmlns }}
-                </h3>
-                </router-link>
-             </v-card-title>
-          </v-toolbar>
-          <v-card-text>{{ props.item.description }}<!--<v-card-text-->
-          <v-card-text>
-           <v-badge color="red">
-            <span slot="badge">{{ props.item.prefix }}</span>
-            Fields
-          </v-badge>
-          </v-card-text>
-        </v-card-text></v-card>
-      </v-flex>
-    </v-data-iterator>
+    <v-data-table :headers="headers" :items="items" hide-actions="" class="elevation-1">
+    <template slot="items" slot-scope="props">
+      <td><router-link :to="{path:'namespace/item?xmlns='+ props.item.xmlns}">
+                 {{ props.item.xmlns }}
+                </router-link></td>
+      <td>{{ props.item.description }}</td>
+      <td>{{ props.item.prefix }}</td>
+     
+    </template>
+    <template slot="no-data">
+      <v-alert :value="true" color="error" icon="warning">
+        Sorry, nothing to display here :(
+      </v-alert>
+    </template>
+  </v-data-table>
+   
  </v-container>
  `,
       
@@ -3298,7 +3316,14 @@ const Namespace=Vue.extend({template:`
       pagination: {
         rowsPerPage: 20
       },
-      selected:[]
+      selected:[],
+      headers: [
+        
+        { text: 'xmlns', value: 'xmlns' },
+        
+        { text: 'Description', value: 'description' },
+        { text: 'Prefix', value: 'prefix' }
+        ]
       }
   },
   methods: {
@@ -3318,6 +3343,7 @@ const Namespace=Vue.extend({template:`
         });
       
     },
+    
   },
   created:function(){
     this.q=this.$route.query.q || this.q;
@@ -3666,6 +3692,28 @@ const Repo=Vue.extend({template:`
   },
   created:function(){
     console.log("notfound",this.$route.query.q)
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/scratch.vue
+const Scratch=Vue.extend({template:` 
+ <v-container fluid="">
+ <qd-autoheight>
+  <vue-ace :content="ace" mode="xml"></vue-ace>
+ </qd-autoheight>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'bad route!',
+      ace:"<xml>here</xml>"
+      }
+  },
+ mounted:function(){
+    console.log("notfound",this.$route.path)
   }
 }
 
@@ -5219,6 +5267,8 @@ const router = new VueRouter({
     { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
     
     { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
+    { path: '/namespace/item', component: Namespace1, meta:{title:"Namespace"} },
+    
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
@@ -5277,8 +5327,9 @@ const router = new VueRouter({
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
     { path: '/form3', component: Formsschema, meta:{title:"vue-form-json-schema"} },
     
-    { path: '/about', component: About,meta:{title:"About Vue-poc"} },
-    { path: '*', component: Notfound,meta:{title:"Page not found"} }
+    { path: '/scratch', component: Scratch, meta:{title:"scratch"} },
+    { path: '/about', component: About, meta:{title:"About Vue-poc"} },
+    { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],
 });
 router.afterEach(function(route) {
@@ -5610,7 +5661,8 @@ HTTP.interceptors.response.use((response) => {
     var c=response.config;
     var url=response.config.url + "?" + c.paramsSerializer(c.params);
     //console.log("interceptors time:",s, response.config);
-    Notification.add(s +" "+ url );
+    var b=`<a href="${url}" target="vp-notification" >${url}</a> Time: ${s}`
+    Notification.add(b);
   }
   return response;
 });
