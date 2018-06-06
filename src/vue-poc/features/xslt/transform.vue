@@ -33,27 +33,25 @@
 				        </v-card>
 				      </v-menu>
           </v-toolbar>
-    <v-card-text ref="page" v-resize="onResize" style="height:400px; " class="amber" >
-
-       <v-layout  v-if="showOptions.includes('result')" style="height:100%"  fill-height >
-		      <v-flex >
+    <v-card-text  class="amber" >
+       <qd-autoheight>
+      
+		      <v-flex  v-if="showOptions.includes('result')" fill-height xs6>
 		        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
 		      </v-flex>
-       </v-layout>
  
-      <v-layout style="height:100%"  fill-height>
-      <v-flex v-if="showOptions.includes('xml')" class="pa-1"  >
+      <v-flex v-if="showOptions.includes('xml')"    fill-height xs6>
 	      <vue-ace  :content="xml" mode="xml" wrap="true" 
 	      v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 && a.warning===0"
 	     :settings="aceSettings"></vue-ace>
      </v-flex>
-       <v-flex v-if="showOptions.includes('xslt')" class="pa-1">
+       <v-flex v-if="showOptions.includes('xslt')"   fill-height xs6>
 	       <vue-ace  :content="xslt" mode="xml" wrap="true" 
 	       v-on:change-content="v => this.xslt=v"  v-on:annotation="a => this.xslValid=a.error===0 && a.warning===0"
 	      :settings="aceSettings"></vue-ace>
       </v-flex>
-      </v-layout>
- 
+
+     </qd-autoheight>
       </v-card-text>
       
      
@@ -105,15 +103,7 @@
         this.loading=false
       });
     },
-    onResize(){
-      var el=this.$refs["page"]
-      console.log("top",el.offsetTop)
-      var h=Math.max(1,window.innerHeight - el.offsetTop) -100
-       console.log("h",h)
-      this.height = h
-      el.style.height=h +"px"
-    }
-  },
+  }, 
   beforeRouteEnter (to, from, next) {
     settings.getItem('settings/ace')
     .then( v =>{

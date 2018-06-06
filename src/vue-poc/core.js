@@ -129,8 +129,12 @@ return $a   `},
   <node>hello</node>
 </foo>`}
        ],
-       "edit/currentId": "?"
+       "edit/currentId": "?",
+       "system/serviceworker": true
     },
+    
+    
+    
     getItem (key) {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)

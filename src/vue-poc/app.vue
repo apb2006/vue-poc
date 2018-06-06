@@ -196,7 +196,7 @@
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v0.2.1)' , icon: 'help'    }, 
+      {href: '/about',text: 'About (v0.3.0)' , icon: 'help'    }, 
     ]
 
   }},
