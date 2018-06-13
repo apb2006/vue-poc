@@ -126,7 +126,7 @@
         items: [],
       wrap: true,
       aceSettings: {},
-      mimeTypes:MimeTypes
+      mimeTypes: MimeTypes
       }
   },
   
@@ -135,26 +135,32 @@
       if(item.dirty){
         alert("save first")
       }else{
-      var index=this.items.indexOf(item);
-      if (index > -1) {
-        this.items.splice(index, 1);
-        index=(index==0)?0:index-1;
-        this.currentId=(this.items.length)?"T"+this.items[index].id : null;
-    }
+	      var index=this.items.indexOf(item);
+	      if (index > -1) {
+	        this.items.splice(index, 1);
+	        index=(index==0)?0:index-1;
+	        this.currentId=(this.items.length)?"T"+this.items[index].id : null;
+	         }
       }
     },
+    
     setItem(v){
       if(v) this.currentId="T"+v;
     },
+    
     openUri(){
+      console.log("mimetypes: ",this.mimeTypes);
       alert("openUri TODO")
     },
+    
     mimetype(type){
       this.active.mode=type.mode
     },
+    
     lightbulb(d){
       alert("lightbulb TODO: " + d)
     },
+    
     addItem(tab){
       console.log("new: ",tab);
       var def={name: "AA"+this.nextId, 
@@ -168,6 +174,20 @@
       this.currentId="T" + this.nextId 
       this.nextId++;
     },
+    
+    loadItem(url){
+      HTTP.get("get",{params: {url:url}})
+      .then(r=>{
+          //console.log(r)
+          alert("go")
+          //alert(mode)
+        })
+        .catch(error=> {
+          console.log(error);
+          alert("Get query error:\n"+url)
+        });
+    },
+    
     changeContent(val){
       var item=this.active;
       //console.log("change",val);
@@ -177,6 +197,7 @@
         item.dirty=true;
       }
     },
+    
     onResize(){
       var el=this.$refs["ace"];
       for (e of el){
@@ -185,12 +206,14 @@
       // console.log("h",h)
       e.style.height=h +"px";
     }
-    },
+    }
   },
   
   watch:{
-    currentId: function (val) {
-      this.active = this.items.find(e=> val=="T"+e.id)
+    currentId (val) {
+      this.active = this.items.find(e=> val=="T"+e.id);
+      this.$router.push({  query: { id: val }});
+      console.log("current",val)
     }
   },
   
@@ -225,6 +248,12 @@
     settings.setItem('edit/items',this.items);
     settings.setItem('edit/currentId',this.currentId);
     next(true);
-  }
-  
+  },
+
+    created:function(){
+      var url=this.$route.query.url;
+      if(url)this.loadItem(url);
+      var id=this.$route.query.id;
+      this.currentId=id?id:null;
+    }
 }</script>

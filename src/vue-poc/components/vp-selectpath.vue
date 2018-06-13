@@ -8,7 +8,7 @@ display button that invokes a  select path form
       }
  -->
 <template id="vp-selectpath">
-   <v-dialog v-model="frmfav" persistent max-width="600">
+   <v-dialog v-model="frmfav" persistent max-width="800">
       <v-btn slot="activator" @click.stop="set(!frmfav)" icon flat title="Add ">
       <slot>
       <v-icon>add_circle</v-icon>

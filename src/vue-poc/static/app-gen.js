@@ -1,6 +1,6 @@
-// generated 2018-06-06T16:44:47.486+01:00
+// generated 2018-06-13T23:04:52.306+01:00
 
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
 	<v-flex style="height:200px;overflow:hidden;" ref="auto" v-resize="onResize" class="green">
 			<slot>i will auto2</slot>
@@ -26,7 +26,7 @@ Vue.component('qd-autoheight',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/qd-confirm.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-confirm.vue
 Vue.component('qd-confirm',{template:` 
   <v-dialog v-model="value">
        <v-card>
@@ -50,7 +50,7 @@ Vue.component('qd-confirm',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/qd-fullscreen.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-fullscreen.vue
 Vue.component('qd-fullscreen',{template:` 
 <a @click="toggle()" href="javascript:void(0);" title="Fullscreen toggle">
   <v-icon>{{ fullscreenIcon }}</v-icon>
@@ -75,7 +75,7 @@ Vue.component('qd-fullscreen',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/qd-link.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-link.vue
 Vue.component('qd-link',{template:` 
  <a :href="href" :target="href">
 		 <v-icon>link</v-icon> 
@@ -91,7 +91,7 @@ Vue.component('qd-link',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/qd-navlist.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-navlist.vue
 Vue.component('qd-navlist',{template:` 
  <v-list dense="">
     <template v-for="(item, i) in items">
@@ -130,7 +130,7 @@ Vue.component('qd-navlist',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/qd-panel.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-panel.vue
 Vue.component('qd-panel',{template:` 
  <v-layout>
 		<v-flex>
@@ -151,7 +151,7 @@ Vue.component('qd-panel',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/qd-search.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-search.vue
 Vue.component('qd-search',{template:` 
   <v-select placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" combobox="" clearable="" cache-items="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q"></v-select>
  `,
@@ -187,7 +187,7 @@ Vue.component('qd-search',{template:`
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/qd-table.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-table.vue
 Vue.component('qd-table',{template:` 
  <v-container fluid="">
   <v-card>
@@ -247,7 +247,7 @@ Vue.component('qd-table',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/vis-time-line.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vis-time-line.vue
 Vue.component('vis-time-line',{template:` 
   <div></div>
  `,
@@ -276,7 +276,7 @@ Vue.component('vis-time-line',{template:`
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/vp-favorite.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-favorite.vue
 Vue.component('vp-favorite',{template:` 
   <v-menu :close-on-click="false" offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
       <v-btn slot="activator" @click.stop="set(!frmfav)" icon="" flat="" title="Bookmark this page">
@@ -329,7 +329,7 @@ Vue.component('vp-favorite',{template:`
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/vp-filepick.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-filepick.vue
 Vue.component('vp-filepicker',{template:` 
  <v-layout>
 		<v-flex>
@@ -350,7 +350,7 @@ Vue.component('vp-filepicker',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/vp-job.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-job.vue
 Vue.component('vp-job',{template:` 
  <v-card>
 
@@ -417,7 +417,7 @@ Vue.component('vp-job',{template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/vp-notifications.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-notifications.vue
 Vue.component('vp-notifications',{template:` 
    <v-card>
          <v-toolbar class="amber white--text" scroll-toolbar-off-screen="">
@@ -481,9 +481,9 @@ Vue.component('vp-notifications',{template:`
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/vp-selectpath.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-selectpath.vue
 Vue.component('vp-selectpath',{template:` 
-   <v-dialog v-model="frmfav" persistent="" max-width="600">
+   <v-dialog v-model="frmfav" persistent="" max-width="800">
       <v-btn slot="activator" @click.stop="set(!frmfav)" icon="" flat="" title="Add ">
       <slot>
       <v-icon>add_circle</v-icon>
@@ -558,7 +558,7 @@ Vue.component('vp-selectpath',{template:`
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/components/vue-ace.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vue-ace.vue
 Vue.component('vue-ace',{template:` 
 <div style="width: 100%; height: 100%;"></div>
  `,
@@ -715,7 +715,7 @@ Vue.component('vue-ace',{template:`
 }
       );
       
-// src: C:\Users\BUNCEAX\git\vue-poc\src\vue-poc\components\filters.js
+// src: C:\Users\andy\git\vue-poc\src\vue-poc\components\filters.js
 /**
  * some vue filters, requires moment
  *  formatDate
@@ -762,7 +762,7 @@ Vue.filter('round', function(value, decimals) {
   return value;
 });
 
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/404.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/404.vue
 const Notfound=Vue.extend({template:` 
  <v-container fluid="">
  Not found
@@ -781,7 +781,7 @@ const Notfound=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/about.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/about.vue
 const About=Vue.extend({template:` 
 <v-container>
 <v-parallax src="/vue-poc/ui/vue-poc.png">
@@ -814,7 +814,7 @@ const About=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/adminlog/logs.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logs.vue
 const Log=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
@@ -886,7 +886,7 @@ const Log=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/collection/files.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/files.vue
 const Files=Vue.extend({template:` 
  <v-container fluid="">
  
@@ -1167,7 +1167,7 @@ const Files=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/collection/history.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/history.vue
 const History=Vue.extend({template:` 
  <v-container>
  <v-card>
@@ -1215,7 +1215,7 @@ const History=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/edit/edit.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/edit.vue
 const Edit=Vue.extend({template:` 
 <v-container fluid="">
       <v-snackbar top="" color="error" v-model="snackbar">
@@ -1520,7 +1520,7 @@ const Edit=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/edit/tabs.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/tabs.vue
 const Tabs=Vue.extend({template:` 
 <div>
   <v-toolbar tabs="" dense="">
@@ -1627,7 +1627,7 @@ const Tabs=Vue.extend({template:`
         items: [],
       wrap: true,
       aceSettings: {},
-      mimeTypes:MimeTypes
+      mimeTypes: MimeTypes
       }
   },
   
@@ -1636,26 +1636,32 @@ const Tabs=Vue.extend({template:`
       if(item.dirty){
         alert("save first")
       }else{
-      var index=this.items.indexOf(item);
-      if (index > -1) {
-        this.items.splice(index, 1);
-        index=(index==0)?0:index-1;
-        this.currentId=(this.items.length)?"T"+this.items[index].id : null;
-    }
+	      var index=this.items.indexOf(item);
+	      if (index > -1) {
+	        this.items.splice(index, 1);
+	        index=(index==0)?0:index-1;
+	        this.currentId=(this.items.length)?"T"+this.items[index].id : null;
+	         }
       }
     },
+    
     setItem(v){
       if(v) this.currentId="T"+v;
     },
+    
     openUri(){
+      console.log("mimetypes: ",this.mimeTypes);
       alert("openUri TODO")
     },
+    
     mimetype(type){
       this.active.mode=type.mode
     },
+    
     lightbulb(d){
       alert("lightbulb TODO: " + d)
     },
+    
     addItem(tab){
       console.log("new: ",tab);
       var def={name: "AA"+this.nextId, 
@@ -1669,6 +1675,20 @@ const Tabs=Vue.extend({template:`
       this.currentId="T" + this.nextId 
       this.nextId++;
     },
+    
+    loadItem(url){
+      HTTP.get("get",{params: {url:url}})
+      .then(r=>{
+          //console.log(r)
+          alert("go")
+          //alert(mode)
+        })
+        .catch(error=> {
+          console.log(error);
+          alert("Get query error:\n"+url)
+        });
+    },
+    
     changeContent(val){
       var item=this.active;
       //console.log("change",val);
@@ -1678,6 +1698,7 @@ const Tabs=Vue.extend({template:`
         item.dirty=true;
       }
     },
+    
     onResize(){
       var el=this.$refs["ace"];
       for (e of el){
@@ -1686,12 +1707,14 @@ const Tabs=Vue.extend({template:`
       // console.log("h",h)
       e.style.height=h +"px";
     }
-    },
+    }
   },
   
   watch:{
-    currentId: function (val) {
-      this.active = this.items.find(e=> val=="T"+e.id)
+    currentId (val) {
+      this.active = this.items.find(e=> val=="T"+e.id);
+      this.$router.push({  query: { id: val }});
+      console.log("current",val)
     }
   },
   
@@ -1726,12 +1749,18 @@ const Tabs=Vue.extend({template:`
     settings.setItem('edit/items',this.items);
     settings.setItem('edit/currentId',this.currentId);
     next(true);
-  }
-  
+  },
+
+    created:function(){
+      var url=this.$route.query.url;
+      if(url)this.loadItem(url);
+      var id=this.$route.query.id;
+      this.currentId=id?id:null;
+    }
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/eval/eval.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/eval/eval.vue
 const Eval=Vue.extend({template:` 
  <v-container fluid="">
   <v-card @keyup.ctrl.enter="submit">
@@ -1980,7 +2009,7 @@ const Eval=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/eval/evalid.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/eval/evalid.vue
 const Evalid=Vue.extend({template:` 
  <v-container fluid="">
  todo {{id}}
@@ -1999,7 +2028,7 @@ const Evalid=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/form/brutusin.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/brutusin.vue
 const Brutusin=Vue.extend({template:` 
  <v-container fluid="">
      <v-card>
@@ -2129,7 +2158,7 @@ const Brutusin=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/form/form-json-schema.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/form-json-schema.vue
 const Formsschema=Vue.extend({template:` 
  <v-container fluid="">
      <v-card>
@@ -2178,7 +2207,7 @@ const Formsschema=Vue.extend({template:`
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/form/formschema.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/formschema.vue
 const Formsjson=Vue.extend({template:` 
  <v-container fluid="">
      <v-card>
@@ -2252,7 +2281,7 @@ const Formsjson=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/home.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/home.vue
 const Home=Vue.extend({template:` 
 
 <v-card hover="" raised=""> 
@@ -2307,7 +2336,7 @@ const Home=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/images/dates.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/dates.vue
 const Dates=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
@@ -2373,7 +2402,7 @@ const Dates=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/images/image.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/image.vue
 const Image=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
@@ -2428,7 +2457,7 @@ const Image=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/images/images.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/images.vue
 const Images=Vue.extend({template:` 
 
       <v-card>
@@ -2720,7 +2749,7 @@ const Images=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/images/ireport.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/ireport.vue
 const Report=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
@@ -2778,7 +2807,7 @@ const Report=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/images/keywords.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/keywords.vue
 const Keywords=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
@@ -2846,7 +2875,7 @@ const Keywords=Vue.extend({template:`
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/images/people.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/people.vue
 const People=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
@@ -2871,7 +2900,7 @@ people
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/job/job.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/job/job.vue
 const Job=Vue.extend({template:` 
   <v-card>
    <v-toolbar>
@@ -2955,7 +2984,7 @@ const Job=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/job/jobs.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/job/jobs.vue
 const Jobs=Vue.extend({template:` 
   <v-card>
    <v-toolbar>
@@ -3046,7 +3075,7 @@ const Jobs=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/login/login.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/login/login.vue
 const Login=Vue.extend({template:` 
 <v-card class="grey lighten-4 elevation-0">
 
@@ -3111,7 +3140,7 @@ const Login=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/model/documentation.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/documentation.vue
 const Documentation=Vue.extend({template:` 
  <v-container fluid="">
     <v-list>
@@ -3154,7 +3183,7 @@ const Documentation=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/model/entity.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/entity.vue
 const Entity=Vue.extend({template:` 
 <v-card>
 	<v-toolbar>
@@ -3235,7 +3264,7 @@ const Entity=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/model/entity1.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/entity1.vue
 const Entity1=Vue.extend({template:` 
 <v-card>
 	<v-toolbar>
@@ -3279,7 +3308,7 @@ const Entity1=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/model/namespace.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace.vue
 const Namespace=Vue.extend({template:` 
  <v-container fluid="" grid-list-md="">
 <v-toolbar>
@@ -3355,7 +3384,7 @@ const Namespace=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/model/namespace1.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace1.vue
 const Namespace1=Vue.extend({template:` 
 <v-card>
 	<v-toolbar>
@@ -3399,7 +3428,7 @@ const Namespace1=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/ping/ping.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/ping/ping.vue
 const Ping=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
@@ -3565,7 +3594,7 @@ const Ping=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/puzzle.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/puzzle.vue
 const Puzzle=Vue.extend({template:` 
  <v-container fluid="">
   <v-layout>
@@ -3644,7 +3673,7 @@ const Puzzle=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/repository.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/repository.vue
 const Repo=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
@@ -3698,7 +3727,7 @@ const Repo=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/scratch.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/scratch.vue
 const Scratch=Vue.extend({template:` 
  <v-container fluid="">
  <qd-autoheight>
@@ -3720,7 +3749,7 @@ const Scratch=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/search.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/search.vue
 const Search=Vue.extend({template:` 
  <v-container fluid="">
  <v-alert color="warning" value="true">Not finished</v-alert>
@@ -3793,7 +3822,7 @@ const Search=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/select.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/select.vue
 const Select=Vue.extend({template:` 
  <v-container fluid="">
 <v-card>
@@ -3876,7 +3905,7 @@ const Select=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/session.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/session.vue
 const Session=Vue.extend({template:` 
  <v-container fluid="">
   <v-layout>
@@ -3946,7 +3975,7 @@ const Session=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/settings/acesettings.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/acesettings.vue
 const Acesettings=Vue.extend({template:` 
 <v-container fluid="">
 
@@ -4072,7 +4101,7 @@ const Acesettings=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/settings/keys.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/keys.vue
 const Keys=Vue.extend({template:` 
  <v-container fluid="">
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
@@ -4119,7 +4148,7 @@ const Keys=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/settings/settings.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/settings.vue
 const Settings=Vue.extend({template:` 
  <v-container fluid="">
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
@@ -4168,7 +4197,7 @@ const Settings=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/svg.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/svg.vue
 const Svg=Vue.extend({template:` 
  <v-container fluid="">
 <div id="canvasqPWKOg" class="canvas"></div>
@@ -4209,7 +4238,7 @@ const Svg=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/svg2.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/svg2.vue
 const Svg2=Vue.extend({template:` 
 <div ref="panel" v-resize="onResize">
   <v-toolbar dense="">
@@ -4299,7 +4328,7 @@ const Svg2=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/tasks/model.build/model.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/model.build/model.vue
 const Model=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
@@ -4373,7 +4402,7 @@ const Model=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/tasks/task/task.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/task/task.vue
 const Runtask=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
@@ -4453,7 +4482,7 @@ const Runtask=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/tasks/tasks.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/tasks.vue
 const Task=Vue.extend({template:` 
  <v-container fluid="">
   <h3>Available Tasks</h3>
@@ -4490,7 +4519,7 @@ const Task=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/tasks/vue-compile/vuecompile.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/vue-compile/vuecompile.vue
 const Vuecompile=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
@@ -4567,7 +4596,7 @@ const Vuecompile=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/tasks/xqdoc/xqdoc.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/xqdoc/xqdoc.vue
 const Xqdoc=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
@@ -4653,7 +4682,7 @@ const Xqdoc=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/thumbnail/thumbnail.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/thumbnail/thumbnail.vue
 const Thumbnail=Vue.extend({template:` 
  <v-container fluid="">
  <v-stepper v-model="step" non-linear="">
@@ -4725,7 +4754,7 @@ const Thumbnail=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/timeline.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/timeline.vue
 const Timeline=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
@@ -4776,7 +4805,7 @@ created(){
 }
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/tree.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tree.vue
 const Tree=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
@@ -4877,7 +4906,7 @@ methods: {
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/tree2.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tree2.vue
 const Tree2=Vue.extend({template:` 
  <v-container fluid="">
  <v-card>
@@ -4933,7 +4962,7 @@ methods: {
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/users/users.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/users/users.vue
 const Users=Vue.extend({template:` 
  <v-container fluid="">
    <qd-table :headers="headers" data-uri="data/users">
@@ -4966,7 +4995,7 @@ const Users=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/validate/validate.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/validate/validate.vue
 const Validate=Vue.extend({template:` 
   <v-container fluid="" v-resize="onResize">
 <v-card>
@@ -5038,7 +5067,7 @@ const Validate=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/xqdoc/xqdoc.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/xqdoc/xqdoc.vue
 const Xqdoc2=Vue.extend({template:` 
   <v-container fluid="" v-resize="onResize">
 <v-card>
@@ -5110,7 +5139,7 @@ const Xqdoc2=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/BUNCEAX/git/vue-poc/src/vue-poc/features/xslt/transform.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/xslt/transform.vue
 const Transform=Vue.extend({template:` 
  <v-container fluid="">
 <v-card>
@@ -5227,7 +5256,7 @@ const Transform=Vue.extend({template:`
 
       );
       
-// src: C:\Users\BUNCEAX\git\vue-poc\src\vue-poc\router.js
+// src: C:\Users\andy\git\vue-poc\src\vue-poc\router.js
 // vue-poc application routes
 const router = new VueRouter({
   base:"/vue-poc/ui/",
@@ -5348,7 +5377,7 @@ router.beforeEach((to, from, next) => {
   }
 });
 
-// src: C:\Users\BUNCEAX\git\vue-poc\src\vue-poc\app.vue
+// src: C:\Users\andy\git\vue-poc\src\vue-poc\app.vue
 const Vuepoc=Vue.extend({template:` 
  <v-app id="app" :dark="dark">
   <v-navigation-drawer stateless="" v-model="showNotifications" right="" :disable-route-watcher="true" app="" width="500">
@@ -5617,7 +5646,7 @@ const Vuepoc=Vue.extend({template:`
 
       );
       
-// src: C:\Users\BUNCEAX\git\vue-poc\src\vue-poc\core.js
+// src: C:\Users\andy\git\vue-poc\src\vue-poc\core.js
 // base -----------------------
 
 const AXIOS_CONFIG={
@@ -5703,6 +5732,7 @@ Vue.use(Notification);
 
 // Mimetype info
 const MimeTypes=[
+            {name: "text/plain", mode: "text"},
             {name: "text/xml", mode: "xml"},
             {name: "application/xml", mode:"xml"},
             {name: "application/xquery", mode:"xquery"},

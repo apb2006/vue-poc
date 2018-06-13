@@ -83,6 +83,7 @@ Vue.use(Notification);
 
 // Mimetype info
 const MimeTypes=[
+            {name: "text/plain", mode: "text"},
             {name: "text/xml", mode: "xml"},
             {name: "application/xml", mode:"xml"},
             {name: "application/xquery", mode:"xquery"},
