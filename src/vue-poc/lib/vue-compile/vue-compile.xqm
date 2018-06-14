@@ -90,10 +90,9 @@ as xs:string
  :)
 declare function vue:compile($proj as xs:string)
 {
-let $FEATURES:="features/"=>file:resolve-path($proj=>trace("proj:"))
-let $COMPONENTS:="components/"=>file:resolve-path($proj)
-let $FILTERS:="components/filters.js"=>file:resolve-path($proj)
-
+let $FEATURES:= file:resolve-path("features/",$proj=>trace("proj:"))
+let $COMPONENTS:= file:resolve-path("components/",$proj)
+let $js:=vue:filelist(file:resolve-path("components/",$proj),".*\.js")
 let $CORE:="core.js"=>file:resolve-path($proj)
 let $ROUTER:="router.js"=>file:resolve-path($proj)
 let $APP:="app.vue"=>file:resolve-path($proj)
@@ -110,13 +109,20 @@ let $comps:=$files!vue:feature-build(.,true())
 let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;"
 return file:write-text($DEST,string-join(($comment,
                                          $comps,
-                                         vue:js-test($FILTERS),
+                                         $js!vue:js-test(.),
                                          $feats,
                                          vue:js-test($ROUTER),
                                          $APP!vue:feature-build(.,false()),
                                          vue:js-test($CORE))))
 };
 
+(:~
+ : return sequence of file paths starting from $path matching $filter
+ :)
+ declare function vue:filelist($path as xs:string,$filter as xs:string){
+      fw:directory-list($path,map{"include-filter": $filter})
+             //c:file/@name/resolve-uri(.,base-uri(.))
+ };
 (:~
  : javascript source with comment
  :)

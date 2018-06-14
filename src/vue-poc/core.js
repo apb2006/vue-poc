@@ -81,19 +81,6 @@ const Notification={
 };
 Vue.use(Notification);
 
-// Mimetype info
-const MimeTypes=[
-            {name: "text/plain", mode: "text"},
-            {name: "text/xml", mode: "xml"},
-            {name: "application/xml", mode:"xml"},
-            {name: "application/xquery", mode:"xquery"},
-            {name: "text/ecmascript", mode:"javascript"},
-            {name: "application/sparql-query", mode:"sparql"},
-            {name: "text/html", mode:"html"},
-            {name: "text/turtle", mode:"turtle"},
-            {name: "text/css", mode:"css"},
-            {name: "image/svg+xml", mode:"svg"}
-];
 
 // Settings read and write list clear
 localforage.config({

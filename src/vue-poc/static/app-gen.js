@@ -1,4 +1,4 @@
-// generated 2018-06-13T23:04:52.306+01:00
+// generated 2018-06-14T22:56:00.937+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -715,7 +715,7 @@ Vue.component('vue-ace',{template:`
 }
       );
       
-// src: C:\Users\andy\git\vue-poc\src\vue-poc\components\filters.js
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/filters.js
 /**
  * some vue filters, requires moment
  *  formatDate
@@ -761,6 +761,39 @@ Vue.filter('round', function(value, decimals) {
   value = Math.round(value * Math.pow(10, decimals)) / Math.pow(10, decimals);
   return value;
 });
+
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/mimetypes.js
+// Mimetype info
+const MimeTypes={
+ toMode:[
+            {name: "text/plain", mode: "text"},
+            {name: "text/xml", mode: "xml"},
+            {name: "application/xml", mode:"xml"},
+            {name: "application/xquery", mode:"xquery"},
+            {name: "text/ecmascript", mode:"javascript"},
+            {name: "application/sparql-query", mode:"sparql"},
+            {name: "text/html", mode:"html"},
+            {name: "text/turtle", mode:"turtle"},
+            {name: "text/css", mode:"css"},
+            {name: "image/svg+xml", mode:"svg"}
+            ],
+  mode:{
+    "text": {},
+    "javascript": {
+      format(t){ return js_beautify(t, { indent_size: 2 })}
+    },
+    "xml": {
+      format(t){ return html_beautify(t, { indent_size: 3 ,indent_inner_html:true})}
+    },
+    "css": {}
+  },
+  install(Vue){
+      Object.defineProperty(Vue.prototype, '$MimeTypes', {
+        get () { return MimeTypes }
+    })  }
+
+};
+Vue.use(MimeTypes);
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/404.vue
 const Notfound=Vue.extend({template:` 
@@ -1252,7 +1285,7 @@ const Edit=Vue.extend({template:`
   <v-menu left="" transition="v-fade-transition">
       <v-chip label="" small="" slot="activator">{{ mode }}</v-chip>
           <v-list dense="">
-              <v-list-tile v-for="type in mimeTypes" :key="type.name">
+              <v-list-tile v-for="type in $MimeTypes.toMode" :key="type.name">
                 <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
@@ -1379,8 +1412,7 @@ const Edit=Vue.extend({template:`
       message: "Cant do that",
       events:  new Vue({}),
       folded: false, // toggle fold/unfold action
-      aceSettings: { },
-      mimeTypes:MimeTypes
+      aceSettings: { }
     }
   },
   methods: {
@@ -1533,17 +1565,17 @@ const Tabs=Vue.extend({template:`
        <v-menu v-if="active" left="" transition="v-fade-transition">
        <v-chip label="" small="" slot="activator">{{ active.mode }}</v-chip>
           <v-list dense="">
-              <v-list-tile v-for="type in mimeTypes" :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="mimetype(type)"></v-list-tile-title>
-              </v-list-tile>           
+                <v-list-tile v-for="type in $MimeTypes.toMode" :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
+              </v-list-tile>         
           </v-list>         
       </v-menu>
       
        <v-menu v-if="active" left="" transition="v-fade-transition">
         <v-btn icon="" slot="activator"><v-icon>lightbulb_outline</v-icon></v-btn>
           <v-list dense="">
-              <v-list-tile v-for="type in mimeTypes" :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="lightbulb(type.name)"></v-list-tile-title>
+                <v-list-tile v-for="type in $MimeTypes.toMode" :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
       </v-menu>
@@ -1626,8 +1658,7 @@ const Tabs=Vue.extend({template:`
         active: null,
         items: [],
       wrap: true,
-      aceSettings: {},
-      mimeTypes: MimeTypes
+      aceSettings: {}
       }
   },
   
@@ -1650,11 +1681,10 @@ const Tabs=Vue.extend({template:`
     },
     
     openUri(){
-      console.log("mimetypes: ",this.mimeTypes);
       alert("openUri TODO")
     },
     
-    mimetype(type){
+    setMode(type){
       this.active.mode=type.mode
     },
     
@@ -5730,19 +5760,6 @@ const Notification={
 };
 Vue.use(Notification);
 
-// Mimetype info
-const MimeTypes=[
-            {name: "text/plain", mode: "text"},
-            {name: "text/xml", mode: "xml"},
-            {name: "application/xml", mode:"xml"},
-            {name: "application/xquery", mode:"xquery"},
-            {name: "text/ecmascript", mode:"javascript"},
-            {name: "application/sparql-query", mode:"sparql"},
-            {name: "text/html", mode:"html"},
-            {name: "text/turtle", mode:"turtle"},
-            {name: "text/css", mode:"css"},
-            {name: "image/svg+xml", mode:"svg"}
-];
 
 // Settings read and write list clear
 localforage.config({

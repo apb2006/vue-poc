@@ -11,17 +11,17 @@
        <v-menu v-if="active"  left  transition="v-fade-transition" >
        <v-chip label small slot="activator" >{{ active.mode }}</v-chip>
           <v-list dense>
-              <v-list-tile v-for="type in mimeTypes"  :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="mimetype(type)"></v-list-tile-title>
-              </v-list-tile>           
+                <v-list-tile v-for="type in $MimeTypes.toMode"  :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
+              </v-list-tile>         
           </v-list>         
       </v-menu>
       
        <v-menu v-if="active" left  transition="v-fade-transition" >
         <v-btn icon  slot="activator" ><v-icon>lightbulb_outline</v-icon></v-btn>
           <v-list dense>
-              <v-list-tile v-for="type in mimeTypes"  :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="lightbulb(type.name)"></v-list-tile-title>
+                <v-list-tile v-for="type in $MimeTypes.toMode"  :key="type.name">
+                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
       </v-menu>
@@ -125,8 +125,7 @@
         active: null,
         items: [],
       wrap: true,
-      aceSettings: {},
-      mimeTypes: MimeTypes
+      aceSettings: {}
       }
   },
   
@@ -149,11 +148,10 @@
     },
     
     openUri(){
-      console.log("mimetypes: ",this.mimeTypes);
       alert("openUri TODO")
     },
     
-    mimetype(type){
+    setMode(type){
       this.active.mode=type.mode
     },
     

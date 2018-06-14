@@ -35,7 +35,7 @@
   <v-menu left  transition="v-fade-transition" >
       <v-chip label small slot="activator" >{{ mode }}</v-chip>
           <v-list dense>
-              <v-list-tile v-for="type in mimeTypes"  :key="type.name">
+              <v-list-tile v-for="type in $MimeTypes.toMode"  :key="type.name">
                 <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
@@ -166,8 +166,7 @@ v-on:annotation="annotation"></vue-ace>
       message: "Cant do that",
       events:  new Vue({}),
       folded: false, // toggle fold/unfold action
-      aceSettings: { },
-      mimeTypes:MimeTypes
+      aceSettings: { }
     }
   },
   methods: {
