@@ -1,6 +1,7 @@
 // Mimetype info
-const MimeTypes={
- toMode:[
+// 
+const MimeTypes=new function(){
+ this.toMode=[
             {name: "text/plain", mode: "text"},
             {name: "text/xml", mode: "xml"},
             {name: "application/xml", mode:"xml"},
@@ -12,17 +13,21 @@ const MimeTypes={
             {name: "text/css", mode:"css"},
             {name: "image/svg+xml", mode:"svg"}
             ],
-  mode:{
+  this.formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});
+  this.formatjs= t=>js_beautify(t, { indent_size: 2 });
+  
+  this.mode={
     "text": {},
     "javascript": {
-      format(t){ return js_beautify(t, { indent_size: 2 })}
+      "format":this.formatjs
     },
-    "xml": {
-      format(t){ return html_beautify(t, { indent_size: 3 ,indent_inner_html:true})}
+   "xml": {
+     "format":this.formatdom
     },
     "css": {}
-  },
-  install(Vue){
+  };
+  
+  this.install=function(Vue){
       Object.defineProperty(Vue.prototype, '$MimeTypes', {
         get () { return MimeTypes }
     })  }

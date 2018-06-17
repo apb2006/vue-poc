@@ -1,0 +1,101 @@
+<tax>
+  <item id="Concepts" label="Concepts">
+    <item id="API" label="API"/>
+    <item id="BigData" label="Big Data"/>
+    <item id="ComputationalLinguistics" label="Computational Linguistics"/>
+    <item id="ConcurrentMarkup-Overlap" label="Concurrent Markup/Overlap"/>
+    <item id="ContentManagement" label="Content Management"/>
+    <item id="Datatyping" label="Datatyping"/>
+    <item id="Encryption" label="Encryption"/>
+    <item id="Graphics-Video" label="Graphics/Video"/>
+    <item id="Hypertext" label="Hypertext"/>
+    <item id="InformationArchitecture" label="Information Architecture"/>
+    <item id="InformationRetrieval" label="Information Retrieval"/>
+    <item id="Interoperability" label="Interoperability"/>
+    <item id="KnowledgeManagement" label="Knowledge Management"/>
+    <item id="KnowledgeRepresentation" label="Knowledge Representation"/>
+    <item id="MarkupLanguages" label="Markup Languages"/>
+    <item id="Metadata" label="Metadata"/>
+    <item id="Modeling" label="Modeling"/>
+    <item id="NaturalLanguageProcessing" label="Natural Language Processing"/>
+    <item id="OpenSource" label="Open Source"/>
+    <item id="Programming" label="Programming"/>
+    <item id="Quality" label="Quality"/>
+    <item id="REST" label="REST"/>
+    <item id="SchemaLanguages" label="Schema Languages"/>
+    <item id="SemanticWeb" label="Semantic Web"/>
+    <item id="Semantics" label="Semantics"/>
+    <item id="SocialNetworks" label="Social Networks"/>
+    <item id="Sociology" label="Sociology"/>
+    <item id="Standardization" label="Standardization"/>
+    <item id="TechnologyAdoption" label="Technology Adoption"/>
+    <item id="Transforming" label="Transforming"/>
+    <item id="Trees-Graphs" label="Trees/Graphs"/>
+    <item id="UserExperience" label="User Experience"/>
+    <item id="Versioning" label="Versioning"/>
+    <item id="WebApplications" label="Web Applications"/>
+    <item id="WebComponents" label="Web Components"/>
+    <item id="Workflow" label="Workflow"/>
+  </item>
+  <item id="Specifications" label="Specifications">
+    <item id="CSS" label="CSS"/>
+    <item id="DITA" label="DITA"/>
+    <item id="DOM" label="DOM"/>
+    <item id="EPUB" label="EPUB"/>
+    <item id="HTML5" label="HTML5"/>
+    <item id="IETM" label="IETM"/>
+    <item id="JATS-NLM" label="JATS/NLM"/>
+    <item id="JSON" label="JSON"/>
+    <item id="Java" label="Java"/>
+    <item id="JavaScript" label="JavaScript"/>
+    <item id="LaTeX" label="LaTeX"/>
+    <item id="METS-MODS" label="METS/MODS"/>
+    <item id="MathML" label="MathML"/>
+    <item id="NIEM" label="NIEM"/>
+    <item id="Namespaces" label="Namespaces"/>
+    <item id="OA" label="OA"/>
+    <item id="OCL" label="OCL"/>
+    <item id="PRISMSVS" label="PRISMSVS"/>
+    <item id="RDF" label="RDF"/>
+    <item id="RelaxNG" label="RelaxNG"/>
+    <item id="SAX" label="SAX"/>
+    <item id="SGML" label="SGML"/>
+    <item id="SPARQL" label="SPARQL"/>
+    <item id="STS" label="STS"/>
+    <item id="SVG" label="SVG"/>
+    <item id="Schematron" label="Schematron"/>
+    <item id="TEI" label="TEI"/>
+    <item id="TexMECS" label="TexMECS"/>
+    <item id="TopicMaps" label="Topic Maps"/>
+    <item id="UBL" label="UBL"/>
+    <item id="UML" label="UML"/>
+    <item id="XDM" label="XDM"/>
+    <item id="XForms" label="XForms"/>
+    <item id="XLink" label="XLink"/>
+    <item id="XML" label="XML"/>
+    <item id="XPath" label="XPath"/>
+    <item id="XProc" label="XProc"/>
+    <item id="XQuery" label="XQuery"/>
+    <item id="XSD-W3CSchema" label="XSD/W3C Schema"/>
+    <item id="XSL-FO" label="XSL-FO"/>
+    <item id="XSLT" label="XSLT"/>
+    <item id="XSpec" label="XSpec"/>
+  </item>
+  <item id="Processes" label="Processes">
+    <item id="Archiving" label="Archiving"/>
+    <item id="Editing-Authoring" label="Editing/Authoring"/>
+    <item id="Hardware-basedProcessing" label="Hardware-based Processing"/>
+    <item id="Linking" label="Linking"/>
+    <item id="Mapping" label="Mapping"/>
+    <item id="Messaging" label="Messaging"/>
+    <item id="Parsing" label="Parsing"/>
+    <item id="Publishing" label="Publishing"/>
+    <item id="Querying" label="Querying"/>
+    <item id="Scripting" label="Scripting"/>
+    <item id="Software-basedProcessing" label="Software-based Processing"/>
+    <item id="Streaming" label="Streaming"/>
+    <item id="Transforming" label="Transforming"/>
+    <item id="Validating" label="Validating"/>
+    <item id="Versioning" label="Versioning"/>
+  </item>
+</tax>

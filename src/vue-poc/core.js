@@ -58,28 +58,6 @@ const Auth={
 };
 Vue.use(Auth);
 
-//Notification Object
-const Notification={
-    messages:[],
-    nextId: 0,
-    unseen:0,
-    add(msg){
-      var data={
-          text: msg,
-          index: ++this.nextId,
-          created: new Date()
-      };
-      this.messages.unshift(data);
-      this.messages.length = Math.min(this.messages.length, 30);
-      ++this.unseen;
-
-    },
-    install(Vue){
-        Object.defineProperty(Vue.prototype, '$notification', {
-          get () { return Notification }
-      })  }
-};
-Vue.use(Notification);
 
 
 // Settings read and write list clear
@@ -112,13 +90,25 @@ ut aliquip ex ea commodo consequat.`},
            text:`let $a:=1 to 5
 return $a   `},
       
-         {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "/aaa/bca/",
+         {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "xmldb:/vue-poc/aaa/bca/videos.xml",
            text:`<foo version="1.0">
   <node>hello</node>
 </foo>`}
        ],
        "edit/currentId": "?",
-       "system/serviceworker": true
+       "system/serviceworker": true,
+       "images/thumbtask":`
+<thumbnail>
+    <size width="100" height="100"/>
+    <filters>             
+        <colorize color="green" alpha=".5"/>      
+        <caption position="CENTER">Some Text here</caption>
+        <rotate angle="15"/>
+        <canvas height="500" width="500" position="TOP_LEFT" color="black"/> 
+    </filters>
+    <output format="gif"/>         
+</thumbnail>
+`       
     },
     
     
@@ -189,45 +179,6 @@ function debounce(func, wait, immediate) {
      if (immediate && !timeout) func.apply(context, args);
  };
 };
-
-// https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
-const Fullscreen={
-    isInFullScreen(){
-      return (document.fullscreenElement && document.fullscreenElement !== null) ||
-      (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
-      (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
-      (document.msFullscreenElement && document.msFullscreenElement !== null);
-    },
-    toggle(){
-      var docElm = document.documentElement;
-      if (!this.isInFullScreen()) {
-          if (docElm.requestFullscreen) {
-              docElm.requestFullscreen();
-          } else if (docElm.mozRequestFullScreen) {
-              docElm.mozRequestFullScreen();
-          } else if (docElm.webkitRequestFullScreen) {
-              docElm.webkitRequestFullScreen();
-          } else if (docElm.msRequestFullscreen) {
-              docElm.msRequestFullscreen();
-          }
-      } else {
-          if (document.exitFullscreen) {
-              document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-              document.webkitExitFullscreen();
-          } else if (document.mozCancelFullScreen) {
-              document.mozCancelFullScreen();
-          } else if (document.msExitFullscreen) {
-              document.msExitFullscreen();
-          }
-      }
-    },
-    install: function(Vue){
-      Object.defineProperty(Vue.prototype, '$fullscreen', {
-        get () { return Fullscreen }
-    })  }
-};
-Vue.use(Fullscreen);
 
 Vue.component('treeselect', VueTreeselect.Treeselect);
 

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <template id="tabs">
-<div>
+<div> 
   <v-toolbar   tabs dense>
      <v-toolbar-items>
 	      <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
@@ -18,15 +18,73 @@
       </v-menu>
       
        <v-menu v-if="active" left  transition="v-fade-transition" >
-        <v-btn icon  slot="activator" ><v-icon>lightbulb_outline</v-icon></v-btn>
+        <v-btn icon  slot="activator" ><v-icon>subscriptions</v-icon></v-btn>
           <v-list dense>
-                <v-list-tile v-for="type in $MimeTypes.toMode"  :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
-              </v-list-tile>           
+          <v-subheader >Actions</v-subheader>
+                <v-list-tile @click="format()" >
+                <v-list-tile-title  >Format</v-list-tile-title>
+              </v-list-tile>
+               <v-list-tile  @click="validate()" >
+                <v-list-tile-title >Validate</v-list-tile-title>
+              </v-list-tile>             
           </v-list>         
       </v-menu>
       
+     
        <v-spacer></v-spacer>
+       
+         <v-tooltip top>
+			     <v-chip   @click="acecmd('goToNextError')" slot="activator" >
+			            <span   class="red " >{{annotations && annotations.error}}</span>
+			            <span  class="yellow ">{{annotations && annotations.warning}}</span>   
+			            <span  class="green ">{{annotations && annotations.info}}</span>
+			 
+			           <v-avatar>
+			              <v-icon black >navigate_next</v-icon>
+			           </v-avatar>
+			      </v-chip>
+			      <span>Annotations: Errors,Warning and Info</span>
+			   </v-tooltip>
+   
+        <v-menu  left  transition="v-fade-transition">
+      <v-btn  :disabled="!active" icon slot="activator" title="display settings">
+        <v-icon>playlist_play</v-icon>
+      </v-btn>
+     
+      <v-list dense>
+           <v-subheader>Display settings</v-subheader>
+         
+           <v-list-tile @click="togglefold"  avatar >
+             <v-list-tile-avatar>
+                   <v-icon >vertical_align_center</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title  >Toggle folds</v-list-tile-title>
+           </v-list-tile>
+           
+           <v-list-tile @click="wrap=!wrap"  avatar >
+             <v-list-tile-avatar>
+                   <v-icon >wrap_text</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title  >Soft wrap</v-list-tile-title>
+           </v-list-tile>
+             <v-divider></v-divider>
+              <v-subheader>Help</v-subheader>
+             <v-list-tile @click="acecmd('showSettingsMenu')" avatar >
+               <v-list-tile-avatar>
+              <v-icon >settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-tile-title>
+            </v-list-tile>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
+              <v-list-tile-avatar>
+              <v-icon >keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-tile-title>
+            </v-list-tile>          
+      </v-list>
+    </v-menu>
+    
        <v-btn @click="showInfo = !showInfo" icon>
               <v-icon v-if="showInfo">info</v-icon>
               <v-icon v-else>mode_edit</v-icon>
@@ -59,8 +117,8 @@
 			       <v-avatar >
 			          <v-icon  size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
-			       <span >{{ item.name  }}</span>
 			       <span >{{ (item.dirty?"*":"") }}</span>
+			        <span >{{ item.name  }}</span>
 			       <v-spacer></v-spacer>
 			       <v-btn icon @click.stop="tabClose(item)">
 			          <v-icon  size="16px">close</v-icon>
@@ -84,7 +142,7 @@
 			      </v-card-actions>
 			      
 			       <v-card-text v-if="active"> 
-									<v-layout row v-for="x in ['name','id','mode','dirty','location']" :key="x">
+									<v-layout row v-for="x in ['name','id','mode','contentType','dirty','location']" :key="x">
 							      <v-flex xs3>
 							        <v-subheader>{{ x}}</v-subheader>
 							      </v-flex>
@@ -103,8 +161,8 @@
 			    <v-card v-else>
 		        <div style="height:200px" ref="ace" v-resize="onResize" >
 		        <v-flex xs12  fill-height >
-					    <vue-ace  :content="item.text"  v-on:change-content="changeContent"
-					    :mode="item.mode" :wrap="wrap"  :settings="aceSettings"></vue-ace>
+					    <vue-ace  :content="item.text"  v-on:change-content="changeContent"  :events="events"
+					    :mode="item.mode" :wrap="wrap"  :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
 					  </v-flex>
 		        </div> 
 		      </v-card>
@@ -125,7 +183,10 @@
         active: null,
         items: [],
       wrap: true,
-      aceSettings: {}
+      aceSettings: {},
+      events:  new Vue({}),
+      annotations: null,
+      folded:false
       }
   },
   
@@ -154,9 +215,37 @@
     setMode(type){
       this.active.mode=type.mode
     },
+    togglefold(){
+      this.folded=!this.folded
+      this.acecmd(this.folded?"foldall":"unfoldall")
+    },
+    acecmd(cmd){
+      //alert("acecmd: "+cmd)
+      this.events.$emit('eventFired',cmd);
+    },
+    fold(){
+      this.events.$emit('eventFired',"foldall");
+    },
     
-    lightbulb(d){
-      alert("lightbulb TODO: " + d)
+    format(d){
+      var d=this.active.mode;
+      var f=this.$MimeTypes.mode[d];
+      var f=f && f.format;
+      if(f){
+        this.active.text=f(this.active.text);
+      }
+    },
+    
+    annotation(counts){
+      this.annotations=counts
+      //console.log("annotations: ",counts)
+    },
+    
+    validate(){
+        var d=this.active.mode;
+        var f=this.$MimeTypes.mode[d];
+        var f=f && f.validate;
+        alert("no validate yet");
     },
     
     addItem(tab){

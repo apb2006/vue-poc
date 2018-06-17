@@ -10,8 +10,18 @@
                <v-chip v-text="item.protocol">Example Chip</v-chip>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
+                <v-list-tile-title v-text="item.url"></v-list-tile-title>
               </v-list-tile-content>
+              <v-list-tile-action>
+              <v-btn  @click="doEdit(item)" icon ripple>
+                <v-icon color="grey lighten-1">info</v-icon>
+              </v-btn>
+              </v-list-tile-action>
+              <v-list-tile-action>
+              <v-btn  @click="doEdit2(item)" icon ripple>
+                <v-icon color="grey lighten-1">info</v-icon>
+              </v-btn>
+            </v-list-tile-action>
             </v-list-tile>
    </v-list>
    </v-card-text>
@@ -37,6 +47,9 @@
     doEdit(item){
       console.log("history: ",item)
         router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
+    },
+    doEdit2(item){
+     alert("dd")
     }
   },
   created:function(){

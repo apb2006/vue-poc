@@ -73,7 +73,24 @@
        alert("not yet:"+r);
      })
       }
-  }
+  },
+  beforeRouteEnter (to, from, next) {
+    Promise.all([settings.getItem('images/thumbtask')
+                 ])
+    .then(function(values) {
+      next(vm => {
+          vm.taskxml = values[0];
+          })
+          })
+    },
+     
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    settings.setItem('images/thumbtask',this.taskxml);
+    next(true);
+  },
 
 }
 </script>

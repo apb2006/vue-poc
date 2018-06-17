@@ -175,8 +175,8 @@
             model: false,
             children: [
          
-          {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
-          {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  },
+          {href: '/form',text: 'vue-form-generator',icon: 'format_list_bulleted'  },
+          {href: '/form2',text: 'vue-json-schema',icon: 'format_list_bulleted'  },
           {href: '/form3',text: 'vue-form-json-schema',icon: 'format_list_bulleted'  }
           ]},   
       {

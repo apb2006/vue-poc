@@ -1,4 +1,4 @@
-// generated 2018-06-14T22:56:00.937+01:00
+// generated 2018-06-17T15:48:13.622+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -762,10 +762,53 @@ Vue.filter('round', function(value, decimals) {
   return value;
 });
 
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/fullscreen.js
+// https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
+const Fullscreen={
+    isInFullScreen(){
+      return (document.fullscreenElement && document.fullscreenElement !== null) ||
+      (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
+      (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
+      (document.msFullscreenElement && document.msFullscreenElement !== null);
+    },
+    toggle(){
+      var docElm = document.documentElement;
+      if (!this.isInFullScreen()) {
+          if (docElm.requestFullscreen) {
+              docElm.requestFullscreen();
+          } else if (docElm.mozRequestFullScreen) {
+              docElm.mozRequestFullScreen();
+          } else if (docElm.webkitRequestFullScreen) {
+              docElm.webkitRequestFullScreen();
+          } else if (docElm.msRequestFullscreen) {
+              docElm.msRequestFullscreen();
+          }
+      } else {
+          if (document.exitFullscreen) {
+              document.exitFullscreen();
+          } else if (document.webkitExitFullscreen) {
+              document.webkitExitFullscreen();
+          } else if (document.mozCancelFullScreen) {
+              document.mozCancelFullScreen();
+          } else if (document.msExitFullscreen) {
+              document.msExitFullscreen();
+          }
+      }
+    },
+    install: function(Vue){
+      Object.defineProperty(Vue.prototype, '$fullscreen', {
+        get () { return Fullscreen }
+    })  }
+};
+Vue.use(Fullscreen);
+
+
+
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/mimetypes.js
 // Mimetype info
-const MimeTypes={
- toMode:[
+// 
+const MimeTypes=new function(){
+ this.toMode=[
             {name: "text/plain", mode: "text"},
             {name: "text/xml", mode: "xml"},
             {name: "application/xml", mode:"xml"},
@@ -777,23 +820,52 @@ const MimeTypes={
             {name: "text/css", mode:"css"},
             {name: "image/svg+xml", mode:"svg"}
             ],
-  mode:{
+  this.formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});
+  this.formatjs= t=>js_beautify(t, { indent_size: 2 });
+  
+  this.mode={
     "text": {},
     "javascript": {
-      format(t){ return js_beautify(t, { indent_size: 2 })}
+      "format":this.formatjs
     },
-    "xml": {
-      format(t){ return html_beautify(t, { indent_size: 3 ,indent_inner_html:true})}
+   "xml": {
+     "format":this.formatdom
     },
     "css": {}
-  },
-  install(Vue){
+  };
+  
+  this.install=function(Vue){
       Object.defineProperty(Vue.prototype, '$MimeTypes', {
         get () { return MimeTypes }
     })  }
 
 };
 Vue.use(MimeTypes);
+
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/notification.js
+//Notification Object
+const Notification={
+    messages:[],
+    nextId: 0,
+    unseen:0,
+    add(msg){
+      var data={
+          text: msg,
+          index: ++this.nextId,
+          created: new Date()
+      };
+      this.messages.unshift(data);
+      this.messages.length = Math.min(this.messages.length, 30);
+      ++this.unseen;
+
+    },
+    install(Vue){
+        Object.defineProperty(Vue.prototype, '$notification', {
+          get () { return Notification }
+      })  }
+};
+Vue.use(Notification);
+
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/404.vue
 const Notfound=Vue.extend({template:` 
@@ -816,35 +888,66 @@ const Notfound=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/about.vue
 const About=Vue.extend({template:` 
-<v-container>
-<v-parallax src="/vue-poc/ui/vue-poc.png">
-</v-parallax> 
-<v-card>
 
-  <v-card-text>
+  <v-jumbotron color="grey lighten-2">
+       <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
+      <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
+        <v-icon>account_circle</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="green">
+        <v-icon>edit</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="indigo">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn fab="" dark="" small="" class="red">
+        <v-icon>delete</v-icon>
+      </v-btn>
+    </v-speed-dial>
+    <v-container fill-height="">
+      <v-layout align-center="">
+        <v-flex>
+          <h3 class="display-3">Vue-poc
+            
+          </h3>
+          <span class="subheading">A development environment for managing XML sources and processes.</span>
+      
+          <v-divider class="my-3"></v-divider>
+       
+          <div class="title mb-3">Links</div>
+           <v-layout row="" wrap="">
+          <v-flex xs6="">
+	        <ul>
+	         <li><a href="https://vuejs.org/" target="new">vue.js</a></li>
+					  <li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
+					
+					  <li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
+					    <li><a href="https://developers.google.com/web/tools/workbox/" target="new">workbox</a></li> 
+					 </ul>
+					 </v-flex>
+					 <v-flex xs6="">
+					 <ul>
+					  <li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
+					  <li><a href="/dba" target="new">DBA app</a></li>
+					   <li> <router-link to="database?url=%2Fvue-poc%2F">DB</router-link></li>
+					</ul>
+					</v-flex>
+					</v-layout>
+        </v-flex>
+      </v-layout>
  
-<p>
-	This is a experiment in using
-	<code>vue.js</code>
-	.
-</p>
-<ul>
-	<li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
-	<li><a href="https://github.com/monterail/vue-multiselect" target="new">vue-multiselect</a></li>
-	<li><a href="https://github.com/sagalbot/vue-select" target="new"><s>vue-select</s></a></li>
-	<li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
-	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
-	<li><a href="/dba" target="new">DBA app</a></li>
-	 <li> <router-link to="database?url=%2Fvue-poc%2F">DB</router-link></li>
-</ul>
- <v-btn floating="floating"> <v-icon>add</v-icon> </v-btn> <qd-link href="/dba">REPLACED</qd-link> 
-	</v-card-text>
-	</v-card>
-	</v-container>
+    </v-container>
+    </v-jumbotron>
+      
 	 `,
       
+  data:  function(){
+    return { 
+      fab: false
   }
-
+  }
+}
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logs.vue
@@ -1212,8 +1315,18 @@ const History=Vue.extend({template:`
                <v-chip v-text="item.protocol">Example Chip</v-chip>
               </v-list-tile-action>
               <v-list-tile-content>
-                <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
+                <v-list-tile-title v-text="item.url"></v-list-tile-title>
               </v-list-tile-content>
+              <v-list-tile-action>
+              <v-btn @click="doEdit(item)" icon="" ripple="">
+                <v-icon color="grey lighten-1">info</v-icon>
+              </v-btn>
+              </v-list-tile-action>
+              <v-list-tile-action>
+              <v-btn @click="doEdit2(item)" icon="" ripple="">
+                <v-icon color="grey lighten-1">info</v-icon>
+              </v-btn>
+            </v-list-tile-action>
             </v-list-tile>
    </v-list>
    </v-card-text>
@@ -1238,12 +1351,365 @@ const History=Vue.extend({template:`
     doEdit(item){
       console.log("history: ",item)
         router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
+    },
+    doEdit2(item){
+     alert("dd")
     }
   },
   created:function(){
     this.get()
     console.log("history")
   }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/svg.vue
+const Svg=Vue.extend({template:` 
+ <v-container fluid="">
+<div id="canvasqPWKOg" class="canvas"></div>
+<button id="resetButtonqPWKOg">Reset</button>
+<div>
+    <svg width="500" height="300"></svg>
+    <br>
+    <input type="range" v-model="circleSize" min="1" max="100" step="1">
+</div>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      message: 'bad route!',
+      circleSize: 50
+      }
+  },
+  created:function(){
+    console.log("notfound",this.$route.query.q)
+  },
+  mounted: function(createElement) {
+    var svg = d3.select(this.$el).select('svg');
+    this.circle = svg
+      .append('circle')
+      .attr('cx', '250')
+      .attr('cy', '150')
+      .attr('r', this.circleSize)
+  },
+  watch: {
+    circleSize: function(newValue) {
+      this.circle
+        .attr('r', newValue)
+    }
+  }
+
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/svg2.vue
+const Svg2=Vue.extend({template:` 
+<div ref="panel" v-resize="onResize">
+  <v-toolbar dense="">
+	  <v-btn @click="view.reset()">Reset</v-btn>
+	   <v-btn @click="size()">Size</v-btn>
+	     <v-select v-model="url" combobox="" clearable="" open-on-clear="" :items="svgs"></v-select>
+	   
+	    <v-btn @click="load()">set</v-btn>
+	</v-toolbar>
+	
+	 <div ref="svgcanvas" style="width:100%;height:100%;background-color:yellow;"></div>
+</div>
+ `,
+      
+  data: function() {
+    return {
+      canvasd3:null,
+      view:null,
+      url:"/vue-poc/ui/resources/svg/butterfly.svg",
+      svgs:["/vue-poc/ui/resources/svg/butterfly.svg",
+            "/vue-poc/ui/resources/svg/tiger.svg"]
+    };
+  },
+  methods:{
+    size(){
+      this.view.width(200).height(200).render();
+    },
+    
+    load(){
+      var that=this;
+      d3.xml(this.url,
+          function(error, xml) {
+        if (error) {
+          //alert("load err");
+          throw error;
+        }
+        var d=d3.select(xml.documentElement)
+        that.view.setItem(d);
+    });
+    },
+    
+    onResize(){
+      var el=this.$refs["panel"];
+       
+      //console.log("top",e.offsetTop)
+      var h=Math.max(1,window.innerHeight - el.offsetTop -10);
+      var w=Math.max(1,window.innerWidth- el.offsetLeft ) 
+      console.log("resize:",w,h)
+      el.style.height=h +"px";
+      if(this.view ){
+        this.view.height(h-20);
+       this.view.render();
+      }
+    }
+
+  },
+  
+  watch:{
+    url(v){
+      this.$router.push({  query: { url: this.url }})
+      },
+      $route(vnew,vold){
+        //console.log("ROUTE",vnew,vold)    
+        var url=this.$route.query.url
+        this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
+        if(vnew.query.url != vold.query.url) this.load() 
+      }
+  },
+  
+  mounted: function() {
+    var url=this.$route.query.url
+    this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
+    this.canvasd3 = d3.select(this.$refs.svgcanvas);
+    /** RUN SCRIPT **/
+    var canvasWidth = 800;
+
+    var canvas = d3.demo.canvas().width(canvasWidth).height(400);
+    this.view=canvas;
+    this.canvasd3.call(canvas);
+    
+    this.load();
+   
+
+  }
+
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/timeline.vue
+const Timeline=Vue.extend({template:` 
+ <v-container fluid="">
+ <v-card>
+ <v-toolbar class="lime darken-1">
+	 <v-card-title>Line 1</v-card-title>
+	 <v-spacer></v-spacer>
+	 <v-btn @click="fit">fit</v-btn>
+	 </v-toolbar>
+	 <v-card-text>
+	   <vis-time-line :items="vueState.data1" :events="Events" :options="{editable: true, clickToUse: false}" @select="select"></vis-time-line>
+	 </v-card-text>
+ </v-card>
+ 
+ <v-card>
+ <v-card-text>
+ {{msg}}
+ </v-card-text>
+</v-card>
+ </v-container>
+ `,
+      
+  data(){
+    return {
+      vueState: {
+      data1: [
+        { id: 1, content: 'item 1', start: '2013-04-20 23:06:15.304' },
+	      { id: 2, content: 'iso date time', start: '2013-04-14T11:11:15.304' },
+	      { id: 3, content: '[GET] http://localhost:8984/vue-poc/ui/icon.png', start: '2013-04-18', end: '2013-04-19' },
+	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19', className: 'green' },
+	      { id: 5, content: '[GET] http://localhost:8984/vue-poc/ui/app.css', start: '2013-04-25' },
+	      { id: 6, content: 'item 6', start: '2013-04-27' }]
+    },
+    Events: new Vue({}),
+    msg:"Item detail"
+    }
+},
+methods:{
+  fit(){
+    this.Events.$emit('fit');
+  },
+  select(items){
+    this.msg='Selected items: ' + items
+  }
+},
+created(){
+  console.log("timeline")
+}
+}
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/tree.vue
+const Tree=Vue.extend({template:` 
+ <v-container fluid="">
+ <v-card>
+ <v-toolbar class="lime darken-1">
+   <v-card-title><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@1.0.11</qd-link> </v-card-title>
+   <v-spacer></v-spacer>
+   <v-btn>todo</v-btn>
+   </v-toolbar>
+   <v-card-text>
+    <v-jstree :data="data" show-checkbox="" multiple="" allow-batch="" whole-row="" @item-click="itemClick"></v-jstree>
+
+   </v-card-text>
+ </v-card>
+ </v-container>
+ `,
+      
+  data:function(){
+    return {
+  data: [
+    {
+      "text": "Same but with checkboxes",
+      "children": [
+        {
+          "text": "initially selected",
+          "selected": true
+        },
+        {
+          "text": "custom icon",
+          "icon": "fa fa-warning icon-state-danger"
+        },
+        {
+          "text": "initially open",
+          "icon": "fa fa-folder icon-state-default",
+          "opened": true,
+          "children": [
+            {
+              "text": "Another node"
+            }
+          ]
+        },
+        {
+          "text": "custom icon",
+          "icon": "fa fa-warning icon-state-warning"
+        },
+        {
+          "text": "disabled node",
+          "icon": "fa fa-check icon-state-success",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "text": "Same but with checkboxes",
+      "opened": true,
+      "children": [
+        {
+          "text": "initially selected",
+          "selected": true
+        },
+        {
+          "text": "custom icon",
+          "icon": "fa fa-warning icon-state-danger"
+        },
+        {
+          "text": "initially open",
+          "icon": "fa fa-folder icon-state-default",
+          "opened": true,
+          "children": [
+            {
+              "text": "Another node"
+            }
+          ]
+        },
+        {
+          "text": "custom icon",
+          "icon": "fa fa-warning icon-state-warning"
+        },
+        {
+          "text": "disabled node",
+          "icon": "fa fa-check icon-state-success",
+          "disabled": true
+        }
+      ]
+    },
+    {
+      "text": "And wholerow selection"
+    }
+  ]
+}
+  },
+methods: {
+  itemClick (node) {
+    console.log(node.model.text + ' clicked !')
+  }
+}
+
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/tree2.vue
+const Tree2=Vue.extend({template:` 
+ <v-container fluid="">
+ <v-card>
+ <v-toolbar class="lime darken-1">
+   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.29</qd-link> </v-card-title>
+   <v-spacer></v-spacer>
+   <v-btn>todo</v-btn>
+   </v-toolbar>
+   <v-card-text>
+     <v-layout row="" wrap="">
+     <v-flex xs4="">
+     Select some things:
+     </v-flex>
+      <v-flex xs4="">
+		    <treeselect v-model="value" :multiple="true" :options="source">
+    </treeselect></v-flex>
+    
+    <v-flex xs4="">
+       <pre>{{ value }}</pre>
+    </v-flex>
+   </v-layout>
+   </v-card-text>
+
+ </v-card>
+ </v-container>
+ `,
+      
+  //components: { Treeselect },
+  
+  data:function(){
+    return {
+      value: [
+        "DITA",
+        "CSS",
+        "Linking",
+        "Hardware-basedProcessing"
+      ],
+      source: []
+    }
+  },
+methods: {
+  itemClick (node) {
+    console.log(node.model.text + ' clicked !')
+  },
+  load(){
+    HTTP.get("components/tree")
+    .then(r=>{
+      console.log(r);
+      this.source=r.data
+      })
+      .catch(error=> {
+        console.log(error);
+       
+        alert("Get query error"+url)
+      });
+    
+  },
+},
+created:function(){
+  this.load()
+}
+
 }
 
       );
@@ -1554,7 +2020,7 @@ const Edit=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/tabs.vue
 const Tabs=Vue.extend({template:` 
-<div>
+<div> 
   <v-toolbar tabs="" dense="">
      <v-toolbar-items>
 	      <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
@@ -1572,15 +2038,73 @@ const Tabs=Vue.extend({template:`
       </v-menu>
       
        <v-menu v-if="active" left="" transition="v-fade-transition">
-        <v-btn icon="" slot="activator"><v-icon>lightbulb_outline</v-icon></v-btn>
+        <v-btn icon="" slot="activator"><v-icon>subscriptions</v-icon></v-btn>
           <v-list dense="">
-                <v-list-tile v-for="type in $MimeTypes.toMode" :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
-              </v-list-tile>           
+          <v-subheader>Actions</v-subheader>
+                <v-list-tile @click="format()">
+                <v-list-tile-title>Format</v-list-tile-title>
+              </v-list-tile>
+               <v-list-tile @click="validate()">
+                <v-list-tile-title>Validate</v-list-tile-title>
+              </v-list-tile>             
           </v-list>         
       </v-menu>
       
+     
        <v-spacer></v-spacer>
+       
+         <v-tooltip top="">
+			     <v-chip @click="acecmd('goToNextError')" slot="activator">
+			            <span class="red ">{{annotations &amp;&amp; annotations.error}}</span>
+			            <span class="yellow ">{{annotations &amp;&amp; annotations.warning}}</span>   
+			            <span class="green ">{{annotations &amp;&amp; annotations.info}}</span>
+			 
+			           <v-avatar>
+			              <v-icon black="">navigate_next</v-icon>
+			           </v-avatar>
+			      </v-chip>
+			      <span>Annotations: Errors,Warning and Info</span>
+			   </v-tooltip>
+   
+        <v-menu left="" transition="v-fade-transition">
+      <v-btn :disabled="!active" icon="" slot="activator" title="display settings">
+        <v-icon>playlist_play</v-icon>
+      </v-btn>
+     
+      <v-list dense="">
+           <v-subheader>Display settings</v-subheader>
+         
+           <v-list-tile @click="togglefold" avatar="">
+             <v-list-tile-avatar>
+                   <v-icon>vertical_align_center</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>Toggle folds</v-list-tile-title>
+           </v-list-tile>
+           
+           <v-list-tile @click="wrap=!wrap" avatar="">
+             <v-list-tile-avatar>
+                   <v-icon>wrap_text</v-icon>
+              </v-list-tile-avatar>
+              <v-list-tile-title>Soft wrap</v-list-tile-title>
+           </v-list-tile>
+             <v-divider></v-divider>
+              <v-subheader>Help</v-subheader>
+             <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
+               <v-list-tile-avatar>
+              <v-icon>settings</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showSettingsMenu')">Show ACE settings</v-list-tile-title>
+            </v-list-tile>
+                      
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
+              <v-list-tile-avatar>
+              <v-icon>keyboard</v-icon>
+            </v-list-tile-avatar>
+              <v-list-tile-title @click="acecmd('showKeyboardShortcuts')">Show ACE keyboard shortcuts</v-list-tile-title>
+            </v-list-tile>          
+      </v-list>
+    </v-menu>
+    
        <v-btn @click="showInfo = !showInfo" icon="">
               <v-icon v-if="showInfo">info</v-icon>
               <v-icon v-else="">mode_edit</v-icon>
@@ -1603,8 +2127,8 @@ const Tabs=Vue.extend({template:`
 			       <v-avatar>
 			          <v-icon size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
-			       <span>{{ item.name  }}</span>
 			       <span>{{ (item.dirty?"*":"") }}</span>
+			        <span>{{ item.name  }}</span>
 			       <v-spacer></v-spacer>
 			       <v-btn icon="" @click.stop="tabClose(item)">
 			          <v-icon size="16px">close</v-icon>
@@ -1624,7 +2148,7 @@ const Tabs=Vue.extend({template:`
 			      </v-card-actions>
 			      
 			       <v-card-text v-if="active"> 
-									<v-layout row="" v-for="x in ['name','id','mode','dirty','location']" :key="x">
+									<v-layout row="" v-for="x in ['name','id','mode','contentType','dirty','location']" :key="x">
 							      <v-flex xs3="">
 							        <v-subheader>{{ x}}</v-subheader>
 							      </v-flex>
@@ -1638,7 +2162,7 @@ const Tabs=Vue.extend({template:`
 			    <v-card v-else="">
 		        <div style="height:200px" ref="ace" v-resize="onResize">
 		        <v-flex xs12="" fill-height="">
-					    <vue-ace :content="item.text" v-on:change-content="changeContent" :mode="item.mode" :wrap="wrap" :settings="aceSettings"></vue-ace>
+					    <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
 					  </v-flex>
 		        </div> 
 		      </v-card>
@@ -1658,7 +2182,10 @@ const Tabs=Vue.extend({template:`
         active: null,
         items: [],
       wrap: true,
-      aceSettings: {}
+      aceSettings: {},
+      events:  new Vue({}),
+      annotations: null,
+      folded:false
       }
   },
   
@@ -1687,9 +2214,37 @@ const Tabs=Vue.extend({template:`
     setMode(type){
       this.active.mode=type.mode
     },
+    togglefold(){
+      this.folded=!this.folded
+      this.acecmd(this.folded?"foldall":"unfoldall")
+    },
+    acecmd(cmd){
+      //alert("acecmd: "+cmd)
+      this.events.$emit('eventFired',cmd);
+    },
+    fold(){
+      this.events.$emit('eventFired',"foldall");
+    },
     
-    lightbulb(d){
-      alert("lightbulb TODO: " + d)
+    format(d){
+      var d=this.active.mode;
+      var f=this.$MimeTypes.mode[d];
+      var f=f && f.format;
+      if(f){
+        this.active.text=f(this.active.text);
+      }
+    },
+    
+    annotation(counts){
+      this.annotations=counts
+      //console.log("annotations: ",counts)
+    },
+    
+    validate(){
+        var d=this.active.mode;
+        var f=this.$MimeTypes.mode[d];
+        var f=f && f.validate;
+        alert("no validate yet");
     },
     
     addItem(tab){
@@ -4227,137 +4782,6 @@ const Settings=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/svg.vue
-const Svg=Vue.extend({template:` 
- <v-container fluid="">
-<div id="canvasqPWKOg" class="canvas"></div>
-<button id="resetButtonqPWKOg">Reset</button>
-<div>
-    <svg width="500" height="300"></svg>
-    <br>
-    <input type="range" v-model="circleSize" min="1" max="100" step="1">
-</div>
- </v-container>
- `,
-      
-  data:  function(){
-    return {
-      message: 'bad route!',
-      circleSize: 50
-      }
-  },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
-  },
-  mounted: function(createElement) {
-    var svg = d3.select(this.$el).select('svg');
-    this.circle = svg
-      .append('circle')
-      .attr('cx', '250')
-      .attr('cy', '150')
-      .attr('r', this.circleSize)
-  },
-  watch: {
-    circleSize: function(newValue) {
-      this.circle
-        .attr('r', newValue)
-    }
-  }
-
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/svg2.vue
-const Svg2=Vue.extend({template:` 
-<div ref="panel" v-resize="onResize">
-  <v-toolbar dense="">
-	  <v-btn @click="view.reset()">Reset</v-btn>
-	   <v-btn @click="size()">Size</v-btn>
-	     <v-select v-model="url" combobox="" clearable="" open-on-clear="" :items="svgs"></v-select>
-	   
-	    <v-btn @click="load()">set</v-btn>
-	</v-toolbar>
-	
-	 <div ref="svgcanvas" style="width:100%;height:100%;background-color:yellow;"></div>
-</div>
- `,
-      
-  data: function() {
-    return {
-      canvasd3:null,
-      view:null,
-      url:"/vue-poc/ui/resources/svg/butterfly.svg",
-      svgs:["/vue-poc/ui/resources/svg/butterfly.svg",
-            "/vue-poc/ui/resources/svg/tiger.svg"]
-    };
-  },
-  methods:{
-    size(){
-      this.view.width(200).height(200).render();
-    },
-    
-    load(){
-      var that=this;
-      d3.xml(this.url,
-          function(error, xml) {
-        if (error) {
-          //alert("load err");
-          throw error;
-        }
-        var d=d3.select(xml.documentElement)
-        that.view.setItem(d);
-    });
-    },
-    
-    onResize(){
-      var el=this.$refs["panel"];
-       
-      //console.log("top",e.offsetTop)
-      var h=Math.max(1,window.innerHeight - el.offsetTop -10);
-      var w=Math.max(1,window.innerWidth- el.offsetLeft ) 
-      console.log("resize:",w,h)
-      el.style.height=h +"px";
-      if(this.view ){
-        this.view.height(h-20);
-       this.view.render();
-      }
-    }
-
-  },
-  
-  watch:{
-    url(v){
-      this.$router.push({  query: { url: this.url }})
-      },
-      $route(vnew,vold){
-        //console.log("ROUTE",vnew,vold)    
-        var url=this.$route.query.url
-        this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
-        if(vnew.query.url != vold.query.url) this.load() 
-      }
-  },
-  
-  mounted: function() {
-    var url=this.$route.query.url
-    this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
-    this.canvasd3 = d3.select(this.$refs.svgcanvas);
-    /** RUN SCRIPT **/
-    var canvasWidth = 800;
-
-    var canvas = d3.demo.canvas().width(canvasWidth).height(400);
-    this.view=canvas;
-    this.canvasd3.call(canvas);
-    
-    this.load();
-   
-
-  }
-
-}
-
-      );
-      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/model.build/model.vue
 const Model=Vue.extend({template:` 
  <v-container fluid="">
@@ -4778,215 +5202,24 @@ const Thumbnail=Vue.extend({template:`
        alert("not yet:"+r);
      })
       }
-  }
-
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/timeline.vue
-const Timeline=Vue.extend({template:` 
- <v-container fluid="">
- <v-card>
- <v-toolbar class="lime darken-1">
-	 <v-card-title>Line 1</v-card-title>
-	 <v-spacer></v-spacer>
-	 <v-btn @click="fit">fit</v-btn>
-	 </v-toolbar>
-	 <v-card-text>
-	   <vis-time-line :items="vueState.data1" :events="Events" :options="{editable: true, clickToUse: false}" @select="select"></vis-time-line>
-	 </v-card-text>
- </v-card>
- 
- <v-card>
- <v-card-text>
- {{msg}}
- </v-card-text>
-</v-card>
- </v-container>
- `,
-      
-  data(){
-    return {
-      vueState: {
-      data1: [
-        { id: 1, content: 'item 1', start: '2013-04-20 23:06:15.304' },
-	      { id: 2, content: 'iso date time', start: '2013-04-14T11:11:15.304' },
-	      { id: 3, content: '[GET] http://localhost:8984/vue-poc/ui/icon.png', start: '2013-04-18', end: '2013-04-19' },
-	      { id: 4, content: 'item 4', start: '2013-04-16', end: '2013-04-19', className: 'green' },
-	      { id: 5, content: '[GET] http://localhost:8984/vue-poc/ui/app.css', start: '2013-04-25' },
-	      { id: 6, content: 'item 6', start: '2013-04-27' }]
-    },
-    Events: new Vue({}),
-    msg:"Item detail"
-    }
-},
-methods:{
-  fit(){
-    this.Events.$emit('fit');
   },
-  select(items){
-    this.msg='Selected items: ' + items
-  }
-},
-created(){
-  console.log("timeline")
-}
-}
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tree.vue
-const Tree=Vue.extend({template:` 
- <v-container fluid="">
- <v-card>
- <v-toolbar class="lime darken-1">
-   <v-card-title><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@1.0.11</qd-link> </v-card-title>
-   <v-spacer></v-spacer>
-   <v-btn>todo</v-btn>
-   </v-toolbar>
-   <v-card-text>
-    <v-jstree :data="data" show-checkbox="" multiple="" allow-batch="" whole-row="" @item-click="itemClick"></v-jstree>
-
-   </v-card-text>
- </v-card>
- </v-container>
- `,
-      
-  data:function(){
-    return {
-  data: [
-    {
-      "text": "Same but with checkboxes",
-      "children": [
-        {
-          "text": "initially selected",
-          "selected": true
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-danger"
-        },
-        {
-          "text": "initially open",
-          "icon": "fa fa-folder icon-state-default",
-          "opened": true,
-          "children": [
-            {
-              "text": "Another node"
-            }
-          ]
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-warning"
-        },
-        {
-          "text": "disabled node",
-          "icon": "fa fa-check icon-state-success",
-          "disabled": true
-        }
-      ]
+  beforeRouteEnter (to, from, next) {
+    Promise.all([settings.getItem('images/thumbtask')
+                 ])
+    .then(function(values) {
+      next(vm => {
+          vm.taskxml = values[0];
+          })
+          })
     },
-    {
-      "text": "Same but with checkboxes",
-      "opened": true,
-      "children": [
-        {
-          "text": "initially selected",
-          "selected": true
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-danger"
-        },
-        {
-          "text": "initially open",
-          "icon": "fa fa-folder icon-state-default",
-          "opened": true,
-          "children": [
-            {
-              "text": "Another node"
-            }
-          ]
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-warning"
-        },
-        {
-          "text": "disabled node",
-          "icon": "fa fa-check icon-state-success",
-          "disabled": true
-        }
-      ]
-    },
-    {
-      "text": "And wholerow selection"
-    }
-  ]
-}
+     
+  beforeRouteLeave (to, from, next) {
+    // called when the route that renders this component is about to
+    // be navigated away from.
+    // has access to `this` component instance.
+    settings.setItem('images/thumbtask',this.taskxml);
+    next(true);
   },
-methods: {
-  itemClick (node) {
-    console.log(node.model.text + ' clicked !')
-  }
-}
-
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tree2.vue
-const Tree2=Vue.extend({template:` 
- <v-container fluid="">
- <v-card>
- <v-toolbar class="lime darken-1">
-   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.28</qd-link> </v-card-title>
-   <v-spacer></v-spacer>
-   <v-btn>todo</v-btn>
-   </v-toolbar>
-   <v-card-text>
-     <v-layout row="" wrap="">
-     <v-flex xs6="">
-     Select some things
-     </v-flex>
-      <v-flex xs6="">
-    <treeselect v-model="value" :multiple="true" :options="source">
-    </treeselect></v-flex>
-   </v-layout>
-   </v-card-text>
- </v-card>
- </v-container>
- `,
-      
-  //components: { Treeselect },
-  
-  data:function(){
-    return {
-      value: null,
-      source: [
-        {
-          id: 'node-1',
-          label: 'Node 1',
-          children: [
-            {
-              id: 'node-1-a',
-              label: 'Node 1-A',
-            } 
-          ],
-        },
-        {
-          id: 'node-2',
-          label: 'Node 2',
-        } 
-      ] 
-    }
-  },
-methods: {
-  itemClick (node) {
-    console.log(node.model.text + ' clicked !')
-  }
-}
 
 }
 
@@ -5575,8 +5808,8 @@ const Vuepoc=Vue.extend({template:`
             model: false,
             children: [
          
-          {href: '/form',text: 'Forms',icon: 'format_list_bulleted'  },
-          {href: '/form2',text: 'Forms 2',icon: 'format_list_bulleted'  },
+          {href: '/form',text: 'vue-form-generator',icon: 'format_list_bulleted'  },
+          {href: '/form2',text: 'vue-json-schema',icon: 'format_list_bulleted'  },
           {href: '/form3',text: 'vue-form-json-schema',icon: 'format_list_bulleted'  }
           ]},   
       {
@@ -5737,28 +5970,6 @@ const Auth={
 };
 Vue.use(Auth);
 
-//Notification Object
-const Notification={
-    messages:[],
-    nextId: 0,
-    unseen:0,
-    add(msg){
-      var data={
-          text: msg,
-          index: ++this.nextId,
-          created: new Date()
-      };
-      this.messages.unshift(data);
-      this.messages.length = Math.min(this.messages.length, 30);
-      ++this.unseen;
-
-    },
-    install(Vue){
-        Object.defineProperty(Vue.prototype, '$notification', {
-          get () { return Notification }
-      })  }
-};
-Vue.use(Notification);
 
 
 // Settings read and write list clear
@@ -5791,13 +6002,25 @@ ut aliquip ex ea commodo consequat.`},
            text:`let $a:=1 to 5
 return $a   `},
       
-         {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "/aaa/bca/",
+         {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "xmldb:/vue-poc/aaa/bca/videos.xml",
            text:`<foo version="1.0">
   <node>hello</node>
 </foo>`}
        ],
        "edit/currentId": "?",
-       "system/serviceworker": true
+       "system/serviceworker": true,
+       "images/thumbtask":`
+<thumbnail>
+    <size width="100" height="100"/>
+    <filters>             
+        <colorize color="green" alpha=".5"/>      
+        <caption position="CENTER">Some Text here</caption>
+        <rotate angle="15"/>
+        <canvas height="500" width="500" position="TOP_LEFT" color="black"/> 
+    </filters>
+    <output format="gif"/>         
+</thumbnail>
+`       
     },
     
     
@@ -5868,45 +6091,6 @@ function debounce(func, wait, immediate) {
      if (immediate && !timeout) func.apply(context, args);
  };
 };
-
-// https://stackoverflow.com/questions/36672561/how-to-exit-fullscreen-onclick-using-javascript
-const Fullscreen={
-    isInFullScreen(){
-      return (document.fullscreenElement && document.fullscreenElement !== null) ||
-      (document.webkitFullscreenElement && document.webkitFullscreenElement !== null) ||
-      (document.mozFullScreenElement && document.mozFullScreenElement !== null) ||
-      (document.msFullscreenElement && document.msFullscreenElement !== null);
-    },
-    toggle(){
-      var docElm = document.documentElement;
-      if (!this.isInFullScreen()) {
-          if (docElm.requestFullscreen) {
-              docElm.requestFullscreen();
-          } else if (docElm.mozRequestFullScreen) {
-              docElm.mozRequestFullScreen();
-          } else if (docElm.webkitRequestFullScreen) {
-              docElm.webkitRequestFullScreen();
-          } else if (docElm.msRequestFullscreen) {
-              docElm.msRequestFullscreen();
-          }
-      } else {
-          if (document.exitFullscreen) {
-              document.exitFullscreen();
-          } else if (document.webkitExitFullscreen) {
-              document.webkitExitFullscreen();
-          } else if (document.mozCancelFullScreen) {
-              document.mozCancelFullScreen();
-          } else if (document.msExitFullscreen) {
-              document.msExitFullscreen();
-          }
-      }
-    },
-    install: function(Vue){
-      Object.defineProperty(Vue.prototype, '$fullscreen', {
-        get () { return Fullscreen }
-    })  }
-};
-Vue.use(Fullscreen);
 
 Vue.component('treeselect', VueTreeselect.Treeselect);
 
