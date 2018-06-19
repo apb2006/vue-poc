@@ -3,6 +3,7 @@
  <v-container fluid>
   <v-card >
    <v-toolbar >
+   
        <v-btn
        icon
       :loading="loading"
@@ -10,7 +11,12 @@
       :disabled="loading"
     >
     <v-icon>refresh</v-icon>
-    </v-btn>   
+    </v-btn>
+    
+      <v-btn icon to="add" append>
+          <v-icon>add_circle</v-icon>
+    </v-btn>
+       
       <v-spacer></v-spacer>
       <v-text-field
         append-icon="search"
@@ -82,8 +88,9 @@
   created:function(){
     this.getItems()
   },
-  beforeDestroy(){
+  beforeRouteLeave(to, from, next){
     if(this.timer) clearTimeout(this.timer);
+    return next()
   }
 }
 </script>

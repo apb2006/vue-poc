@@ -1,4 +1,4 @@
-// generated 2018-06-17T15:48:13.622+01:00
+// generated 2018-06-19T23:27:38.406+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -950,14 +950,92 @@ const About=Vue.extend({template:`
 }
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logadd.vue
+const Logadd=Vue.extend({template:` 
+
+ <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+      <span class="white--text">Create log entry</span>      
+    </v-card-title>
+      <v-spacer></v-spacer>
+     <v-btn :disabled="!valid" @click="submit">
+      submit
+    </v-btn>
+    <v-btn @click="clear">clear</v-btn>
+    </v-toolbar>
+    <v-card-text>
+      <v-container fluid="">
+<v-form ref="form" v-model="valid" lazy-validation="">
+    <v-text-field v-model="name" :rules="nameRules" :counter="10" label="Name" required=""></v-text-field>
+   
+    <v-select v-model="type" :items="types" :rules="[v => !!v || 'type is required']" label="Type" required=""></v-select>
+    <v-checkbox v-model="checkbox" label="Add more?"></v-checkbox>
+
+   
+  </v-form>
+ </v-container>
+ </v-card-text>
+ </v-card>
+
+ `,
+      
+  data: () => ({
+    valid: true,
+    name: '',
+    nameRules: [
+      v => !!v || 'Name is required',
+      v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+    ],
+    
+    type: "INFO",
+    types: [
+      'INFO',
+      'TEST'
+    ],
+    checkbox: false
+  }),
+
+  methods: {
+    submit () {
+      if (this.$refs.form.validate()) {
+        // Native form submission is not yet supported
+         HTTP.post("log/add",{
+             name: this.name,
+             type: this.type,
+             checkbox: this.checkbox
+           })
+      .then(r=>{
+        alert("ok")
+        })
+      }
+    },
+    clear () {
+      this.$refs.form.reset()
+    }
+  },
+ mounted:function(){
+    console.log("logadd",this.$route.path)
+  }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logs.vue
 const Log=Vue.extend({template:` 
  <v-container fluid="">
   <v-card>
    <v-toolbar>
+   
        <v-btn icon="" :loading="loading" @click="getItems()" :disabled="loading">
     <v-icon>refresh</v-icon>
-    </v-btn>   
+    </v-btn>
+    
+      <v-btn icon="" to="add" append="">
+          <v-icon>add_circle</v-icon>
+    </v-btn>
+       
       <v-spacer></v-spacer>
       <v-text-field append-icon="search" label="Filter logs" single-line="" hide-details="" v-model="search"></v-text-field>
      
@@ -1015,8 +1093,9 @@ const Log=Vue.extend({template:`
   created:function(){
     this.getItems()
   },
-  beforeDestroy(){
+  beforeRouteLeave(to, from, next){
     if(this.timer) clearTimeout(this.timer);
+    return next()
   }
 }
 
@@ -1310,7 +1389,7 @@ const History=Vue.extend({template:`
   <v-card-title>History</v-card-title>
  <v-card-text>
     <v-list>
-            <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar="">
+            <v-list-tile v-for="item in items" v-bind:key="item.title" avatar="">
               <v-list-tile-action>
                <v-chip v-text="item.protocol">Example Chip</v-chip>
               </v-list-tile-action>
@@ -1324,7 +1403,7 @@ const History=Vue.extend({template:`
               </v-list-tile-action>
               <v-list-tile-action>
               <v-btn @click="doEdit2(item)" icon="" ripple="">
-                <v-icon color="grey lighten-1">info</v-icon>
+                <v-icon color="grey lighten-1">switch_camera</v-icon>
               </v-btn>
             </v-list-tile-action>
             </v-list-tile>
@@ -1353,7 +1432,7 @@ const History=Vue.extend({template:`
         router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
     },
     doEdit2(item){
-     alert("dd")
+      router.push({ path: 'tabs', query: { url:item.protocol + ":" +item.url  }})
     }
   },
   created:function(){
@@ -5565,7 +5644,7 @@ const router = new VueRouter({
     { path: '/server/repo', component: Repo,meta:{title:"Repository"} },
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
-    { path: '/ping', component: Ping,meta:{title:"Ping"} },
+   
     { path: '/settings', component: { template: '<router-view/>' }
          ,children: [
            {
@@ -5584,6 +5663,29 @@ const router = new VueRouter({
           }
           ]
     },
+    
+    { path: '/server', component: { template: '<router-view/>' }
+    ,children: [
+      {
+        path: '',
+        component: Settings, meta:{title:"Settings"}
+      },
+      { 
+        path: 'logs', name:"logs",
+        component: Log, 
+        meta:{title:"Server logs"}
+      },
+      { 
+        path: 'logs/add', name:"addlog",
+        component: Logadd, 
+        meta:{title:"add Server logs"}
+      },
+      { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
+      { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+      { path: 'ping', component: Ping,meta:{title:"Ping"} }
+     ]
+    },
+
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/svg', component: Svg, meta:{title:"SVG"} },
@@ -5783,11 +5885,11 @@ const Vuepoc=Vue.extend({template:`
         text: 'Server' ,
         model: false,
         children: [
-          {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
-          {href: '/logs',text: 'Server logs',icon: 'dns'},
+          {href: '/server/jobs',text: 'Running jobs',icon: 'dashboard'},   
+          {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
-          {href: '/ping',text: 'Ping',icon: 'update'}
+          {href: '/server/ping',text: 'Ping',icon: 'update'}
       ]},
       {
         icon: 'camera_roll',
@@ -5829,7 +5931,7 @@ const Vuepoc=Vue.extend({template:`
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v0.3.0)' , icon: 'help'    }, 
+      {href: '/about',text: 'About (v0.3.1)' , icon: 'help'    }, 
     ]
 
   }},
@@ -5837,7 +5939,7 @@ const Vuepoc=Vue.extend({template:`
    
 
       session(){
-        this.$router.push({path: '/session'})
+        this.$router.push({path: '/about'})
       },
       
       logout(){

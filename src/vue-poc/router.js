@@ -43,7 +43,7 @@ const router = new VueRouter({
     { path: '/server/repo', component: Repo,meta:{title:"Repository"} },
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
-    { path: '/ping', component: Ping,meta:{title:"Ping"} },
+   
     { path: '/settings', component: { template: '<router-view/>' }
          ,children: [
            {
@@ -62,6 +62,29 @@ const router = new VueRouter({
           }
           ]
     },
+    
+    { path: '/server', component: { template: '<router-view/>' }
+    ,children: [
+      {
+        path: '',
+        component: Settings, meta:{title:"Settings"}
+      },
+      { 
+        path: 'logs', name:"logs",
+        component: Log, 
+        meta:{title:"Server logs"}
+      },
+      { 
+        path: 'logs/add', name:"addlog",
+        component: Logadd, 
+        meta:{title:"add Server logs"}
+      },
+      { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
+      { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+      { path: 'ping', component: Ping,meta:{title:"Ping"} }
+     ]
+    },
+
     { path: '/history', component: History, meta:{title:"File History"} },
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/svg', component: Svg, meta:{title:"SVG"} },

@@ -150,11 +150,11 @@
         text: 'Server' ,
         model: false,
         children: [
-          {href: '/jobs',text: 'Running jobs',icon: 'dashboard'},   
-          {href: '/logs',text: 'Server logs',icon: 'dns'},
+          {href: '/server/jobs',text: 'Running jobs',icon: 'dashboard'},   
+          {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
-          {href: '/ping',text: 'Ping',icon: 'update'}
+          {href: '/server/ping',text: 'Ping',icon: 'update'}
       ]},
       {
         icon: 'camera_roll',
@@ -196,7 +196,7 @@
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v0.3.0)' , icon: 'help'    }, 
+      {href: '/about',text: 'About (v0.3.1)' , icon: 'help'    }, 
     ]
 
   }},
@@ -204,7 +204,7 @@
    
 
       session(){
-        this.$router.push({path: '/session'})
+        this.$router.push({path: '/about'})
       },
       
       logout(){

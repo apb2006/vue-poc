@@ -14,7 +14,7 @@ declare variable $qipe:DEBUG:=false(); (: currently unused :)
  : @param $initial starting data as sequence
  : @result 
  :)
-declare function qipe:run($pipe as document-node(),$initial as item()* )
+declare function qipe:run($pipe as node(),$initial as item()* )
 as item()*
 {
   let $steps:=$pipe/*/qipe:*

@@ -13,33 +13,19 @@ as element(json)
 {
   let $entity:=$entity:list("basexlog")
  let $items:=$entity("data")()
- let $items:=$items[not(ends-with(. ,"/vue-poc/api/log"))]
+ let $items:=$items[false() or not(ends-with(. ,"/vue-poc/api/log"))]
  (: let $_:=admin:write-log("hello admin:write-log") :)
  return dice:response($items,$entity,web:dice())
 };
 
-(:~
- :  job info
- :)
 declare  
-%rest:GET %rest:path("/vue-poc/api/log/{$log}")
-%output:method("json")   
-function j:log($log)
-as element(json)
+%rest:POST %rest:path("/vue-poc/api/log/add")
+%output:method("text")   
+function j:add()
 {
- let $j:=jobs:list-details($log)
- return <json type="object">
-         {j:job-json($j)}
-        </json>
-};
-
-declare function j:job-json($j) 
-as element(*)*
-{
-     <id>{$j/@id/string()}</id>
-     ,<type>{$j/@type/string()}</type>
-     ,<state>{$j/@state/string()}</state>
-     ,<user>{$j/@user/string()}</user>
-     ,<duration>{$j/@duration/string()}</duration>
-     ,<text>{$j/string()}</text>
+let $type:="INFO"
+let $text:="A log message"
+ return ("AAAA",
+     admin:write-log($text, $type ) 
+     )
 };

@@ -5,7 +5,7 @@
   <v-card-title>History</v-card-title>
  <v-card-text>
     <v-list>
-            <v-list-tile  v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar>
+            <v-list-tile  v-for="item in items" v-bind:key="item.title" avatar>
               <v-list-tile-action>
                <v-chip v-text="item.protocol">Example Chip</v-chip>
               </v-list-tile-action>
@@ -19,7 +19,7 @@
               </v-list-tile-action>
               <v-list-tile-action>
               <v-btn  @click="doEdit2(item)" icon ripple>
-                <v-icon color="grey lighten-1">info</v-icon>
+                <v-icon color="grey lighten-1">switch_camera</v-icon>
               </v-btn>
             </v-list-tile-action>
             </v-list-tile>
@@ -49,7 +49,7 @@
         router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
     },
     doEdit2(item){
-     alert("dd")
+      router.push({ path: 'tabs', query: { url:item.protocol + ":" +item.url  }})
     }
   },
   created:function(){
