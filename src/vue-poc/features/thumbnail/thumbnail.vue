@@ -1,13 +1,13 @@
 <!DOCTYPE html>
 <template id="thumbnail">
  <v-container fluid>
- <v-stepper v-model="step" non-linear>
+ <v-stepper v-model="step" non-linear  >
   <v-stepper-header>
-      <v-stepper-step step="1" :complete="step > 1">Select image location</v-stepper-step>
+      <v-stepper-step step="1" :complete="step > 1" editable>Select image location</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="2" :complete="step > 2">Set thumbnail details</v-stepper-step>
+      <v-stepper-step step="2" :complete="step > 2" editable>Set thumbnail details</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="3">Result</v-stepper-step>
+      <v-stepper-step step="3" editable>Result</v-stepper-step>
     </v-stepper-header>
   <v-stepper-items>
   <v-stepper-content step="1" non-linear>

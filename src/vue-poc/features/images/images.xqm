@@ -4,7 +4,7 @@
  : @author Andy Bunce may-2017
  :)
 module namespace vue-api = 'quodatum:vue.api.images';
-import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";
+import module namespace cfg = "quodatum:media.image.configure" at "../../config.xqm";
 import module namespace fw="quodatum:file.walker";
 import module namespace entity = 'quodatum.models.generated' at "../../models.gen.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";

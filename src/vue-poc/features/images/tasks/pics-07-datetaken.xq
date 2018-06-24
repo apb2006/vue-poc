@@ -4,7 +4,7 @@
  :   <idref>14569796 14569818 </idref>
  : </keyword>
 :)
-import module namespace cfg = "quodatum:media.image.configure" at "../config.xqm";
+import module namespace cfg = "quodatum:media.image.configure" at "../../../config.xqm";
 declare %updating function local:put($data,$path){
    db:replace($cfg:DB-IMAGE,$path,$data)
 };

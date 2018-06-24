@@ -20,10 +20,10 @@
       <v-container fluid>
 <v-form ref="form" v-model="valid" lazy-validation>
     <v-text-field
-      v-model="name"
-      :rules="nameRules"
+      v-model="message"
+       :rules="[v => !!v || 'message is required']"
       :counter="10"
-      label="Name"
+      label="Message"
       required
     ></v-text-field>
    
@@ -51,10 +51,9 @@
 <script>{
   data: () => ({
     valid: true,
-    name: '',
+    message: '',
     nameRules: [
-      v => !!v || 'Name is required',
-      v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+      v => !!v || 'Message is required'
     ],
     
     type: "INFO",
@@ -68,16 +67,20 @@
   methods: {
     submit () {
       if (this.$refs.form.validate()) {
-        // Native form submission is not yet supported
-         HTTP.post("log/add",{
-             name: this.name,
-             type: this.type,
-             checkbox: this.checkbox
-           })
+
+         var data={message: this.message,
+               type: this.type,
+               checkbox: this.checkbox};
+         HTTP.post("log/add",Qs.stringify(data))
       .then(r=>{
-        alert("ok")
-        })
-      }
+        console.log("submit: ",data);
+        if(this.checkbox){
+          this.clear()
+        }else{
+          router.push({ name: 'logs'});
+        }
+      })
+    }
     },
     clear () {
       this.$refs.form.reset()

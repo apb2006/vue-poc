@@ -3,7 +3,7 @@
  : @return initial number of missing docs  
 :)
 import module namespace t="expkg-zone58:image.thumbnailator";
-import module namespace cfg = "quodatum:media.image.configure" at "../config.xqm";
+import module namespace cfg = "quodatum:media.image.configure" at "../../../config.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
 declare variable $CHUNK:=1000;

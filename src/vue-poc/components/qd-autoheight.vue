@@ -3,9 +3,10 @@
  size contents to fit bottom to track window
  -->
 <template id="qd-autoheight">
-	<v-flex style="height:200px;overflow:hidden;" ref="auto" v-resize="onResize" class="green">
+	<v-layout style="height:200px;overflow:hidden;" row wrap
+	ref="auto" v-resize="onResize" class="green">
 			<slot >i will auto2</slot>
-	</v-flex>
+	</v-layout>
 </template>
 
 <script>{

@@ -1,10 +1,10 @@
-// generated 2018-06-19T23:27:38.406+01:00
+// generated 2018-06-24T22:46:13.105+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
-	<v-flex style="height:200px;overflow:hidden;" ref="auto" v-resize="onResize" class="green">
+	<v-layout style="height:200px;overflow:hidden;" row="" wrap="" ref="auto" v-resize="onResize" class="green">
 			<slot>i will auto2</slot>
-	</v-flex>
+	</v-layout>
  `,
       
   props: ['show'],
@@ -968,7 +968,7 @@ const Logadd=Vue.extend({template:`
     <v-card-text>
       <v-container fluid="">
 <v-form ref="form" v-model="valid" lazy-validation="">
-    <v-text-field v-model="name" :rules="nameRules" :counter="10" label="Name" required=""></v-text-field>
+    <v-text-field v-model="message" :rules="[v => !!v || 'message is required']" :counter="10" label="Message" required=""></v-text-field>
    
     <v-select v-model="type" :items="types" :rules="[v => !!v || 'type is required']" label="Type" required=""></v-select>
     <v-checkbox v-model="checkbox" label="Add more?"></v-checkbox>
@@ -983,10 +983,9 @@ const Logadd=Vue.extend({template:`
       
   data: () => ({
     valid: true,
-    name: '',
+    message: '',
     nameRules: [
-      v => !!v || 'Name is required',
-      v => (v && v.length <= 10) || 'Name must be less than 10 characters'
+      v => !!v || 'Message is required'
     ],
     
     type: "INFO",
@@ -1000,16 +999,20 @@ const Logadd=Vue.extend({template:`
   methods: {
     submit () {
       if (this.$refs.form.validate()) {
-        // Native form submission is not yet supported
-         HTTP.post("log/add",{
-             name: this.name,
-             type: this.type,
-             checkbox: this.checkbox
-           })
+
+         var data={message: this.message,
+               type: this.type,
+               checkbox: this.checkbox};
+         HTTP.post("log/add",Qs.stringify(data))
       .then(r=>{
-        alert("ok")
-        })
-      }
+        console.log("submit: ",data);
+        if(this.checkbox){
+          this.clear()
+        }else{
+          router.push({ name: 'logs'});
+        }
+      })
+    }
     },
     clear () {
       this.$refs.form.reset()
@@ -1028,17 +1031,30 @@ const Log=Vue.extend({template:`
   <v-card>
    <v-toolbar>
    
-       <v-btn icon="" :loading="loading" @click="getItems()" :disabled="loading">
-    <v-icon>refresh</v-icon>
-    </v-btn>
+    
     
       <v-btn icon="" to="add" append="">
           <v-icon>add_circle</v-icon>
     </v-btn>
        
-      <v-spacer></v-spacer>
+     
       <v-text-field append-icon="search" label="Filter logs" single-line="" hide-details="" v-model="search"></v-text-field>
      
+        <v-btn icon="" :color="autorefresh?'red':'green'" :loading="loading" @click="getItems" @dblclick="toggle" :disabled="loading">
+    <v-icon>refresh</v-icon>
+    </v-btn>
+     <v-spacer></v-spacer>
+      <v-menu offset-y="" left="">
+             <v-btn icon="" slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-card>
+              <v-toolbar class="green">
+                  <v-card-title>Settings  TODO</v-card-title>
+                  </v-toolbar>
+                <v-card-text>
+                <v-btn @click="autorefresh= ! autorefresh">Autorefresh</v-btn>
+                </v-card-text>
+                </v-card>
+              </v-menu>
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" v-bind:pagination.sync="pagination">
     <template slot="items" slot-scope="props">
@@ -1074,7 +1090,8 @@ const Log=Vue.extend({template:`
       selected:[],
       search:"",
       loading:false,
-      timer:null
+      timer:null,
+      autorefresh: true
       }
   },
   methods:{
@@ -1086,14 +1103,21 @@ const Log=Vue.extend({template:`
         //console.log(r.data)
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         this.items=r.data.items
-        this.timer=setTimeout(()=>{ this.getItems() }, 5000);
+        if(this.autorefresh){
+          this.timer=setTimeout(()=>{ this.getItems() }, 5000);
+        }
         }) 
+    },
+    toggle(){
+      alert("toggle auto");
+      this.autorefresh= !this.autorefresh;
     }
   },
   created:function(){
     this.getItems()
   },
   beforeRouteLeave(to, from, next){
+    this.autorefresh=false;
     if(this.timer) clearTimeout(this.timer);
     return next()
   }
@@ -5220,11 +5244,11 @@ const Thumbnail=Vue.extend({template:`
  <v-container fluid="">
  <v-stepper v-model="step" non-linear="">
   <v-stepper-header>
-      <v-stepper-step step="1" :complete="step > 1">Select image location</v-stepper-step>
+      <v-stepper-step step="1" :complete="step > 1" editable="">Select image location</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="2" :complete="step > 2">Set thumbnail details</v-stepper-step>
+      <v-stepper-step step="2" :complete="step > 2" editable="">Set thumbnail details</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="3">Result</v-stepper-step>
+      <v-stepper-step step="3" editable="">Result</v-stepper-step>
     </v-stepper-header>
   <v-stepper-items>
   <v-stepper-content step="1" non-linear="">
@@ -5360,7 +5384,11 @@ const Validate=Vue.extend({template:`
               </v-menu>
           </v-toolbar>
     <v-card-text>
-    here
+       <qd-autoheight>
+    <v-flex fill-height="" xs12="">
+      test here
+      </v-flex>
+    </qd-autoheight>
     </v-card-text>
     </v-card>
  </v-container>
@@ -5514,24 +5542,24 @@ const Transform=Vue.extend({template:`
 				        </v-card>
 				      </v-menu>
           </v-toolbar>
+          
     <v-card-text class="amber">
        <qd-autoheight>
-      
-		      <v-flex v-if="showOptions.includes('result')" fill-height="" xs6="">
-		        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
-		      </v-flex>
+
+      <v-flex v-if="showOptions.includes('result')" fill-height="" xs12="">
+        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
+      </v-flex>
  
-      <v-flex v-if="showOptions.includes('xml')" fill-height="" xs6="">
+      <v-flex v-if="showOptions.includes('xml')" fill-height="">
 	      <vue-ace :content="xml" mode="xml" wrap="true" v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
      </v-flex>
-       <v-flex v-if="showOptions.includes('xslt')" fill-height="" xs6="">
+     
+       <v-flex v-if="showOptions.includes('xslt')" fill-height="">
 	       <vue-ace :content="xslt" mode="xml" wrap="true" v-on:change-content="v => this.xslt=v" v-on:annotation="a => this.xslValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
       </v-flex>
-
+      
      </qd-autoheight>
       </v-card-text>
-      
-     
       </v-card>
  </v-container>
  `,
@@ -5703,10 +5731,7 @@ const router = new VueRouter({
     { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
     { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
-    
-    { path: '/jobs', component: Jobs, meta:{title:"Jobs running"} },
-    { path: '/jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
-    
+        
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/tree', component: Tree, meta:{title:"tree"} },
     { path: '/tree2', component: Tree2, meta:{title:"tree2"} },

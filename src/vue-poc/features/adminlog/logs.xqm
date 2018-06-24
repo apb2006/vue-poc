@@ -18,14 +18,20 @@ as element(json)
  return dice:response($items,$entity,web:dice())
 };
 
+(:~ 
+ : create a log entry
+ :)
 declare  
 %rest:POST %rest:path("/vue-poc/api/log/add")
+%rest:form-param("type", "{$type}")
+%rest:form-param("message", "{$message}")
 %output:method("text")   
-function j:add()
+function j:add($type as xs:string,
+               $message as xs:string)
 {
-let $type:="INFO"
-let $text:="A log message"
- return ("AAAA",
-     admin:write-log($text, $type ) 
-     )
+  let $_:=trace(($type,$message),"post")
+  return (
+   "AAAA",
+   admin:write-log($message, $type ) 
+   )
 };

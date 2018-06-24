@@ -33,28 +33,28 @@
 				        </v-card>
 				      </v-menu>
           </v-toolbar>
+          
     <v-card-text  class="amber" >
        <qd-autoheight>
-      
-		      <v-flex  v-if="showOptions.includes('result')" fill-height xs6>
-		        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
-		      </v-flex>
+
+      <v-flex  v-if="showOptions.includes('result')" fill-height xs12 >
+        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
+      </v-flex>
  
-      <v-flex v-if="showOptions.includes('xml')"    fill-height xs6>
+      <v-flex v-if="showOptions.includes('xml')"    fill-height >
 	      <vue-ace  :content="xml" mode="xml" wrap="true" 
 	      v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 && a.warning===0"
 	     :settings="aceSettings"></vue-ace>
      </v-flex>
-       <v-flex v-if="showOptions.includes('xslt')"   fill-height xs6>
+     
+       <v-flex v-if="showOptions.includes('xslt')"   fill-height >
 	       <vue-ace  :content="xslt" mode="xml" wrap="true" 
 	       v-on:change-content="v => this.xslt=v"  v-on:annotation="a => this.xslValid=a.error===0 && a.warning===0"
 	      :settings="aceSettings"></vue-ace>
       </v-flex>
-
+      
      </qd-autoheight>
       </v-card-text>
-      
-     
       </v-card>
  </v-container>
 </template>

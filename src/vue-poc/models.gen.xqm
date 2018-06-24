@@ -1,9 +1,9 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-05-16T23:18:57.393+01:00 
+ : auto generated from xml files in entities folder at: 2018-06-20T22:41:55.037+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
-import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace ent='https://github.com/Quodatum/app-doc/entity';
+import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";declare namespace ent='https://github.com/Quodatum/app-doc/entity';
 declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace c='http://www.w3.org/ns/xproc-step';

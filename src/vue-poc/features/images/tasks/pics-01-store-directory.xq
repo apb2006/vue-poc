@@ -1,7 +1,7 @@
 (:~ 
 : create xml file list by scanning $SRC and write to vue-poc 
 :)
-import module namespace cfg = "quodatum:media.image.configure" at "../config.xqm";
+import module namespace cfg = "quodatum:media.image.configure" at "../../../config.xqm";
 import module namespace fw="quodatum:file.walker";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 

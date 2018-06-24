@@ -4,6 +4,8 @@
  : @author Andy Bunce may-2017
  :)
 module namespace vue-poc = 'quodatum:vue.poc';
+import module namespace rest = "http://exquery.org/ns/restxq";
+
 declare variable $vue-poc:index:=resolve-uri ('static/' || "app.html",fn:static-base-uri() );
 
 (:~
@@ -14,6 +16,8 @@ declare
 function vue-poc:redirect() 
 as element(rest:response) 
 {
+  admin:write-log("Start","VUEPOC"),
+  rest:init(),
   web:redirect("/vue-poc/ui")
 };
 

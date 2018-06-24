@@ -4,20 +4,13 @@
   <v-card >
    <v-toolbar >
    
-       <v-btn
-       icon
-      :loading="loading"
-      @click="getItems()"
-      :disabled="loading"
-    >
-    <v-icon>refresh</v-icon>
-    </v-btn>
+    
     
       <v-btn icon to="add" append>
           <v-icon>add_circle</v-icon>
     </v-btn>
        
-      <v-spacer></v-spacer>
+     
       <v-text-field
         append-icon="search"
         label="Filter logs"
@@ -26,6 +19,27 @@
         v-model="search"
       ></v-text-field>
      
+        <v-btn
+       icon :color="autorefresh?'red':'green'"
+      :loading="loading"
+      @click="getItems"
+      @dblclick="toggle"
+      :disabled="loading"
+    >
+    <v-icon>refresh</v-icon>
+    </v-btn>
+     <v-spacer></v-spacer>
+      <v-menu offset-y left>
+             <v-btn icon  slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-card >
+              <v-toolbar class="green">
+                  <v-card-title >Settings  TODO</v-card-title>
+                  </v-toolbar>
+                <v-card-text>
+                <v-btn @click="autorefresh= ! autorefresh">Autorefresh</v-btn>
+                </v-card-text>
+                </v-card>
+              </v-menu>
     </v-toolbar>
   <v-data-table
       :headers="headers"
@@ -69,7 +83,8 @@
       selected:[],
       search:"",
       loading:false,
-      timer:null
+      timer:null,
+      autorefresh: true
       }
   },
   methods:{
@@ -81,14 +96,21 @@
         //console.log(r.data)
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         this.items=r.data.items
-        this.timer=setTimeout(()=>{ this.getItems() }, 5000);
+        if(this.autorefresh){
+          this.timer=setTimeout(()=>{ this.getItems() }, 5000);
+        }
         }) 
+    },
+    toggle(){
+      alert("toggle auto");
+      this.autorefresh= !this.autorefresh;
     }
   },
   created:function(){
     this.getItems()
   },
   beforeRouteLeave(to, from, next){
+    this.autorefresh=false;
     if(this.timer) clearTimeout(this.timer);
     return next()
   }
