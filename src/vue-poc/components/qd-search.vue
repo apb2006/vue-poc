@@ -3,18 +3,17 @@
  search
  -->
 <template id="qd-search">
-  <v-select
+  <v-combobox
               placeholder="Search..." prepend-icon="search"
               autocomplete
               :loading="loading"
-              combobox
               clearable
               cache-items
               :items="items2"
               @keyup.enter="goSearch"
               :search-input.sync="si" 
               v-model="q"
-            ></v-select>
+            ></v-combobox>
 </template>
 
 <script>{
@@ -31,7 +30,7 @@
       this.loading = true
       // Simulated ajax query
       setTimeout(() => {
-        this.items2 = ["aa","bb",this.si],
+        this.items2 = ["aa","bb"],
         this.loading = false
       }, 500)
     },

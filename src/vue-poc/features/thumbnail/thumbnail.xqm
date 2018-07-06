@@ -4,6 +4,8 @@
  : @author Andy Bunce may-2017
  :)
 module namespace vue-api = 'quodatum:vue.api.thumbnail';
+import module namespace t="expkg-zone58:image.thumbnailator";
+import module namespace qweb = 'quodatum.web.utils4' at "../../lib/webutils.xqm";
 import module namespace rest = "http://exquery.org/ns/restxq";
 
 
@@ -15,16 +17,12 @@ declare
 %rest:POST %rest:path("/vue-poc/api/thumbnail")
 %rest:form-param("url", "{$url}")
 %rest:form-param("task", "{$task}")
-%rest:produces("application/json")
-%output:method("json")   
 function vue-api:thumbnail($url,$task )   
 {
  let $x:=fn:parse-xml($task)=>fn:trace("task: ")
- return <json   type="object" >
-            <items type="array">
-            {(1 to 100)!(<_>A{.}</_>)}              
-            </items>
-  </json>
+ let $thumb:=fetch:binary($url)=>t:task($x/thumbnail)
+ 
+ return (qweb:download-response("raw","xx.gif"), $thumb)
 };
 
 (:~

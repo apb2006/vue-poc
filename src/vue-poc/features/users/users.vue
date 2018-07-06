@@ -1,7 +1,13 @@
 <!DOCTYPE html>
 <template id="users">
  <v-container fluid>
-   <qd-table :headers="headers" data-uri="data/users">
+   <qd-table :headers="headers" data-uri="data/user" entity="user" no-data-msg="Nothing found">
+    <template slot="items" slot-scope="props">
+     
+      <td >{{ props.item.id}}</td>
+      <td >{{ props.item.state }}</td>
+     
+    </template>
    </qd-table>
  </v-container>
 
@@ -25,8 +31,8 @@
       }
   },
  
-  created:function(){
-    console.log("qd-table")
-  }
+created:function(){
+  console.log("users")
+}
 }
 </script>

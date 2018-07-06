@@ -10,15 +10,14 @@
 			<xpath>@prefix</xpath>
 		</field>
 		<field name="description" type="xs:string">
-            <description>about the namespace</description>
-            <xpath>description</xpath>
-        </field>
-      
+			<description>about the namespace</description>
+			<xpath>description</xpath>
+		</field>
+
 	</fields>
-	   <views>
-        <view name="filter">xmlns description</view>
-    </views>
-	<iconclass>label</iconclass>
+	<views iconclass="label">
+		<view name="filter">xmlns description</view>
+	</views>
 	<data type="element(namespace)">collection("vue-poc")/namespaces/namespace
 	</data>
 </entity>

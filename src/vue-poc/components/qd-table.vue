@@ -12,16 +12,25 @@
         v-model="search"
       ></v-text-field>   
       <v-spacer></v-spacer>
-      <v-btn @click="getData">Refresh</v-btn>   
+         <v-btn
+       icon 
+      :loading="loading"
+      :disabled="loading"      
+      @click="getItems"
+    >
+    <v-icon>refresh</v-icon>
+    </v-btn> 
+    <span>{{ entity }}</span>
     </v-toolbar>
-<v-data-table
+    
+   <v-data-table
       :headers="headers"
       :items="items"
       :search="search"
        v-model="selected"
        select-all
       class="elevation-1"
-      no-data-text="No users found @todo"
+      :no-data-text="noDataMsg"
     >
     <template slot="items" slot-scope="props">
     <slot></slot>
@@ -44,8 +53,14 @@
 	      ]
 	  },
 	  dataUri:{
-	    default: "users"
-	  }
+	    default: "entity"
+	  },
+	  noDataMsg:{
+	    default: "No USERS found @todo"
+	  },
+	  entity:{
+      default: "entity"
+    }
   },
   data:  function(){
     return {
@@ -57,18 +72,19 @@
       }
   },
   methods:{
-      getData(){
+      getItems(){
         this.loading=true;
         HTTP.get(this.dataUri)
         .then(r=>{
-           this.loading=false
-           this.items=r.data
+           this.loading=false;
+           console.log("items",r);
+           this.items=r.data.items;
         })
      }
   },
   created:function(){
-    console.log("qd-table")
-    this.getData()
+    console.log("qd-table");
+    this.getItems();
   }
 }
 </script>

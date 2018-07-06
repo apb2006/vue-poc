@@ -59,10 +59,9 @@
     load(){
     
       this.loading= true
-      HTTP.get("data/namespace",{params:{}})
+      HTTP.get("data/namespace",{params:{q:this.q}})
       .then(r=>{
         this.items= r.data.items
-        this.q= null
         this.loading= false
         })
         .catch(error=> {

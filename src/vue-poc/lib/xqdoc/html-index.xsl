@@ -9,7 +9,7 @@
 	xmlns:c="http://www.w3.org/ns/xproc-step" version="2.0">
 	<!-- build project index" -->
 	<xsl:param name="project" as="xs:string" />
-
+  <xsl:param name="id" as="xs:string" />
 	<xsl:param name="resources" as="xs:string" select="'resources/'" />
 
 	<xsl:variable name="css" select="concat($resources,'base.css')" />
@@ -22,7 +22,7 @@
 					content="xqdoc-r - https://github.com/quodatum/xqdoc-r" />
 
 				<title>
-					<xsl:value-of select="'Index'" />
+					<xsl:value-of select="'Index'" />  <xsl:value-of select="$id" />
 					- xqDoc
 				</title>
 				<link rel="shortcut icon" type="image/x-icon" href="{$resources}xqdoc.png" />
@@ -40,7 +40,7 @@
 				<div id="main">
 					<h1>
 						XQDoc for
-						<xsl:value-of select="$project" />
+						<xsl:value-of select="$project" />  ,id: <xsl:value-of select="$id" />
 					</h1>
 					<xsl:call-template name="toc" />
 

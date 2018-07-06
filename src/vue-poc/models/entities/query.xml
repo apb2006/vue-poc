@@ -1,5 +1,5 @@
-<entity name="jobrun" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>About the running of a job</description>
+<entity name="query" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>An replx query</description>
 	<namespace prefix="xqdoc" uri="http://www.xqdoc.org/1.0" />
 
 	<fields>
@@ -9,12 +9,8 @@
 		</field>
 		<field name="created" type="xs:string">
 			<description>date</description>
-			<xpath>json/dateTime</xpath>
+			<xpath>created</xpath>
 		</field>
-		  <field name="job" type="xs:string">
-      <description>eval job id</description>
-      <xpath>json/job</xpath>
-    </field>
 		<field name="query" type="xs:string">
 			<description>query</description>
 			<xpath>query</xpath>
@@ -28,10 +24,9 @@
 			<xpath>string-length(result)</xpath>
 		</field>
 	</fields>
-	<views>
+	<views iconclass="fa fa-file-code-o">
 		<view name="filter">name description</view>
 	</views>
-	<iconclass>fa fa-file-code-o</iconclass>
-	<data type="element(jobrun)">collection("vue-poc/jobrun")/jobrun
+	<data type="element(query)">collection("replx/queries")/query
 	</data>
 </entity>

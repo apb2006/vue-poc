@@ -30,7 +30,7 @@
 		</field>
 		<field name="iconclass" type="xs:string">
 			<description>css class for icon</description>
-			<xpath>ent:iconclass</xpath>
+			<xpath>ent:views/@iconclass</xpath>
 		</field>
 		<field name="nfields" type="xs:integer">
 			<description>The number of fields for this entity</description>
@@ -48,6 +48,7 @@
 			<description>parent entity link if any</description>
 			<xpath>fn:concat("/data/entity/",ent:parent/@name)</xpath>
 		</field>
+	
 		<!-- 
 		<field name="fields" entity="field">
             <description>parent entity link if any</description>
@@ -55,9 +56,8 @@
         </field>
          -->
 	</fields>
-	<views>
+	<views iconclass="place">
         <view name="filter">name description</view>
-    </views>
-	<iconclass>glyphicon glyphicon-list-alt</iconclass>
+   </views>
 	<data type="element(ent:entity)">collection("vue-poc")//ent:entity</data>
 </entity>

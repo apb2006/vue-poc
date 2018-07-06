@@ -20,7 +20,7 @@ function tx:xslt($xml,$xslt) {
                 let $x:=fn:parse-xml($xml)
                 let $s:=fn:parse-xml($xslt)
                  let $params:=map{}
-                 let $opts:=map{"cache":true()}
+                 let $opts:=map{"cache":false()} (: BUG? :)
                 let $r:=xslt:transform-text($x,$s,$params,$opts)
                 return 
                 <json objects="json">

@@ -1,0 +1,29 @@
+<entity name="filehistory" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>vue-poc file view events </description>
+	<namespace prefix="h" uri="urn:quodatum:vue-poc.history" />
+	<fields>
+		<field name="created" type="xs:string">
+			<description>time of event</description>
+			<xpath>@when</xpath>
+		</field>
+		<field name="user" type="xs:string">
+			<description>user</description>
+			<xpath>@user</xpath>
+		</field>
+		<field name="id" type="xs:string">
+			<description>id</description>
+			<xpath>@id</xpath>
+		</field>
+		<field name="protocol" type="xs:string">
+			<description>mode eg file basexdb</description>
+			<xpath>h:file/@mode</xpath>
+		</field>
+
+		<field name="url" type="xs:string">
+			<description>path</description>
+			<xpath>h:file/@url</xpath>
+		</field>
+	</fields>
+	<views iconclass="fa fa-calendar"/>
+	<data type="element(h:event)">doc("vue-poc/history.xml")/h:history/h:event[h:file]</data>
+</entity>

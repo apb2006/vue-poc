@@ -11,8 +11,6 @@
 			<xpath>@root</xpath>
 		</field>
 	</fields>
-	<views>
-	</views>
-	<iconclass>fa fa-calendar</iconclass>
+	<views iconclass="pages"/>
 	<data type="element(entry)">()</data>
 </entity>

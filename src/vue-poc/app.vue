@@ -44,8 +44,9 @@
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
  
   <v-spacer></v-spacer>
-  <qd-search></qd-search>
-  
+
+    <qd-search></qd-search>
+     
   <v-spacer></v-spacer>
   
    <v-menu left  transition="v-fade-transition">
@@ -241,7 +242,7 @@
     Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
-        console.error(err, vm, info);
+        console.log('[Global Error Handler]: Error in ' + info + ': ' + err);
         var msg=JSON.stringify(err)
         that.showAlert("vue error:\n"+msg)
         //alert("vue error");
@@ -262,9 +263,9 @@
    
     HTTP.get("status")
     .then(r=>{
-      console.log("status",r.data)
-      Object.assign(Auth,r.data)
-      this.$forceUpdate()
+      console.log("status",r)
+      //Object.assign(Auth,r.data)
+      //this.$forceUpdate()
     }) 
   },
   

@@ -14,8 +14,11 @@ declare variable $xqd:XML:=map{"indent": "no"};
 declare variable $xqd:mod-xslt external :="html-module.xsl";
 declare variable $xqd:index-xslt external :="html-index.xsl";
 
-(:~ save documentation for files to target
- :
+(:~ 
+ : save documentation for files to target
+ : @param $files c:directory-list
+ : @param $target where to save
+ : @param $opts
  :)
 declare function xqd:save-xq($files,$target,$params as map(*))
 {

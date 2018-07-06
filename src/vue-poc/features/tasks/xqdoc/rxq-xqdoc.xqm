@@ -20,16 +20,21 @@ declare
 %updating   
 function vue-api:model($efolder ,$target )   
 {
-  let $project:=tokenize($efolder,"[/\\]")[last()]=>trace("DDD")
+  let $project:=tokenize($efolder,"[/\\]")[last()]=>trace("xqdoc: ")
   let $files:= fw:directory-list($efolder,map{"include-filter":".*\.xqm"})
-  let $op:=xqd:save-xq($files,$target,map{"project":$project})
+  let $id:=$vue-api:state/last-id
+  let $opts:=map{
+                 "project": $project, 
+                 "id": $id/string()
+                 }
+  let $op:=xqd:save-xq($files,$target,$opts)
   let $result:=<json type="object">
                     <msg> {$target}, {count($files//c:file)} files processed.</msg>
-                    <id>{$vue-api:state/last-id/string()}</id>
+                    <id>{$id/string()}</id>
                 </json>
   return (
          db:output($result),
-         replace value of node $vue-api:state/last-id with 1+$vue-api:state/last-id
+         replace value of node $id with 1+$vue-api:state/last-id
          )
 };
   

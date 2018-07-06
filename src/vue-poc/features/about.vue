@@ -2,7 +2,13 @@
 <template id="about">
 
   <v-jumbotron color="grey lighten-2">
-       <v-speed-dial  v-model="fab"  hover right direction="bottom" transition="slide-y-reverse-transition">
+      
+    <v-container fill-height>
+      <v-layout align-center>
+        <v-flex>
+          <h3 class="display-3">Vue-poc<v-spacer></v-spacer>
+             <v-speed-dial  v-model="fab"  hover right direction="bottom" 
+             transition="slide-y-reverse-transition">
       <v-btn  slot="activator" class="blue darken-2"  dark  fab  hover  v-model="fab">
         <v-icon>account_circle</v-icon>
         <v-icon>close</v-icon>
@@ -17,11 +23,6 @@
         <v-icon>delete</v-icon>
       </v-btn>
     </v-speed-dial>
-    <v-container fill-height>
-      <v-layout align-center>
-        <v-flex>
-          <h3 class="display-3">Vue-poc
-            
           </h3>
           <span class="subheading">A development environment for managing XML sources and processes.</span>
       

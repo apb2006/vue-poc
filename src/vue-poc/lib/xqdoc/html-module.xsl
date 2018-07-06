@@ -8,6 +8,7 @@
 	<xsl:param name="project" as="xs:string" />
 	<xsl:param name="source" as="xs:string" />
 	<xsl:param name="filename" as="xs:string" />
+	<xsl:param name="id" as="xs:string" />
 	<xsl:param name="show-private" as="xs:boolean" select="false()" />
 	<xsl:param name="resources" as="xs:string" select="'../resources/'" />
 
@@ -32,6 +33,7 @@
 				<title>
 					<xsl:value-of select="$docuri" />
 					- xqDoc
+					<xsl:value-of select="$id" />
 				</title>
 				<link rel="shortcut icon" type="image/x-icon" href="{$resources}xqdoc.png" />
 				<link rel="stylesheet" type="text/css" href="{$resources}page.css" />
@@ -428,7 +430,7 @@
 			<div>
 				<a href="{$index}">
 					&#8624;
-					<xsl:value-of select="$project" />
+					<xsl:value-of select="$project" /> :id= <xsl:value-of select="$id" />
 				</a>
 			</div>
 			<h2>

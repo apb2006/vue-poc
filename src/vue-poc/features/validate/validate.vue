@@ -1,20 +1,27 @@
 <!DOCTYPE html>
 <template id="validate">
-  <v-container fluid v-resize="onResize">
+  <v-container fluid >
+   <v-snackbar    v-model="snackbar.show"
+      :timeout="6000"
+      :success="snackbar.context === 'success'"
+      :error="snackbar.context === 'error'"
+    >
+      {{ snackbar.msg }}
+      <v-btn dark flat @click="snackbar.show = false">Close</v-btn>
+    </v-snackbar>
 <v-card>
      <v-toolbar class="orange">
           <v-btn  @click="validate"   :loading="loading"
       :disabled="loading"
           ><v-icon>play_circle_outline</v-icon>Validate</v-btn>
-          <span v-text="elapsed"></span>ms. Height: 
-          <span v-text="height"></span>
+          <span v-text="elapsed"></span>ms.
             <v-spacer></v-spacer>
          
               <v-menu offset-y left>
              <v-btn icon dark slot="activator"><v-icon>settings</v-icon></v-btn>
               <v-card >
               <v-toolbar class="green">
-                  <v-card-title >Settings................</v-card-title>
+                  <v-card-title >@TODO.......</v-card-title>
                   </v-toolbar>
                 <v-card-text>
                 stuff
@@ -22,13 +29,23 @@
                 </v-card>
               </v-menu>
           </v-toolbar>
-    <v-card-text >
-       <qd-autoheight>
-    <v-flex   fill-height xs12 >
-      test here
-      </v-flex>
-    </qd-autoheight>
+    <v-card-text v-resize="onResize" style="height:100px" ref="auto">
+      <v-container fluid>
+        
+          <v-layout row wrap>   
+          <v-flex   xs8> 
+            <v-text-field   v-for="field in fields" :key="field.model"
+              v-model="params[field.model]" :label="field.label" clearable  :rules="[rules.required]" box
+            ></v-text-field>
+          </v-flex>
+   
+          <v-flex xs4 fill-height style="overflow:scroll">
+          <pre >Result: {{ result }}</pre>
+          </v-flex>
+          </v-layout>
+      </v-container>
     </v-card-text>
+
     </v-card>
  </v-container>
 </template>
@@ -40,38 +57,53 @@
       elapsed: null,
       height: null,
       result: null,
-      doc: "c:/test.xml",
-      schema: "c:/schema.xsd"
-      }
+      fields:[
+        {model: "schema", label: "Schema (xsd url)"},
+        {model: "doc", label: "Doc (url)"}
+
+      ],
+      rules: {
+        required: value => !!value || 'Required.'
+      },
+      params:{
+		      doc: "C:/Users/andy/git/vue-poc/src/vue-poc/models/adminlog.xml",
+		      schema: "C:/Users/andy/git/vue-poc/src/vue-poc/models/schemas/entity.xsd"
+      },
+      snackbar:{show:false,msg:"",context:"success"}
+    }
   },
   methods:{
     onResize(){
-      this.height = window.innerHeight 
+      //console.log("EL",this.$el);
+      var el=this.$refs["auto"];
+      var h=window.innerHeight - el.getBoundingClientRect().top -32;
+      var h=Math.max(1,h) ;
+      //console.log("resize h",h,el.style)
+      el.style.height=h +"px"; 
     },
-    validate(){
     
+    validate(){    
       this.loading=true
       this.start = performance.now();
-      HTTPNE.get("validate",Qs.stringify({doc: this.doc, schema: this.schema}))
+      HTTP.post("validate",Qs.stringify(this.params))
       .then(r=>{
-       console.log(r)
+       console.log(r);
+       this.snackbar={show:true,msg:r.data.msg,context:"success"};
        this.elapsed=Math.floor(performance.now() - this.start);
        this.loading=false
        if(r.data.rc==0){
-         this.result=r.data.result
+         this.result=r.data
        }else{
-         this.result=r.data.info
+         this.result=r.data
        }
       })
       .catch(r=> {
-        console.log("error",r)
+        console.log("error",r.response.data)
+          this.snackbar={show: true, msg: r.response.data, context: "error"}
         this.result=r.message + ": "+ r.config.url + "\n"+ r.response.data
         this.loading=false
       });
     },
-  },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
   }
 }
 </script>

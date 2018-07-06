@@ -5,12 +5,6 @@
    <v-toolbar >
    
     
-    
-      <v-btn icon to="add" append>
-          <v-icon>add_circle</v-icon>
-    </v-btn>
-       
-     
       <v-text-field
         append-icon="search"
         label="Filter logs"
@@ -20,26 +14,39 @@
       ></v-text-field>
      
         <v-btn
-       icon :color="autorefresh?'red':'green'"
+       icon :color="autorefresh?'green':''"
       :loading="loading"
+      :disabled="loading"      
       @click="getItems"
       @dblclick="toggle"
-      :disabled="loading"
+
     >
     <v-icon>refresh</v-icon>
     </v-btn>
+    
+      <v-btn
+               to="add" append
+              small
+              absolute
+              bottom
+              right
+              fab
+            >
+              <v-icon>add</v-icon>
+       </v-btn>
      <v-spacer></v-spacer>
-      <v-menu offset-y left>
-             <v-btn icon  slot="activator"><v-icon>settings</v-icon></v-btn>
-              <v-card >
-              <v-toolbar class="green">
-                  <v-card-title >Settings  TODO</v-card-title>
-                  </v-toolbar>
-                <v-card-text>
-                <v-btn @click="autorefresh= ! autorefresh">Autorefresh</v-btn>
-                </v-card-text>
-                </v-card>
-              </v-menu>
+      <v-menu bottom left min-width="300px">
+            <v-btn icon slot="activator" >
+              <v-icon>settings</v-icon>
+            </v-btn>
+            <v-list subheader>
+          <v-subheader>Settings</v-subheader>
+              
+              <v-list-tile  >
+                <v-list-tile-title><v-switch label="Auto Refresh" v-model="autorefresh"></v-switch></v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
     </v-toolbar>
   <v-data-table
       :headers="headers"
@@ -88,6 +95,9 @@
       }
   },
   methods:{
+    address(text){
+      return "%" + text;
+    },
     getItems(){
       this.loading=true
       HTTP.get("log",{params:this.q})

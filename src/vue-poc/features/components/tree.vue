@@ -3,7 +3,7 @@
  <v-container fluid>
  <v-card>
  <v-toolbar class="lime darken-1">
-   <v-card-title ><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@1.0.11</qd-link> </v-card-title>
+   <v-card-title ><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@2.1.16</qd-link> </v-card-title>
    <v-spacer></v-spacer>
    <v-btn>todo</v-btn>
    </v-toolbar>

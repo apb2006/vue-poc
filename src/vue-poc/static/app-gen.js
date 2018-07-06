@@ -1,4 +1,4 @@
-// generated 2018-06-24T22:46:13.105+01:00
+// generated 2018-07-06T22:33:10.411+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -47,6 +47,46 @@ Vue.component('qd-confirm',{template:`
       
   props: ['value']
 }
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-fileupload.vue
+Vue.component('qd-fileupload',{template:` 
+  <vue-clip :options="options">
+    <template slot="clip-uploader-action">
+      <div>
+        <div class="dz-message"><h2> Click or Drag and Drop files here upload </h2></div>
+      </div>
+    </template>
+
+    <template slot="clip-uploader-body" scope="props">
+      <div v-for="file in props.files">
+        <img v-bind:src="file.dataUrl">
+        {{ file.name }} {{ file.status }}
+      </div>
+    </template>
+
+  </vue-clip>
+ `,
+      
+    data () {
+      return {
+        options: {
+          url: '/vue-poc/api/upload',
+          paramName: 'file',
+          maxFilesize: {
+            limit: 1,
+            message: '{{ filesize }} is greater than the {{ maxFilesize }}'
+          },
+          maxFiles: {
+            limit: 5,
+            message: 'You can only upload a max of 5 files'
+          }
+        }
+      }
+    }
+
+  }
 
       );
       
@@ -153,7 +193,7 @@ Vue.component('qd-panel',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-search.vue
 Vue.component('qd-search',{template:` 
-  <v-select placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" combobox="" clearable="" cache-items="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q"></v-select>
+  <v-combobox placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" clearable="" cache-items="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q"></v-combobox>
  `,
       
   data:function(){return {
@@ -169,7 +209,7 @@ Vue.component('qd-search',{template:`
       this.loading = true
       // Simulated ajax query
       setTimeout(() => {
-        this.items2 = ["aa","bb",this.si],
+        this.items2 = ["aa","bb"],
         this.loading = false
       }, 500)
     },
@@ -194,9 +234,13 @@ Vue.component('qd-table',{template:`
    <v-toolbar>
     <v-text-field append-icon="search" label="Filter user" single-line="" hide-details="" v-model="search"></v-text-field>   
       <v-spacer></v-spacer>
-      <v-btn @click="getData">Refresh</v-btn>   
+         <v-btn icon="" :loading="loading" :disabled="loading" @click="getItems">
+    <v-icon>refresh</v-icon>
+    </v-btn> 
+    <span>{{ entity }}</span>
     </v-toolbar>
-<v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No users found @todo">
+    
+   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" :no-data-text="noDataMsg">
     <template slot="items" slot-scope="props">
     <slot></slot>
     </template>
@@ -217,8 +261,14 @@ Vue.component('qd-table',{template:`
 	      ]
 	  },
 	  dataUri:{
-	    default: "users"
-	  }
+	    default: "entity"
+	  },
+	  noDataMsg:{
+	    default: "No USERS found @todo"
+	  },
+	  entity:{
+      default: "entity"
+    }
   },
   data:  function(){
     return {
@@ -230,18 +280,19 @@ Vue.component('qd-table',{template:`
       }
   },
   methods:{
-      getData(){
+      getItems(){
         this.loading=true;
         HTTP.get(this.dataUri)
         .then(r=>{
-           this.loading=false
-           this.items=r.data
+           this.loading=false;
+           console.log("items",r);
+           this.items=r.data.items;
         })
      }
   },
   created:function(){
-    console.log("qd-table")
-    this.getData()
+    console.log("qd-table");
+    this.getItems();
   }
 }
 
@@ -890,7 +941,12 @@ const Notfound=Vue.extend({template:`
 const About=Vue.extend({template:` 
 
   <v-jumbotron color="grey lighten-2">
-       <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
+      
+    <v-container fill-height="">
+      <v-layout align-center="">
+        <v-flex>
+          <h3 class="display-3">Vue-poc<v-spacer></v-spacer>
+             <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
       <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
         <v-icon>account_circle</v-icon>
         <v-icon>close</v-icon>
@@ -905,11 +961,6 @@ const About=Vue.extend({template:`
         <v-icon>delete</v-icon>
       </v-btn>
     </v-speed-dial>
-    <v-container fill-height="">
-      <v-layout align-center="">
-        <v-flex>
-          <h3 class="display-3">Vue-poc
-            
           </h3>
           <span class="subheading">A development environment for managing XML sources and processes.</span>
       
@@ -1032,29 +1083,28 @@ const Log=Vue.extend({template:`
    <v-toolbar>
    
     
-    
-      <v-btn icon="" to="add" append="">
-          <v-icon>add_circle</v-icon>
-    </v-btn>
-       
-     
       <v-text-field append-icon="search" label="Filter logs" single-line="" hide-details="" v-model="search"></v-text-field>
      
-        <v-btn icon="" :color="autorefresh?'red':'green'" :loading="loading" @click="getItems" @dblclick="toggle" :disabled="loading">
+        <v-btn icon="" :color="autorefresh?'green':''" :loading="loading" :disabled="loading" @click="getItems" @dblclick="toggle">
     <v-icon>refresh</v-icon>
     </v-btn>
+    
+      <v-btn to="add" append="" small="" absolute="" bottom="" right="" fab="">
+              <v-icon>add</v-icon>
+       </v-btn>
      <v-spacer></v-spacer>
-      <v-menu offset-y="" left="">
-             <v-btn icon="" slot="activator"><v-icon>settings</v-icon></v-btn>
-              <v-card>
-              <v-toolbar class="green">
-                  <v-card-title>Settings  TODO</v-card-title>
-                  </v-toolbar>
-                <v-card-text>
-                <v-btn @click="autorefresh= ! autorefresh">Autorefresh</v-btn>
-                </v-card-text>
-                </v-card>
-              </v-menu>
+      <v-menu bottom="" left="" min-width="300px">
+            <v-btn icon="" slot="activator">
+              <v-icon>settings</v-icon>
+            </v-btn>
+            <v-list subheader="">
+          <v-subheader>Settings</v-subheader>
+              
+              <v-list-tile>
+                <v-list-tile-title><v-switch label="Auto Refresh" v-model="autorefresh"></v-switch></v-list-tile-title>
+              </v-list-tile>
+            </v-list>
+          </v-menu>
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" v-bind:pagination.sync="pagination">
     <template slot="items" slot-scope="props">
@@ -1095,6 +1145,9 @@ const Log=Vue.extend({template:`
       }
   },
   methods:{
+    address(text){
+      return "%" + text;
+    },
     getItems(){
       this.loading=true
       HTTP.get("log",{params:this.q})
@@ -1654,7 +1707,7 @@ const Tree=Vue.extend({template:`
  <v-container fluid="">
  <v-card>
  <v-toolbar class="lime darken-1">
-   <v-card-title><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@1.0.11</qd-link> </v-card-title>
+   <v-card-title><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@2.1.16</qd-link> </v-card-title>
    <v-spacer></v-spacer>
    <v-btn>todo</v-btn>
    </v-toolbar>
@@ -4048,10 +4101,9 @@ const Namespace=Vue.extend({template:`
     load(){
     
       this.loading= true
-      HTTP.get("data/namespace",{params:{}})
+      HTTP.get("data/namespace",{params:{q:this.q}})
       .then(r=>{
         this.items= r.data.items
-        this.q= null
         this.loading= false
         })
         .catch(error=> {
@@ -4418,6 +4470,7 @@ const Repo=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/scratch.vue
 const Scratch=Vue.extend({template:` 
  <v-container fluid="">
+ <qd-fileupload title="Up it" selected-callback="upit">up load</qd-fileupload>
  <qd-autoheight>
   <vue-ace :content="ace" mode="xml"></vue-ace>
  </qd-autoheight>
@@ -4430,8 +4483,13 @@ const Scratch=Vue.extend({template:`
       ace:"<xml>here</xml>"
       }
   },
+  methods:{
+    upit:function(s){
+      alert("up")
+    }
+  },
  mounted:function(){
-    console.log("notfound",this.$route.path)
+    console.log("scratch",this.$route.path)
   }
 }
 
@@ -5269,12 +5327,25 @@ const Thumbnail=Vue.extend({template:`
   </v-stepper-content>
 
   <v-stepper-content step="3" non-linear="">
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    output todo
-    </v-card>
-
-     <v-btn flat="" @click="step -= 1">Back</v-btn>
+    <v-card class="grey lighten-1 z-depth-1 mb-5">
+     <v-card-actions>
+    <v-btn flat="" @click="step -= 1">Back</v-btn>
      <v-btn color="primary" @click="go()">go</v-btn>
+     </v-card-actions>
+    <v-card-text>
+    <v-layout style="height:200px" fill-height="">
+    <v-flex xs6="">
+    <img :src="image" class="contain" style="width:100%; height:100%;">
+    </v-flex>
+    <v-flex xs6="">
+    <img :src="image" class="contain" style="width:50%; height:50%;object-position: 50% 50%;">
+    </v-flex>
+    </v-layout>
+    </v-card-text>
+   
+    </v-card>
+    
+     
   </v-stepper-content>
   </v-stepper-items>
 </v-stepper>
@@ -5283,9 +5354,13 @@ const Thumbnail=Vue.extend({template:`
       
   data(){
     return {
-      image:"http://images.metmuseum.org/CRDImages/ep/original/DT46.jpg",
+      image:"https://cdn.pixabay.com/photo/2017/10/31/07/49/horses-2904536_960_720.jpg",
       step: 0,
-      taskxml:"<task></task>"
+      taskxml:"<task></task>",
+      items:[
+        {
+          src: 'https://cdn.pixabay.com/photo/2017/10/31/07/49/horses-2904536_960_720.jpg'
+        }]
       }
   },
   methods:{
@@ -5331,7 +5406,13 @@ const Thumbnail=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/users/users.vue
 const Users=Vue.extend({template:` 
  <v-container fluid="">
-   <qd-table :headers="headers" data-uri="data/users">
+   <qd-table :headers="headers" data-uri="data/user" entity="user" no-data-msg="Nothing found">
+    <template slot="items" slot-scope="props">
+     
+      <td>{{ props.item.id}}</td>
+      <td>{{ props.item.state }}</td>
+     
+    </template>
    </qd-table>
  </v-container>
 
@@ -5354,28 +5435,31 @@ const Users=Vue.extend({template:`
       }
   },
  
-  created:function(){
-    console.log("qd-table")
-  }
+created:function(){
+  console.log("users")
+}
 }
 
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/validate/validate.vue
 const Validate=Vue.extend({template:` 
-  <v-container fluid="" v-resize="onResize">
+  <v-container fluid="">
+   <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
+      {{ snackbar.msg }}
+      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
+    </v-snackbar>
 <v-card>
      <v-toolbar class="orange">
           <v-btn @click="validate" :loading="loading" :disabled="loading"><v-icon>play_circle_outline</v-icon>Validate</v-btn>
-          <span v-text="elapsed"></span>ms. Height: 
-          <span v-text="height"></span>
+          <span v-text="elapsed"></span>ms.
             <v-spacer></v-spacer>
          
               <v-menu offset-y="" left="">
              <v-btn icon="" dark="" slot="activator"><v-icon>settings</v-icon></v-btn>
               <v-card>
               <v-toolbar class="green">
-                  <v-card-title>Settings................</v-card-title>
+                  <v-card-title>@TODO.......</v-card-title>
                   </v-toolbar>
                 <v-card-text>
                 stuff
@@ -5383,13 +5467,21 @@ const Validate=Vue.extend({template:`
                 </v-card>
               </v-menu>
           </v-toolbar>
-    <v-card-text>
-       <qd-autoheight>
-    <v-flex fill-height="" xs12="">
-      test here
-      </v-flex>
-    </qd-autoheight>
+    <v-card-text v-resize="onResize" style="height:100px" ref="auto">
+      <v-container fluid="">
+        
+          <v-layout row="" wrap="">   
+          <v-flex xs8=""> 
+            <v-text-field v-for="field in fields" :key="field.model" v-model="params[field.model]" :label="field.label" clearable="" :rules="[rules.required]" box=""></v-text-field>
+          </v-flex>
+   
+          <v-flex xs4="" fill-height="" style="overflow:scroll">
+          <pre>Result: {{ result }}</pre>
+          </v-flex>
+          </v-layout>
+      </v-container>
     </v-card-text>
+
     </v-card>
  </v-container>
  `,
@@ -5400,38 +5492,53 @@ const Validate=Vue.extend({template:`
       elapsed: null,
       height: null,
       result: null,
-      doc: "c:/test.xml",
-      schema: "c:/schema.xsd"
-      }
+      fields:[
+        {model: "schema", label: "Schema (xsd url)"},
+        {model: "doc", label: "Doc (url)"}
+
+      ],
+      rules: {
+        required: value => !!value || 'Required.'
+      },
+      params:{
+		      doc: "C:/Users/andy/git/vue-poc/src/vue-poc/models/adminlog.xml",
+		      schema: "C:/Users/andy/git/vue-poc/src/vue-poc/models/schemas/entity.xsd"
+      },
+      snackbar:{show:false,msg:"",context:"success"}
+    }
   },
   methods:{
     onResize(){
-      this.height = window.innerHeight 
+      //console.log("EL",this.$el);
+      var el=this.$refs["auto"];
+      var h=window.innerHeight - el.getBoundingClientRect().top -32;
+      var h=Math.max(1,h) ;
+      //console.log("resize h",h,el.style)
+      el.style.height=h +"px"; 
     },
-    validate(){
     
+    validate(){    
       this.loading=true
       this.start = performance.now();
-      HTTPNE.get("validate",Qs.stringify({doc: this.doc, schema: this.schema}))
+      HTTP.post("validate",Qs.stringify(this.params))
       .then(r=>{
-       console.log(r)
+       console.log(r);
+       this.snackbar={show:true,msg:r.data.msg,context:"success"};
        this.elapsed=Math.floor(performance.now() - this.start);
        this.loading=false
        if(r.data.rc==0){
-         this.result=r.data.result
+         this.result=r.data
        }else{
-         this.result=r.data.info
+         this.result=r.data
        }
       })
       .catch(r=> {
-        console.log("error",r)
+        console.log("error",r.response.data)
+          this.snackbar={show: true, msg: r.response.data, context: "error"}
         this.result=r.message + ": "+ r.config.url + "\n"+ r.response.data
         this.loading=false
       });
     },
-  },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
   }
 }
 
@@ -5805,8 +5912,9 @@ const Vuepoc=Vue.extend({template:`
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
  
   <v-spacer></v-spacer>
-  <qd-search></qd-search>
-  
+
+    <qd-search></qd-search>
+     
   <v-spacer></v-spacer>
   
    <v-menu left="" transition="v-fade-transition">
@@ -6001,7 +6109,7 @@ const Vuepoc=Vue.extend({template:`
     Vue.config.errorHandler = function (err, vm, info) {
   // handle error
   // `info` is a Vue-specific error info, e.g. which lifecycle hook
-        console.error(err, vm, info);
+        console.log('[Global Error Handler]: Error in ' + info + ': ' + err);
         var msg=JSON.stringify(err)
         that.showAlert("vue error:\n"+msg)
         //alert("vue error");
@@ -6022,9 +6130,9 @@ const Vuepoc=Vue.extend({template:`
    
     HTTP.get("status")
     .then(r=>{
-      console.log("status",r.data)
-      Object.assign(Auth,r.data)
-      this.$forceUpdate()
+      console.log("status",r)
+      //Object.assign(Auth,r.data)
+      //this.$forceUpdate()
     }) 
   },
   

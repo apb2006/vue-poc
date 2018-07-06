@@ -1,5 +1,5 @@
 <entity name="user" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>users </description>
+	<description>A BaseX user </description>
 
 	<fields>
 		<field name="name" type="xs:string">
@@ -11,8 +11,6 @@
 			<xpath>@permission</xpath>
 		</field>
 	</fields>
-	<views>
-	</views>
-	<iconclass>fa fa-calendar</iconclass>
+	<views iconclass="person"/>
 	<data type="element(user)">user:list-details()</data>
 </entity>

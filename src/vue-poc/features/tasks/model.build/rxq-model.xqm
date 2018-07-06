@@ -20,7 +20,7 @@ declare
 %updating   
 function vue-api:model($efolder ,$target )   
 {
-    let $config:='import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";'
+    let $config:='import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";'
     let $src:=bf:module(bf:entities($efolder),$config)
     return (
       prof:variables(),
