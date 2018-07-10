@@ -32,15 +32,18 @@
     <v-card-text v-resize="onResize" style="height:100px" ref="auto">
       <v-container fluid>
         
-          <v-layout row wrap>   
-          <v-flex   xs8> 
-            <v-text-field   v-for="field in fields" :key="field.model"
-              v-model="params[field.model]" :label="field.label" clearable  :rules="[rules.required]" box
-            ></v-text-field>
+          <v-layout row wrap> 
+          <v-flex xs8>  
+	          <v-flex   v-for="field in fields" :key="field.model"  > 
+	            <v-text-field  xs10
+	              v-model="params[field.model]" :label="field.label" 
+	              clearable  :rules="[rules.required]" box
+	              append-outer-icon="send" @click:append-outer="source(field)"
+	            ></v-text-field>
+	          </v-flex>
           </v-flex>
-   
-          <v-flex xs4 fill-height style="overflow:scroll">
-          <pre >Result: {{ result }}</pre>
+          <v-flex xs4 green fill-height style="height:100%;overflow:scroll">
+          <vp-validationreport :report="result"></vp-validationreport>
           </v-flex>
           </v-layout>
       </v-container>
@@ -66,7 +69,7 @@
         required: value => !!value || 'Required.'
       },
       params:{
-		      doc: "C:/Users/andy/git/vue-poc/src/vue-poc/models/adminlog.xml",
+		      doc: "C:/Users/andy/git/vue-poc/src/vue-poc/models/entities/adminlog.xml",
 		      schema: "C:/Users/andy/git/vue-poc/src/vue-poc/models/schemas/entity.xsd"
       },
       snackbar:{show:false,msg:"",context:"success"}
@@ -80,6 +83,11 @@
       var h=Math.max(1,h) ;
       //console.log("resize h",h,el.style)
       el.style.height=h +"px"; 
+    },
+    
+    source(field){
+      console.log("field: ",field);
+      router.push({ path: 'tabs', query: { url:this.params[field.model]}})
     },
     
     validate(){    

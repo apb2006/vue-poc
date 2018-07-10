@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-06-27T22:03:58.364+01:00 
+ : auto generated from xml files in entities folder at: 2018-07-07T11:46:28.985+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -108,7 +108,7 @@ declare variable $entity:list:=map {
        "code": function($_ as element()) as xs:string? {$_/ent:data },
        "description": function($_ as element()) as xs:string {$_/ent:description },
        "fieldslink": function($_ as element()) as xs:string {$_/fn:concat("/data/entity/",@name,"/field") },
-       "iconclass": function($_ as element()) as xs:string {$_/ent:iconclass },
+       "iconclass": function($_ as element()) as xs:string {$_/ent:views/@iconclass },
        "modules": function($_ as element()) as xs:string? {$_/ent:module/concat("import module namespace ",@prefix,"='",@namespace,"';
 ")=>string-join() },
        "name": function($_ as element()) as xs:string {$_/@name },
@@ -138,7 +138,7 @@ declare variable $entity:list:=map {
                  },
            "iconclass": function($_ as element()) as element(iconclass)? {
             (: xs:string :)
-                        fn:data($_/ent:iconclass)!element iconclass {  .} 
+                        fn:data($_/ent:views/@iconclass)!element iconclass {  .} 
                  },
            "modules": function($_ as element()) as element(modules)? {
             (: xs:string? :)
@@ -446,7 +446,7 @@ declare variable $entity:list:=map {
    },
   "user": map{
      "name": "user",
-     "description": "users ",
+     "description": "A BaseX user ",
      "access": map{ 
        "name": function($_ as element()) as xs:string {$_/@name },
        "permission": function($_ as element()) as xs:string {$_/@permission } },

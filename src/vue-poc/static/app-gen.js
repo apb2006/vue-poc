@@ -1,4 +1,4 @@
-// generated 2018-07-06T22:33:10.411+01:00
+// generated 2018-07-10T23:15:53.605+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -327,6 +327,16 @@ Vue.component('vis-time-line',{template:`
 }
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-entitylink.vue
+Vue.component('vp-entitylink',{template:` 
+		    <router-link :to="'entity/'+entity">E</router-link>   
+ `,
+      
+  props: ['entity']
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-favorite.vue
 Vue.component('vp-favorite',{template:` 
   <v-menu :close-on-click="false" offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
@@ -607,6 +617,27 @@ Vue.component('vp-selectpath',{template:`
     }
   }
 }
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-validationreport.vue
+Vue.component('vp-validationreport',{template:` 
+       <v-card v-if="report">
+       
+       <v-toolbar class="orange darken-1">
+          <v-card-title>Validation</v-card-title>
+          <span v-for="(value, key) in report.msgcounts">{{ key }}:{{ value }}</span>
+          </v-toolbar>
+          
+          <v-card-text>
+            <pre>*** {{ report }}</pre>
+          </v-card-text>
+       
+        </v-card>
+ `,
+      
+  props: ['report']
+}
+
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vue-ace.vue
@@ -2418,11 +2449,15 @@ const Tabs=Vue.extend({template:`
     },
     
     loadItem(url){
-      HTTP.get("get",{params: {url:url}})
+      HTTP.get("get2",{params: {url:url}})
       .then(r=>{
-          //console.log(r)
-          alert("go")
-          //alert(mode)
+          console.log(r)
+          var tab={
+            text: ""+ r.data.data,
+            location: url,
+            name: url.split(/.*[\/|\\]/)[1]
+          };
+          this.addItem(tab);
         })
         .catch(error=> {
           console.log(error);
@@ -4052,13 +4087,22 @@ const Entity1=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace.vue
 const Namespace=Vue.extend({template:` 
  <v-container fluid="" grid-list-md="">
+ 
 <v-toolbar>
    <v-toolbar-title>Namespaces</v-toolbar-title>
+   
+     <v-btn @click="load" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+   
    <v-spacer></v-spacer>
-   <v-btn @click="load" :loading="loading" :disabled="loading">Refresh</v-btn>
-   Text
+   
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   
+   <v-spacer></v-spacer>
+   <vp-entitylink entity="namespace"></vp-entitylink>
+  
    </v-toolbar>
-    <v-data-table :headers="headers" :items="items" hide-actions="" class="elevation-1">
+   
+    <v-data-table :headers="headers" :items="filtered" hide-actions="" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td><router-link :to="{path:'namespace/item?xmlns='+ props.item.xmlns}">
                  {{ props.item.xmlns }}
@@ -4068,8 +4112,8 @@ const Namespace=Vue.extend({template:`
      
     </template>
     <template slot="no-data">
-      <v-alert :value="true" color="error" icon="warning">
-        Sorry, nothing to display here :(
+      <v-alert :value="true" icon="warning">
+        No matching items.
       </v-alert>
     </template>
   </v-data-table>
@@ -4113,8 +4157,25 @@ const Namespace=Vue.extend({template:`
         });
       
     },
-    
+    setfilter(){
+      console.log("TODO",this.q)
+      this.$router.push({  query: {url:this.url,q:this.q }})
+    },
   },
+  watch:{
+    $route(vnew,vold){
+      console.log("ROUTE",vnew,vold)    
+      var url=this.$route.query.url
+      this.url=url?url:"/";
+      if(vnew.query.url != vold.query.url) this.load() 
+    }
+  },
+  computed: {
+    filtered(){
+      var regex = new RegExp( this.q, "i");
+      return this.items.filter(item=>{return ((!this.q) || regex.test(item.description))})
+    }
+},
   created:function(){
     this.q=this.$route.query.q || this.q;
     this.load();
@@ -4987,7 +5048,7 @@ const Model=Vue.extend({template:`
   data:  function(){
     return {
       params:{
-			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc/models",
+			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc/models/entities",
 			      target:"C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm"
 			 },
 			waiting:false,
@@ -5354,12 +5415,12 @@ const Thumbnail=Vue.extend({template:`
       
   data(){
     return {
-      image:"https://cdn.pixabay.com/photo/2017/10/31/07/49/horses-2904536_960_720.jpg",
+      image:"https://upload.wikimedia.org/wikipedia/commons/c/c1/Lycidae-Kadavoor-2017-05-22-001.jpg",
       step: 0,
       taskxml:"<task></task>",
       items:[
         {
-          src: 'https://cdn.pixabay.com/photo/2017/10/31/07/49/horses-2904536_960_720.jpg'
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Lycidae-Kadavoor-2017-05-22-001.jpg'
         }]
       }
   },
@@ -5470,13 +5531,14 @@ const Validate=Vue.extend({template:`
     <v-card-text v-resize="onResize" style="height:100px" ref="auto">
       <v-container fluid="">
         
-          <v-layout row="" wrap="">   
-          <v-flex xs8=""> 
-            <v-text-field v-for="field in fields" :key="field.model" v-model="params[field.model]" :label="field.label" clearable="" :rules="[rules.required]" box=""></v-text-field>
+          <v-layout row="" wrap=""> 
+          <v-flex xs8="">  
+	          <v-flex v-for="field in fields" :key="field.model"> 
+	            <v-text-field xs10="" v-model="params[field.model]" :label="field.label" clearable="" :rules="[rules.required]" box="" append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
+	          </v-flex>
           </v-flex>
-   
-          <v-flex xs4="" fill-height="" style="overflow:scroll">
-          <pre>Result: {{ result }}</pre>
+          <v-flex xs4="" green="" fill-height="" style="height:100%;overflow:scroll">
+          <vp-validationreport :report="result"></vp-validationreport>
           </v-flex>
           </v-layout>
       </v-container>
@@ -5501,7 +5563,7 @@ const Validate=Vue.extend({template:`
         required: value => !!value || 'Required.'
       },
       params:{
-		      doc: "C:/Users/andy/git/vue-poc/src/vue-poc/models/adminlog.xml",
+		      doc: "C:/Users/andy/git/vue-poc/src/vue-poc/models/entities/adminlog.xml",
 		      schema: "C:/Users/andy/git/vue-poc/src/vue-poc/models/schemas/entity.xsd"
       },
       snackbar:{show:false,msg:"",context:"success"}
@@ -5515,6 +5577,11 @@ const Validate=Vue.extend({template:`
       var h=Math.max(1,h) ;
       //console.log("resize h",h,el.style)
       el.style.height=h +"px"; 
+    },
+    
+    source(field){
+      console.log("field: ",field);
+      router.push({ path: 'tabs', query: { url:this.params[field.model]}})
     },
     
     validate(){    

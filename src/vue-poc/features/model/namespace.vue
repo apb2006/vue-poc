@@ -1,18 +1,29 @@
 <!DOCTYPE html>
 <template id="namespace">
  <v-container fluid  grid-list-md>
+ 
 <v-toolbar >
    <v-toolbar-title>Namespaces</v-toolbar-title>
-   <v-spacer></v-spacer>
-   <v-btn @click="load"
+   
+     <v-btn @click="load"
     :loading="loading"
       :disabled="loading"
-   >Refresh</v-btn>
-   Text
+   ><v-icon>refresh</v-icon></v-btn>
+   
+   <v-spacer></v-spacer>
+   
+   <v-text-field  prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
+   hide-details single-line  @keyup.enter="setfilter"
+   :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   
+   <v-spacer></v-spacer>
+   <vp-entitylink entity="namespace"></vp-entitylink>
+  
    </v-toolbar>
+   
     <v-data-table
     :headers="headers"
-    :items="items"
+    :items="filtered"
     hide-actions
     class="elevation-1"
   >
@@ -25,8 +36,8 @@
      
     </template>
     <template slot="no-data">
-      <v-alert :value="true" color="error" icon="warning">
-        Sorry, nothing to display here :(
+      <v-alert :value="true" icon="warning">
+        No matching items.
       </v-alert>
     </template>
   </v-data-table>
@@ -71,8 +82,25 @@
         });
       
     },
-    
+    setfilter(){
+      console.log("TODO",this.q)
+      this.$router.push({  query: {url:this.url,q:this.q }})
+    },
   },
+  watch:{
+    $route(vnew,vold){
+      console.log("ROUTE",vnew,vold)    
+      var url=this.$route.query.url
+      this.url=url?url:"/";
+      if(vnew.query.url != vold.query.url) this.load() 
+    }
+  },
+  computed: {
+    filtered(){
+      var regex = new RegExp( this.q, "i");
+      return this.items.filter(item=>{return ((!this.q) || regex.test(item.description))})
+    }
+},
   created:function(){
     this.q=this.$route.query.q || this.q;
     this.load();

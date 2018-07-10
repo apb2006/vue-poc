@@ -263,11 +263,15 @@
     },
     
     loadItem(url){
-      HTTP.get("get",{params: {url:url}})
+      HTTP.get("get2",{params: {url:url}})
       .then(r=>{
-          //console.log(r)
-          alert("go")
-          //alert(mode)
+          console.log(r)
+          var tab={
+            text: ""+ r.data.data,
+            location: url,
+            name: url.split(/.*[\/|\\]/)[1]
+          };
+          this.addItem(tab);
         })
         .catch(error=> {
           console.log(error);

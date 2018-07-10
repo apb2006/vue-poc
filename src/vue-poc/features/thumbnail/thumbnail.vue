@@ -64,12 +64,12 @@
 <script>{
   data(){
     return {
-      image:"https://cdn.pixabay.com/photo/2017/10/31/07/49/horses-2904536_960_720.jpg",
+      image:"https://upload.wikimedia.org/wikipedia/commons/c/c1/Lycidae-Kadavoor-2017-05-22-001.jpg",
       step: 0,
       taskxml:"<task></task>",
       items:[
         {
-          src: 'https://cdn.pixabay.com/photo/2017/10/31/07/49/horses-2904536_960_720.jpg'
+          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Lycidae-Kadavoor-2017-05-22-001.jpg'
         }]
       }
   },

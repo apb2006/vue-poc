@@ -1,9 +1,8 @@
 <entity name="entity.field" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<has-a name="entity" />
 	<description>About an entity field. </description>
 	<namespace prefix="ent"
 		uri="https://github.com/Quodatum/app-doc/entity" />
-	<fields>
+	<fields parent="entity">
 		<field name="name" type="xs:string">
 			<description>name</description>
 			<xpath>@name</xpath>

@@ -58,10 +58,36 @@ function vue-api:edit-post($url as xs:string,$data)
 (:~
  : Returns a file content.
  :)
-declare function vue-api:get-webfile($url as xs:string)   
+declare 
+%rest:GET %rest:path("/vue-poc/api/get")
+%rest:query-param("url", "{$url}")
+function vue-api:get-webfile($url as xs:string?)   
 as element(json)
 {
   let $path := ufile:web( $url)=>trace("path ")
+   return if( file:exists($path))then 
+             let $type:=mt:type($path)
+             let $fetch:=mt:fetch-fn($type("treat-as"))
+             return <json type="object" >
+                        <url>{$url}</url>
+                        <mimetype>{$type?type}</mimetype>
+                        <data>{$fetch($path)}</data> 
+                     </json>
+          else 
+            error(xs:QName('vue-api:raw'),$url)
+};
+
+(:~
+ : Returns a file content.
+ :)
+declare 
+%rest:GET %rest:path("/vue-poc/api/get2")
+%rest:query-param("url", "{$url}")
+%output:method("json")  
+function vue-api:get-file($url as xs:string?)   
+as element(json)
+{
+  let $path := $url
    return if( file:exists($path))then 
              let $type:=mt:type($path)
              let $fetch:=mt:fetch-fn($type("treat-as"))

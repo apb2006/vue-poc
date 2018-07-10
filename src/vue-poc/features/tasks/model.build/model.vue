@@ -52,7 +52,7 @@
   data:  function(){
     return {
       params:{
-			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc/models",
+			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc/models/entities",
 			      target:"C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm"
 			 },
 			waiting:false,
