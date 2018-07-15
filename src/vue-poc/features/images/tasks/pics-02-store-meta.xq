@@ -23,4 +23,4 @@ return (for $f in subsequence($todo,1, $CHUNK)
         let $dbpath:=$meta || $f || "/meta.xml"
         let $meta:=imgmeta:read($spath)
         return  db:replace($cfg:DB-IMAGE,$dbpath,$meta),
-        db:output($todo=>count()))
+        update:output($todo=>count()))

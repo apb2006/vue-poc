@@ -32,13 +32,16 @@
            <v-layout row wrap>
           <v-flex xs6>
 	        <ul>
-	         <li><a href="https://vuejs.org/"
-              target="new">vue.js</a></li>
+	         <li><a href="https://vuejs.org/" target="new">vue.js</a></li>
+              
 					  <li><a href="https://vuetifyjs.com/vuetify/quick-start"
 					    target="new">vuetifyjs</a></li>
+					    
+					<li><a href="https://github.com/axios/axios" target="new">axios</a></li>
 					
 					  <li><a href="https://github.com/beautify-web/js-beautify"
 					    target="new">js-beautify</a></li>
+					    
 					    <li><a href="https://developers.google.com/web/tools/workbox/"
               target="new">workbox</a></li> 
 					 </ul>

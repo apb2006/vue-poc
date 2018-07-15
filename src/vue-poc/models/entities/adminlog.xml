@@ -7,7 +7,7 @@
 			<xpath>@time</xpath>
 		</field>
 		<field name="address" type="xs:string">
-			<description>ip address</description>
+			<description>IP address</description>
 			<xpath>@address</xpath>
 		</field>
 		<field name="user" type="xs:string">

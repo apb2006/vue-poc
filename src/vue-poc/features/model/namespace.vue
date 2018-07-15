@@ -23,8 +23,9 @@
    
     <v-data-table
     :headers="headers"
-    :items="filtered"
+    :items="items"
     hide-actions
+     :search="q"
     class="elevation-1"
   >
     <template slot="items" slot-scope="props">
@@ -95,12 +96,7 @@
       if(vnew.query.url != vold.query.url) this.load() 
     }
   },
-  computed: {
-    filtered(){
-      var regex = new RegExp( this.q, "i");
-      return this.items.filter(item=>{return ((!this.q) || regex.test(item.description))})
-    }
-},
+
   created:function(){
     this.q=this.$route.query.q || this.q;
     this.load();

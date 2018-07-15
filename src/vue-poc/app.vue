@@ -264,7 +264,8 @@
     HTTP.get("status")
     .then(r=>{
       console.log("status",r)
-      //Object.assign(Auth,r.data)
+      this.$auth=Object.assign(this.$auth,r.data);
+      console.log("AFTER: ",this.$auth);
       //this.$forceUpdate()
     }) 
   },

@@ -44,7 +44,7 @@ function vue-api:response($r,$query)
   return (
            replace value of node $vue-api:id with $id,
            db:replace($vue-api:db,"/jobruns/" || $id || ".xml",$jobrun),
-           db:output($out)
+           update:output($out)
           )          
 };
 
@@ -98,7 +98,7 @@ function vue-api:invoke($path )
  let $opts:=map{"base-uri":$path,"cache":true()}
  let $r:=jobs:eval($xq,$bindings,$opts)
 
- return db:output(
+ return update:output(
  <json   type="object" >
             <job>{$r}</job>
   </json>

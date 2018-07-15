@@ -29,6 +29,23 @@ function model-list($q) {
  return dice:response($items,$entity,web:dice())
 };
 
+
+(:~
+ : Returns data results
+ :)
+declare
+%rest:path("/vue-poc/api/data/{$entity}")
+%rest:query-param("q", "{$q}")
+%rest:produces("application/json")
+%output:method("json")   
+function data($entity as xs:string,$q )   
+{
+  let $entity:=$entity:list($entity)
+  let $items:=$entity("data")()
+  
+ return dice:response($items,$entity,web:dice())
+};
+
 (:~ 
  : details of the entity $entity
  :)

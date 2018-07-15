@@ -21,7 +21,8 @@
       row
       wrap
       :loading="loading"
-      :items="filtered"
+      :items="items"
+      :search="q"
       :rows-per-page-items="rowsPerPageItems"
       :pagination.sync="pagination"
       select-all 
@@ -90,11 +91,7 @@
                                    q: this.q }})
     }
   },
-  computed: {
-		  filtered(){
-		    return this.items.filter(item=>{return ((!this.q) || item.name.includes(this.q))})
-		  }
-  },
+
   created:function(){
     this.getItems()
   },

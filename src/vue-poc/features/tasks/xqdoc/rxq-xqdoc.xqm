@@ -3,9 +3,12 @@
  :)
 module namespace vue-api = 'quodatum:vue.api';
 import module namespace xqd = 'quodatum:build.xqdoc' at "../../../lib/xqdoc/xqdoc-proj.xqm";
+import module namespace query-a = 'vue-poc/query-a' at "../../../lib/query-a.xqm";
 import module namespace fw="quodatum:file.walker";
+
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
+declare variable $vue-api:query:="tx-xqdoc.xq";
 declare variable $vue-api:state as element(state):=db:open("vue-poc","/state.xml")/state;
 
 (:~
@@ -13,28 +16,23 @@ declare variable $vue-api:state as element(state):=db:open("vue-poc","/state.xml
  :)
 declare
 %rest:POST %rest:path("/vue-poc/api/tasks/xqdoc")
-%rest:form-param("efolder", "{$efolder}")
-%rest:form-param("target", "{$target}")
 %rest:produces("application/json")
 %output:method("json")
-%updating   
-function vue-api:model($efolder ,$target )   
+%updating 
+function vue-api:model()   
 {
-  let $project:=tokenize($efolder,"[/\\]")[last()]=>trace("xqdoc: ")
-  let $files:= fw:directory-list($efolder,map{"include-filter":".*\.xqm"})
-  let $id:=$vue-api:state/last-id
-  let $opts:=map{
-                 "project": $project, 
-                 "id": $id/string()
-                 }
-  let $op:=xqd:save-xq($files,$target,$opts)
-  let $result:=<json type="object">
-                    <msg> {$target}, {count($files//c:file)} files processed.</msg>
-                    <id>{$id/string()}</id>
-                </json>
-  return (
-         db:output($result),
-         replace value of node $id with 1+$vue-api:state/last-id
-         )
+ resolve-uri($vue-api:query)=>query-a:update(query-a:params())
 };
   
+(:~
+ : get xqdoc settings.
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/tasks/xqdoc")
+%rest:produces("application/json")
+%output:method("json")
+function vue-api:settings()   
+{
+    let $xq:=resolve-uri($vue-api:query)
+   return query-a:fields($xq)
+};

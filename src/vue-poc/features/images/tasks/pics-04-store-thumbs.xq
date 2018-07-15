@@ -15,7 +15,7 @@ declare %updating function local:store-thumb($f as xs:string)
   return try{
             fetch:binary($src)=>t:size(80)=>local:write-binary($trg)
          } catch * {
-             db:output("bad: " || $f)
+             update:output("bad: " || $f)
         }
 };
 (:~  create folder if missing) :)
@@ -41,5 +41,5 @@ let $todo:= $relpath=>subsequence(1, $CHUNK)
 
 return (
         $todo!local:store-thumb(.),
-        db:output($relpath=>count())
+        update:output($relpath=>count())
       )

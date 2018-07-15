@@ -7,8 +7,6 @@
 :)
 
 module namespace dice = 'quodatum.web.dice/v4';
-declare default function namespace 'quodatum.web.dice/v4'; 
-declare namespace restxq = 'http://exquery.org/ns/restxq';
 
 declare variable $dice:default:=map{
     "start" : 1, (: start index :)
@@ -19,10 +17,11 @@ declare variable $dice:default:=map{
 
 (:~ 
  : sort items
- : @param sort  field name to sort on optional leading +/-
+ : @param sort  field name to sort on. Optional leading +/-
+ : @param $fmap as map(*) field
  : @return sorted items 
  :)
-declare function sort($items as item()*
+declare function dice:sort($items as item()*
                      ,$fmap as map(*)
                      ,$sort as xs:string?)
 as item()*{
@@ -43,13 +42,13 @@ as item()*{
 };
 
 (:~ generate item xml for all fields in map :)
-declare function json-flds($item,$fldmap)
+declare function dice:json-flds($item,$fldmap)
 as element(_){
-  json-flds($item,$fldmap,map:keys($fldmap)) 
+  dice:json-flds($item,$fldmap,map:keys($fldmap)) 
 };
 
 (:~ generate item xml for some fields in map :)
-declare function json-flds($item as element(),
+declare function dice:json-flds($item as element(),
                            $fldmap as map(*),
 						   $keys as xs:string*)
 as element(_){ 
@@ -70,9 +69,10 @@ as element(_){
  : @param $items sequence of source items
  : @param $opts sort and slice values
  :)
-declare function response($items,
+declare function dice:response($items,
                           $entity as map(*),
                           $opts as map(*))
+ as element(json)
  {
   let $total:=fn:count($items)
   let $opts:=map:merge(($opts,$dice:default))
@@ -93,31 +93,36 @@ declare function response($items,
 };
 
 (:~ 
- : get data
+ : sort, slice, return json
  :)
-declare function get($entity as map(*),$name as xs:string)
+declare function dice:response($items,$entity as map(*))
+{
+    dice:response($items,$entity,map{})
+};
+
+(:~ 
+ : get data for object with key =name
+ :)
+declare function dice:get($entity as map(*),$name as xs:string)
 as element(*){
     let $results:=$entity("data")()
     return $results[$name=$entity?access?name(.)]
 };
 
-(:~ 
- : sort, slice, return json
- :)
-declare function response($items,$entity as map(*)){
-    response($items,$entity,map{})
-};
+
 (:~ 
  : @return  json for item
  :)
-declare function one($item,$entity as map(*))
+declare function dice:one($item,$entity as map(*))
 {
- one($item,$entity,map{})
+  dice:one($item,$entity,map{})
 };
+
 (:~ 
  : @return  json for item
  :)
-declare function one($item,$entity as map(*),$opts as map(*))
+declare function dice:one($item,$entity as map(*),$opts as map(*))
+as element(json)
 {
   let $jsonf:= map:get($entity,"json")
   let $fields:=if ($opts?fields) then fn:tokenize($opts?fields) else map:keys($jsonf)=>fn:trace("FF")

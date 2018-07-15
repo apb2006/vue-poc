@@ -25,7 +25,7 @@ function vue-api:model($efolder ,$target )
     return (
       prof:variables(),
       file:write-text($target,$src),
-      db:output(<json type="object"><msg>Updated: {$target}</msg></json>)
+      update:output(<json type="object"><msg>Updated: {$target}</msg></json>)
     )
 };
           

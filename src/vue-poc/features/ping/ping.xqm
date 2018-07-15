@@ -11,7 +11,7 @@ declare %updating
 function ping:dopost()
 {
     (replace value of node $ping:state/ping with 1+$ping:state/ping,
-            db:output(1+$ping:state/ping))
+            update:output(1+$ping:state/ping))
 };
 
 (:~

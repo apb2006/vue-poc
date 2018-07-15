@@ -15,7 +15,7 @@ declare
 %updating   
 function vue-rest:vue($name)   
 {
-  db:output(<json type="object"><msg> { $name }.</msg></json>)
+  update:output(<json type="object"><msg> { $name }.</msg></json>)
 };
   
 (:~

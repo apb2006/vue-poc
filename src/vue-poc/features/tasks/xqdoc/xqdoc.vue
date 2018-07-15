@@ -50,7 +50,7 @@
   data:  function(){
     return {
       params:{
-			      efolder:"C:/Users/andy/git/graphxq/src",
+			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc",
 			      target:"C:/tmp/xqdoc/"
 			 },
 			waiting:false,

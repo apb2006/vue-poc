@@ -5,7 +5,8 @@
 :)
 
 module namespace tx = 'quodatum:vue.api.validate';
-import module namespace qv = 'quodatum.validate' at "validate.xqm";
+import module namespace qv = 'quodatum.validate' at "../../lib/validate.xqm";
+import module namespace query-a = 'vue-poc/query-a' at "../../lib/query-a.xqm";
 
                                  
 (:~ run validation 
@@ -13,18 +14,25 @@ import module namespace qv = 'quodatum.validate' at "validate.xqm";
  :)
 declare 
 %rest:POST %rest:path("/vue-poc/api/validate")
-%rest:form-param("doc", "{$doc}") 
-%rest:form-param("schema", "{$schema}") 
+%rest:produces("application/json")
+%output:method("json")
+%updating
+function tx:run( )
+{
+  let $r:= resolve-uri("tx-validate.xq")=>query-a:run(query-a:params())
+  return $r=>update:output() 
+};
+
+(:~ validation settings 
+ : @return json 
+ :)
+declare 
+%rest:GET %rest:path("/vue-poc/api/validate")
 %rest:produces("application/json")
 %output:method("json") 
-function tx:validate-path($doc as xs:anyURI,
-                          $schema as xs:anyURI)
+function tx:parameters( )
 {
-   (: tx:validate(doc($doc)) :)
-   let $_:=trace($doc,"doc ")
-   let $_:=trace($schema,"schema: ")
-   let $validators:=qv:xsd(?,$schema)
-   let $report:= qv:validation($doc ,$validators,attribute type {"xsd"})
-   return qv:json($report,map{})
+   let $xq:=resolve-uri("tx-validate.xq")
+   return query-a:fields($xq)
 };
 

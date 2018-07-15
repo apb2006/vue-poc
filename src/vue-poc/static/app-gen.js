@@ -1,4 +1,4 @@
-// generated 2018-07-10T23:15:53.605+01:00
+// generated 2018-07-15T22:47:31.919+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -1002,9 +1002,13 @@ const About=Vue.extend({template:`
           <v-flex xs6="">
 	        <ul>
 	         <li><a href="https://vuejs.org/" target="new">vue.js</a></li>
+              
 					  <li><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></li>
+					    
+					<li><a href="https://github.com/axios/axios" target="new">axios</a></li>
 					
 					  <li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
+					    
 					    <li><a href="https://developers.google.com/web/tools/workbox/" target="new">workbox</a></li> 
 					 </ul>
 					 </v-flex>
@@ -2987,7 +2991,7 @@ const Formsschema=Vue.extend({template:`
 const Formsjson=Vue.extend({template:` 
  <v-container fluid="">
      <v-card>
-        <v-card-title><qd-link href="https://github.com/formschema/native">vue-json-schema@1.1.0</qd-link> </v-card-title>
+        <v-card-title><qd-link href="https://gitlab.com/formschema/native">vue-json-schema@1.1.1</qd-link> </v-card-title>
         
        <form-schema ref="formSchema" :schema="schema" v-model="model" input-wrapping-class="fooclass">
               <v-btn color="success" @click.stop="submit">Send</v-btn>
@@ -3972,7 +3976,7 @@ const Entity=Vue.extend({template:`
 
   <v-container fluid="" grid-list-md="">
   
-    <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="filtered" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
+    <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :search="q" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
       <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
         <v-card :hover="true" active-class="default-class qd-active">
         
@@ -4028,11 +4032,7 @@ const Entity=Vue.extend({template:`
                                    q: this.q }})
     }
   },
-  computed: {
-		  filtered(){
-		    return this.items.filter(item=>{return ((!this.q) || item.name.includes(this.q))})
-		  }
-  },
+
   created:function(){
     this.getItems()
   },
@@ -4102,7 +4102,7 @@ const Namespace=Vue.extend({template:`
   
    </v-toolbar>
    
-    <v-data-table :headers="headers" :items="filtered" hide-actions="" class="elevation-1">
+    <v-data-table :headers="headers" :items="items" hide-actions="" :search="q" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td><router-link :to="{path:'namespace/item?xmlns='+ props.item.xmlns}">
                  {{ props.item.xmlns }}
@@ -4170,12 +4170,7 @@ const Namespace=Vue.extend({template:`
       if(vnew.query.url != vold.query.url) this.load() 
     }
   },
-  computed: {
-    filtered(){
-      var regex = new RegExp( this.q, "i");
-      return this.items.filter(item=>{return ((!this.q) || regex.test(item.description))})
-    }
-},
+
   created:function(){
     this.q=this.$route.query.q || this.q;
     this.load();
@@ -4718,24 +4713,8 @@ const Session=Vue.extend({template:`
   <v-layout>
    <v-btn v-on:click="redraw">this.$forceUpdate()</v-btn>
     <v-btn v-on:click="logout">logout</v-btn>
-   <!-- 
-    <v-autocomplete :items="list" 
-    v-model="fieldValue" 
-    :search.sync="search"
-     label="Suburb" item-text="suburb" 
-    item-value="suburb" 
-    @selected="handleSelected"
-     strict="Unknown">
-<template slot="item" slot-scope="data">
-      <v-list-tile-content>
-        <v-list-tile-title>{{data.item.suburb}}</v-list-tile-title>
-        <template v-if="!data.item.generatedItem">
-          <v-list-tile-sub-title>{{data.item.postcode}} - {{data.item.state}}</v-list-tile-sub-title>
-        </template>
-      </v-list-tile-content>
-    </template>
-</v-autocomplete>
- -->
+     <v-btn v-on:click="refresh">refresh</v-btn>
+ 
   </v-layout>
    <table class="table">
       <thead> 
@@ -4745,14 +4724,17 @@ const Session=Vue.extend({template:`
           </tr>
         </thead>
         <tbody>
-        <tr>
-        <td>created</td><td>{{$auth.created}}</td>
+         <tr>
+        <td>user</td><td>{{ $auth.user }}</td>
         </tr>
         <tr>
-        <td>session</td><td>{{$auth.session}}</td>
+        <td>created</td><td>{{ $auth.created }}</td>
         </tr>
         <tr>
-        <td>permision</td><td>{{$auth.permission}}</td>
+        <td>session</td><td>{{ $auth.session }}</td>
+        </tr>
+        <tr>
+        <td>permision</td><td>{{ $auth.permission }}</td>
         </tr>
         </tbody>
         </table>
@@ -4773,13 +4755,20 @@ const Session=Vue.extend({template:`
     redraw(){
       this.$forceUpdate()
     },
+    refresh(){
+      HTTP.get("status")
+      .then(r=>{
+        console.log("status",r)
+        this.$auth=Object.assign(this.$auth,r.data);
+        console.log("AFTER: ",this.$auth);
+        //this.$forceUpdate()
+      })  
+    },
     handleSelected(){
       
     }
   }
 }
-
-
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/acesettings.vue
@@ -5318,7 +5307,7 @@ const Xqdoc=Vue.extend({template:`
   data:  function(){
     return {
       params:{
-			      efolder:"C:/Users/andy/git/graphxq/src",
+			      efolder:"C:/Users/andy/git/vue-poc/src/vue-poc",
 			      target:"C:/tmp/xqdoc/"
 			 },
 			waiting:false,
@@ -5512,12 +5501,18 @@ const Validate=Vue.extend({template:`
     </v-snackbar>
 <v-card>
      <v-toolbar class="orange">
-          <v-btn @click="validate" :loading="loading" :disabled="loading"><v-icon>play_circle_outline</v-icon>Validate</v-btn>
-          <span v-text="elapsed"></span>ms.
+        
+          
+           <v-btn @click="submit" :loading="loading" :disabled="false"><v-icon>play_circle_outline</v-icon>validate</v-btn>
+             <span v-text="elapsed">?</span>ms.
             <v-spacer></v-spacer>
+               <v-btn @click="clear" :loading="loading" :disabled="loading">Clear</v-btn>
+             <v-btn @click="settings" :loading="loading" :disabled="loading">Reset</v-btn>
+          
          
+             <v-btn @click="valid2" :loading="loading" :disabled="loading">is ok?</v-btn>
               <v-menu offset-y="" left="">
-             <v-btn icon="" dark="" slot="activator"><v-icon>settings</v-icon></v-btn>
+             <v-btn icon="" slot="activator"><v-icon>settings</v-icon></v-btn>
               <v-card>
               <v-toolbar class="green">
                   <v-card-title>@TODO.......</v-card-title>
@@ -5532,10 +5527,12 @@ const Validate=Vue.extend({template:`
       <v-container fluid="">
         
           <v-layout row="" wrap=""> 
-          <v-flex xs8="">  
+          <v-flex xs8="">
+          <v-form ref="form" v-model="valid" lazy-validation="">  
 	          <v-flex v-for="field in fields" :key="field.model"> 
 	            <v-text-field xs10="" v-model="params[field.model]" :label="field.label" clearable="" :rules="[rules.required]" box="" append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
 	          </v-flex>
+	          </v-form>
           </v-flex>
           <v-flex xs4="" green="" fill-height="" style="height:100%;overflow:scroll">
           <vp-validationreport :report="result"></vp-validationreport>
@@ -5554,18 +5551,11 @@ const Validate=Vue.extend({template:`
       elapsed: null,
       height: null,
       result: null,
-      fields:[
-        {model: "schema", label: "Schema (xsd url)"},
-        {model: "doc", label: "Doc (url)"}
-
-      ],
+      fields:[],
       rules: {
         required: value => !!value || 'Required.'
       },
-      params:{
-		      doc: "C:/Users/andy/git/vue-poc/src/vue-poc/models/entities/adminlog.xml",
-		      schema: "C:/Users/andy/git/vue-poc/src/vue-poc/models/schemas/entity.xsd"
-      },
+      params:null,
       snackbar:{show:false,msg:"",context:"success"}
     }
   },
@@ -5578,12 +5568,25 @@ const Validate=Vue.extend({template:`
       //console.log("resize h",h,el.style)
       el.style.height=h +"px"; 
     },
-    
+    submit () {
+      if (this.$refs.form.validate()) {
+        // Native form submission is not yet supported
+        this.validate()
+      }
+    },
+    clear () {
+      this.$refs.form.reset()
+    },
+    rules(field){
+      return [field.required?this.rules.required:[]];
+    },
     source(field){
       console.log("field: ",field);
       router.push({ path: 'tabs', query: { url:this.params[field.model]}})
     },
-    
+    valid2(){
+      alert("State:"+ this.$refs.form.validate());
+    },
     validate(){    
       this.loading=true
       this.start = performance.now();
@@ -5606,7 +5609,27 @@ const Validate=Vue.extend({template:`
         this.loading=false
       });
     },
+    settings(){
+      HTTP.get("validate")
+      .then(r=>{
+        this.fields=r.data.fields;
+        this.params = Object.assign({}, this.params, r.data.values)
+        console.log("settings",this.params);
+      })
+    },
+    isvalid(){
+      return this.$refs && this.$refs.form && this.$refs.form.validate()
+    }
+  },
+  computed:{
+    valid(){
+      console.log("valid------------")
+      return this.$refs && this.$refs.form && this.$refs.form.validate()
+  }},
+  created: function(){
+    this.settings();
   }
+
 }
 
       );
@@ -6198,7 +6221,8 @@ const Vuepoc=Vue.extend({template:`
     HTTP.get("status")
     .then(r=>{
       console.log("status",r)
-      //Object.assign(Auth,r.data)
+      this.$auth=Object.assign(this.$auth,r.data);
+      console.log("AFTER: ",this.$auth);
       //this.$forceUpdate()
     }) 
   },
@@ -6265,6 +6289,8 @@ const axios_json={ headers: {accept: 'application/json'}};
 const Auth={
     user:"guest",
     permission:null,
+    session:null,
+    created:null,
     install: function(Vue){
         Object.defineProperty(Vue.prototype, '$auth', {
           get () { return Auth }

@@ -1,0 +1,51 @@
+# Schema to model task pipelines in vue-poc.
+#
+# A pipeline consists of at least one step, to be executed
+# by the processor sequentially, in document order.
+#
+# Steps act on the processor accumulator 
+#
+# Author: Andy Bunce <andy@quodatum.com>
+# Date: 20180606
+# Version: 0.1
+# Comments: 
+
+
+default namespace = "http://quodatum.com/ns/pipeline"
+
+start =
+  element pipeline {
+    attribute id { xsd:ID },
+    attribute name { xsd:NCName },
+    step+
+  }
+
+step = load |
+       xquery |
+       xslt |
+       validate | 
+       store
+       
+
+      
+load = element load {
+      attribute href { xsd:anyURI }
+    }
+    
+xquery = element xquery {
+      attribute href { xsd:anyURI }
+    }
+
+xslt = element xslt {
+      attribute href { xsd:anyURI }
+    }
+    
+validate = element validate {
+      attribute failOnError { xsd:boolean }?,   #whether to abort if validation errors occur
+      attribute href { xsd:anyURI },
+      attribute type {"relax-ng" | "schematron" | "xml-schema" } #type of @href schema
+    }
+
+store = element store {
+      attribute href { xsd:anyURI }
+    }

@@ -2,7 +2,7 @@
 <template id="formsjson">
  <v-container fluid>
      <v-card>
-        <v-card-title><qd-link href="https://github.com/formschema/native">vue-json-schema@1.1.0</qd-link> </v-card-title>
+        <v-card-title><qd-link href="https://gitlab.com/formschema/native">vue-json-schema@1.1.1</qd-link> </v-card-title>
         
        <form-schema  ref="formSchema" :schema="schema" v-model="model" input-wrapping-class="fooclass">
               <v-btn color="success" @click.stop="submit">Send</v-btn>

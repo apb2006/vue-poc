@@ -51,6 +51,8 @@ const axios_json={ headers: {accept: 'application/json'}};
 const Auth={
     user:"guest",
     permission:null,
+    session:null,
+    created:null,
     install: function(Vue){
         Object.defineProperty(Vue.prototype, '$auth', {
           get () { return Auth }
