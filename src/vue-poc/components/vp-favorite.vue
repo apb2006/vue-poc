@@ -21,13 +21,13 @@ display button that invokes a  save favorite form
           
          <v-card-text>
             <h6>{{$route.meta.title}}</h6>
-            <v-select
+            <v-combobox multiple
               v-model="tags"
               label="tags"
               chips
               tags
               :items="taglist"
-            ></v-select>
+            ></v-combobox>
          </v-card-text>
          
          <v-card-actions>

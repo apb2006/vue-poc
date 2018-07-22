@@ -18,7 +18,7 @@
     <p>some text</p>
    
   
-     <v-select
+     <v-autocomplete
               label="Select"
               v-bind:items="options"
               v-model="value"
@@ -26,12 +26,11 @@
               item-value="name"
               chips
               max-height="auto"
-              autocomplete
               clearable
               deletable-chips
             >      
            
-       </v-select>
+       </v-autocomplete>
          <pre>{{$data.value }}</pre>
     </v-flex>
 

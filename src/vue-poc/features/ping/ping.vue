@@ -10,18 +10,18 @@
  <v-card-text>
   <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
   <h3>Counter: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
-  <table class="table">
+  <table >
       <thead> 
         <tr>
-         <th>Action</th>
-          <th>Once</th>
-          <th >Repeat</th>
-          <th >Last</th>
-          <th >Count</th>
-          <th >Avg</th>
-          <th >min</th>
-          <th >max</th>
-          <th>Median</th>
+         <th xs1>Action</th>
+          <th xs1>Once</th>
+          <th xs1>Repeat</th>
+          <th xs1>Last</th>
+          <th xs1>Count</th>
+          <th xs1>Avg</th>
+          <th xs1>min</th>
+          <th xs1>max</th>
+          <th xs1>Median</th>
         </tr>
       </thead>
       <tbody>

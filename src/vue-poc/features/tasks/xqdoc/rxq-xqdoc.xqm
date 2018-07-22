@@ -2,14 +2,11 @@
  : Generate html for for XQuery sources
  :)
 module namespace vue-api = 'quodatum:vue.api';
-import module namespace xqd = 'quodatum:build.xqdoc' at "../../../lib/xqdoc/xqdoc-proj.xqm";
-import module namespace query-a = 'vue-poc/query-a' at "../../../lib/query-a.xqm";
-import module namespace fw="quodatum:file.walker";
 
-declare namespace c="http://www.w3.org/ns/xproc-step";
+import module namespace query-a = 'vue-poc/query-a' at "../../../lib/query-a.xqm";
 
 declare variable $vue-api:query:="tx-xqdoc.xq";
-declare variable $vue-api:state as element(state):=db:open("vue-poc","/state.xml")/state;
+
 
 (:~
  : run xqdoc task.

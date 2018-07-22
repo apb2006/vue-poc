@@ -7,25 +7,31 @@
 module namespace vue-api = 'quodatum:vue.api';
 
 import module namespace bf = 'quodatum.tools.buildfields' at "./../../../lib/entity-gen.xqm";
+import module namespace query-a = 'vue-poc/query-a' at "../../../lib/query-a.xqm";
 
+declare variable $vue-api:query:="tx-model.xq";
 (:~
  : Returns a file content.
  :)
 declare
 %rest:POST %rest:path("/vue-poc/api/tasks/model")
-%rest:form-param("efolder", "{$efolder}")
-%rest:form-param("target", "{$target}")
 %rest:produces("application/json")
 %output:method("json")
 %updating   
-function vue-api:model($efolder ,$target )   
+function vue-api:model( )   
 {
-    let $config:='import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";'
-    let $src:=bf:module(bf:entities($efolder),$config)
-    return (
-      prof:variables(),
-      file:write-text($target,$src),
-      update:output(<json type="object"><msg>Updated: {$target}</msg></json>)
-    )
+    resolve-uri($vue-api:query)=>query-a:update(query-a:params())
 };
           
+(:~
+ : model settings.
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/tasks/model")
+%rest:produces("application/json")
+%output:method("json")
+function vue-api:settings()   
+{
+    let $xq:=resolve-uri($vue-api:query)
+   return query-a:fields($xq)
+};

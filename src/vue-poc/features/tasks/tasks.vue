@@ -5,7 +5,7 @@
   <v-progress-linear v-if="loading" v-bind:indeterminate="true" ></v-progress-linear>
   <ul>
   <li  v-for="task in tasks" :key="task.to">
-  <router-link :to="task.to" v-text="task.title"></router-link>
+  <router-link :to="'tasks/' + task.to" v-text="task.title"></router-link>
   <div v-html="task.description"></div>
   </li>
   </ul>

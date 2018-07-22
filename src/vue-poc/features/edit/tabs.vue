@@ -97,12 +97,12 @@
           <v-card>
             <v-card-title>Select Tab</v-card-title>
 	          <v-card-actions>
-	           <v-select :items="sorted" v-model="a1"
+	           <v-autocomplete :items="sorted" v-model="a1"
 	          label="File"   class="input-group--focused"
 	          item-text="name" item-value="id"
-	          autocomplete @change="setItem"
+	          @change="setItem"
 	          clearable open-on-clear
-	        ></v-select>
+	        ></v-autocomplete>
 	        </v-card-actions>
 	        </v-card>
         </v-menu>

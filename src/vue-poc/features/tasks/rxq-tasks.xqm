@@ -2,6 +2,7 @@
  : tasks
  :)
 module namespace vue-rest = 'quodatum:vue.tasks';
+import module namespace query-a = 'vue-poc/query-a' at "../../lib/query-a.xqm";
 
 (:~
  : list tasks
@@ -12,10 +13,12 @@ declare
 %output:method("json")
 function vue-rest:tasks()   
 {
-  let $tasks:=doc("taskdef.xml")/tasks/task
+  let $tasks:=doc("taskdef.xml")/tasks/task[@url]
+  
   return <json type="array">{
   $tasks!<_ type="object">
           <to>{ @name/string() }</to>
+          <url>{ @url/string() }</url>
           <title>{ title/text() }</title>
           <description>{ fn:serialize(description/node()) }</description>
         </_>
@@ -31,12 +34,10 @@ declare
 %output:method("json")
 function vue-rest:task($task)   
 {
-  let $tasks:=doc("taskdef.xml")/tasks/task[@name=$task]
-  return  <json type="object">
-          <to>{ $tasks/@name/string() }</to>
-          <text>{ $tasks/title/string() }</text>
-          <params>{ count($tasks/params/*) }</params>
-        </json>
+  let $task:=doc("taskdef.xml")/tasks/task[@name=$task]
+  let $url:=resolve-uri($task/@url)
+  let $info:=query-a:fields($url)
+  return  $info
 };
   
 (:~
@@ -48,12 +49,9 @@ declare
 %output:method("json")
 function vue-rest:runtask($task)   
 {
-  let $tasks:=doc("taskdef.xml")/tasks/task
-  return <json type="array">{
-  $tasks!<_ type="object">
-          <to>{ @name/string() }</to>
-          <text>{ title/text() }</text>
-        </_>
-        }</json>
+  let $task:=doc("taskdef.xml")/tasks/task[@name=$task]
+  let $url:=resolve-uri($task/@url)
+  
+  return query-a:run($url,query-a:params())
 };
     

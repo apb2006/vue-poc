@@ -1,4 +1,4 @@
-// generated 2018-07-15T22:47:31.919+01:00
+// generated 2018-07-22T22:53:58.139+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -352,7 +352,7 @@ Vue.component('vp-favorite',{template:`
           
          <v-card-text>
             <h6>{{$route.meta.title}}</h6>
-            <v-select v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-select>
+            <v-combobox multiple="" v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-combobox>
          </v-card-text>
          
          <v-card-actions>
@@ -538,6 +538,65 @@ Vue.component('vp-notifications',{template:`
     alert("notifi gone")
   }
     
+  }
+}
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-paramform.vue
+Vue.component('vp-paramform',{template:` 
+       <v-form ref="form" lazy-validation=""> 
+              <v-flex v-for="field in fields" :key="field.model">
+              
+              <v-text-field v-if="field.type === 'xs:anyURI'" xs10="" v-model="params[field.model]" :label="field.label" clearable="" :rules="fieldrules(field)" box="" append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
+              
+              <v-switch v-else-if="field.type === 'xs:boolean'" xs10="" :label="field.label" v-model="params[field.model]">
+              </v-switch>
+              
+              
+              <v-text-field v-else="" xs10="" amber="" v-model="params[field.model]" :label="field.type" clearable="" box=""></v-text-field>
+              </v-flex>
+             <div>{{ description }}</div>
+            </v-form>
+ `,
+      
+  props: ['endpoint'],
+  data: function(){
+    return {
+      fields: [],      
+      params: null,
+      description: null,
+      rules: {
+        required: value => !!value || 'Required.'
+      }
+    } 
+  },
+  methods:{
+      reset(){
+        HTTP.get(this.endpoint)
+        .then(r=>{
+          this.fields=r.data.fields;
+          this.description=r.data.description;
+          this.params = Object.assign({}, this.params, r.data.values);
+        })
+     },
+     source(field){
+       router.push({ path: 'tabs', query: { url:this.params[field.model]}})
+     },
+     clear () {
+       this.$refs.form.reset()
+     },
+     fieldrules(field){
+       return [this.rules.required];
+     },
+     submit(){
+       return this.params;
+     },
+     valid(){
+       return this.$refs.form.validate()
+     }
+  },
+  created:function(){
+    this.reset();
   }
 }
       );
@@ -2308,7 +2367,7 @@ const Tabs=Vue.extend({template:`
           <v-card>
             <v-card-title>Select Tab</v-card-title>
 	          <v-card-actions>
-	           <v-select :items="sorted" v-model="a1" label="File" class="input-group--focused" item-text="name" item-value="id" autocomplete="" @change="setItem" clearable="" open-on-clear=""></v-select>
+	           <v-autocomplete :items="sorted" v-model="a1" label="File" class="input-group--focused" item-text="name" item-value="id" @change="setItem" clearable="" open-on-clear=""></v-autocomplete>
 	        </v-card-actions>
 	        </v-card>
         </v-menu>
@@ -3316,14 +3375,14 @@ const Images=Vue.extend({template:`
           </v-toolbar>
           
         <v-card-text>    
-         <v-select v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" autocomplete="" clearable="">
+         <v-autocomplete v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" clearable="">
              <template slot="item" slot-scope="data">
                   <v-list-tile-content>
                     <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
                     <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
                   </v-list-tile-content>
               </template>
-            </v-select>
+            </v-autocomplete>
             
           <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
              <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
@@ -4236,18 +4295,18 @@ const Ping=Vue.extend({template:`
  <v-card-text>
   <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
   <h3>Counter: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
-  <table class="table">
+  <table>
       <thead> 
         <tr>
-         <th>Action</th>
-          <th>Once</th>
-          <th>Repeat</th>
-          <th>Last</th>
-          <th>Count</th>
-          <th>Avg</th>
-          <th>min</th>
-          <th>max</th>
-          <th>Median</th>
+         <th xs1="">Action</th>
+          <th xs1="">Once</th>
+          <th xs1="">Repeat</th>
+          <th xs1="">Last</th>
+          <th xs1="">Count</th>
+          <th xs1="">Avg</th>
+          <th xs1="">min</th>
+          <th xs1="">max</th>
+          <th xs1="">Median</th>
         </tr>
       </thead>
       <tbody>
@@ -4644,9 +4703,9 @@ const Select=Vue.extend({template:`
     <p>some text</p>
    
   
-     <v-select label="Select" v-bind:items="options" v-model="value" item-text="name" item-value="name" chips="" max-height="auto" autocomplete="" clearable="" deletable-chips="">      
+     <v-autocomplete label="Select" v-bind:items="options" v-model="value" item-text="name" item-value="name" chips="" max-height="auto" clearable="" deletable-chips="">      
            
-       </v-select>
+       </v-autocomplete>
          <pre>{{$data.value }}</pre>
     </v-flex>
 
@@ -5062,7 +5121,14 @@ const Model=Vue.extend({template:`
   },
   computed:{
     code(){return 'import module namespace entity = "quodatum.models.generated" at "'+this.params.target+'";'}
-  }
+  },
+  created:function(){
+    var task=this.task
+    HTTP.get("tasks/model")
+    .then(r=>{
+      console.log(r);
+      })
+   },
 }
 
       );
@@ -5076,6 +5142,9 @@ const Runtask=Vue.extend({template:`
      <v-card-title>
       <span class="white--text">Task: {{ task }}</span>      
     </v-card-title>
+    <v-spacer></v-spacer>
+     <v-btn @click="$refs.params.clear()" :loading="loading" :disabled="loading">Clear</v-btn>
+     <v-btn @click="$refs.params.reset()" :loading="loading" :disabled="loading">Reset</v-btn>
       <v-spacer></v-spacer>
      <v-btn color="primary" @click="submit()" :loading="waiting" :disabled="waiting">
       <v-icon>play_circle_outline</v-icon>
@@ -5085,14 +5154,10 @@ const Runtask=Vue.extend({template:`
       <v-container fluid="">
         <v-layout row="" wrap="">   
           <v-flex xs12="">
-            <v-text-field v-model="params.proj" label="vue project to compile"></v-text-field>
+                 <vp-paramform ref="params" :endpoint="'tasks/'+task"></vp-paramform>
           </v-flex>
         </v-layout>
-         <v-layout row="" wrap="">
-           <v-flex xs12="">
-            <code>{{code}}</code>
-          </v-flex>
-        </v-layout>
+      
   
       </v-container>
     </v-card-text>
@@ -5108,22 +5173,21 @@ const Runtask=Vue.extend({template:`
   props:["task"],
   data:  function(){
     return {
-      params:{
-			      proj:"C:/Users/andy/git/vue-poc/src/vue-poc/"
-			 },
 			waiting:false,
 			snackbar:{show:false,msg:"",context:"success"},
+			valid: false
+		  
     }
   },
   methods:{
     submit(){
-      this.waiting=true
-      HTTP.post("tasks/" + this.task, Qs.stringify(this.params))
+      this.waiting=true;
+      var params=this.$refs.params.submit();
+      HTTP.post("tasks/" + this.task, Qs.stringify(params))
       .then(r=>{
         this.waiting=false      
         this.snackbar={show:true,msg:r.data.msg,context:"success"}
         console.log(r.data)
-         settings.setItem('tasks/vuecompile',this.params)
       })
       .catch(error=>{
         this.waiting=false
@@ -5132,14 +5196,6 @@ const Runtask=Vue.extend({template:`
       });
    }
   },
-  created:function(){
-    var task=this.task
-    HTTP.get("tasks/"+task)
-    .then(r=>{
-      console.log(r);
-      alert("OK");
-      })
-   },
   computed:{
     code(){return 'code here'}
   }
@@ -5154,7 +5210,7 @@ const Task=Vue.extend({template:`
   <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
   <ul>
   <li v-for="task in tasks" :key="task.to">
-  <router-link :to="task.to" v-text="task.title"></router-link>
+  <router-link :to="'tasks/' + task.to" v-text="task.title"></router-link>
   <div v-html="task.description"></div>
   </li>
   </ul>
@@ -5495,22 +5551,18 @@ created:function(){
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/validate/validate.vue
 const Validate=Vue.extend({template:` 
   <v-container fluid="">
-   <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
-      {{ snackbar.msg }}
-      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
-    </v-snackbar>
-<v-card>
+    <v-card>
      <v-toolbar class="orange">
         
           
            <v-btn @click="submit" :loading="loading" :disabled="false"><v-icon>play_circle_outline</v-icon>validate</v-btn>
              <span v-text="elapsed">?</span>ms.
             <v-spacer></v-spacer>
-               <v-btn @click="clear" :loading="loading" :disabled="loading">Clear</v-btn>
-             <v-btn @click="settings" :loading="loading" :disabled="loading">Reset</v-btn>
+               <v-btn @click="$refs.params.clear()" :loading="loading" :disabled="loading">Clear</v-btn>
+             <v-btn @click="$refs.params.reset()" :loading="loading" :disabled="loading">Reset</v-btn>
           
          
-             <v-btn @click="valid2" :loading="loading" :disabled="loading">is ok?</v-btn>
+             <v-btn :loading="loading" :disabled="loading">is ok?</v-btn>
               <v-menu offset-y="" left="">
              <v-btn icon="" slot="activator"><v-icon>settings</v-icon></v-btn>
               <v-card>
@@ -5527,14 +5579,11 @@ const Validate=Vue.extend({template:`
       <v-container fluid="">
         
           <v-layout row="" wrap=""> 
-          <v-flex xs8="">
-          <v-form ref="form" v-model="valid" lazy-validation="">  
-	          <v-flex v-for="field in fields" :key="field.model"> 
-	            <v-text-field xs10="" v-model="params[field.model]" :label="field.label" clearable="" :rules="[rules.required]" box="" append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
-	          </v-flex>
-	          </v-form>
+          <v-flex>
+          <vp-paramform ref="params" endpoint="validate"></vp-paramform>
           </v-flex>
-          <v-flex xs4="" green="" fill-height="" style="height:100%;overflow:scroll">
+         
+          <v-flex green="" fill-height="">
           <vp-validationreport :report="result"></vp-validationreport>
           </v-flex>
           </v-layout>
@@ -5550,13 +5599,7 @@ const Validate=Vue.extend({template:`
       loading: false,
       elapsed: null,
       height: null,
-      result: null,
-      fields:[],
-      rules: {
-        required: value => !!value || 'Required.'
-      },
-      params:null,
-      snackbar:{show:false,msg:"",context:"success"}
+      result: null
     }
   },
   methods:{
@@ -5568,33 +5611,22 @@ const Validate=Vue.extend({template:`
       //console.log("resize h",h,el.style)
       el.style.height=h +"px"; 
     },
-    submit () {
-      if (this.$refs.form.validate()) {
+    submit () {    
+      if (this.$refs.params.valid()) {
         // Native form submission is not yet supported
         this.validate()
       }
     },
     clear () {
-      this.$refs.form.reset()
-    },
-    rules(field){
-      return [field.required?this.rules.required:[]];
-    },
-    source(field){
-      console.log("field: ",field);
-      router.push({ path: 'tabs', query: { url:this.params[field.model]}})
-    },
-    valid2(){
-      alert("State:"+ this.$refs.form.validate());
+      this.$refs.params.clear();
     },
     validate(){    
       this.loading=true
       this.start = performance.now();
-      HTTP.post("validate",Qs.stringify(this.params))
+      var params=this.$refs.params.submit();
+      HTTP.post("validate",Qs.stringify(params))
       .then(r=>{
        console.log(r);
-       this.snackbar={show:true,msg:r.data.msg,context:"success"};
-       this.elapsed=Math.floor(performance.now() - this.start);
        this.loading=false
        if(r.data.rc==0){
          this.result=r.data
@@ -5604,32 +5636,12 @@ const Validate=Vue.extend({template:`
       })
       .catch(r=> {
         console.log("error",r.response.data)
-          this.snackbar={show: true, msg: r.response.data, context: "error"}
+       
         this.result=r.message + ": "+ r.config.url + "\n"+ r.response.data
         this.loading=false
       });
-    },
-    settings(){
-      HTTP.get("validate")
-      .then(r=>{
-        this.fields=r.data.fields;
-        this.params = Object.assign({}, this.params, r.data.values)
-        console.log("settings",this.params);
-      })
-    },
-    isvalid(){
-      return this.$refs && this.$refs.form && this.$refs.form.validate()
     }
-  },
-  computed:{
-    valid(){
-      console.log("valid------------")
-      return this.$refs && this.$refs.form && this.$refs.form.validate()
-  }},
-  created: function(){
-    this.settings();
   }
-
 }
 
       );
@@ -5862,7 +5874,7 @@ const router = new VueRouter({
     
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
-    { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
+    { path: '/tabs', component: Tabs,meta:{title:"tab test"} },
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
     { path: '/server/users', component: Users,meta:{title:"Users"} },
@@ -5874,7 +5886,7 @@ const router = new VueRouter({
          ,children: [
            {
              path: '',
-             component: Settings, meta:{title:"Settings"}
+             component: Settings, meta:{title:"Settings", requiresAuth:true}
            },
           {
             path: 'keys',
@@ -5893,7 +5905,7 @@ const router = new VueRouter({
     ,children: [
       {
         path: '',
-        component: Settings, meta:{title:"Settings"}
+        component: Settings, meta:{title:"Settings ***", requiresAuth:true }
       },
       { 
         path: 'logs', name:"logs",
@@ -5905,6 +5917,7 @@ const router = new VueRouter({
         component: Logadd, 
         meta:{title:"add Server logs"}
       },
+      
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} }
@@ -5948,10 +5961,12 @@ router.afterEach(function(route) {
 });
 
 router.beforeEach((to, from, next) => {
+  console.log("before: ",to)
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if ("admin"==Auth.permission) {
+    console.log("matched: ",Auth)
+    if ("admin"!=Auth.permission) {
       next({
         path: '/login',
         query: { redirect: to.fullPath }

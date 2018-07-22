@@ -12,10 +12,12 @@ import module namespace request = "http://exquery.org/ns/request";
 declare function query-a:fields($mod as xs:anyURI)
 as element(json)
 {
+let $updating:=xquery:parse-uri($mod)/@updating/string()
 let $d:=inspect:module($mod)
 let $vars:=$d/variable[@external="true"]
 return <json type="object">
    <description>{ $d/description/string() }</description>
+    <updating type="boolean" >{  $updating }</updating>
   <fields type="array">{  
   $vars!
         <_ type="object">

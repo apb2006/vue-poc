@@ -36,7 +36,7 @@ const router = new VueRouter({
     
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
-    { path: '/tabs', component: Tabs,meta:{title:"tab test",requiresAuth: true} },
+    { path: '/tabs', component: Tabs,meta:{title:"tab test"} },
     { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
     { path: '/server/users', component: Users,meta:{title:"Users"} },
@@ -48,7 +48,7 @@ const router = new VueRouter({
          ,children: [
            {
              path: '',
-             component: Settings, meta:{title:"Settings"}
+             component: Settings, meta:{title:"Settings", requiresAuth:true}
            },
           {
             path: 'keys',
@@ -67,7 +67,7 @@ const router = new VueRouter({
     ,children: [
       {
         path: '',
-        component: Settings, meta:{title:"Settings"}
+        component: Settings, meta:{title:"Settings ***", requiresAuth:true }
       },
       { 
         path: 'logs', name:"logs",
@@ -79,6 +79,7 @@ const router = new VueRouter({
         component: Logadd, 
         meta:{title:"add Server logs"}
       },
+      
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} }
@@ -122,10 +123,12 @@ router.afterEach(function(route) {
 });
 
 router.beforeEach((to, from, next) => {
+  console.log("before: ",to)
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
-    if ("admin"==Auth.permission) {
+    console.log("matched: ",Auth)
+    if ("admin"!=Auth.permission) {
       next({
         path: '/login',
         query: { redirect: to.fullPath }

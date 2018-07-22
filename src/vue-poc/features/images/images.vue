@@ -88,11 +88,11 @@
           </v-toolbar>
           
         <v-card-text>    
-         <v-select
+         <v-autocomplete
               v-bind:items="keywords"
               v-model="query.keyword"
               label="Keyword" item-value="text" item-text="text"
-              autocomplete clearable
+               clearable
             >
              <template slot="item" slot-scope="data">
                   <v-list-tile-content>
@@ -100,7 +100,7 @@
                     <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
                   </v-list-tile-content>
               </template>
-            </v-select>
+            </v-autocomplete>
             
           <v-menu
           lazy

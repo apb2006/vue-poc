@@ -1,35 +1,31 @@
 <tasks>
-	<task name="tasks/model">
+	<task name="model" url="model.build/tx-model.xq">
 		<title>Generate model.gen.xqm</title>
 		<description> Generate
       <code>model.gen.xqm</code></description>
-		<params>
-			<param name="efolder">Folder containing model definitions as xml</param>
-			<param name="target">Path to xqm file to generate</param>
-		</params>
 	</task>
 
-<task name="tasks/import">
+<task name="import" url="task/tx-dbimport.xq">
     <title>Load files into database</title>
     <description>Load files into database</description>
   </task>
   
-	<task name="tasks/xqdoc">
+	<task name="xqdoc" url="xqdoc/tx-xqdoc.xq">
 		<title>XQdoc</title>
-		<description>Generate XQdoc to db</description>
+		<description>Generate documentation for folder</description>
 	</task>
 	
-<task name="tasks/xqdocdb">
+<task name="xqdocdb">
     <title>XQdoc to db</title>
     <description>Generate XQdoc to save</description>
   </task>
   
-	<task name="tasks/vuecompile">
+	<task name="vuecompile">
 		<title>vue compile</title>
 		 <description>compile</description>
 	</task>
 
-	<task name="tasks/newapp">
+	<task name="newapp" url="task/tx-newapp.xq">
 		<title>application template</title>
 		 <description>application template</description>
 		<params>

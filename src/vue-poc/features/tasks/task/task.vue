@@ -7,6 +7,13 @@
      <v-card-title >
       <span class="white--text">Task: {{ task }}</span>      
     </v-card-title>
+    <v-spacer></v-spacer>
+     <v-btn  @click="$refs.params.clear()" :loading="loading"
+      :disabled="loading"
+          >Clear</v-btn>
+     <v-btn  @click="$refs.params.reset()" :loading="loading"
+      :disabled="loading"
+          >Reset</v-btn>
       <v-spacer></v-spacer>
      <v-btn  color="primary"  @click="submit()"   :loading="waiting"
       :disabled="waiting">
@@ -17,16 +24,10 @@
       <v-container fluid>
         <v-layout row wrap>   
           <v-flex xs12>
-            <v-text-field    v-model="params.proj"
-              label="vue project to compile"
-            ></v-text-field>
+                 <vp-paramform ref="params" :endpoint="'tasks/'+task"></vp-paramform>
           </v-flex>
         </v-layout>
-         <v-layout row wrap>
-           <v-flex xs12>
-            <code>{{code}}</code>
-          </v-flex>
-        </v-layout>
+      
   
       </v-container>
     </v-card-text>
@@ -47,22 +48,21 @@
   props:["task"],
   data:  function(){
     return {
-      params:{
-			      proj:"C:/Users/andy/git/vue-poc/src/vue-poc/"
-			 },
 			waiting:false,
 			snackbar:{show:false,msg:"",context:"success"},
+			valid: false
+		  
     }
   },
   methods:{
     submit(){
-      this.waiting=true
-      HTTP.post("tasks/" + this.task, Qs.stringify(this.params))
+      this.waiting=true;
+      var params=this.$refs.params.submit();
+      HTTP.post("tasks/" + this.task, Qs.stringify(params))
       .then(r=>{
         this.waiting=false      
         this.snackbar={show:true,msg:r.data.msg,context:"success"}
         console.log(r.data)
-         settings.setItem('tasks/vuecompile',this.params)
       })
       .catch(error=>{
         this.waiting=false
@@ -71,14 +71,6 @@
       });
    }
   },
-  created:function(){
-    var task=this.task
-    HTTP.get("tasks/"+task)
-    .then(r=>{
-      console.log(r);
-      alert("OK");
-      })
-   },
   computed:{
     code(){return 'code here'}
   }

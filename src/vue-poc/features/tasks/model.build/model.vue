@@ -77,6 +77,13 @@
   },
   computed:{
     code(){return 'import module namespace entity = "quodatum.models.generated" at "'+this.params.target+'";'}
-  }
+  },
+  created:function(){
+    var task=this.task
+    HTTP.get("tasks/model")
+    .then(r=>{
+      console.log(r);
+      })
+   },
 }
 </script>

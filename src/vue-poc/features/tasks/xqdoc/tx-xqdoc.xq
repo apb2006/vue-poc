@@ -26,6 +26,7 @@ let $opts:=map{
                }
 let $op:=xqd:save-xq($files,$target,$opts)
 let $result:=<json type="object">
+                  <extra>hello</extra>
                   <msg> {$target}, {count($files//c:file)} files processed.</msg>
                   <id>{$id/string()}</id>
               </json>
