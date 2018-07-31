@@ -19,8 +19,7 @@ declare
 %updating
 function tx:run( )
 {
-  let $r:= resolve-uri("tx-validate.xq")=>query-a:run(query-a:params())
-  return $r=>update:output() 
+  resolve-uri("tx-validate.xq")=>query-a:run(query-a:params())
 };
 
 (:~ validation settings 

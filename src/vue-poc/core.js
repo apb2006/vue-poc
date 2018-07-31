@@ -3,8 +3,7 @@
 const AXIOS_CONFIG={
     baseURL: "/vue-poc/api/",
     headers: {
-      'X-Custom-Header': 'vue-poc',
-      accept: 'application/json'
+      'X-Custom-Header': 'vue-poc'
     },
     paramsSerializer: function(params) {
       return Qs.stringify(params)
@@ -45,21 +44,6 @@ HTTP.interceptors.response.use((response) => {
 // errors hidden
 const HTTPNE = axios.create(AXIOS_CONFIG);
 const axios_json={ headers: {accept: 'application/json'}};
-
-
-// Authorization Object
-const Auth={
-    user:"guest",
-    permission:null,
-    session:null,
-    created:null,
-    install: function(Vue){
-        Object.defineProperty(Vue.prototype, '$auth', {
-          get () { return Auth }
-      })  }
-};
-Vue.use(Auth);
-
 
 
 // Settings read and write list clear

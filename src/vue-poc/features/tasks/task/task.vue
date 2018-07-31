@@ -2,24 +2,21 @@
 <template id="runtask">
  <v-container fluid>
     <v-card >
-    <v-toolbar class="orange darken-1">
-     <v-btn icon to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title >
-      <span class="white--text">Task: {{ task }}</span>      
-    </v-card-title>
+    <v-toolbar>
+    <v-toolbar-title>
+     <v-breadcrumbs >
+            <v-breadcrumbs-item  to="/tasks" :exact="true">
+            Tasks
+            </v-breadcrumbs-item>
+            
+              <v-breadcrumbs-item  >
+            {{ task }}
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+      </v-toolbar-title>  
     <v-spacer></v-spacer>
-     <v-btn  @click="$refs.params.clear()" :loading="loading"
-      :disabled="loading"
-          >Clear</v-btn>
-     <v-btn  @click="$refs.params.reset()" :loading="loading"
-      :disabled="loading"
-          >Reset</v-btn>
-      <v-spacer></v-spacer>
-     <v-btn  color="primary"  @click="submit()"   :loading="waiting"
-      :disabled="waiting">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-    </v-toolbar>
+     </v-toolbar>
+    
     <v-card-text>
       <v-container fluid>
         <v-layout row wrap>   
@@ -31,7 +28,19 @@
   
       </v-container>
     </v-card-text>
-   
+     <v-toolbar>
+     <v-btn  @click="$refs.params.clear()" :loading="loading"
+      :disabled="loading"
+          >Clear</v-btn>
+     <v-btn  @click="$refs.params.reset()" :loading="loading"
+      :disabled="loading"
+          >Reset</v-btn>
+      <v-spacer></v-spacer>
+     <v-btn  color="primary"  @click="submit()"   :loading="loading"
+      :disabled="loading">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+     </v-toolbar>
       <v-snackbar    v-model="snackbar.show"
       :timeout="6000"
       :success="snackbar.context === 'success'"
@@ -48,31 +57,27 @@
   props:["task"],
   data:  function(){
     return {
-			waiting:false,
-			snackbar:{show:false,msg:"",context:"success"},
+			loading: false,
+			snackbar: {show:false,msg:"",context:"success"},
 			valid: false
 		  
     }
   },
   methods:{
     submit(){
-      this.waiting=true;
-      var params=this.$refs.params.submit();
-      HTTP.post("tasks/" + this.task, Qs.stringify(params))
+      this.loading=true;
+      this.$refs.params.submit()
       .then(r=>{
-        this.waiting=false      
-        this.snackbar={show:true,msg:r.data.msg,context:"success"}
+        this.loading= false      
+        this.snackbar= {show:true,msg:r.data.msg,context:"success"}
         console.log(r.data)
       })
       .catch(error=>{
-        this.waiting=false
-        this.snackbar={show:true,msg:"Problem",context:"error"}
+        this.loading= false
+        this.snackbar= {show:true,msg:"Problem",context:"error"}
         console.log(error);
       });
    }
-  },
-  computed:{
-    code(){return 'code here'}
   }
 }
 </script>

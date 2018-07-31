@@ -7,8 +7,25 @@
    <v-spacer></v-spacer>
    <v-btn>todo</v-btn>
    </v-toolbar>
+   
+    <v-card-text>
+     {{ selected }}
+    </v-card-text>
+    
    <v-card-text>
-    <v-jstree :data="data" show-checkbox multiple allow-batch whole-row @item-click="itemClick"></v-jstree>
+   <v-layout>
+  
+   <v-flex xs6>
+    <v-jstree :data="data" text-field-name="label" ref="tree" :async="loadData"
+    show-checkbox multiple allow-batch whole-row @item-click="itemClick"></v-jstree>
+    </v-flex>
+    <v-flex xs6>
+    <pre>
+    {{ JSON.stringify(data, null, '\t') }}
+    </pre>
+    </v-flex>
+   </v-layout>
+   
 
    </v-card-text>
  </v-card>
@@ -18,82 +35,55 @@
 <script>{
   data:function(){
     return {
-  data: [
-    {
-      "text": "Same but with checkboxes",
-      "children": [
-        {
-          "text": "initially selected",
-          "selected": true
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-danger"
-        },
-        {
-          "text": "initially open",
-          "icon": "fa fa-folder icon-state-default",
-          "opened": true,
-          "children": [
-            {
-              "text": "Another node"
-            }
-          ]
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-warning"
-        },
-        {
-          "text": "disabled node",
-          "icon": "fa fa-check icon-state-success",
-          "disabled": true
-        }
-      ]
-    },
-    {
-      "text": "Same but with checkboxes",
-      "opened": true,
-      "children": [
-        {
-          "text": "initially selected",
-          "selected": true
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-danger"
-        },
-        {
-          "text": "initially open",
-          "icon": "fa fa-folder icon-state-default",
-          "opened": true,
-          "children": [
-            {
-              "text": "Another node"
-            }
-          ]
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-warning"
-        },
-        {
-          "text": "disabled node",
-          "icon": "fa fa-check icon-state-success",
-          "disabled": true
-        }
-      ]
-    },
-    {
-      "text": "And wholerow selection"
-    }
-  ]
-}
+		  data: [],
+		   
+		  loadData: function (oriNode, resolve) {
+		    var id = oriNode.data.id ? oriNode.data.id : 0
+		    console.log("LOAD DATA",id);
+		    HTTP.get("components/tree")
+		    .then(r=>{
+		      console.log(r);
+		      resolve(r.data)
+		      })
+		      .catch(error=> {
+		        console.log(error);
+		       
+		        alert("Get query error"+url)
+		      });
+		  }
+	  }
   },
+  
 methods: {
+
   itemClick (node) {
-    console.log(node.model.text + ' clicked !')
+    node.model.selected= !node.model.selected;
+    console.log(' clicked !',node.model)
+  },
+  
+  load(){
+    this.asyncData = [this.$refs.tree.initializeLoading()];
+    this.$refs.tree.handleAsyncLoad(this.asyncData, this.$refs.tree)
+  },
+  
+  sel1(item){
+    if(item.children){
+      var res=[];
+      for (const node of item.children) {res.push(this.sel1(node))}
+      return res;
+    }else{
+      return item.selected?item.label:[]
+    }
   }
+},
+
+computed:{
+  selected(){
+    return this.sel1(this.data);
+  },
+},
+mounted: function(){
+  this.load()
 }
 
 }

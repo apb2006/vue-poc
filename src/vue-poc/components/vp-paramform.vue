@@ -3,7 +3,8 @@
  manage parameters for query
  -->
 <template id="vp-paramform">
-       <v-form ref="form"  lazy-validation> 
+       <v-form ref="form"  lazy-validation>
+              <div class="title">{{ description }}</div> 
               <v-flex v-for="field in fields" :key="field.model">
               
               <v-text-field  v-if="field.type === 'xs:anyURI'" xs10 
@@ -22,7 +23,7 @@
                
               ></v-text-field>
               </v-flex>
-             <div>{{ description }}</div>
+             
             </v-form>
 </template>
 
@@ -57,7 +58,7 @@
        return [this.rules.required];
      },
      submit(){
-       return this.params;
+       return HTTP.post(this.endpoint, Qs.stringify(this.params));
      },
      valid(){
        return this.$refs.form.validate()

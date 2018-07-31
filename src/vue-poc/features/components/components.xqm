@@ -4,11 +4,14 @@ module namespace j = 'quodatum.test.components';
 declare function j:tax($items){
  for $a in $items
 return <_ type="object">
-<id>{$a/@id/string()}</id>
-<label>{$a/@label/string()}</label>
-{if($a/item)then
- <children type="array">{j:tax($a/item)}</children>
- else ()}
+    <id>{$a/@id/string()}</id>
+    <label>{$a/@label/string()}</label>
+    {if($a/item)then (
+       <children type="array">{j:tax($a/item)}</children>
+       ,<icon></icon>
+      ) else (
+        <icon>fa fa-tag</icon>
+      )}
 </_> 
 };
 

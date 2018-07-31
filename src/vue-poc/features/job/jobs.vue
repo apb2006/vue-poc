@@ -2,19 +2,19 @@
 <template id="jobs">
   <v-card >
    <v-toolbar >
-     
-    
-     <v-btn  
-      @click="stop()"
-      :disabled="noSelection"
-    >Stop</v-btn>
-    <v-text-field
-        append-icon="search"
+     <v-text-field
+        prepend-icon="filter_list"
         label="Filter jobs"
         single-line
         hide-details
         v-model="search"
-      ></v-text-field>
+      ></v-text-field> 
+      <v-spacer></v-spacer>
+     <v-btn  
+      @click="stop()"
+      :disabled="noSelection"
+    >Stop</v-btn>
+   
       <v-btn icon ><v-icon>add</v-icon></v-btn>   
       <v-spacer></v-spacer>
       

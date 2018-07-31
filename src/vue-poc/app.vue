@@ -71,8 +71,8 @@
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
-    <v-menu bottom left min-width="300px">
-            <v-btn icon slot="activator" dark>
+    <v-menu bottom  left min-width="300px">
+            <v-btn icon slot="activator" >
               <v-icon>more_vert</v-icon>
             </v-btn>
             <v-list>
@@ -81,6 +81,11 @@
               </v-list-tile>
               <v-list-tile  >
                 <v-list-tile-title><v-switch label="Dark theme" v-model="dark"></v-switch></v-list-tile-title>
+              </v-list-tile>
+              <v-divider ></v-divider>
+               <v-list-tile  >
+               <v-list-tile-title>Refresh:</v-list-tile-title> 
+                <v-list-tile-action ><v-btn @click="init">.init</v-btn></v-list-tile-action>
               </v-list-tile>
             </v-list>
           </v-menu>
@@ -202,7 +207,9 @@
 
   }},
   methods: {
-   
+      init(){
+        HTTP.get("../../.init");
+      },
 
       session(){
         this.$router.push({path: '/about'})
@@ -210,7 +217,9 @@
       
       logout(){
         HTTP.get("logout").then(r=>{
-          alert("logout")
+          this.$auth.role=null;
+          this.$auth.user="guest";
+          this.$router.push({path: '/'});
         }) 
       },
       showAlert(msg){

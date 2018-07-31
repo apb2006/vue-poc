@@ -29,8 +29,8 @@
 </p>
 <ul>
 
-<li><router-link :to="{path:'files', query:{url:'/vue-poc/'}}">vue-poc files</router-link></li>
-<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}">vue-poc db</router-link></li>
+<li><router-link :to="{path:'files', query:{url:'/vue-poc/'}}"> <v-icon>developer_mode</v-icon>vue-poc files</router-link></li>
+<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}"> <v-icon>folder</v-icon>vue-poc db</router-link></li>
 	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 	<li><a href="/dba" target="new">DBA app</a></li>
 	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>

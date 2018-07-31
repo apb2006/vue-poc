@@ -15,7 +15,7 @@
     <v-spacer></v-spacer> 
   <v-text-field   prepend-icon="search" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"
-   :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
     </v-toolbar>
     <v-card-text>
     <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>

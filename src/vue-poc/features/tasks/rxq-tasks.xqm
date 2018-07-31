@@ -46,6 +46,7 @@ function vue-rest:task($task)
 declare
 %rest:POST %rest:path("/vue-poc/api/tasks/{$task}")
 %rest:produces("application/json")
+%updating
 %output:method("json")
 function vue-rest:runtask($task)   
 {

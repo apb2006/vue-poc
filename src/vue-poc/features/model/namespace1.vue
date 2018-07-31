@@ -2,12 +2,24 @@
 <template id="namespace1">
 <v-card>
 	<v-toolbar >
-	 <v-toolbar-title> Namespace: {{ namespace }}</v-toolbar-title>
+	 <v-toolbar-title> 
+   <v-breadcrumbs >
+            <v-breadcrumbs-item  to="/namespace" :exact="true">
+            Namespaces
+            </v-breadcrumbs-item>
+            
+              <v-breadcrumbs-item  >
+            {{ xmlns }}
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+   </v-toolbar-title>
+	 <v-toolbar-title>
+
 	 <v-spacer></v-spacer>
-	 <v-btn @click="getItem"
+	 <v-btn @click="getItem" icon
 	  :loading="loading"
       :disabled="loading"
-	 >Refresh</v-btn>
+	 ><v-icon>refresh</v-icon></v-btn>
 	 </v-toolbar>
 
   <v-container fluid grid-list-md>
@@ -19,10 +31,9 @@
 </template>
 
 <script>{
-  props: ['namespace'],
   data:  function(){
     return {
-      q: 'filter',
+      xmlns: '',
       item: {},
       loading: false
       }
@@ -30,16 +41,16 @@
   methods:{
     getItem(){
       this.loading=true
-      HTTP.get("data/namespace",{params:this.q})
+      HTTP.get("data/namespace/item",{id: this.xmlns})
       .then(r=>{
-        this.loading=false
-        //console.log(r.data)
-        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
-        this.item=r.data.items
+        this.loading=false;
+        console.log(r.data)
+       
         }) 
     }
   },
   created:function(){
+    this.xmlns=this.$route.query.xmlns;
     this.getItem()
   },
 }

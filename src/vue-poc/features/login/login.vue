@@ -1,42 +1,46 @@
 <!DOCTYPE html>
 <template id="login">
-<v-card class="grey lighten-4 elevation-0">
-
-      <v-card-title class="green darken-1">
-        <span class="white--text">Login</span>
-      </v-card-title>
-    <v-alert color="error" v-bind:value="showMessage">
-      {{message}}
-    </v-alert>
-     <v-card-actions>
-      <v-text-field
-              name="input-name"
-              label="Enter your name"
-              hint="name??"
-              v-model="name"
-              required
-             ></v-text-field>
-     </v-card-actions>
-  
-    <v-card-actions>    
-         <v-text-field
-              name="input-password"
-              label="Enter your password"
-              hint="Enter your password"
-              v-model="password"
-              :append-icon="hidepass ? 'visibility' : 'visibility_off'"
-              :append-icon-cb="() => (hidepass = !hidepass)"
-              :type="hidepass ? 'password' : 'text'"
-              required
-            ></v-text-field>      
-    </v-card-actions>
-        
-    <v-divider></v-divider>
-    <v-card-actions class="blue-grey darken-1 mt-0">
-       <v-btn  color="primary"  @click="go()">Continue</v-btn>
-       <v-spacer></v-spacer>
-    </v-card-actions>
-</v-card>
+ <v-layout>
+    <v-flex xs12 sm6 offset-sm3>
+					<v-card class="grey lighten-4 elevation-0">
+					
+					      <v-card-title class="amber ">
+					        <span class="white--text">Please login as user with permission is required</span>
+					      </v-card-title>
+					    <v-alert color="error" v-bind:value="showMessage">
+					      {{message}}
+					    </v-alert>
+					     <v-card-actions>
+					      <v-text-field
+					              name="input-name"
+					              label="User name"
+					              hint="Enter your name"
+					              v-model="name"
+					              required
+					             ></v-text-field>
+					     </v-card-actions>
+					  
+					    <v-card-actions>    
+					         <v-text-field
+					              name="input-password"
+					              label="Password"
+					              hint="Enter your password"
+					              v-model="password"
+					              :append-icon="hidepass ? 'visibility' : 'visibility_off'"
+					              @click:append="() => (hidepass = !hidepass)"
+					              :type="hidepass ? 'password' : 'text'"
+					              required
+					            ></v-text-field>      
+					    </v-card-actions>
+					        
+					    <v-divider></v-divider>
+					    <v-card-actions >
+					       <v-spacer></v-spacer>
+					       <v-btn  color="primary"  @click="go()">Continue</v-btn>
+					    </v-card-actions>
+					</v-card>
+    </v-flex>
+</v-layout>
 </template>
 
 <script>{
@@ -63,8 +67,10 @@
       .then(r=>{
         console.log("login",r.data)
         if(r.data.status){
-          this.$auth.role="admin"
-          this.$router.replace(this.redirect)
+          this.$auth.role="admin";
+          this.$auth.user=this.name;
+          console.log("redirect",this.redirect);
+          this.$router.replace({path: this.redirect});
         }else{
           this.message=r.data.message
           this.showMessage=true;

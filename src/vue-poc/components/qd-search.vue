@@ -27,6 +27,7 @@
   },
   methods: {
     querySelections (v) {
+      console.log("QQ",this.si," r:",this.$router.options.routes);
       this.loading = true
       // Simulated ajax query
       setTimeout(() => {

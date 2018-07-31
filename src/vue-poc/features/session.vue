@@ -29,6 +29,9 @@
         </tr>
         </tbody>
         </table>
+        <pre>
+        {{ $auth }}
+        </pre>
  </v-container>
 </template>
 

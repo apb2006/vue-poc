@@ -51,8 +51,26 @@ function data($entity as xs:string,$q )
  :)
 declare 
 %rest:GET %rest:path("vue-poc/api/data/entity/{$entity}")
+%rest:produces("application/json")
 %output:method("json")    
 function model($entity) {
+let $this:=$entity:list("entity")
+ let $items:=$this?data()
+ let $fields:=$this?json
+ let $item:=$items[@name=$entity]
+ (: just one :)
+ return <json objects="json">{dice:json-flds($item,$fields)/*}</json>
+
+};
+
+(:~ 
+ : details of the entity $entity
+ :)
+declare 
+%rest:GET %rest:path("vue-poc/api/data/entity/{$entity}")
+%rest:produces("text/xml;qs=0.8")
+%output:method("xml")    
+function model2($entity) {
 let $this:=$entity:list("entity")
  let $items:=$this?data()
  let $fields:=$this?json

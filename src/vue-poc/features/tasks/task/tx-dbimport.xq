@@ -1,5 +1,5 @@
 (:~ 
-: import to db
+: Import a file or directory into a database
 : @author andy bunce
 : @since july 2018
 :)
@@ -11,10 +11,10 @@ import module namespace dbtools = 'quodatum.dbtools' at "../../../lib/dbtools.xq
   :)
 declare variable $srcpath as xs:anyURI  external :="C:/Users/andy/git/vue-poc/src/vue-poc/models/entities";
 
-(:~ base db path for import files 
- : @default /
+(:~ Target BaseX db root path for imported files 
+ : @default /vuepoc-test/
  :)
-declare variable $targetpath as xs:anyURI external :="/";
+declare variable $targetpath as xs:anyURI external :="/vuepoc-test";
 
 (:~ unused boolean test
  : @default true

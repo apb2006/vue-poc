@@ -1,11 +1,18 @@
 <!DOCTYPE html>
 <template id="namespace">
- <v-container fluid  grid-list-md>
- 
-<v-toolbar >
-   <v-toolbar-title>Namespaces</v-toolbar-title>
+ <v-container fluid>
+ <v-card>
+   <v-toolbar >
+   <v-toolbar-title>
+   <v-breadcrumbs >
+            <v-breadcrumbs-item  to="/namespace" :exact="true">
+            Namespaces
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+   </v-toolbar-title>
+
    
-     <v-btn @click="load"
+     <v-btn @click="load" icon
     :loading="loading"
       :disabled="loading"
    ><v-icon>refresh</v-icon></v-btn>
@@ -14,13 +21,13 @@
    
    <v-text-field  prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"
-   :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   clearable></v-text-field>
    
    <v-spacer></v-spacer>
    <vp-entitylink entity="namespace"></vp-entitylink>
   
    </v-toolbar>
-   
+   <v-card-text>
     <v-data-table
     :headers="headers"
     :items="items"
@@ -42,8 +49,9 @@
       </v-alert>
     </template>
   </v-data-table>
-   
- </v-container>
+   </v-card-text>
+   </v-card>
+   </v-container>
 </template>
 
 <script>{

@@ -29,7 +29,7 @@
      
  <v-text-field v-if="!selection.length" prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"
-   :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
    
  
     <v-toolbar-items v-if="!selection.length">

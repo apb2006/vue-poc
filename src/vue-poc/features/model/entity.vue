@@ -2,16 +2,21 @@
 <template id="entity">
 <v-card>
 	<v-toolbar >
-	 <v-toolbar-title>Entities</v-toolbar-title>
+	 <v-toolbar-title> 
+	    <v-breadcrumbs >
+            <v-breadcrumbs-item  to="/entity" :exact="true">
+            Entities
+            </v-breadcrumbs-item>
+       </v-toolbar-title>
 	 <v-spacer></v-spacer>
-	 <v-text-field  prepend-icon="search" label="Filter..." v-model="q" type="search"
+	 <v-text-field  prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"
-   :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
 	 <v-btn @click="getItems"
 	  :loading="loading"
       :disabled="loading"
 	 >Refresh</v-btn>
-	 Text
+   <vp-entitylink entity="entity"></vp-entitylink>
 	 </v-toolbar>
 
   <v-container fluid grid-list-md>

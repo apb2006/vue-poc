@@ -1,4 +1,4 @@
-// generated 2018-07-22T22:53:58.139+01:00
+// generated 2018-07-31T23:44:22.364+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -206,6 +206,7 @@ Vue.component('qd-search',{template:`
   },
   methods: {
     querySelections (v) {
+      console.log("QQ",this.si," r:",this.$router.options.routes);
       this.loading = true
       // Simulated ajax query
       setTimeout(() => {
@@ -544,7 +545,8 @@ Vue.component('vp-notifications',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-paramform.vue
 Vue.component('vp-paramform',{template:` 
-       <v-form ref="form" lazy-validation=""> 
+       <v-form ref="form" lazy-validation="">
+              <div class="title">{{ description }}</div> 
               <v-flex v-for="field in fields" :key="field.model">
               
               <v-text-field v-if="field.type === 'xs:anyURI'" xs10="" v-model="params[field.model]" :label="field.label" clearable="" :rules="fieldrules(field)" box="" append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
@@ -555,7 +557,7 @@ Vue.component('vp-paramform',{template:`
               
               <v-text-field v-else="" xs10="" amber="" v-model="params[field.model]" :label="field.type" clearable="" box=""></v-text-field>
               </v-flex>
-             <div>{{ description }}</div>
+             
             </v-form>
  `,
       
@@ -589,7 +591,7 @@ Vue.component('vp-paramform',{template:`
        return [this.rules.required];
      },
      submit(){
-       return this.params;
+       return HTTP.post(this.endpoint, Qs.stringify(this.params));
      },
      valid(){
        return this.$refs.form.validate()
@@ -856,6 +858,26 @@ Vue.component('vue-ace',{template:`
 }
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/auth.js
+// Authorization Object
+const Auth={
+    user:"guest",
+    permission:null,
+    session:null,
+    created:null,
+    install: function(Vue){
+        Object.defineProperty(Vue.prototype, '$auth', {
+          get () { return Auth }
+      })  
+    },
+    logout(){
+      Auth.user="guest";
+      Auth.permission=null;
+    }
+};
+Vue.use(Auth);
+
+
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/filters.js
 /**
  * some vue filters, requires moment
@@ -1300,7 +1322,7 @@ const Files=Vue.extend({template:`
     <v-spacer></v-spacer>
      <v-btn v-if="selection.length" @click="selectNone">S: {{selection.length}}</v-btn>
      
- <v-text-field v-if="!selection.length" prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+ <v-text-field v-if="!selection.length" prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
    
  
     <v-toolbar-items v-if="!selection.length">
@@ -1805,8 +1827,23 @@ const Tree=Vue.extend({template:`
    <v-spacer></v-spacer>
    <v-btn>todo</v-btn>
    </v-toolbar>
+   
+    <v-card-text>
+     {{ selected }}
+    </v-card-text>
+    
    <v-card-text>
-    <v-jstree :data="data" show-checkbox="" multiple="" allow-batch="" whole-row="" @item-click="itemClick"></v-jstree>
+   <v-layout>
+  
+   <v-flex xs6="">
+    <v-jstree :data="data" text-field-name="label" ref="tree" :async="loadData" show-checkbox="" multiple="" allow-batch="" whole-row="" @item-click="itemClick"></v-jstree>
+    </v-flex>
+    <v-flex xs6="">
+    <pre>    {{ JSON.stringify(data, null, '\t') }}
+    </pre>
+    </v-flex>
+   </v-layout>
+   
 
    </v-card-text>
  </v-card>
@@ -1815,82 +1852,55 @@ const Tree=Vue.extend({template:`
       
   data:function(){
     return {
-  data: [
-    {
-      "text": "Same but with checkboxes",
-      "children": [
-        {
-          "text": "initially selected",
-          "selected": true
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-danger"
-        },
-        {
-          "text": "initially open",
-          "icon": "fa fa-folder icon-state-default",
-          "opened": true,
-          "children": [
-            {
-              "text": "Another node"
-            }
-          ]
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-warning"
-        },
-        {
-          "text": "disabled node",
-          "icon": "fa fa-check icon-state-success",
-          "disabled": true
-        }
-      ]
-    },
-    {
-      "text": "Same but with checkboxes",
-      "opened": true,
-      "children": [
-        {
-          "text": "initially selected",
-          "selected": true
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-danger"
-        },
-        {
-          "text": "initially open",
-          "icon": "fa fa-folder icon-state-default",
-          "opened": true,
-          "children": [
-            {
-              "text": "Another node"
-            }
-          ]
-        },
-        {
-          "text": "custom icon",
-          "icon": "fa fa-warning icon-state-warning"
-        },
-        {
-          "text": "disabled node",
-          "icon": "fa fa-check icon-state-success",
-          "disabled": true
-        }
-      ]
-    },
-    {
-      "text": "And wholerow selection"
-    }
-  ]
-}
+		  data: [],
+		   
+		  loadData: function (oriNode, resolve) {
+		    var id = oriNode.data.id ? oriNode.data.id : 0
+		    console.log("LOAD DATA",id);
+		    HTTP.get("components/tree")
+		    .then(r=>{
+		      console.log(r);
+		      resolve(r.data)
+		      })
+		      .catch(error=> {
+		        console.log(error);
+		       
+		        alert("Get query error"+url)
+		      });
+		  }
+	  }
   },
+  
 methods: {
+
   itemClick (node) {
-    console.log(node.model.text + ' clicked !')
+    node.model.selected= !node.model.selected;
+    console.log(' clicked !',node.model)
+  },
+  
+  load(){
+    this.asyncData = [this.$refs.tree.initializeLoading()];
+    this.$refs.tree.handleAsyncLoad(this.asyncData, this.$refs.tree)
+  },
+  
+  sel1(item){
+    if(item.children){
+      var res=[];
+      for (const node of item.children) {res.push(this.sel1(node))}
+      return res;
+    }else{
+      return item.selected?item.label:[]
+    }
   }
+},
+
+computed:{
+  selected(){
+    return this.sel1(this.data);
+  },
+},
+mounted: function(){
+  this.load()
 }
 
 }
@@ -3151,8 +3161,8 @@ const Home=Vue.extend({template:`
 </p>
 <ul>
 
-<li><router-link :to="{path:'files', query:{url:'/vue-poc/'}}">vue-poc files</router-link></li>
-<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}">vue-poc db</router-link></li>
+<li><router-link :to="{path:'files', query:{url:'/vue-poc/'}}"> <v-icon>developer_mode</v-icon>vue-poc files</router-link></li>
+<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}"> <v-icon>folder</v-icon>vue-poc db</router-link></li>
 	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 	<li><a href="/dba" target="new">DBA app</a></li>
 	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
@@ -3657,7 +3667,7 @@ const Keywords=Vue.extend({template:`
     </v-card-title>
    
     <v-spacer></v-spacer> 
-  <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+  <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
     </v-toolbar>
     <v-card-text>
     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
@@ -3827,10 +3837,10 @@ const Job=Vue.extend({template:`
 const Jobs=Vue.extend({template:` 
   <v-card>
    <v-toolbar>
-     
-    
+     <v-text-field prepend-icon="filter_list" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field> 
+      <v-spacer></v-spacer>
      <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
-    <v-text-field append-icon="search" label="Filter jobs" single-line="" hide-details="" v-model="search"></v-text-field>
+   
       <v-btn icon=""><v-icon>add</v-icon></v-btn>   
       <v-spacer></v-spacer>
       
@@ -3916,28 +3926,32 @@ const Jobs=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/login/login.vue
 const Login=Vue.extend({template:` 
-<v-card class="grey lighten-4 elevation-0">
-
-      <v-card-title class="green darken-1">
-        <span class="white--text">Login</span>
-      </v-card-title>
-    <v-alert color="error" v-bind:value="showMessage">
-      {{message}}
-    </v-alert>
-     <v-card-actions>
-      <v-text-field name="input-name" label="Enter your name" hint="name??" v-model="name" required=""></v-text-field>
-     </v-card-actions>
-  
-    <v-card-actions>    
-         <v-text-field name="input-password" label="Enter your password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" :append-icon-cb="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required=""></v-text-field>      
-    </v-card-actions>
-        
-    <v-divider></v-divider>
-    <v-card-actions class="blue-grey darken-1 mt-0">
-       <v-btn color="primary" @click="go()">Continue</v-btn>
-       <v-spacer></v-spacer>
-    </v-card-actions>
-</v-card>
+ <v-layout>
+    <v-flex xs12="" sm6="" offset-sm3="">
+					<v-card class="grey lighten-4 elevation-0">
+					
+					      <v-card-title class="amber ">
+					        <span class="white--text">Please login as user with permission is required</span>
+					      </v-card-title>
+					    <v-alert color="error" v-bind:value="showMessage">
+					      {{message}}
+					    </v-alert>
+					     <v-card-actions>
+					      <v-text-field name="input-name" label="User name" hint="Enter your name" v-model="name" required=""></v-text-field>
+					     </v-card-actions>
+					  
+					    <v-card-actions>    
+					         <v-text-field name="input-password" label="Password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" @click:append="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required=""></v-text-field>      
+					    </v-card-actions>
+					        
+					    <v-divider></v-divider>
+					    <v-card-actions>
+					       <v-spacer></v-spacer>
+					       <v-btn color="primary" @click="go()">Continue</v-btn>
+					    </v-card-actions>
+					</v-card>
+    </v-flex>
+</v-layout>
  `,
       
     data () {
@@ -3963,8 +3977,10 @@ const Login=Vue.extend({template:`
       .then(r=>{
         console.log("login",r.data)
         if(r.data.status){
-          this.$auth.role="admin"
-          this.$router.replace(this.redirect)
+          this.$auth.role="admin";
+          this.$auth.user=this.name;
+          console.log("redirect",this.redirect);
+          this.$router.replace({path: this.redirect});
         }else{
           this.message=r.data.message
           this.showMessage=true;
@@ -4026,11 +4042,16 @@ const Documentation=Vue.extend({template:`
 const Entity=Vue.extend({template:` 
 <v-card>
 	<v-toolbar>
-	 <v-toolbar-title>Entities</v-toolbar-title>
+	 <v-toolbar-title> 
+	    <v-breadcrumbs>
+            <v-breadcrumbs-item to="/entity" :exact="true">
+            Entities
+            </v-breadcrumbs-item>
+       </v-breadcrumbs></v-toolbar-title>
 	 <v-spacer></v-spacer>
-	 <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+	 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
 	 <v-btn @click="getItems" :loading="loading" :disabled="loading">Refresh</v-btn>
-	 Text
+   <vp-entitylink entity="entity"></vp-entitylink>
 	 </v-toolbar>
 
   <v-container fluid="" grid-list-md="">
@@ -4103,15 +4124,27 @@ const Entity=Vue.extend({template:`
 const Entity1=Vue.extend({template:` 
 <v-card>
 	<v-toolbar>
-	 <v-toolbar-title> Entity: {{ entity }}</v-toolbar-title>
+	 <v-toolbar-title> 
+	 <v-breadcrumbs>
+            <v-breadcrumbs-item to="/entity" :exact="true">
+            Entities
+            </v-breadcrumbs-item>
+            
+              <v-breadcrumbs-item>
+            {{ entity }}
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+	 </v-toolbar-title>
 	 <v-spacer></v-spacer>
 	 <v-btn @click="getItem" :loading="loading" :disabled="loading">Refresh</v-btn>
+	 
+	  <v-btn @click="getxml" :loading="loading" :disabled="loading">XML</v-btn>
 	 </v-toolbar>
 
   <v-container fluid="" grid-list-md="">
   
   
-      hello
+     <pre>{{ xml }}</pre>
   </v-container>
    </v-card>
  `,
@@ -4121,19 +4154,27 @@ const Entity1=Vue.extend({template:`
     return {
       q: 'filter',
       item: {},
-      loading: false
+      loading: false,
+      xml: null
       }
   },
   methods:{
     getItem(){
       this.loading=true
-      HTTP.get("data/entity",{params:this.q})
+      HTTP.get("data/entity/"+this.entity,{params:this.q})
       .then(r=>{
         this.loading=false
         //console.log(r.data)
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         this.item=r.data.items
         }) 
+    },
+    getxml(){
+      HTTP.get("data/entity/"+this.entity,{params:this.q, headers: {Accept: "text/xml"}})
+      .then(r=>{
+        console.log(r.data)
+        this.xml=r.data;
+            }) 
     }
   },
   created:function(){
@@ -4145,22 +4186,29 @@ const Entity1=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace.vue
 const Namespace=Vue.extend({template:` 
- <v-container fluid="" grid-list-md="">
- 
-<v-toolbar>
-   <v-toolbar-title>Namespaces</v-toolbar-title>
+ <v-container fluid="">
+ <v-card>
+   <v-toolbar>
+   <v-toolbar-title>
+   <v-breadcrumbs>
+            <v-breadcrumbs-item to="/namespace" :exact="true">
+            Namespaces
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+   </v-toolbar-title>
+
    
-     <v-btn @click="load" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+     <v-btn @click="load" icon="" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
    
    <v-spacer></v-spacer>
    
-   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" :append-icon-cb="e=>this.q=''"></v-text-field>
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" clearable=""></v-text-field>
    
    <v-spacer></v-spacer>
    <vp-entitylink entity="namespace"></vp-entitylink>
   
    </v-toolbar>
-   
+   <v-card-text>
     <v-data-table :headers="headers" :items="items" hide-actions="" :search="q" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td><router-link :to="{path:'namespace/item?xmlns='+ props.item.xmlns}">
@@ -4176,8 +4224,9 @@ const Namespace=Vue.extend({template:`
       </v-alert>
     </template>
   </v-data-table>
-   
- </v-container>
+   </v-card-text>
+   </v-card>
+   </v-container>
  `,
       
   data:  function(){
@@ -4243,10 +4292,22 @@ const Namespace=Vue.extend({template:`
 const Namespace1=Vue.extend({template:` 
 <v-card>
 	<v-toolbar>
-	 <v-toolbar-title> Namespace: {{ namespace }}</v-toolbar-title>
+	 <v-toolbar-title> 
+   <v-breadcrumbs>
+            <v-breadcrumbs-item to="/namespace" :exact="true">
+            Namespaces
+            </v-breadcrumbs-item>
+            
+              <v-breadcrumbs-item>
+            {{ xmlns }}
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+   </v-toolbar-title>
+	 <v-toolbar-title>
+
 	 <v-spacer></v-spacer>
-	 <v-btn @click="getItem" :loading="loading" :disabled="loading">Refresh</v-btn>
-	 </v-toolbar>
+	 <v-btn @click="getItem" icon="" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+	 </v-toolbar-title></v-toolbar>
 
   <v-container fluid="" grid-list-md="">
   
@@ -4256,10 +4317,9 @@ const Namespace1=Vue.extend({template:`
    </v-card>
  `,
       
-  props: ['namespace'],
   data:  function(){
     return {
-      q: 'filter',
+      xmlns: '',
       item: {},
       loading: false
       }
@@ -4267,184 +4327,18 @@ const Namespace1=Vue.extend({template:`
   methods:{
     getItem(){
       this.loading=true
-      HTTP.get("data/namespace",{params:this.q})
+      HTTP.get("data/namespace/item",{id: this.xmlns})
       .then(r=>{
-        this.loading=false
-        //console.log(r.data)
-        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
-        this.item=r.data.items
+        this.loading=false;
+        console.log(r.data)
+       
         }) 
     }
   },
   created:function(){
+    this.xmlns=this.$route.query.xmlns;
     this.getItem()
   },
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/ping/ping.vue
-const Ping=Vue.extend({template:` 
- <v-container fluid="">
- <v-card>
- <v-toolbar>
- <v-toolbar-title>Simple performance measure</v-toolbar-title>
- <v-spacer></v-spacer>
- <v-btn @click="reset()">Reset</v-btn>
- </v-toolbar>
- <v-card-text>
-  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
-  <h3>Counter: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
-  <table>
-      <thead> 
-        <tr>
-         <th xs1="">Action</th>
-          <th xs1="">Once</th>
-          <th xs1="">Repeat</th>
-          <th xs1="">Last</th>
-          <th xs1="">Count</th>
-          <th xs1="">Avg</th>
-          <th xs1="">min</th>
-          <th xs1="">max</th>
-          <th xs1="">Median</th>
-        </tr>
-      </thead>
-      <tbody>
-
-      
-          <tr>
-              <td>Get</td>
-              <td>
-               <v-btn @click="get()" icon="">
-                   <v-icon>radio_button_checked</v-icon>
-                </v-btn>
-             
-               </td>
-               <td>
-                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
-
-             </td>    
-              <td>
-                  <span>{{getValues.last}}</span>
-              </td>
-              <td>
-                  <span>{{getValues.count}}</span>
-              </td>   
-            
-              <td>
-                  <span>{{getValues.avg | round(2)}}</span>
-              </td>
-            
-              <td>
-                  <span>{{getValues.min}}</span>
-              </td>
-              <td>
-                  <span>{{getValues.max}}</span>
-              </td>
-                <td>
-                  <span>{{getValues.median}}</span>
-              </td>
-          </tr>
-          
-            <tr>
-             <td>Update</td>
-          <td>
-           <v-btn @click="update()" icon="">
-                   <v-icon>radio_button_checked</v-icon>
-            </v-btn>
-          </td>
-          
-          <td>
-           <v-switch v-on:change="pchange" v-model="repeat.post"></v-switch>
-          </td>
-           <td class="col-md-1">
-                        <span>{{postValues.last}}</span>
-                    </td>
-          <td class="col-md-1">
-            <span>{{postValues.count}}</span>
-          </td>
-        
-           
-          <td class="col-md-1">
-            <span>{{postValues.avg | round(2)}}</span>
-          </td>
-          
-         
-          <td class="col-md-1">
-                        <span>{{postValues.min}}</span>
-          </td>
-          <td class="col-md-1">
-              <span>{{postValues.max}}</span>
-          </td>
-            <td class="col-md-1">
-                        <span>{{postValues.median}}</span>
-           </td>
-        </tr>
-      </tbody>
-    </table>
-    </v-card-text>
-    </v-card>
-    
- </v-container>
- `,
-      
-  data:  function(){
-    return {
-      getValues: new perfStat(),
-      postValues: new perfStat(),
-      repeat:{get:false,post:false},
-      counter:null
-      }
-  },
-  methods:{
-    update () {
-       var _start = performance.now();
-      HTTP.post("ping",axios_json)
-      .then(r=>{
-        var elapsed=Math.floor(performance.now() - _start);
-        this.counter=r.data
-        Object.assign(this.postValues,this.postValues.log(elapsed))
-        if(this.repeat.post){
-          this.update(); //does this leak??
-        }
-      })
-    },
-    
-    get(){
-     var _start = performance.now();
-     HTTP.get("ping",axios_json)
-     .then(r=>{
-       var elapsed=Math.floor(performance.now() - _start);
-       this.counter=r.data
-       Object.assign(this.getValues,this.getValues.log(elapsed))
-       this.$forceUpdate()
-        if(this.repeat.get){
-          this.get(); //does this leak??
-        }
-     })
-    },
-    gchange(v){
-      if(v)this.get() 
-    },
-    pchange(v){
-      if(v)this.update() 
-    },
-    reset(){
-      Object.assign(this.getValues,this.getValues.clear());
-      Object.assign(this.postValues,this.postValues.clear());
-      this.$forceUpdate()
-    }
-  },
-  beforeRouteLeave(to, from, next){
-    var on=this.repeat.get || this.repeat.post
-
-    if (on) {
-      alert("running!") //<--undefined
-      return next(false)
-    } else {
-      return next()
-    }
-  }
 }
 
       );
@@ -4610,7 +4504,7 @@ const Scratch=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/search.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/search/search.vue
 const Search=Vue.extend({template:` 
  <v-container fluid="">
  <v-alert color="warning" value="true">Not finished</v-alert>
@@ -4766,6 +4660,172 @@ const Select=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/ping.vue
+const Ping=Vue.extend({template:` 
+ <v-container fluid="">
+ <v-card>
+ <v-toolbar>
+ <v-toolbar-title>Simple performance measure</v-toolbar-title>
+ <v-spacer></v-spacer>
+ <v-btn @click="reset()">Reset</v-btn>
+ </v-toolbar>
+ <v-card-text>
+  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
+  <h3>Counter: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
+  <table>
+      <thead> 
+        <tr>
+         <th xs1="">Action</th>
+          <th xs1="">Once</th>
+          <th xs1="">Repeat</th>
+          <th xs1="">Last</th>
+          <th xs1="">Count</th>
+          <th xs1="">Avg</th>
+          <th xs1="">min</th>
+          <th xs1="">max</th>
+          <th xs1="">Median</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      
+          <tr>
+              <td>Get</td>
+              <td>
+               <v-btn @click="get()" icon="">
+                   <v-icon>radio_button_checked</v-icon>
+                </v-btn>
+             
+               </td>
+               <td>
+                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
+
+             </td>    
+              <td>
+                  <span>{{getValues.last}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.count}}</span>
+              </td>   
+            
+              <td>
+                  <span>{{getValues.avg | round(2)}}</span>
+              </td>
+            
+              <td>
+                  <span>{{getValues.min}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.max}}</span>
+              </td>
+                <td>
+                  <span>{{getValues.median}}</span>
+              </td>
+          </tr>
+          
+            <tr>
+             <td>Update</td>
+          <td>
+           <v-btn @click="update()" icon="">
+                   <v-icon>radio_button_checked</v-icon>
+            </v-btn>
+          </td>
+          
+          <td>
+           <v-switch v-on:change="pchange" v-model="repeat.post"></v-switch>
+          </td>
+           <td class="col-md-1">
+                        <span>{{postValues.last}}</span>
+                    </td>
+          <td class="col-md-1">
+            <span>{{postValues.count}}</span>
+          </td>
+        
+           
+          <td class="col-md-1">
+            <span>{{postValues.avg | round(2)}}</span>
+          </td>
+          
+         
+          <td class="col-md-1">
+                        <span>{{postValues.min}}</span>
+          </td>
+          <td class="col-md-1">
+              <span>{{postValues.max}}</span>
+          </td>
+            <td class="col-md-1">
+                        <span>{{postValues.median}}</span>
+           </td>
+        </tr>
+      </tbody>
+    </table>
+    </v-card-text>
+    </v-card>
+    
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      getValues: new perfStat(),
+      postValues: new perfStat(),
+      repeat:{get:false,post:false},
+      counter:null
+      }
+  },
+  methods:{
+    update () {
+       var _start = performance.now();
+      HTTP.post("ping",axios_json)
+      .then(r=>{
+        var elapsed=Math.floor(performance.now() - _start);
+        this.counter=r.data
+        Object.assign(this.postValues,this.postValues.log(elapsed))
+        if(this.repeat.post){
+          this.update(); //does this leak??
+        }
+      })
+    },
+    
+    get(){
+     var _start = performance.now();
+     HTTP.get("ping",axios_json)
+     .then(r=>{
+       var elapsed=Math.floor(performance.now() - _start);
+       this.counter=r.data
+       Object.assign(this.getValues,this.getValues.log(elapsed))
+       this.$forceUpdate()
+        if(this.repeat.get){
+          this.get(); //does this leak??
+        }
+     })
+    },
+    gchange(v){
+      if(v)this.get() 
+    },
+    pchange(v){
+      if(v)this.update() 
+    },
+    reset(){
+      Object.assign(this.getValues,this.getValues.clear());
+      Object.assign(this.postValues,this.postValues.clear());
+      this.$forceUpdate()
+    }
+  },
+  beforeRouteLeave(to, from, next){
+    var on=this.repeat.get || this.repeat.post
+
+    if (on) {
+      alert("running!") //<--undefined
+      return next(false)
+    } else {
+      return next()
+    }
+  }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/session.vue
 const Session=Vue.extend({template:` 
  <v-container fluid="">
@@ -4797,6 +4857,8 @@ const Session=Vue.extend({template:`
         </tr>
         </tbody>
         </table>
+        <pre>        {{ $auth }}
+        </pre>
  </v-container>
  `,
       
@@ -5137,19 +5199,21 @@ const Model=Vue.extend({template:`
 const Runtask=Vue.extend({template:` 
  <v-container fluid="">
     <v-card>
-    <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title>
-      <span class="white--text">Task: {{ task }}</span>      
-    </v-card-title>
+    <v-toolbar>
+    <v-toolbar-title>
+     <v-breadcrumbs>
+            <v-breadcrumbs-item to="/tasks" :exact="true">
+            Tasks
+            </v-breadcrumbs-item>
+            
+              <v-breadcrumbs-item>
+            {{ task }}
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+      </v-toolbar-title>  
     <v-spacer></v-spacer>
-     <v-btn @click="$refs.params.clear()" :loading="loading" :disabled="loading">Clear</v-btn>
-     <v-btn @click="$refs.params.reset()" :loading="loading" :disabled="loading">Reset</v-btn>
-      <v-spacer></v-spacer>
-     <v-btn color="primary" @click="submit()" :loading="waiting" :disabled="waiting">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-    </v-toolbar>
+     </v-toolbar>
+    
     <v-card-text>
       <v-container fluid="">
         <v-layout row="" wrap="">   
@@ -5161,7 +5225,14 @@ const Runtask=Vue.extend({template:`
   
       </v-container>
     </v-card-text>
-   
+     <v-toolbar>
+     <v-btn @click="$refs.params.clear()" :loading="loading" :disabled="loading">Clear</v-btn>
+     <v-btn @click="$refs.params.reset()" :loading="loading" :disabled="loading">Reset</v-btn>
+      <v-spacer></v-spacer>
+     <v-btn color="primary" @click="submit()" :loading="loading" :disabled="loading">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
+     </v-toolbar>
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
       {{ snackbar.msg }}
       <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
@@ -5173,31 +5244,27 @@ const Runtask=Vue.extend({template:`
   props:["task"],
   data:  function(){
     return {
-			waiting:false,
-			snackbar:{show:false,msg:"",context:"success"},
+			loading: false,
+			snackbar: {show:false,msg:"",context:"success"},
 			valid: false
 		  
     }
   },
   methods:{
     submit(){
-      this.waiting=true;
-      var params=this.$refs.params.submit();
-      HTTP.post("tasks/" + this.task, Qs.stringify(params))
+      this.loading=true;
+      this.$refs.params.submit()
       .then(r=>{
-        this.waiting=false      
-        this.snackbar={show:true,msg:r.data.msg,context:"success"}
+        this.loading= false      
+        this.snackbar= {show:true,msg:r.data.msg,context:"success"}
         console.log(r.data)
       })
       .catch(error=>{
-        this.waiting=false
-        this.snackbar={show:true,msg:"Problem",context:"error"}
+        this.loading= false
+        this.snackbar= {show:true,msg:"Problem",context:"error"}
         console.log(error);
       });
    }
-  },
-  computed:{
-    code(){return 'code here'}
   }
 }
 
@@ -5206,21 +5273,43 @@ const Runtask=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/tasks.vue
 const Task=Vue.extend({template:` 
  <v-container fluid="">
-  <h3>Available Tasks</h3>
-  <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
-  <ul>
-  <li v-for="task in tasks" :key="task.to">
-  <router-link :to="'tasks/' + task.to" v-text="task.title"></router-link>
-  <div v-html="task.description"></div>
-  </li>
+ <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
+ <v-card>
+  <v-toolbar>
+  <v-toolbar-title>
+     <v-breadcrumbs>
+            <v-breadcrumbs-item to="/tasks" :exact="true">
+            Tasks
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+       </v-toolbar-title>  
+     <v-spacer></v-spacer>
+   
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" clearable=""></v-text-field>
+   
+   <v-spacer></v-spacer>
+   <vp-entitylink entity="namespace"></vp-entitylink>    
+   </v-toolbar>
+
+    <v-card-text>
+     <ul>
+			  <li v-for="task in tasks" :key="task.to">
+			  <router-link :to="'tasks/' + task.to" v-text="task.title"></router-link>
+			  <div v-html="task.description"></div>
+			  </li>
   </ul>
+    </v-card-text>
+    
+    </v-card>
+  
  </v-container>
  `,
       
   data(){
     return {
       tasks: [],
-      loading: false
+      loading: false,
+      q: null
       }
   },
   methods:{
@@ -6045,7 +6134,7 @@ const Vuepoc=Vue.extend({template:`
        </v-badge>
    </v-btn>
     <v-menu bottom="" left="" min-width="300px">
-            <v-btn icon="" slot="activator" dark="">
+            <v-btn icon="" slot="activator">
               <v-icon>more_vert</v-icon>
             </v-btn>
             <v-list>
@@ -6054,6 +6143,11 @@ const Vuepoc=Vue.extend({template:`
               </v-list-tile>
               <v-list-tile>
                 <v-list-tile-title><v-switch label="Dark theme" v-model="dark"></v-switch></v-list-tile-title>
+              </v-list-tile>
+              <v-divider></v-divider>
+               <v-list-tile>
+               <v-list-tile-title>Refresh:</v-list-tile-title> 
+                <v-list-tile-action><v-btn @click="init">.init</v-btn></v-list-tile-action>
               </v-list-tile>
             </v-list>
           </v-menu>
@@ -6174,7 +6268,9 @@ const Vuepoc=Vue.extend({template:`
 
   }},
   methods: {
-   
+      init(){
+        HTTP.get("../../.init");
+      },
 
       session(){
         this.$router.push({path: '/about'})
@@ -6182,7 +6278,9 @@ const Vuepoc=Vue.extend({template:`
       
       logout(){
         HTTP.get("logout").then(r=>{
-          alert("logout")
+          this.$auth.role=null;
+          this.$auth.user="guest";
+          this.$router.push({path: '/'});
         }) 
       },
       showAlert(msg){
@@ -6256,8 +6354,7 @@ const Vuepoc=Vue.extend({template:`
 const AXIOS_CONFIG={
     baseURL: "/vue-poc/api/",
     headers: {
-      'X-Custom-Header': 'vue-poc',
-      accept: 'application/json'
+      'X-Custom-Header': 'vue-poc'
     },
     paramsSerializer: function(params) {
       return Qs.stringify(params)
@@ -6298,21 +6395,6 @@ HTTP.interceptors.response.use((response) => {
 // errors hidden
 const HTTPNE = axios.create(AXIOS_CONFIG);
 const axios_json={ headers: {accept: 'application/json'}};
-
-
-// Authorization Object
-const Auth={
-    user:"guest",
-    permission:null,
-    session:null,
-    created:null,
-    install: function(Vue){
-        Object.defineProperty(Vue.prototype, '$auth', {
-          get () { return Auth }
-      })  }
-};
-Vue.use(Auth);
-
 
 
 // Settings read and write list clear
