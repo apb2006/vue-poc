@@ -15,9 +15,9 @@
 		<description>Generate documentation for folder</description>
 	</task>
 	
-<task name="xqdocdb">
-    <title>XQdoc to db</title>
-    <description>Generate XQdoc to save</description>
+<task name="xqdoc-rest" url="xqdoc/tx-xqdoc2.xq">
+    <title>XQdoc rest</title>
+    <description>XQdoc...</description>
   </task>
   
 	<task name="vuecompile">

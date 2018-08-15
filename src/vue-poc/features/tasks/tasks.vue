@@ -18,17 +18,28 @@
    clearable></v-text-field>
    
    <v-spacer></v-spacer>
-   <vp-entitylink entity="namespace"></vp-entitylink>    
+   <vp-entitylink entity="task"></vp-entitylink>    
    </v-toolbar>
-
-    <v-card-text>
-     <ul>
-			  <li  v-for="task in tasks" :key="task.to">
-			  <router-link :to="'tasks/' + task.to" v-text="task.title"></router-link>
-			  <div v-html="task.description"></div>
-			  </li>
-  </ul>
-    </v-card-text>
+   
+   <v-card-text>
+    <v-data-table
+    :headers="headers"
+    :items="items"
+    hide-actions
+     :search="q"
+    class="elevation-1"
+  >
+    <template slot="items" slot-scope="props">
+      <td ><router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
+      <td >{{ props.item.description }}</td>
+    </template>
+    <template slot="no-data">
+      <v-alert :value="true" icon="warning">
+        No matching items.
+      </v-alert>
+    </template>
+  </v-data-table>
+   </v-card-text>
     
     </v-card>
   
@@ -38,9 +49,13 @@
 <script>{
   data(){
     return {
-      tasks: [],
+      items: [],
       loading: false,
-      q: null
+      q: null,
+      headers: [   
+        { text: 'Task', value: 'title' },
+        { text: 'Description', value: 'description' },
+        ]
       }
   },
   methods:{
@@ -48,7 +63,7 @@
         this.loading= true;
         HTTP.get("tasks")
         .then(r=>{
-		   this.tasks=r.data;
+		   this.items=r.data;
 		   this.loading= false;
        })
     }

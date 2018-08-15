@@ -484,7 +484,7 @@
 									<xsl:sort select="lower-case(doc:name)" />
 									<xsl:variable name="id" select="current-grouping-key()" />
 									<li>
-										<a href="#{$id}">
+										<a href="#{$id}#0">
 											<span class="secno">
 												<xsl:value-of select="concat('3.',position())" />
 											</span>

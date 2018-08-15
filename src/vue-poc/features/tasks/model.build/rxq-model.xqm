@@ -20,7 +20,8 @@ declare
 %updating   
 function vue-api:model( )   
 {
-    resolve-uri($vue-api:query)=>query-a:update(query-a:params())
+    let $u:=resolve-uri($vue-api:query)
+    return query-a:update($u,query-a:params($u))
 };
           
 (:~

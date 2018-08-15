@@ -82,7 +82,7 @@
   methods:{
     getItems(){
       this.loading=true
-      HTTP.get("data/entity",{params:this.q})
+      HTTP.get("data/entity",{params:{q:this.q}})
       .then(r=>{
         this.loading=false
         //console.log(r.data)

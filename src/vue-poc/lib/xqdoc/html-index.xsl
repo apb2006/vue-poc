@@ -43,7 +43,7 @@
 						<xsl:value-of select="$project" />  ,id: <xsl:value-of select="$id" />
 					</h1>
 					<xsl:call-template name="toc" />
-
+          <a href="restxq.html">RestXQ</a>
 					<div id="file">
 						<h1>Files</h1>
 						<ul>

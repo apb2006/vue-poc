@@ -53,6 +53,8 @@ function vue-rest:runtask($task)
   let $task:=doc("taskdef.xml")/tasks/task[@name=$task]
   let $url:=resolve-uri($task/@url)
   
-  return query-a:run($url,query-a:params())
+  return (
+  query-a:run($url,query-a:params($url)),
+  
 };
     

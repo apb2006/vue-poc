@@ -4,7 +4,7 @@
  -->
 <template id="vp-notifications">
    <v-card>
-         <v-toolbar class="amber white--text" scroll-toolbar-off-screen>
+         <v-toolbar class="amber white--text" scroll-off-screen>
                 <v-toolbar-title >Notifications </v-toolbar-title>
                 {{ $notification.nextId }}
                  <v-btn  @click="refresh" icon><v-icon>refresh</v-icon></v-btn>

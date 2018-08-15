@@ -15,6 +15,10 @@
         </v-breadcrumbs>
       </v-toolbar-title>  
     <v-spacer></v-spacer>
+     <v-btn  color="primary"  @click="submit()"   :loading="loading"
+      :disabled="loading">
+      <v-icon>play_circle_outline</v-icon>
+      Run</v-btn>
      </v-toolbar>
     
     <v-card-text>
@@ -28,19 +32,6 @@
   
       </v-container>
     </v-card-text>
-     <v-toolbar>
-     <v-btn  @click="$refs.params.clear()" :loading="loading"
-      :disabled="loading"
-          >Clear</v-btn>
-     <v-btn  @click="$refs.params.reset()" :loading="loading"
-      :disabled="loading"
-          >Reset</v-btn>
-      <v-spacer></v-spacer>
-     <v-btn  color="primary"  @click="submit()"   :loading="loading"
-      :disabled="loading">
-      <v-icon>play_circle_outline</v-icon>
-      Run</v-btn>
-     </v-toolbar>
       <v-snackbar    v-model="snackbar.show"
       :timeout="6000"
       :success="snackbar.context === 'success'"

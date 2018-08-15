@@ -173,6 +173,9 @@ function install (Vue) {
  Vue.component('vue-form-json-schema', VueFormJsonSchema);
 };
 Vue.use({ install: install });
+var sockhost=('https:'==window.location.protocol?'wss:':'ws:')+'//'+ window.location.host +'/ws';
+Vue.use(VueNativeSock.default, sockhost);
+console.log("SOCK UP",VueNativeSock,sockhost);
 
 //leaflet
 //Vue.component('v-map', Vue2Leaflet.Map);

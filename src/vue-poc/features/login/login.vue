@@ -5,7 +5,7 @@
 					<v-card class="grey lighten-4 elevation-0">
 					
 					      <v-card-title class="amber ">
-					        <span class="white--text">Please login as user with permission is required</span>
+					        <span class="white--text">The current identity is not permissioned to access this page, please login again</span>
 					      </v-card-title>
 					    <v-alert color="error" v-bind:value="showMessage">
 					      {{message}}
@@ -33,7 +33,6 @@
 					            ></v-text-field>      
 					    </v-card-actions>
 					        
-					    <v-divider></v-divider>
 					    <v-card-actions >
 					       <v-spacer></v-spacer>
 					       <v-btn  color="primary"  @click="go()">Continue</v-btn>

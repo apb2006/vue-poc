@@ -67,7 +67,9 @@ declare  function xqd:gendoc(
         )
  };
  
-(:~ save, create fdolder if missing) :)
+(:~ 
+ :save $data to $url , create fdolder if missing) 
+ :)
 declare function xqd:store($data,$url as xs:string,$params as map(*))
 {  
    let $p:=file:parent($url)
@@ -111,8 +113,55 @@ as document-node()
 xslt:transform($files,$xqd:index-xslt,$params)
 };
 
-(:~ export :)
+(:~ save runtime support files to $target :)
 declare function xqd:export-resources($target as xs:string)                       
 {  
 archive:extract-to($target, file:read-binary(resolve-uri('resources.zip')))
-};         
+}; 
+(:~ 
+ : return all rest:path annotations
+  :)
+declare function xqd:rxq($xqdoc  as element(xqdoc:xqdoc)) 
+as element(xqdoc:annotation)*
+{
+   let $restxq:=$xqdoc//xqdoc:namespace[@uri='http://exquery.org/ns/restxq']/@prefix/string()
+  return $xqdoc//xqdoc:annotations/xqdoc:annotation[@name=(for $p in $restxq return concat($p,':path'))]
+
+};
+
+(:~ 
+ : generate standard page wrapper
+  :)
+declare function xqd:page($body,$opts as map(*)) 
+as element(html)
+{
+    <html>
+      <head>
+        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
+        <meta http-equiv="Generator" content="xqdoc-r - https://github.com/quodatum/xqdoc-r" />
+
+        <title>
+          RestXQ - xqDoc
+        </title>
+        <link rel="shortcut icon" type="image/x-icon" href="{$opts?resources}xqdoc.png" />
+        <link rel="stylesheet" type="text/css" href="{$opts?resources}page.css" />
+        <link rel="stylesheet" type="text/css" href="{$opts?resources}query.css" />
+        <link rel="stylesheet" type="text/css" href="{$opts?resources}base.css" />
+
+        <link rel="stylesheet" type="text/css" href="{$opts?resources}prettify.css" />
+
+        <script src="{$opts?resources}prettify.js" type="text/javascript">&#160;</script>
+        <script src="{$opts?resources}lang-xq.js" type="text/javascript">&#160;</script>
+      </head>
+
+      <body class="home" id="top">
+        <div id="main">
+        {$body}
+        </div>
+        <div class="footer">
+            <p style="text-align:right">generated at {current-dateTime()}</p>
+          </div>
+      </body>
+    </html>
+
+};          

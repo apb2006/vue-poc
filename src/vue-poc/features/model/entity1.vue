@@ -9,7 +9,12 @@
             </v-breadcrumbs-item>
             
               <v-breadcrumbs-item  >
+              <v-chip>
+              <v-avatar>
+              <v-icon>{{ item.iconclass }}</v-icon>
+              </v-avatar> 
             {{ entity }}
+            </v-chip>
             </v-breadcrumbs-item>
         </v-breadcrumbs>
 	 </v-toolbar-title>
@@ -26,9 +31,12 @@
 	 </v-toolbar>
 
   <v-container fluid grid-list-md>
-  
-  
+  <div v-if="item">
+    <div>{{item.description}}</div>
+   <code>{{item.code}}</code>
+   </div>
      <pre>{{ xml }}</pre>
+     
   </v-container>
    </v-card>
 </template>
@@ -37,8 +45,10 @@
   props: ['entity'],
   data:  function(){
     return {
-      q: 'filter',
-      item: {},
+      item: {description:null,
+             code: null
+      },
+
       loading: false,
       xml: null
       }
@@ -46,16 +56,14 @@
   methods:{
     getItem(){
       this.loading=true
-      HTTP.get("data/entity/"+this.entity,{params:this.q})
+      HTTP.get("data/entity/"+this.entity)
       .then(r=>{
         this.loading=false
-        //console.log(r.data)
-        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
-        this.item=r.data.items
+        this.item=Object.assign({}, this.item, r.data)
         }) 
     },
     getxml(){
-      HTTP.get("data/entity/"+this.entity,{params:this.q, headers: {Accept: "text/xml"}})
+      HTTP.get("data/entity/"+this.entity,{ headers: {Accept: "text/xml"}})
       .then(r=>{
         console.log(r.data)
         this.xml=r.data;

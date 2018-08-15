@@ -82,7 +82,8 @@ const router = new VueRouter({
       
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
-      { path: 'ping', component: Ping,meta:{title:"Ping"} }
+      { path: 'ping', component: Ping,meta:{title:"Ping"} },
+      { path: 'websocket', component: Websocket,meta:{title:"Web socket"} }
      ]
     },
 
@@ -128,7 +129,7 @@ router.beforeEach((to, from, next) => {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
     console.log("matched: ",Auth)
-    if ("admin"!=Auth.permission) {
+    if ("admin"!=Auth.role) {
       next({
         path: '/login',
         query: { redirect: to.fullPath }

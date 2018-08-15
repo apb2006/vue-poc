@@ -10,11 +10,10 @@
  <v-card-text>
   <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
   <h3>Counter: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
-  <table >
+  <table class="v-table">
       <thead> 
         <tr>
          <th xs1>Action</th>
-          <th xs1>Once</th>
           <th xs1>Repeat</th>
           <th xs1>Last</th>
           <th xs1>Count</th>
@@ -28,10 +27,9 @@
 
       
           <tr>
-              <td>Get</td>
               <td>
-               <v-btn @click="get()" icon >
-                   <v-icon>radio_button_checked</v-icon>
+               <v-btn @click="get()"  >
+                   Read <v-icon>compare_arrows</v-icon> 
                 </v-btn>
              
                </td>
@@ -62,10 +60,9 @@
           </tr>
           
             <tr>
-             <td>Update</td>
           <td>
-           <v-btn @click="update()" icon >
-                   <v-icon>radio_button_checked</v-icon>
+           <v-btn @click="update()"  >
+                 Write <v-icon>compare_arrows</v-icon>
             </v-btn>
           </td>
           

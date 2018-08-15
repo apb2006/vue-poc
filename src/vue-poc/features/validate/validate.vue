@@ -9,17 +9,7 @@
              ><v-icon>play_circle_outline</v-icon>validate</v-btn>
              <span v-text="elapsed">?</span>ms.
             <v-spacer></v-spacer>
-               <v-btn  @click="$refs.params.clear()" :loading="loading"
-      :disabled="loading"
-          >Clear</v-btn>
-             <v-btn  @click="$refs.params.reset()" :loading="loading"
-      :disabled="loading"
-          >Reset</v-btn>
-          
-         
-             <v-btn   :loading="loading"
-      :disabled="loading"
-          >is ok?</v-btn>
+            
               <v-menu offset-y left>
              <v-btn icon  slot="activator"><v-icon>settings</v-icon></v-btn>
               <v-card >
