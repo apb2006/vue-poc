@@ -118,6 +118,7 @@
             v-model="query.from"
             prepend-icon="event"
             readonly
+            clearable
           ></v-text-field>
          
           <v-date-picker v-model="query.from" scrollable actions>
@@ -148,6 +149,7 @@
             v-model="query.until"
             prepend-icon="event"
             readonly
+            clearable
           ></v-text-field>
          
           <v-date-picker v-model="query.until" scrollable actions>
@@ -160,7 +162,7 @@
           </v-date-picker>
           </v-menu>
         
-            <v-checkbox :value="location.value" :indeterminate="location.use" @click="cyclelocation" label="With location:"></v-checkbox>
+            <v-checkbox :value="location.value" :indeterminate="location.use" @click="cyclelocation" label="With location"></v-checkbox>
         
         </v-card-text>
         
@@ -232,6 +234,7 @@
     },
     getImages(){
       this.busy=true
+      console.log("Images",this.query);
       var t0 = performance.now();
       HTTP.get("images/list",{params:this.query})
       .then(r=>{

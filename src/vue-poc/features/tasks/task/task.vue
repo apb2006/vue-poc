@@ -59,9 +59,13 @@
       this.loading=true;
       this.$refs.params.submit()
       .then(r=>{
-        this.loading= false      
-        this.snackbar= {show:true,msg:r.data.msg,context:"success"}
-        console.log(r.data)
+        this.loading= false
+ 
+        this.snackbar= {show:true,
+                        msg: r.data && r.data.msg, 
+                        context:"success"
+                        };
+        console.log(r)
       })
       .catch(error=>{
         this.loading= false

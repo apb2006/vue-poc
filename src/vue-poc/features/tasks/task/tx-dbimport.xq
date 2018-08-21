@@ -12,7 +12,7 @@ import module namespace dbtools = 'quodatum.dbtools' at "../../../lib/dbtools.xq
 declare variable $srcpath as xs:anyURI  external :="C:/Users/andy/git/vue-poc/src/vue-poc/models/entities";
 
 (:~ Target BaseX db root path for imported files 
- : @default /vuepoc-test/
+ : @default vuepoc-test
  :)
 declare variable $targetpath as xs:anyURI external :="/vuepoc-test";
 
@@ -21,5 +21,4 @@ declare variable $targetpath as xs:anyURI external :="/vuepoc-test";
   :)
 declare variable $boolean as xs:boolean  external :=false();
                                  
-let $result:=<json type="object"><hello>TODO</hello></json>
-return $result
+dbtools:sync-from-path($targetpath, $srcpath)

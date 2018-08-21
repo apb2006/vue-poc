@@ -9,7 +9,7 @@
               <div :title="url">{{ updating }}</div>
               <v-layout row>
               
-              <v-layout column xs10> 
+              <v-layout column xs11> 
               <v-flex v-for="field in fields" :key="field.model" >
               
               <v-text-field  v-if="field.type === 'xs:anyURI'" :full-width="true" 
@@ -33,7 +33,7 @@
               </v-flex>
               </v-layout>
               
-              <v-layout align-center justify-center column fill-height xs2 amber lighten-5>
+              <v-layout align-center justify-center column fill-height xs1 amber lighten-5>
                <v-btn  @click="clear()" 
 					          >Clear</v-btn>
 					     <v-btn  @click="reset()"

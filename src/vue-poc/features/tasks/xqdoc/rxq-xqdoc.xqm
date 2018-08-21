@@ -18,7 +18,7 @@ declare
 %updating 
 function vue-api:model()   
 {
- resolve-uri($vue-api:query)=>query-a:update(query-a:params())
+ resolve-uri($vue-api:query)=>query-a:update(query-a:params($vue-api:query))
 };
   
 (:~

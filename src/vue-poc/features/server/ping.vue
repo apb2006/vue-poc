@@ -29,7 +29,7 @@
           <tr>
               <td>
                <v-btn @click="get()"  >
-                   Read <v-icon>compare_arrows</v-icon> 
+                   Read <v-icon right>compare_arrows</v-icon> 
                 </v-btn>
              
                </td>
@@ -62,7 +62,7 @@
             <tr>
           <td>
            <v-btn @click="update()"  >
-                 Write <v-icon>compare_arrows</v-icon>
+                 Write <v-icon right>compare_arrows</v-icon>
             </v-btn>
           </td>
           

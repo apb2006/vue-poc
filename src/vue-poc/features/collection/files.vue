@@ -5,17 +5,13 @@
 <v-card>
 
 <v-toolbar dense >
-    <v-btn icon :to="{query: { url: '/' }}">
-     <v-icon >{{icon}}</v-icon>
-     </v-btn>
-        
-   
-     
+    
     <v-toolbar-title>
 		    <v-breadcrumbs >
 		        <span slot="divider" style="padding:0;"></span>
 				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" 
 				    :to="{ query: { url:  item.path }}" :exact="true">
+				    <v-icon v-if="item.icon">{{ icon }}</v-icon>
 				    {{ item.name }}
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
@@ -253,11 +249,13 @@
       },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
-     var url=this.url
-     return url.split("/").slice(0,-1).map(
-         function(v,i,a){return {name:v +"/",  
-                                 path:a.slice(0,i+1).join("/")+"/"}}
-         ) 
+     var url=this.url.split("/").slice(0,-1).map(
+         function(v,i,a){return {name: v +"/",  
+                                 path: a.slice(0,i+1).join("/")+"/"}}
+         );
+       url[0].icon=this.icon;
+       console.log("CRUM",url)
+       return url;  
       },
    selection(){
         return this.items.filter(item=>{return item.selected} ) 

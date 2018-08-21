@@ -4,7 +4,7 @@
  : @author Andy Bunce, 2018
  :)
 module namespace query-a = 'vue-poc/query-a';
-import module namespace hlog = 'quodatum.data.history' at 'history.xqm';
+
 import module namespace request = "http://exquery.org/ns/request";
 declare namespace map2='http://www.woerteler.de/xquery/modules/map-extras';
 (:~
@@ -66,19 +66,28 @@ declare
 %updating  
 function query-a:run($query as xs:anyURI,$params as map(*))
 { 
-   (
-   <json type="object">
-           <res>{ xquery:invoke($query,$params)}</res>
-           <params>todo</params>
-   </json>=>update:output(),
-   hlog:save(<task url="{ $query }"/>)
-   )
+let $updating:=xquery:parse-uri($query)/@updating/boolean(.)
+return if($updating) then
+       xquery:invoke-update($query,$params)
+     else 
+       <json type="object">
+               <res>{ xquery:invoke($query,$params)}</res>
+               <params>todo</params>
+       </json>=>update:output()
 };
+
+declare
+%updating  
+function query-a:run-json($query as xs:anyURI,$params as map(*))
+{ 
+  xquery:invoke($query,$params)=>update:output()
+};
+
 
 declare
 %updating 
 function query-a:update($query as xs:anyURI,$params as map(*))
 {
-   xquery:invoke-update($query,$params)
+    xquery:invoke-update($query,$params)
 };
 

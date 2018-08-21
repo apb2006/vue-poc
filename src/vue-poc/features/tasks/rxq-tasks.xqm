@@ -3,7 +3,7 @@
  :)
 module namespace vue-rest = 'quodatum:vue.tasks';
 import module namespace query-a = 'vue-poc/query-a' at "../../lib/query-a.xqm";
-
+import module namespace hlog = 'quodatum.data.history' at '../../lib/history.xqm';
 (:~
  : list tasks
  :)
@@ -52,9 +52,10 @@ function vue-rest:runtask($task)
 {
   let $task:=doc("taskdef.xml")/tasks/task[@name=$task]
   let $url:=resolve-uri($task/@url)
-  
+  let $params:=query-a:params($url)
   return (
-  query-a:run($url,query-a:params($url)),
-  
+    query-a:run($url,$params),
+    hlog:save(<task url="{ $url }"/>)
+  )
 };
     

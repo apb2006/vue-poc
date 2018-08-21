@@ -263,7 +263,7 @@
     },
     
     loadItem(url){
-      HTTP.get("get2",{params: {url:url}})
+      HTTP.get("get",{params: {url:url}})
       .then(r=>{
           console.log(r)
           var tab={

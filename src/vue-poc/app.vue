@@ -55,7 +55,9 @@
       </v-btn>
      
           <v-list>
-        
+              <v-list-tile to="/session"  avatar ripple>
+                <v-list-tile-title >Session</v-list-tile-title>
+              </v-list-tile>
               <v-list-tile @click="logout()">
                 <v-list-tile-title >logout</v-list-tile-title>
               </v-list-tile>
@@ -84,7 +86,7 @@
               </v-list-tile>
               <v-divider ></v-divider>
                <v-list-tile  >
-               <v-list-tile-title>Refresh:</v-list-tile-title> 
+               <v-list-tile-title>Server hot load:</v-list-tile-title> 
                 <v-list-tile-action ><v-btn @click="init">.init</v-btn></v-list-tile-action>
               </v-list-tile>
             </v-list>
@@ -161,6 +163,7 @@
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/server/websocket',text: 'Web socket',icon: 'swap_calls'},
+          {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
           {href: '/server/ping',text: 'Ping',icon: 'update'}
       ]},
       {
@@ -191,8 +194,6 @@
         text: 'More' ,
         model: false,
         children: [
-    
-      {href: '/session',text: 'Session',icon: 'person'},
       {href: '/timeline',text: 'Time line',icon: 'timelapse'},
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
@@ -273,7 +274,7 @@
    
     HTTP.get("status")
     .then(r=>{
-      console.log("status",r)
+      //console.log("status",r)
       this.$auth=Object.assign(this.$auth,r.data);
       console.log("AFTER: ",this.$auth);
       //this.$forceUpdate()

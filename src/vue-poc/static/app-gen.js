@@ -1,4 +1,4 @@
-// generated 2018-08-15T17:56:05.102+01:00
+// generated 2018-08-20T23:31:08.866+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -53,13 +53,13 @@ Vue.component('qd-confirm',{template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-fileupload.vue
 Vue.component('qd-fileupload',{template:` 
   <vue-clip :options="options">
-    <template slot="clip-uploader-action">
+    <template slot-scope="clip-uploader-action">
       <div>
         <div class="dz-message"><h2> Click or Drag and Drop files here upload </h2></div>
       </div>
     </template>
 
-    <template slot="clip-uploader-body" scope="props">
+    <template slot-scope="clip-uploader-body" scope="props">
       <div v-for="file in props.files">
         <img v-bind:src="file.dataUrl">
         {{ file.name }} {{ file.status }}
@@ -233,7 +233,7 @@ Vue.component('qd-table',{template:`
  <v-container fluid="">
   <v-card>
    <v-toolbar>
-    <v-text-field append-icon="search" label="Filter user" single-line="" hide-details="" v-model="search"></v-text-field>   
+    <v-text-field append-icon="search" label="Filter user" single-line="" hide-details="" v-model="search" clearable=""></v-text-field>   
       <v-spacer></v-spacer>
          <v-btn icon="" :loading="loading" :disabled="loading" @click="getItems">
     <v-icon>refresh</v-icon>
@@ -550,7 +550,7 @@ Vue.component('vp-paramform',{template:`
               <div :title="url">{{ updating }}</div>
               <v-layout row="">
               
-              <v-layout column="" xs10=""> 
+              <v-layout column="" xs11=""> 
               <v-flex v-for="field in fields" :key="field.model">
               
               <v-text-field v-if="field.type === 'xs:anyURI'" :full-width="true" v-model="params[field.model]" :label="field.label" clearable="" :rules="fieldrules(field)" box="" append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
@@ -567,7 +567,7 @@ Vue.component('vp-paramform',{template:`
               </v-flex>
               </v-layout>
               
-              <v-layout align-center="" justify-center="" column="" fill-height="" xs2="" amber="" lighten-5="">
+              <v-layout align-center="" justify-center="" column="" fill-height="" xs1="" amber="" lighten-5="">
                <v-btn @click="clear()">Clear</v-btn>
 					     <v-btn @click="reset()">Reset</v-btn>
               </v-layout>
@@ -1319,16 +1319,12 @@ const Files=Vue.extend({template:`
 <v-card>
 
 <v-toolbar dense="">
-    <v-btn icon="" :to="{query: { url: '/' }}">
-     <v-icon>{{icon}}</v-icon>
-     </v-btn>
-        
-   
-     
+    
     <v-toolbar-title>
 		    <v-breadcrumbs>
 		        <span slot="divider" style="padding:0;"></span>
 				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}" :exact="true">
+				    <v-icon v-if="item.icon">{{ icon }}</v-icon>
 				    {{ item.name }}
 				    </v-breadcrumbs-item>
 		    </v-breadcrumbs>
@@ -1562,11 +1558,13 @@ const Files=Vue.extend({template:`
       },   
    // array of {name:"that", path:"/this/that/"} for url
    crumbs(){
-     var url=this.url
-     return url.split("/").slice(0,-1).map(
-         function(v,i,a){return {name:v +"/",  
-                                 path:a.slice(0,i+1).join("/")+"/"}}
-         ) 
+     var url=this.url.split("/").slice(0,-1).map(
+         function(v,i,a){return {name: v +"/",  
+                                 path: a.slice(0,i+1).join("/")+"/"}}
+         );
+       url[0].icon=this.icon;
+       console.log("CRUM",url)
+       return url;  
       },
    selection(){
         return this.items.filter(item=>{return item.selected} ) 
@@ -2540,7 +2538,7 @@ const Tabs=Vue.extend({template:`
     },
     
     loadItem(url){
-      HTTP.get("get2",{params: {url:url}})
+      HTTP.get("get",{params: {url:url}})
       .then(r=>{
           console.log(r)
           var tab={
@@ -3413,7 +3411,7 @@ const Images=Vue.extend({template:`
             </v-autocomplete>
             
           <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
-             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly=""></v-text-field>
+             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly="" clearable=""></v-text-field>
          
           <v-date-picker v-model="query.from" scrollable="" actions="">
             <template slot-scope="{ save, cancel }">
@@ -3428,7 +3426,7 @@ const Images=Vue.extend({template:`
           
            <v-menu lazy="" :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
            
-            <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly=""></v-text-field>
+            <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly="" clearable=""></v-text-field>
          
           <v-date-picker v-model="query.until" scrollable="" actions="">
             <template slot-scope="{ save, cancel }">
@@ -3440,7 +3438,7 @@ const Images=Vue.extend({template:`
           </v-date-picker>
           </v-menu>
         
-            <v-checkbox :value="location.value" :indeterminate="location.use" @click="cyclelocation" label="With location:"></v-checkbox>
+            <v-checkbox :value="location.value" :indeterminate="location.use" @click="cyclelocation" label="With location"></v-checkbox>
         
         </v-card-text>
         
@@ -3511,6 +3509,7 @@ const Images=Vue.extend({template:`
     },
     getImages(){
       this.busy=true
+      console.log("Images",this.query);
       var t0 = performance.now();
       HTTP.get("images/list",{params:this.query})
       .then(r=>{
@@ -3610,6 +3609,145 @@ const Images=Vue.extend({template:`
   },
   mounted:function(){
     console.log("images mount")
+    
+  }
+    }
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/imagesfilter.vue
+const Imagesfilter=Vue.extend({template:` 
+         <v-card>
+          <v-toolbar class="green white--text">
+                <v-toolbar-title>Show images with...</v-toolbar-title>
+          <v-spacer></v-spacer>
+          <v-btn @click="showFilter = false" icon=""><v-icon>close</v-icon></v-btn>
+          </v-toolbar>
+          
+        <v-card-text>    
+         <v-autocomplete v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" clearable="">
+             <template slot="item" slot-scope="data">
+                  <v-list-tile-content>
+                    <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
+                    <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
+                  </v-list-tile-content>
+              </template>
+            </v-autocomplete>
+            
+          <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
+             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly="" clearable=""></v-text-field>
+         
+          <v-date-picker v-model="query.from" scrollable="" actions="">
+            <template slot-scope="{ save, cancel }">
+              <v-card-actions>
+                <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat="" color="primary" @click="save()">Save</v-btn>
+              </v-card-actions>
+            </template>
+          </v-date-picker></v-menu>
+          
+           <v-menu lazy="" :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
+           
+            <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly="" clearable=""></v-text-field>
+         
+          <v-date-picker v-model="query.until" scrollable="" actions="">
+            <template slot-scope="{ save, cancel }">
+              <v-card-actions>
+                <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat="" color="primary" @click="save()">Save</v-btn>
+              </v-card-actions>
+            </template>
+          </v-date-picker>
+          </v-menu>
+        
+            <v-checkbox :value="location.value" :indeterminate="location.use" @click="cyclelocation" label="With location"></v-checkbox>
+        
+        </v-card-text>
+        
+        <v-card-actions>
+          <v-spacer></v-spacer>
+
+          <v-btn @click="showFilter = false" color="primary">Apply</v-btn>
+        </v-card-actions>
+      </v-card>
+     
+ 
+ `,
+       
+  
+  data(){ 
+    return {
+    query: {page:0,  // current page
+           from:null,
+           until:null,
+           keyword:null
+    },
+    showFilter: false,
+    busy: false,
+    menu2: false,
+    showUntil: false,
+    keywords: [],
+    showInfo: false,
+    selitem: "TODO",
+    location: {use:false,value:true},
+   
+  }
+    },
+  methods:{
+    
+    cyclelocation(){
+      this.location.use=!this.location.use
+    },
+  
+    clear(){
+      this.query.from=null;
+      this.query.until=null;
+      this.query.keyword=null;
+      this.query.page=0;
+    },
+   
+    isChanged(vnew,vold){
+      if(vnew.keyword != vold.keyword) return true
+      if(vnew.from != vold.from) return true
+      if(vnew.until != vold.until) return true
+      return false
+    },
+   
+   
+  },
+ 
+  watch:{
+      "query":{
+        handler:function(vnew,vold){
+          var b=this.isChanged(vnew,vold)
+          console.log("watch",b,vnew,vold)
+          if(b) this.query.page=0
+          this.$router.push({  query: this.query })
+          },
+        deep:true
+      },
+      
+
+      showFilter(){
+        if(this.keywords.length==0){
+          HTTP.get("images/keywords2")
+          .then(r=>{
+            this.keywords=r.data.items
+            }) 
+        }
+      }
+  },
+  created:function(){
+    console.log("create images")
+    this.query.page=Number(this.$route.query.page) || this.query.page
+    this.query.keyword=this.$route.query.keyword || this.query.keyword
+    this.query.from=this.$route.query.from || this.query.from
+    this.query.until=this.$route.query.until || this.query.until
+    this.getImages()
+    
+  },
+  mounted:function(){
+    console.log("image filter mount")
     
   }
     }
@@ -4007,6 +4145,36 @@ const Login=Vue.extend({template:`
         alert("err login")
       })
     }
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/map.vue
+const Leaflet=Vue.extend({template:` 
+ <v-container fluid="">
+     <v-layout row="" wrap="">
+      <v-flex xs12="" style="height:400px">
+     <l-map :zoom="zoom" :center="center">
+      <l-tilelayer :url="url" :attribution="attribution"></l-tilelayer>
+      <l-marker :lat-lng="marker"></l-marker>
+    </l-map>
+    </v-flex>
+    </v-layout>
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      zoom: 13,
+      center: [54.320498718, -2.739663708],
+      url: 'http://{s}.tile.osm.org/{z}/{x}/{y}.png',
+      attribution: '&copy; <a href="http://osm.org/copyright">OpenStreetMap</a> contributors',
+      marker: L.latLng(54.320498718, -2.739663708)
+    }
+  },
+  created:function(){
+    console.log("map")
   }
 }
 
@@ -4716,7 +4884,7 @@ const Ping=Vue.extend({template:`
           <tr>
               <td>
                <v-btn @click="get()">
-                   Read <v-icon>compare_arrows</v-icon> 
+                   Read <v-icon right="">compare_arrows</v-icon> 
                 </v-btn>
              
                </td>
@@ -4749,7 +4917,7 @@ const Ping=Vue.extend({template:`
             <tr>
           <td>
            <v-btn @click="update()">
-                 Write <v-icon>compare_arrows</v-icon>
+                 Write <v-icon right="">compare_arrows</v-icon>
             </v-btn>
           </td>
           
@@ -4848,6 +5016,24 @@ const Ping=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/upload.vue
+const Upload=Vue.extend({template:` 
+  <v-card>
+  <v-card-title>Upload</v-card-title>
+  <v-card-actions>
+    <qd-fileupload>up..</qd-fileupload> 
+    </v-card-actions>
+    </v-card> 
+	 `,
+      
+  data:  function(){
+    return { 
+      fab: false
+  }
+  }
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/session.vue
 const Session=Vue.extend({template:` 
  <v-container fluid="">
@@ -4903,7 +5089,6 @@ const Session=Vue.extend({template:`
       .then(r=>{
         console.log("status",r)
         this.$auth=Object.assign(this.$auth,r.data);
-        console.log("AFTER: ",this.$auth);
         //this.$forceUpdate()
       })  
     },
@@ -5272,9 +5457,13 @@ const Runtask=Vue.extend({template:`
       this.loading=true;
       this.$refs.params.submit()
       .then(r=>{
-        this.loading= false      
-        this.snackbar= {show:true,msg:r.data.msg,context:"success"}
-        console.log(r.data)
+        this.loading= false
+ 
+        this.snackbar= {show:true,
+                        msg: r.data && r.data.msg, 
+                        context:"success"
+                        };
+        console.log(r)
       })
       .catch(error=>{
         this.loading= false
@@ -6069,6 +6258,7 @@ const router = new VueRouter({
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} },
+      { path: 'upload', component: Upload,meta:{title:"Upload"} },
       { path: 'websocket', component: Websocket,meta:{title:"Web socket"} }
      ]
     },
@@ -6094,7 +6284,7 @@ const router = new VueRouter({
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/tree', component: Tree, meta:{title:"tree"} },
     { path: '/tree2', component: Tree2, meta:{title:"tree2"} },
-    { path: '/map', component: Map,meta:{title:"map"} },
+    { path: '/map', component: Leaflet,meta:{title:"map"} },
     
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
@@ -6177,7 +6367,9 @@ const Vuepoc=Vue.extend({template:`
       </v-btn>
      
           <v-list>
-        
+              <v-list-tile to="/session" avatar="" ripple="">
+                <v-list-tile-title>Session</v-list-tile-title>
+              </v-list-tile>
               <v-list-tile @click="logout()">
                 <v-list-tile-title>logout</v-list-tile-title>
               </v-list-tile>
@@ -6206,7 +6398,7 @@ const Vuepoc=Vue.extend({template:`
               </v-list-tile>
               <v-divider></v-divider>
                <v-list-tile>
-               <v-list-tile-title>Refresh:</v-list-tile-title> 
+               <v-list-tile-title>Server hot load:</v-list-tile-title> 
                 <v-list-tile-action><v-btn @click="init">.init</v-btn></v-list-tile-action>
               </v-list-tile>
             </v-list>
@@ -6282,6 +6474,7 @@ const Vuepoc=Vue.extend({template:`
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/server/websocket',text: 'Web socket',icon: 'swap_calls'},
+          {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
           {href: '/server/ping',text: 'Ping',icon: 'update'}
       ]},
       {
@@ -6312,8 +6505,6 @@ const Vuepoc=Vue.extend({template:`
         text: 'More' ,
         model: false,
         children: [
-    
-      {href: '/session',text: 'Session',icon: 'person'},
       {href: '/timeline',text: 'Time line',icon: 'timelapse'},
       {href: '/select',text: 'Select',icon: 'extension'},
       {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
@@ -6394,7 +6585,7 @@ const Vuepoc=Vue.extend({template:`
    
     HTTP.get("status")
     .then(r=>{
-      console.log("status",r)
+      //console.log("status",r)
       this.$auth=Object.assign(this.$auth,r.data);
       console.log("AFTER: ",this.$auth);
       //this.$forceUpdate()
@@ -6586,13 +6777,14 @@ function install (Vue) {
 };
 Vue.use({ install: install });
 var sockhost=('https:'==window.location.protocol?'wss:':'ws:')+'//'+ window.location.host +'/ws';
-Vue.use(VueNativeSock.default, sockhost);
-console.log("SOCK UP",VueNativeSock,sockhost);
+//Vue.use(VueNativeSock.default, sockhost);
+//console.log("SOCK UP",VueNativeSock,sockhost);
 
 //leaflet
-//Vue.component('v-map', Vue2Leaflet.Map);
-//Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
-//Vue.component('v-marker', Vue2Leaflet.Marker);
+Vue.component('l-map', Vue2Leaflet.LMap);
+Vue.component('l-tilelayer', Vue2Leaflet.LTileLayer);
+Vue.component('l-marker', Vue2Leaflet.LMarker);
+
 //function install (Vue) {
 //  Vue.component('form-schema', window["vue-json-schema"].default);
 //};

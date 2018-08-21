@@ -83,6 +83,7 @@ const router = new VueRouter({
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} },
+      { path: 'upload', component: Upload,meta:{title:"Upload"} },
       { path: 'websocket', component: Websocket,meta:{title:"Web socket"} }
      ]
     },
@@ -108,7 +109,7 @@ const router = new VueRouter({
     { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
     { path: '/tree', component: Tree, meta:{title:"tree"} },
     { path: '/tree2', component: Tree2, meta:{title:"tree2"} },
-    { path: '/map', component: Map,meta:{title:"map"} },
+    { path: '/map', component: Leaflet,meta:{title:"map"} },
     
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },

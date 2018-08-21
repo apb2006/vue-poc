@@ -55,7 +55,6 @@
       .then(r=>{
         console.log("status",r)
         this.$auth=Object.assign(this.$auth,r.data);
-        console.log("AFTER: ",this.$auth);
         //this.$forceUpdate()
       })  
     },

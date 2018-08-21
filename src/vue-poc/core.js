@@ -174,13 +174,14 @@ function install (Vue) {
 };
 Vue.use({ install: install });
 var sockhost=('https:'==window.location.protocol?'wss:':'ws:')+'//'+ window.location.host +'/ws';
-Vue.use(VueNativeSock.default, sockhost);
-console.log("SOCK UP",VueNativeSock,sockhost);
+//Vue.use(VueNativeSock.default, sockhost);
+//console.log("SOCK UP",VueNativeSock,sockhost);
 
 //leaflet
-//Vue.component('v-map', Vue2Leaflet.Map);
-//Vue.component('v-tilelayer', Vue2Leaflet.TileLayer);
-//Vue.component('v-marker', Vue2Leaflet.Marker);
+Vue.component('l-map', Vue2Leaflet.LMap);
+Vue.component('l-tilelayer', Vue2Leaflet.LTileLayer);
+Vue.component('l-marker', Vue2Leaflet.LMarker);
+
 //function install (Vue) {
 //  Vue.component('form-schema', window["vue-json-schema"].default);
 //};

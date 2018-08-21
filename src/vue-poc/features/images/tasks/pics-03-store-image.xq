@@ -7,7 +7,7 @@ import module namespace cfg = "quodatum:media.image.configure" at "../../../conf
 for $meta in collection($cfg:DB-IMAGE || "/meta")/metadata
   let $loc:=db:path($meta)=>tokenize("/")
   let $name:=$loc[count($loc)-1]
-  let $path:= subsequence($loc,1,count($loc)-1)=>string-join("/")
+  let $path:= subsequence($loc,2,count($loc)-2)=>string-join("/")
   let $image:=<image> 
              <file name="{$name}" path="{$path}"/>{
                 metadata:core($meta),
@@ -15,4 +15,4 @@ for $meta in collection($cfg:DB-IMAGE || "/meta")/metadata
                 metadata:keywords($meta)
               } </image>
 let $target:="image/"|| $path || "/image.xml"
-return db:replace($cfg:DB-IMAGE,$target,$image)
+return  db:replace($cfg:DB-IMAGE,$target=>trace(),$image)

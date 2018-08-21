@@ -10,6 +10,7 @@
         single-line
         hide-details
         v-model="search"
+        clearable
       ></v-text-field>   
       <v-spacer></v-spacer>
          <v-btn

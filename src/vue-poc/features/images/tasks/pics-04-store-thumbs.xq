@@ -8,12 +8,15 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
 
 declare variable $CHUNK:=1000;
 
+declare variable $DEST:="/pics.xml";
+declare variable $SIZE:=xs:integer(100);
+
 declare %updating function local:store-thumb($f as xs:string)
 {
   let $src:=$cfg:IMAGEDIR || "../" || trace($f)
   let $trg:= $cfg:THUMBDIR || $f
   return try{
-            fetch:binary($src)=>t:size(80)=>local:write-binary($trg)
+            fetch:binary($src)=>t:size($SIZE)=>local:write-binary($trg)
          } catch * {
              update:output("bad: " || $f)
         }
@@ -30,7 +33,7 @@ declare %updating function local:write-binary($data,$url as xs:string)
          )
 };
 
-let $files:= doc($cfg:DB-IMAGE || "/pics.xml")//c:file[ends-with(lower-case(@name),".jpg")] 
+let $files:= doc($cfg:DB-IMAGE || $DEST)//c:file[ends-with(lower-case(@name),".jpg")] 
 
 let $relpath:= $files!( ancestor-or-self::*/@name=>string-join("/"))
 let $relpath:=filter($relpath,function($f){ 
