@@ -39,6 +39,8 @@ something
 <ol>
 <li>$cfg:IMAGEDIR: <code>{ $cfg:IMAGEDIR }</code> </li>
 <li>$cfg:THUMBDIR: <code>{ $cfg:THUMBDIR }</code> </li>
+<li>$cfg:DB-IMAGE: <code>{ $cfg:DB-IMAGE }</code> </li>
+
 <li><a href="#A30" >A30</a></li>
 <li><a href="#A50">A50</a></li>
 </ol>
@@ -146,6 +148,20 @@ function vue-api:rawimage($id as xs:integer)
   return (
     web:response-header(map { 'media-type': web:content-type($path) }),
     file:read-binary($path)
+  )
+};
+
+(:~ thumb size image :)
+declare 
+%rest:GET %rest:path("/vue-poc/api/images/list/{ $id }/thumb")
+function vue-api:rawthumb($id as xs:integer)
+{
+  let $image as element(image):=db:open-id($cfg:DB-IMAGE,$id)
+ let $thumb:= $cfg:THUMBDIR || $vue-api:entity?access?path($image)
+ let $thumb:=if(file:exists($thumb)) then $thumb else resolve-uri("missing.jpg")
+  return (
+    web:response-header(map { 'media-type': web:content-type($thumb) }),
+    fetch:binary($thumb)
   )
 };
 

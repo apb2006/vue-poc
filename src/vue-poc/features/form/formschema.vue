@@ -2,11 +2,28 @@
 <template id="formsjson">
  <v-container fluid>
      <v-card>
+     <v-toolbar dense >
         <v-card-title><qd-link href="https://gitlab.com/formschema/native">vue-json-schema@1.1.1</qd-link> </v-card-title>
-        
-       <form-schema  ref="formSchema" :schema="schema" v-model="model" input-wrapping-class="fooclass">
-              <v-btn color="success" @click.stop="submit">Send</v-btn>
-  </form-schema>
+      </v-toolbar> 
+     <v-card-text>
+        <v-container grid-list-md text-xs-center>
+				    <v-layout row wrap>
+				      <v-flex xs8>
+				     
+				          <form-schema  v-if="schema2" ref="formSchema" :schema="schema2" v-model="model" @submit.stop="submit"
+				          input-wrapping-class="text-xs-left">
+				             <v-btn color="success" type="submit">Send</v-btn>
+				          </form-schema>
+				    
+				       </v-flex>
+				       
+				       <v-flex xs4>
+				        <pre style="text-align:left">{{ model | pretty }}</pre>
+				       </v-flex>
+				       </v-layout>
+       </v-container> 
+       </v-card-text>
+  
   
     </v-card>
  </v-container>
@@ -19,46 +36,7 @@
     },
  
   data: () => ({
-    schema: {
-      "$schema": "http://json-schema.org/draft-04/schema#",
-      "type": "object",
-      "title": "Sample form title",
-      "properties": {
-          "name": {
-              "type": "string",
-              "title": "Name ",
-              "minLength": 8, 
-              "maxLength": 80, 
-              "attrs": {
-                "placeholder": "Full Name",
-                "title": "Please enter your full name"
-              }
-          },
-          "email": {
-              "type": "string",
-              "title": "Email label ", 
-              "maxLength": 120, 
-              "attrs": {
-                  "type": "email",
-                  "placeholder": "Email"
-              }
-          },
-          "lists": {
-              "type": "string",
-              "title": "List label ",
-              "enum": ["Daily New", "Promotion", "Another"]
-          },
-          "arrayInput": {
-            "type": "array",
-            "title": "Array label ",
-            "items": {
-              "type": "string"
-            }
-          }
-      },
-      "additionalProperties": false,
-      "required": ["name", "email", "lists"]
-  },
+    schema2: null,
     model: {}
   }),
   methods: {
@@ -66,8 +44,15 @@
       // this.model contains the valid data according your JSON Schema.
       // You can submit your model to the server here
       console.log(this.model);
-      alert("hi")
+      alert("no submit yet")
     }
+  },
+  created:function(){
+    HTTP.get("form/schema",{})
+    .then(r=>{
+      this.schema2=r.data;
+    })
   }
+    
 }
 </script>

@@ -69,6 +69,12 @@ declare function zip-download($zipname,$data){
     (download-response("raw",$zipname), $data)
 };
 
+(:~ create cookie :) 
+declare function cookie($name,$value){
+   let $val:=``[`{ $name }`=`{ $value }`]``
+   return <http:header name="Set-Cookie" value="{ $val }"/> 
+};
+
 (:~ headers for download  :) 
 declare function method($method as xs:string){
 <rest:response>

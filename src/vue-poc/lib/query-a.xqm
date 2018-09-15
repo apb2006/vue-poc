@@ -54,7 +54,7 @@ declare
 function query-a:params($mod as xs:anyURI)
 as map(*)
 {
-  let $vars:=inspect:module($mod)/variable[@external="true"]
+  let $vars:=inspect:module($mod=>trace("params"))/variable[@external="true"]
   return map:merge(
           $vars[@name=request:parameter-names()]!
               map:entry(@name,query-a:cast(request:parameter(@name/string()),@type))

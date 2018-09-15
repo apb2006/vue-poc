@@ -20,5 +20,6 @@ declare variable $targetpath as xs:anyURI external :="/vuepoc-test";
  : @default true
   :)
 declare variable $boolean as xs:boolean  external :=false();
-                                 
-dbtools:sync-from-path($targetpath, $srcpath)
+ 
+let $todo:="target"                                 
+return dbtools:sync-from-path($targetpath, $srcpath)

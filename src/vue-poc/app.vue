@@ -164,7 +164,8 @@
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
           {href: '/server/websocket',text: 'Web socket',icon: 'swap_calls'},
           {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
-          {href: '/server/ping',text: 'Ping',icon: 'update'}
+          {href: '/server/ping',text: 'Ping',icon: 'update'},
+          {href: '/server/settings',text: 'Server settings',icon: 'settings_applications'}
       ]},
       {
         icon: 'camera_roll',
@@ -204,7 +205,7 @@
       ]},
       
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v0.3.1)' , icon: 'help'    }, 
+      {href: '/about',text: 'About (v0.3.2)' , icon: 'help'    }, 
     ]
 
   }},

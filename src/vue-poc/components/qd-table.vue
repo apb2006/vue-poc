@@ -34,7 +34,15 @@
       :no-data-text="noDataMsg"
     >
     <template slot="items" slot-scope="props">
-    <slot></slot>
+     <td >
+        <v-checkbox
+          primary
+          hide-details
+          v-model="props.selected"
+        ></v-checkbox>
+      </td>
+      <td class="text-xs-left">{{ props.item.name }}</td>
+      <td class="text-xs-left">{{ props.item.permission }}</td>
     </template>
   </v-data-table>
   </v-card>
@@ -47,7 +55,6 @@
 	      default: [
 	        {
 	          text: 'Name',
-	          left: true,
 	          value: 'id'
 	        },
 	        { text: 'Permission', value: 'state' }
@@ -78,7 +85,7 @@
         HTTP.get(this.dataUri)
         .then(r=>{
            this.loading=false;
-           console.log("items",r);
+           console.log("items",r.data.items,"headers ",this.headers);
            this.items=r.data.items;
         })
      }

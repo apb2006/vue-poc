@@ -6,10 +6,11 @@
    
     
       <v-text-field
-        append-icon="search"
+        prepend-icon="filter_list"
         label="Filter logs"
         single-line
         hide-details
+        clearable
         v-model="search"
       ></v-text-field>
      

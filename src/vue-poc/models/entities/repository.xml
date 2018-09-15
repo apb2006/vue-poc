@@ -1,0 +1,20 @@
+<entity name="repo" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>An entry in the basex repository</description>
+
+	<fields>
+		<field name="name" type="xs:string">
+			<description>user name</description>
+			<xpath>@name</xpath>
+		</field>
+		<field name="version" type="xs:string">
+			<description>version</description>
+			<xpath>@version</xpath>
+		</field>
+		<field name="type" type="xs:string">
+      <description>type</description>
+      <xpath>@type</xpath>
+    </field>
+	</fields>
+	<views iconclass="setting_applications"/>
+	<data type="element(package)">repo:list()</data>
+</entity>

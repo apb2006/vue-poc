@@ -19,7 +19,7 @@
 			<xpath>@type</xpath>
 		</field>
 		<field name="ms" type="xs:integer">
-			<description>time ms)</description>
+			<description>time (ms)</description>
 			<xpath>@ms</xpath>
 		</field>
 		<field name="text" type="xs:string">

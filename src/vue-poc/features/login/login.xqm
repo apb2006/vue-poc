@@ -48,7 +48,6 @@ function vue-login:login(
   $name  as xs:string,
   $pass  as xs:string,
   $path as xs:string?) 
-as element(json) 
 {
   try {
     user:check($name, $pass),
@@ -86,11 +85,23 @@ declare %private function vue-login:accept(
   $pass  as xs:string,
   $path  as xs:string?
 ) {
+  let $expires:=current-dateTime() + xs:dayTimeDuration('P7D')
+  let $pic:="[FNn,3-3],[D01] [MNn,3-3] [Y4] [H01]:[m01]:[s01] [z]"
+  let $val:=``[remember=`{ random:uuid() }`; path=/; expires=`{ format-dateTime($expires,$pic) }`;]``
+   return (
   session:set($vue-login:SESSION-KEY, $name),
   admin:write-log('VUEPOC user was logged in: ' || $name),
+  
+  <rest:response>
+    <http:response>
+       <http:header name="Set-Cookie" value="{ $val }"/> 
+    </http:response>   
+   </rest:response>, 
+    
   <json type="object">
     <status type="boolean">true</status>
   </json>
+  )
 };
 
 (:~

@@ -17,13 +17,13 @@
 			<xpath>ent:data</xpath>
 		</field>
 		<field name="namespaces" type="xs:string?">
-            <description>XQuery code to declare namespaces</description>
-            <xpath>ent:namespace/concat("declare namespace ",@prefix,"='",@uri,"';&#13;&#10;")=>string-join()</xpath>
-        </field>
-        <field name="modules" type="xs:string?">
-            <description>XQuery code for module imports</description>
-            <xpath>ent:module/concat("import module namespace ",@prefix,"='",@namespace,"';&#13;&#10;")=>string-join()</xpath>
-        </field>
+			<description>XQuery code to declare namespaces</description>
+			<xpath>ent:namespace/concat("declare namespace ",@prefix,"='",@uri,"';&#13;&#10;")=>string-join()</xpath>
+		</field>
+		<field name="modules" type="xs:string?">
+			<description>XQuery code for module imports</description>
+			<xpath>ent:module/concat("import module namespace ",@prefix,"='",@namespace,"';&#13;&#10;")=>string-join()</xpath>
+		</field>
 		<field name="description" type="xs:string">
 			<description>description</description>
 			<xpath>ent:description</xpath>
@@ -48,16 +48,12 @@
 			<description>parent entity link if any</description>
 			<xpath>fn:concat("/data/entity/",ent:parent/@name)</xpath>
 		</field>
-	
-		<!-- 
-		<field name="fields" entity="field">
-            <description>parent entity link if any</description>
-            <xpath>ent:fields/ent:field</xpath>
-        </field>
-         -->
+
+		<!-- <field name="fields" entity="field"> <description>parent entity link 
+			if any</description> <xpath>ent:fields/ent:field</xpath> </field> -->
 	</fields>
 	<views iconclass="redeem">
-        <view name="filter">name description</view>
-   </views>
+		<view name="filter">name description</view>
+	</views>
 	<data type="element(ent:entity)">collection("vue-poc")//ent:entity</data>
 </entity>

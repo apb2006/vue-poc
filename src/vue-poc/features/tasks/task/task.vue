@@ -16,6 +16,10 @@
       </v-toolbar-title>  
     <v-spacer></v-spacer>
      <v-btn  color="primary"  @click="submit()"   :loading="loading"
+      :disabled="loading" icon>
+      <v-icon>history</v-icon>
+      </v-btn>
+     <v-btn  color="primary"  @click="submit()"   :loading="loading"
       :disabled="loading">
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>

@@ -10,7 +10,7 @@
 	<link rel="stylesheet" href="//fonts.googleapis.com/css?family=Roboto:300,400,500,700,400italic"/>
 	<link rel="stylesheet" href="//fonts.googleapis.com/icon?family=Material+Icons"/>
 	<link href="//maxcdn.bootstrapcdn.com/font-awesome/4.7.0/css/font-awesome.min.css" rel="stylesheet" type="text/css"/>
-	<link href="//unpkg.com/vuetify@1.1.13/dist/vuetify.min.css" rel="stylesheet" type="text/css"/>
+	<link href="//unpkg.com/vuetify@1.2.3/dist/vuetify.min.css" rel="stylesheet" type="text/css"/>
 	<link rel="stylesheet" href="//unpkg.com/@riophae/vue-treeselect@0.0.29/dist/vue-treeselect.min.css">
 	<link rel="stylesheet" href="//unpkg.com/vue-form-generator@2.2.2/dist/vfg-core.css"/>
 	<link rel="stylesheet" href="//unpkg.com/leaflet@1.0.3/dist/leaflet.css"/>
@@ -34,11 +34,11 @@
 </div>
 </div>
 
-<script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.16/vue.js"  crossorigin="anonymous"></script>
+<script src="//cdnjs.cloudflare.com/ajax/libs/vue/2.5.17/vue.js"  crossorigin="anonymous"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/vue-router/3.0.1/vue-router.js" crossorigin="anonymous"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/axios/0.17.1/axios.js" crossorigin="anonymous"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/qs/6.4.0/qs.js" crossorigin="anonymous" ></script>
-<script src="//unpkg.com/vuetify@1.1.13/dist/vuetify.min.js" crossorigin="anonymous"></script>
+<script src="//unpkg.com/vuetify@1.2.3/dist/vuetify.min.js" crossorigin="anonymous"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ace.js"  crossorigin="anonymous"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ext-language_tools.js"  crossorigin="anonymous"></script>
 <script src="//cdnjs.cloudflare.com/ajax/libs/ace/1.4.1/ext-linking.js" type="text/javascript" charset="utf-8"></script>
@@ -65,7 +65,7 @@
 <script src="/vue-poc/ui/app-gen.js"></script>
 <script>
 
-if('serviceWorker' in navigator) {
+if('serviceWorker' in navigator && false) {
   navigator.serviceWorker
            .register('/vue-poc/ui/serviceworker.js')
            .then(function() { console.log("Service Worker Registered"); });

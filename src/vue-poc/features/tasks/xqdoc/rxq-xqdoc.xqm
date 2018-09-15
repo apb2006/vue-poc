@@ -5,7 +5,7 @@ module namespace vue-api = 'quodatum:vue.api';
 
 import module namespace query-a = 'vue-poc/query-a' at "../../../lib/query-a.xqm";
 
-declare variable $vue-api:query:="tx-xqdoc.xq";
+declare variable $vue-api:query as xs:anyURI :=resolve-uri("tx-xqdoc.xq");
 
 
 (:~

@@ -3,10 +3,15 @@
  <v-container fluid>
    <qd-table :headers="headers" data-uri="data/user" entity="user" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
-     
-      <td >{{ props.item.id}}</td>
-      <td >{{ props.item.state }}</td>
-     
+      <td >
+        <v-checkbox
+          primary
+          hide-details
+          v-model="props.selected"
+        ></v-checkbox>
+      </td>
+      <td >{{ props.item.name}}</td>
+      <td >{{ props.item.permission }}</td>
     </template>
    </qd-table>
  </v-container>
@@ -21,12 +26,8 @@
       search: null,
       selected: [],
       headers: [
-        {
-          text: 'Name',
-          left: true,
-          value: 'id'
-        },
-        { text: 'Permissions', value: 'state' }
+        { text: 'Name', value: 'name'},
+        { text: 'Permission', value: 'permission' }
       ] 
       }
   },

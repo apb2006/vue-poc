@@ -2,10 +2,10 @@
 <template id="login">
  <v-layout>
     <v-flex xs12 sm6 offset-sm3>
-					<v-card class="grey lighten-4 elevation-0">
+					<v-card >
 					
 					      <v-card-title class="amber ">
-					        <span class="white--text">The current identity is not permissioned to access this page, please login again</span>
+					        <span class="white--text">The current credentials do the give access this page, please login again</span>
 					      </v-card-title>
 					    <v-alert color="error" v-bind:value="showMessage">
 					      {{message}}
@@ -32,7 +32,13 @@
 					              required
 					            ></v-text-field>      
 					    </v-card-actions>
-					        
+					    
+					     <v-card-actions> 
+					     <v-switch 
+                label="Remember me"  v-model="remember">
+              </v-switch> 
+              </v-card-actions>
+                
 					    <v-card-actions >
 					       <v-spacer></v-spacer>
 					       <v-btn  color="primary"  @click="go()">Continue</v-btn>
@@ -48,6 +54,7 @@
         hidepass: true,
         name:'',
         password: '',
+        remember: false,
         redirect: this.$route.query.redirect,
         message:"",
         showMessage:false
@@ -60,6 +67,7 @@
        var data={
              username: this.name, //gave the values directly for testing
              password: this.password,
+             remember: this.remember,
              redirect: this.redirect
              }
        HTTP.post("login-check",Qs.stringify( data))

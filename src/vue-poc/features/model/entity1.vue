@@ -28,6 +28,8 @@
     :loading="loading"
       :disabled="loading"
    >XML</v-btn>
+   
+   <a :href="dataurl" target="data">Data</a>
 	 </v-toolbar>
 
   <v-container fluid grid-list-md>
@@ -69,6 +71,11 @@
         this.xml=r.data;
             }) 
     }
+  },
+  computed: {
+    dataurl(){
+         return '/vue-poc/api/data/' + this.entity;
+       }
   },
   created:function(){
     this.getItem()

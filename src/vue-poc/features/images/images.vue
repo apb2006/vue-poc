@@ -10,10 +10,9 @@
       <v-btn  @click.stop="showFilter = true" icon><v-icon>filter_list</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
         <v-tooltip top  v-if="query.keyword || query.from || query.until">      
-        <v-btn @click="clear" icon slot="activator"
-       >
+        <v-btn @click="clear" icon slot="activator">
             <v-icon>clear</v-icon>
-           </v-btn>
+         </v-btn>
          <span>Clear search</span>
          </v-tooltip>
            <v-btn icon @click="getImages">
@@ -62,15 +61,15 @@
               :key="image.name"
             >
               <v-card  flat tile  >
-                <v-card-media :src="src(image)" v-bind:class="{ selcard: image.selected}" 
-                @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected "
-                height="100px" contain>
+                <div :style="style(image)" v-bind:class="{ selcard: image.selected}" 
+                @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected ">
                  <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
                  <v-avatar icon small v-if="image.geo">
                   <v-icon>place</v-icon>
                 </v-avatar>
-                </v-card-media>
-                
+                </div>
+               
+                <a :href="src(image)" target="thumb">{{image.id}}</a>
                 <div v-if="image.selected" style="position:absolute;right:0;top:0" >
                  <v-icon class="white primary--text">check_circle</v-icon>
                  </div>
@@ -227,7 +226,12 @@
     },
   methods:{
     src(item){
-        return "data:image/jpeg;base64,"+item.data
+         return "data:image/jpeg;base64,"+item.data;
+        //console.log('/vue-poc/api/images/list/'+ item.id +'/thumb')
+        //return '/vue-poc/api/images/list/'+ item.id +'/thumb'
+    },
+    style(item){
+      return "height:100px; background:url('"+this.src(item)+"'); background-repeat: no-repeat;background-position: center;background-size: contain;";
     },
     cyclelocation(){
       this.location.use=!this.location.use
@@ -241,6 +245,7 @@
         this.busy=false
         this.total=r.data.total
         this.images=r.data.items
+        console.log("III",this.images);
         var t1 = performance.now();
         var elapsed= 0.001 *(t1 - t0);
         var round = Vue.filter('round');

@@ -64,7 +64,7 @@
     return {
       xml:"<foo />",
       xmlValid: true,
-      xslt:'<xsl:stylesheet version="2.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">\n</xsl:stylesheet>',
+      xslt:'<xsl:stylesheet version="3.0" xmlns:xsl="http://www.w3.org/1999/XSL/Transform">\n<xsl:mode on-no-match="shallow-copy" /></xsl:stylesheet>',
       xslValid: true,
       aceSettings: {},
       result: "(result here)",

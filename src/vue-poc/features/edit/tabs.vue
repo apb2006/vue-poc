@@ -85,10 +85,29 @@
       </v-list>
     </v-menu>
     
-       <v-btn @click="showInfo = !showInfo" icon>
-              <v-icon v-if="showInfo">info</v-icon>
-              <v-icon v-else>mode_edit</v-icon>
-        </v-btn>
+    <v-menu>
+          <v-btn icon  slot="activator" ><v-icon>view_quilt</v-icon></v-btn>
+          <v-list dense>
+          <v-subheader >View</v-subheader>
+           <v-list-tile @click="showInfo = false" >
+		           <v-list-tile-action>
+		              <v-icon >mode_edit</v-icon>
+		            </v-list-tile-action>
+                 <v-list-tile-content>
+                <v-list-tile-title  >Source</v-list-tile-title>
+                </v-list-tile-content>
+           </v-list-tile>
+             
+           <v-list-tile  @click="showInfo = true" >
+              <v-list-tile-action>
+                  <v-icon >info</v-icon>
+                </v-list-tile-action>
+                 <v-list-tile-content>
+                <v-list-tile-title >Info</v-list-tile-title>
+              </v-list-tile>             
+          </v-list>         
+    </v-menu>
+    
         <v-menu left bottom  :close-on-content-click="false" >
           <a class="tabs__item" slot="activator">
           {{ items.length }}

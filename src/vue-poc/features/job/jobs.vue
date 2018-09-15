@@ -7,6 +7,7 @@
         label="Filter jobs"
         single-line
         hide-details
+        clearable
         v-model="search"
       ></v-text-field> 
       <v-spacer></v-spacer>
