@@ -7,6 +7,7 @@
      <v-card-title >
       <span class="white--text">Task: Generate <code>xqdoc</code></span>      
     </v-card-title>
+    <a>{{ id }}</a>
       <v-spacer></v-spacer>
      <v-btn  color="primary"  @click="submit()"   :loading="waiting"
       :disabled="waiting">
@@ -55,6 +56,7 @@
 			 },
 			waiting:false,
 			alert:{msg:"",success:false,error:false},
+			id: null
     }
   },
   methods:{
@@ -63,7 +65,8 @@
       this.alert={msg:"Loading..",success:false,error:false}
       HTTP.post("tasks/xqdoc",Qs.stringify(this.params))
       .then(r=>{
-        this.waiting=false      
+        this.waiting=false;
+        this.id= r.data.id;
         this.alert={msg:r.data.msg,success:true,error:false}
         console.log(r.data)
          settings.setItem('tasks/xqdoc',this.params)

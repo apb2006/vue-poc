@@ -59,7 +59,7 @@ function vue-api:edit-post($url as xs:string,$data)
  : Returns a file content.
  :)
 declare 
-%rest:GET %rest:path("/vue-poc/api/get")
+%rest:GET %rest:path("/vue-poc/api/get2")
 %rest:query-param("url", "{$url}")
 function vue-api:get-webfile($url as xs:string?)   
 as element(json)
@@ -79,15 +79,21 @@ as element(json)
 
 (:~
  : Returns a file content.
+ : @param $url starts with protocol
  :)
 declare 
-%rest:GET %rest:path("/vue-poc/api/get2")
+%rest:GET %rest:path("/vue-poc/api/get")
 %rest:query-param("url", "{$url}")
 %output:method("json")  
 function vue-api:get-file($url as xs:string?)   
 as element(json)
 {
-  let $path := $url
+  let $protocol := substring-before($url,":")
+  let $path:=if($protocol eq "webfile") then
+                  substring-after($url,":") =>ufile:web()
+             else
+                $url
+                
    return if( file:exists($path))then 
              let $type:=mt:type($path)
              let $fetch:=mt:fetch-fn($type("treat-as"))

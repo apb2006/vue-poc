@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<template id="tasks">
+<template id="taskhistory">
  <v-container fluid>
  <v-progress-linear v-if="loading" v-bind:indeterminate="true" ></v-progress-linear>
  <v-card>

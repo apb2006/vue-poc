@@ -34,7 +34,8 @@ let $type:= if($a="application/sparql-query") then
                 "text"
             else
                "binary"
- return map{"type":MediaType:type($a) ,"treat-as":$type}
+ return map{"type": MediaType:type($a) ,
+            "treat-as": $type}
 };
 
 
@@ -44,7 +45,7 @@ declare function mt:base-ext($filepath as xs:string)
 {
   let $ext:=file:name($filepath)=>substring-after(".")
   let $types:=map{"vue":".html","sch":".xml"}
-  return if($types($ext)) then $types($ext) else $ext
+  return ($types($ext),$ext)=>head()
 };
 
 (:~

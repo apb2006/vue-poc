@@ -34,8 +34,8 @@ declare
 %output:method("json")
 function vue-rest:task($task)   
 {
-  let $task:=doc("taskdef.xml")/tasks/task[@name=$task]
-  let $url:=resolve-uri($task/@url)
+  let $taskdef:=doc("taskdef.xml")/tasks/task[@name=$task]
+  let $url:=resolve-uri($taskdef/@url)
   let $info:=query-a:fields($url)
   return  $info
 };
@@ -50,12 +50,15 @@ declare
 %output:method("json")
 function vue-rest:runtask($task)   
 {
-  let $task:=doc("taskdef.xml")/tasks/task[@name=$task]
-  let $url:=resolve-uri($task/@url)
+  let $taskdef:=doc("taskdef.xml")/tasks/task[@name=$task]
+  let $url:=resolve-uri($taskdef/@url)
   let $params:=query-a:params($url)
+  let $log:=<task task="{ $task }" url="{ $url }">
+               { map:keys($params)!<param name="{.}">{map:get($params,.)}</param> }
+            </task>
   return (
     query-a:run($url,$params),
-    hlog:save(<task url="{ $url }"/>)
+    hlog:save($log)
   )
 };
     

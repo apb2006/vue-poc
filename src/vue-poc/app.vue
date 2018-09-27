@@ -132,7 +132,8 @@
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
       {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
-      {href: '/tasks',text: 'Tasks',icon: 'update'}
+      {href: '/tasks',text: 'Tasks',icon: 'update'},
+      {href: '/history/tasks',text: 'history',icon: 'history'}
       ]},
       {
         icon: 'folder_open',
@@ -142,7 +143,7 @@
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
     
-      {href: '/history',text: 'history',icon: 'history'}
+      {href: '/history/files',text: 'history',icon: 'history'}
       ]},
       {
         icon: 'memory',

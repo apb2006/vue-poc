@@ -37,8 +37,22 @@
     <div>{{item.description}}</div>
    <code>{{item.code}}</code>
    </div>
-     <pre>{{ xml }}</pre>
-     
+   
+    <v-expansion-panel v-model="panel" expand >
+    
+      <v-expansion-panel-content>
+		      <div slot="header" class="title">Code</div>
+		      <pre>{{ xml }}</pre>
+      </v-expansion-panel-content>
+      
+      <v-expansion-panel-content>
+          <div slot="header" class="title">Fields#</div>
+           <qd-table :headers="headers" data-uri="data/entity.field" entity="entity.field" no-data-msg="Nothing found">
+
+       </qd-table>
+      </v-expansion-panel-content>
+     </v-expansion-panel>
+   
   </v-container>
    </v-card>
 </template>
@@ -52,7 +66,16 @@
       },
 
       loading: false,
-      xml: null
+      xml: null,
+      selected: [],
+      headers: [
+        { text: 'Name', value: 'name', align: 'left'},
+        { text: 'parent', value: 'parent', align: 'left' },
+        {text: "type", value: "type"},
+        {text: "description", value: "description"},
+        {text: "xpath", value: "xpath"}
+      ],
+      panel: [true,true]
       }
   },
   methods:{

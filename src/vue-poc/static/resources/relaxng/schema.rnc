@@ -1,0 +1,10 @@
+datatypes xsd = "http://www.w3.org/2001/XMLSchema-datatypes"
+
+  element test { 
+    element link{ 
+        attribute to{xsd:IDREF}
+    },
+    element target{
+        attribute id{xsd:ID}
+    }
+}

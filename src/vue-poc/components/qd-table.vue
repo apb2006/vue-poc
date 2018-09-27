@@ -6,7 +6,7 @@
    <v-toolbar >
     <v-text-field
         append-icon="search"
-        label="Filter user"
+        label="Filter items..."
         single-line
         hide-details
         v-model="search"
@@ -41,8 +41,9 @@
           v-model="props.selected"
         ></v-checkbox>
       </td>
-      <td class="text-xs-left">{{ props.item.name }}</td>
-      <td class="text-xs-left">{{ props.item.permission }}</td>
+      <td class="text-xs-left">XX{{ props.item.name }}</td>
+      <td class="text-xs-left">YY{{ foo(props.item) }}</td>
+      <td v-for="col in headers" :key="col.name">zz{{ foo(props.index) }}</td>
     </template>
   </v-data-table>
   </v-card>
@@ -64,7 +65,7 @@
 	    default: "entity"
 	  },
 	  noDataMsg:{
-	    default: "No USERS found @todo"
+	    default: "No data found."
 	  },
 	  entity:{
       default: "entity"
@@ -88,6 +89,9 @@
            console.log("items",r.data.items,"headers ",this.headers);
            this.items=r.data.items;
         })
+     },
+     foo(x){
+       return 42
      }
   },
   created:function(){

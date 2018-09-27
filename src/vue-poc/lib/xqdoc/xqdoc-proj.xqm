@@ -6,6 +6,8 @@
  :)
 module namespace xqd = 'quodatum:build.xqdoc';
 import module namespace xp="expkg-zone58:text.parse";
+import module namespace store = 'quodatum.store' at '../store.xqm';
+
 declare namespace c="http://www.w3.org/ns/xproc-step";
 declare namespace xqdoc="http://www.xqdoc.org/1.0";
 
@@ -67,6 +69,36 @@ declare  function xqd:gendoc(
         )
  };
  
+ (:~
+ : save xqdoc and html for source file $f
+ : @param $f <c:file/>
+ : @param $target destination folder
+ : @param map
+ : @param 
+ :)
+declare  function xqd:gendoc2(
+                    $f as element(c:file),
+                    $op as xs:string, 
+                    $target as xs:string,
+                    $params as map(*)
+)
+ {
+  let $ip:= $f/@name/resolve-uri(.,base-uri(.))
+  let $xqdoc:= xqd:xqdoc($ip,map{})
+  let $xq:= fetch:text($ip)
+  let $params:=map:merge((map{
+                "source":$xq,
+                "filename":$f/@name/string(),
+                "cache":true(),
+                "show-private":true(),
+                "resources":"../resources/"},
+                $params))
+   return (
+       xqd:store2(xqd:parse($xq), "xparse.xml",$xqd:XML),
+        xqd:store2($xqdoc,"xqdoc.xml",$xqd:XML),
+        xqd:store2(xqd:xqdoc-html($xqdoc,$params), "index.html",$xqd:HTML5)
+        )
+ };
 (:~ 
  :save $data to $url , create fdolder if missing) 
  :)
@@ -77,6 +109,14 @@ declare function xqd:store($data,$url as xs:string,$params as map(*))
            if(file:is-dir($p)) then () else file:create-dir($p),
            file:write($url,$data,$params)
            )
+};
+
+(:~ 
+ :save $data to $url , create fdolder if missing) 
+ :)
+declare function xqd:store2($data,$url as xs:string,$params as map(*))
+{  
+  map{"document": $data, "uri":$url,"opts":$params}
 };
      
 (:~ parse XQuery 

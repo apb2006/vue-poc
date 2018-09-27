@@ -15,10 +15,8 @@
         </v-breadcrumbs>
       </v-toolbar-title>  
     <v-spacer></v-spacer>
-     <v-btn  color="primary"  @click="submit()"   :loading="loading"
-      :disabled="loading" icon>
-      <v-icon>history</v-icon>
-      </v-btn>
+       <router-link :to="{name:'taskhistory', query:{task: task}}"><v-icon>history</v-icon></router-link>
+   
      <v-btn  color="primary"  @click="submit()"   :loading="loading"
       :disabled="loading">
       <v-icon>play_circle_outline</v-icon>
@@ -54,7 +52,8 @@
     return {
 			loading: false,
 			snackbar: {show:false,msg:"",context:"success"},
-			valid: false
+			valid: false,
+			id: null
 		  
     }
   },
@@ -64,7 +63,7 @@
       this.$refs.params.submit()
       .then(r=>{
         this.loading= false
- 
+        this.id=r.data.id;
         this.snackbar= {show:true,
                         msg: r.data && r.data.msg, 
                         context:"success"

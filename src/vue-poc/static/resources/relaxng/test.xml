@@ -1,0 +1,4 @@
+<test>
+	<link to='a' />
+	<target id='a1' />
+</test>

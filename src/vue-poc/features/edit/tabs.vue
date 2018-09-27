@@ -18,7 +18,7 @@
       </v-menu>
       
        <v-menu v-if="active" left  transition="v-fade-transition" >
-        <v-btn icon  slot="activator" ><v-icon>subscriptions</v-icon></v-btn>
+        <v-btn   slot="activator" >Action<v-icon>arrow_drop_down</v-icon></v-btn>
           <v-list dense>
           <v-subheader >Actions</v-subheader>
                 <v-list-tile @click="format()" >
@@ -29,7 +29,7 @@
               </v-list-tile>             
           </v-list>         
       </v-menu>
-      
+      <v-btn>*{{ nextId }}</v-btn>
      
        <v-spacer></v-spacer>
        
@@ -338,15 +338,14 @@
   
   beforeRouteEnter (to, from, next) {
     Promise.all([settings.getItem('settings/ace'), 
-                 settings.getItem('edit/items'),
-                 settings.getItem('edit/currentId'),
+                 settings.getItem('edit/items')
                  ])
     .then(function(values) {
       next(vm => {
           vm.aceSettings = values[0];
           vm.items = values[1];
-          vm.currentId = values[2];
-          //console.log("done all",values);
+          vm.currentId = vm.items.length+1;
+          console.log("nextid: ",vm.currentId);
           })
           })
     },
@@ -356,14 +355,16 @@
     // be navigated away from.
     // has access to `this` component instance.
     settings.setItem('edit/items',this.items);
-    settings.setItem('edit/currentId',this.currentId);
     next(true);
   },
 
     created:function(){
       var url=this.$route.query.url;
-      if(url)this.loadItem(url);
+      if(url){
+        this.loadItem(url);
+      }else{
       var id=this.$route.query.id;
       this.currentId=id?id:null;
+      }
     }
 }</script>

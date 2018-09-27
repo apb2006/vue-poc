@@ -36,14 +36,14 @@ const router = new VueRouter({
     
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
-    { path: '/tabs', component: Tabs,meta:{title:"tab test"} },
-    { path: '/login', component: Login,meta:{title:"login"} },
-    { path: '/edit', component: Edit,meta:{title:"Ace editor"} },
+    { path: '/tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },
+  
+    { path: '/edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
     { path: '/server/users', component: Users,meta:{title:"Users"} },
     { path: '/server/repo', component: Repo,meta:{title:"Repository"} },
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
-   
+    { path: '/login', component: Login,meta:{title:"login"} },
     { path: '/settings', component: { template: '<router-view/>' }
          ,children: [
            {
@@ -88,8 +88,14 @@ const router = new VueRouter({
       { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} }
      ]
     },
-
-    { path: '/history', component: History, meta:{title:"File History"} },
+    { path: '/history', component: { template: '<router-view/>' }
+    ,children: [
+      { path: 'files', component: Filehistory, meta:{title: "File History"} },
+      { path: 'tasks', name: 'taskhistory', component: Taskhistory, meta:{title: "Task History"} },
+      ]
+    },
+   
+    
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/svg', component: Svg, meta:{title:"SVG"} },
     { path: '/svg2', component: Svg2, meta:{title:"SVG2"} },
@@ -101,7 +107,7 @@ const router = new VueRouter({
     
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
     
-    { path: '/tasks', component: Task, meta:{title:"Runnable tasks"} },
+    { path: '/tasks', component: Tasks, meta:{title:"Runnable tasks"} },
     { path: '/tasks/model', component: Model, meta:{title:"build model"} },
     { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },

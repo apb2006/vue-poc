@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<element name="test" xmlns="http://relaxng.org/ns/structure/1.0" datatypeLibrary="http://www.w3.org/2001/XMLSchema-datatypes">
+  <element name="link">
+    <attribute name="to">
+      <data type="IDREF"/>
+    </attribute>
+  </element>
+  <element name="target">
+    <attribute name="id">
+      <data type="ID"/>
+    </attribute>
+  </element>
+</element>

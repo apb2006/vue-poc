@@ -1,0 +1,1 @@
+dtd-default get attribute on load

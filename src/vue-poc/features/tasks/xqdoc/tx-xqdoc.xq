@@ -1,5 +1,6 @@
 (:~
  : Generate html for for XQuery sources
+ : @return info about the run (json format)
  :)
 import module namespace fw="quodatum:file.walker";
 import module namespace xqd = 'quodatum:build.xqdoc' at "../../../lib/xqdoc/xqdoc-proj.xqm";

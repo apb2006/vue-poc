@@ -15,7 +15,12 @@
 		<description>Generate documentation for folder</description>
 	</task>
 	
-<task name="xqdoc-rest" url="xqdoc/tx-xqdoc2.xq">
+	<task name="xqdoc2" url="xqdoc/tx-xqdoc2.xq">
+    <title>XQdoc 2</title>
+    <description>Generate xquery documentation for folder. Using standard task.</description>
+  </task>
+  
+<task name="xqdoc-rest" url="xqdoc/tx-xqrest.xq">
     <title>XQdoc rest</title>
     <description>XQdoc...</description>
   </task>
