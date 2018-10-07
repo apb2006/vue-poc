@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- main ui
+ -->
 <template id="vuepoc">
  <v-app id="app" :dark="dark" >
   <v-navigation-drawer

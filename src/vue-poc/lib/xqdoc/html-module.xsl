@@ -41,9 +41,9 @@
 				<link rel="stylesheet" type="text/css" href="{$resources}base.css" />
 
 				<link rel="stylesheet" type="text/css" href="{$resources}prettify.css" />
-
+        <link rel="stylesheet" type="text/css" href="{$resources}prism.css" />
 				<script src="{$resources}prettify.js" type="text/javascript">&#160;</script>
-				<script src="{$resources}lang-xq.js" type="text/javascript">&#160;</script>
+				<script src="{$resources}prism.js" type="text/javascript">&#160;</script>
 			</head>
 			<body class="home" id="top">
 				<div id="main">
@@ -58,8 +58,8 @@
 						mode="restxq" />
 					<div>
 						<h3 id="source">Original Source Code</h3>
-						<pre class="prettyprint lang-xq">
-							<xsl:value-of select="$source" />
+						<pre >
+						 <code class="language-xquery"><xsl:value-of select="$source" /></code>
 						</pre>
 					</div>
 					<br />

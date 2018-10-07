@@ -1,16 +1,7 @@
 <!DOCTYPE html>
 <template id="documentation">
  <v-container fluid>
-    <v-list>
-            <v-list-tile  v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar>
-              <v-list-tile-action>
-               <v-chip v-text="item.protocol">Example Chip</v-chip>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-   </v-list>
+    <a href="file:///c:/tmp" target="doc">go</</a>
  </v-container>
 </template>
 

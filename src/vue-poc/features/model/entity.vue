@@ -54,7 +54,7 @@
           </v-toolbar>
           <v-card-text>{{ props.item.description }}</<v-card-text>
           <v-card-text>
-           <v-badge color="red">
+           <v-badge >
 			      <span slot="badge">{{ props.item.nfields }}</span>
 			      Fields
 			    </v-badge>

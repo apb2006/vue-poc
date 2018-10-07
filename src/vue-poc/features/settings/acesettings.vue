@@ -5,8 +5,10 @@
   <v-layout row>
     <v-flex xs12 sm8 offset-sm2>
       <v-card>
-        <v-alert  color="warning" value="true">Not fully implemented</v-alert>
-      
+       <v-toolbar class="orange">
+        <v-card-title  >Common Ace editor settings</v-card-title>
+        </v-toolbar>
+      <v-card-text>
       <v-container fluid>
        <v-layout row>
           <v-flex xs6 class="pa-3">
@@ -84,7 +86,7 @@
             </v-list-tile>
             
         </v-list>
-        <v-card-text>
+        
        
     </v-card-text>
       </v-card>

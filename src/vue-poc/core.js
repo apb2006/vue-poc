@@ -182,6 +182,7 @@ Vue.component('l-map', Vue2Leaflet.LMap);
 Vue.component('l-tilelayer', Vue2Leaflet.LTileLayer);
 Vue.component('l-marker', Vue2Leaflet.LMarker);
 
+
 //function install (Vue) {
 //  Vue.component('form-schema', window["vue-json-schema"].default);
 //};

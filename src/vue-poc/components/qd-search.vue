@@ -1,6 +1,8 @@
 <!DOCTYPE html>
 <!-- 
- search
+ search box.
+ dropdown shows matching pages
+ press return for server search
  -->
 <template id="qd-search">
   <v-combobox
@@ -12,7 +14,30 @@
               @keyup.enter="goSearch"
               :search-input.sync="si" 
               v-model="q"
-            ></v-combobox>
+            >
+            
+            <template  slot="item"  slot-scope="{ index, item, parent }" >
+		             <v-list-tile-action>
+		                 <v-btn icon :to="item.value">
+		                  <v-icon>pages</v-icon>
+		                 </v-btn>
+		            </v-list-tile-action>
+                       
+					      <v-list-tile-title>
+					          {{ item.text }}
+					      </v-list-tile-title>
+					      <v-spacer></v-spacer>
+					      <v-list-tile-action @click.stop>
+					        <v-btn
+					          icon
+					          :to="item.value"
+					        >
+                        <v-icon>arrow_forward</v-icon>					         
+					        </v-btn>
+					      </v-list-tile-action>
+             </template>
+              
+     </v-combobox>
 </template>
 
 <script>{
@@ -32,7 +57,7 @@
       this.loading = true
       // Simulated ajax query
       setTimeout(() => {
-        this.items2 = this.si?this.pages(this.si.toLowerCase()):[],
+        this.items2 = this.si?this.matchItems(this.si.toLowerCase()):[],
         this.loading = false
       }, 500)
     },
@@ -40,7 +65,8 @@
     goSearch(){
         this.$router.push({path: '/search',query: { q: this.q }})
       },
-    pages(typed){
+      
+    matchItems(typed){
         var hits=this.$router.options.routes;
         console.log(hits.length,hits);
          hits=hits.filter(item=>{
@@ -50,7 +76,13 @@
           return i.indexOf(typed) !== -1});
          
          console.log("pages",typed," r:",hits);
-        return hits.map(r=>{return {text:r.meta.title,value:r.path}});
+        return hits.map(r=>{return {text:r.meta.title,
+                                    value:r.path}
+                      });
+      },
+      
+      gopage(){
+        alert("GO")
       }
   },
   watch: {

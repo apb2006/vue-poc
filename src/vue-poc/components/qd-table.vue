@@ -5,7 +5,7 @@
   <v-card >
    <v-toolbar >
     <v-text-field
-        append-icon="search"
+        prepend-icon="filter_list" 
         label="Filter items..."
         single-line
         hide-details
@@ -41,9 +41,7 @@
           v-model="props.selected"
         ></v-checkbox>
       </td>
-      <td class="text-xs-left">XX{{ props.item.name }}</td>
-      <td class="text-xs-left">YY{{ foo(props.item) }}</td>
-      <td v-for="col in headers" :key="col.name">zz{{ foo(props.index) }}</td>
+      <td v-for="col in headers" :key="col.name">{{ foo(props,col) }}</td>
     </template>
   </v-data-table>
   </v-card>
@@ -54,10 +52,7 @@
 	  props: {
 	    headers: {
 	      default: [
-	        {
-	          text: 'Name',
-	          value: 'id'
-	        },
+	        { text: 'Name', value: 'id'},
 	        { text: 'Permission', value: 'state' }
 	      ]
 	  },
@@ -90,8 +85,12 @@
            this.items=r.data.items;
         })
      },
-     foo(x){
-       return 42
+     foo(props,header){
+       //console.log("value ",header)
+       if(header){
+         return  props.item[header.value]
+       }
+       return props.selected
      }
   },
   created:function(){

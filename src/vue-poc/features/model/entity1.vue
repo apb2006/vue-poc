@@ -19,10 +19,10 @@
         </v-breadcrumbs>
 	 </v-toolbar-title>
 	 <v-spacer></v-spacer>
-	 <v-btn @click="getItem"
+	 <v-btn icon @click="getItem"
 	  :loading="loading"
       :disabled="loading"
-	 >Refresh</v-btn>
+	 ><v-icon>refresh</v-icon></v-btn>
 	 
 	  <v-btn @click="getxml"
     :loading="loading"
@@ -35,19 +35,22 @@
   <v-container fluid grid-list-md>
   <div v-if="item">
     <div>{{item.description}}</div>
-   <code>{{item.code}}</code>
    </div>
    
     <v-expansion-panel v-model="panel" expand >
     
       <v-expansion-panel-content>
 		      <div slot="header" class="title">Code</div>
-		      <pre>{{ xml }}</pre>
+		      <prism language="xquery">{{ item.code }}</prism>
       </v-expansion-panel-content>
       
       <v-expansion-panel-content>
-          <div slot="header" class="title">Fields#</div>
-           <qd-table :headers="headers" data-uri="data/entity.field" entity="entity.field" no-data-msg="Nothing found">
+          <div slot="header" class="title">
+          <v-badge >
+               <span slot="badge">{{ item.nfields }}</span>Fields
+          </v-badge>
+           </div>
+           <qd-table :headers="headers" :data-uri='"data/entity/"+entity +"/field"' entity="entity.field" no-data-msg="Nothing found">
 
        </qd-table>
       </v-expansion-panel-content>
@@ -58,6 +61,9 @@
 </template>
 
 <script>{
+  components: { 
+    "prism": PrismComponent
+    },
   props: ['entity'],
   data:  function(){
     return {

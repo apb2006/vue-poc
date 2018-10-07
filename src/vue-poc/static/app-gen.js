@@ -1,4 +1,4 @@
-// generated 2018-09-26T22:20:16.666+01:00
+// generated 2018-10-07T12:59:06.336+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -193,7 +193,27 @@ Vue.component('qd-panel',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-search.vue
 Vue.component('qd-search',{template:` 
-  <v-combobox placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" clearable="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q"></v-combobox>
+  <v-combobox placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" clearable="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q">
+            
+            <template slot="item" slot-scope="{ index, item, parent }">
+		             <v-list-tile-action>
+		                 <v-btn icon="" :to="item.value">
+		                  <v-icon>pages</v-icon>
+		                 </v-btn>
+		            </v-list-tile-action>
+                       
+					      <v-list-tile-title>
+					          {{ item.text }}
+					      </v-list-tile-title>
+					      <v-spacer></v-spacer>
+					      <v-list-tile-action @click.stop="">
+					        <v-btn icon="" :to="item.value">
+                        <v-icon>arrow_forward</v-icon>					         
+					        </v-btn>
+					      </v-list-tile-action>
+             </template>
+              
+     </v-combobox>
  `,
       
   data:function(){return {
@@ -212,7 +232,7 @@ Vue.component('qd-search',{template:`
       this.loading = true
       // Simulated ajax query
       setTimeout(() => {
-        this.items2 = this.si?this.pages(this.si.toLowerCase()):[],
+        this.items2 = this.si?this.matchItems(this.si.toLowerCase()):[],
         this.loading = false
       }, 500)
     },
@@ -220,7 +240,8 @@ Vue.component('qd-search',{template:`
     goSearch(){
         this.$router.push({path: '/search',query: { q: this.q }})
       },
-    pages(typed){
+      
+    matchItems(typed){
         var hits=this.$router.options.routes;
         console.log(hits.length,hits);
          hits=hits.filter(item=>{
@@ -230,7 +251,13 @@ Vue.component('qd-search',{template:`
           return i.indexOf(typed) !== -1});
          
          console.log("pages",typed," r:",hits);
-        return hits.map(r=>{return {text:r.meta.title,value:r.path}});
+        return hits.map(r=>{return {text:r.meta.title,
+                                    value:r.path}
+                      });
+      },
+      
+      gopage(){
+        alert("GO")
       }
   },
   watch: {
@@ -247,7 +274,7 @@ Vue.component('qd-table',{template:`
  <v-container fluid="">
   <v-card>
    <v-toolbar>
-    <v-text-field append-icon="search" label="Filter items..." single-line="" hide-details="" v-model="search" clearable=""></v-text-field>   
+    <v-text-field prepend-icon="filter_list" label="Filter items..." single-line="" hide-details="" v-model="search" clearable=""></v-text-field>   
       <v-spacer></v-spacer>
          <v-btn icon="" :loading="loading" :disabled="loading" @click="getItems">
     <v-icon>refresh</v-icon>
@@ -260,9 +287,7 @@ Vue.component('qd-table',{template:`
      <td>
         <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
       </td>
-      <td class="text-xs-left">XX{{ props.item.name }}</td>
-      <td class="text-xs-left">YY{{ foo(props.item) }}</td>
-      <td v-for="col in headers" :key="col.name">zz{{ foo(props.index) }}</td>
+      <td v-for="col in headers" :key="col.name">{{ foo(props,col) }}</td>
     </template>
   </v-data-table>
   </v-card>
@@ -272,10 +297,7 @@ Vue.component('qd-table',{template:`
 	  props: {
 	    headers: {
 	      default: [
-	        {
-	          text: 'Name',
-	          value: 'id'
-	        },
+	        { text: 'Name', value: 'id'},
 	        { text: 'Permission', value: 'state' }
 	      ]
 	  },
@@ -308,8 +330,12 @@ Vue.component('qd-table',{template:`
            this.items=r.data.items;
         })
      },
-     foo(x){
-       return 42
+     foo(props,header){
+       //console.log("value ",header)
+       if(header){
+         return  props.item[header.value]
+       }
+       return props.selected
      }
   },
   created:function(){
@@ -930,9 +956,11 @@ Vue.use(Auth);
 Vue.filter("formatDate", function(date) {
     return moment(date).format("MMMM D, YYYY")
 });
+
 Vue.filter("fromNow", function(date) {
   return moment(date).fromNow()
 });
+
 Vue.filter('readablizeBytes', function (bytes,decimals) {
   if(bytes == 0) return '0 Bytes';
   var k = 1000,
@@ -941,9 +969,11 @@ Vue.filter('readablizeBytes', function (bytes,decimals) {
       i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 });
+
 Vue.filter("any", function(any) {
   return "ANY"
 });
+
 /**
  * Vue filter to round the decimal to the given place.
  * http://jsfiddle.net/bryan_k/3ova17y9/
@@ -4289,18 +4319,9 @@ const Leaflet=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/documentation.vue
 const Documentation=Vue.extend({template:` 
  <v-container fluid="">
-    <v-list>
-            <v-list-tile v-for="item in items" v-bind:key="item.title" @click="doEdit(item)" avatar="">
-              <v-list-tile-action>
-               <v-chip v-text="item.protocol">Example Chip</v-chip>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title @click="doEdit(item)" v-text="item.url"></v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-   </v-list>
- </v-container>
- `,
+    <a href="file:///c:/tmp" target="doc">go<!--</a-->
+ </a></v-container><a href="file:///c:/tmp" target="doc">
+</a> `,
       
   data:  function(){
     return {
@@ -4362,7 +4383,7 @@ const Entity=Vue.extend({template:`
           </v-toolbar>
           <v-card-text>{{ props.item.description }}<!--<v-card-text-->
           <v-card-text>
-           <v-badge color="red">
+           <v-badge>
 			      <span slot="badge">{{ props.item.nfields }}</span>
 			      Fields
 			    </v-badge>
@@ -4432,7 +4453,7 @@ const Entity1=Vue.extend({template:`
         </v-breadcrumbs>
 	 </v-toolbar-title>
 	 <v-spacer></v-spacer>
-	 <v-btn @click="getItem" :loading="loading" :disabled="loading">Refresh</v-btn>
+	 <v-btn icon="" @click="getItem" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
 	 
 	  <v-btn @click="getxml" :loading="loading" :disabled="loading">XML</v-btn>
    
@@ -4442,19 +4463,22 @@ const Entity1=Vue.extend({template:`
   <v-container fluid="" grid-list-md="">
   <div v-if="item">
     <div>{{item.description}}</div>
-   <code>{{item.code}}</code>
    </div>
    
     <v-expansion-panel v-model="panel" expand="">
     
       <v-expansion-panel-content>
 		      <div slot="header" class="title">Code</div>
-		      <pre>{{ xml }}</pre>
+		      <prism language="xquery">{{ item.code }}</prism>
       </v-expansion-panel-content>
       
       <v-expansion-panel-content>
-          <div slot="header" class="title">Fields#</div>
-           <qd-table :headers="headers" data-uri="data/entity.field" entity="entity.field" no-data-msg="Nothing found">
+          <div slot="header" class="title">
+          <v-badge>
+               <span slot="badge">{{ item.nfields }}</span>Fields
+          </v-badge>
+           </div>
+           <qd-table :headers="headers" :data-uri="&quot;data/entity/&quot;+entity +&quot;/field&quot;" entity="entity.field" no-data-msg="Nothing found">
 
        </qd-table>
       </v-expansion-panel-content>
@@ -4464,6 +4488,9 @@ const Entity1=Vue.extend({template:`
    </v-card>
  `,
       
+  components: { 
+    "prism": PrismComponent
+    },
   props: ['entity'],
   data:  function(){
     return {
@@ -5260,8 +5287,10 @@ const Acesettings=Vue.extend({template:`
   <v-layout row="">
     <v-flex xs12="" sm8="" offset-sm2="">
       <v-card>
-        <v-alert color="warning" value="true">Not fully implemented</v-alert>
-      
+       <v-toolbar class="orange">
+        <v-card-title>Common Ace editor settings</v-card-title>
+        </v-toolbar>
+      <v-card-text>
       <v-container fluid="">
        <v-layout row="">
           <v-flex xs6="" class="pa-3">
@@ -5328,10 +5357,10 @@ const Acesettings=Vue.extend({template:`
             </v-list-tile>
             
         </v-list>
-        <v-card-text>
+        
        
-    </v-card-text>
-      </v-container></v-card>
+    </v-container></v-card-text>
+      </v-card>
     </v-flex>
   </v-layout>
   </v-container>
@@ -6956,6 +6985,7 @@ var sockhost=('https:'==window.location.protocol?'wss:':'ws:')+'//'+ window.loca
 Vue.component('l-map', Vue2Leaflet.LMap);
 Vue.component('l-tilelayer', Vue2Leaflet.LTileLayer);
 Vue.component('l-marker', Vue2Leaflet.LMarker);
+
 
 //function install (Vue) {
 //  Vue.component('form-schema', window["vue-json-schema"].default);

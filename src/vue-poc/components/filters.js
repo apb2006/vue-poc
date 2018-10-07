@@ -10,9 +10,11 @@
 Vue.filter("formatDate", function(date) {
     return moment(date).format("MMMM D, YYYY")
 });
+
 Vue.filter("fromNow", function(date) {
   return moment(date).fromNow()
 });
+
 Vue.filter('readablizeBytes', function (bytes,decimals) {
   if(bytes == 0) return '0 Bytes';
   var k = 1000,
@@ -21,9 +23,11 @@ Vue.filter('readablizeBytes', function (bytes,decimals) {
       i = Math.floor(Math.log(bytes) / Math.log(k));
   return parseFloat((bytes / Math.pow(k, i)).toFixed(dm)) + ' ' + sizes[i];
 });
+
 Vue.filter("any", function(any) {
   return "ANY"
 });
+
 /**
  * Vue filter to round the decimal to the given place.
  * http://jsfiddle.net/bryan_k/3ova17y9/
