@@ -22,7 +22,11 @@
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
      </v-toolbar>
-    
+     
+     <v-card-text v-if="id">
+       {{ id }}
+     </v-card-text>
+     
     <v-card-text>
       <v-container fluid>
         <v-layout row wrap>   
@@ -30,8 +34,6 @@
                  <vp-paramform ref="params" :endpoint="'tasks/'+task"></vp-paramform>
           </v-flex>
         </v-layout>
-      
-  
       </v-container>
     </v-card-text>
       <v-snackbar    v-model="snackbar.show"
@@ -76,6 +78,22 @@
         console.log(error);
       });
    }
+  },
+  watch:{
+    id(v){
+      this.$router.push({  query: { id: this.id }})
+      },
+      
+      $route(vnew,vold){
+         console.log("ROUTE",vnew,vold)    
+         var id=this.$route.query.id
+         this.id=id?id:null;
+         if(vnew.query.url != vold.query.url) alert("gg")
+      }
+  },
+  
+  created:function(){
+    this.id=this.$route.query.id
   }
 }
 </script>

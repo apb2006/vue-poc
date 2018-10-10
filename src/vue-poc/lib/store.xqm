@@ -10,7 +10,8 @@ module namespace store = 'quodatum.store';
 declare %updating 
 function store:store($docs as map(*)*,$base as xs:string)
 {
-$docs!store:store1(.,$base)
+let $base:=if(contains($base,"\"))then file:path-to-uri($base) else $base
+return $docs!store:store1(.,$base)
 };
 
 declare %updating 
@@ -21,7 +22,7 @@ function store:store1($doc as map(*),$base as xs:string)
   return switch (substring-before($uri,":"))
           case "file" return store:file($doc?document,$uri,$opts)
           case "xmldb" return store:xmldb($doc?document,$uri,$opts)
-          default return error("unknown protocol")
+          default return error("unknown protocol:" || $uri)
 };
 
 (:~ 

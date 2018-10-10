@@ -76,7 +76,7 @@ let $this:=$entity:list("entity")
  let $fields:=$this?json
  let $item:=$items[@name=$entity]
  (: just one :)
- return <json objects="json">{dice:json-flds($item,$fields)/*}</json>
+ return $item
 
 };
 

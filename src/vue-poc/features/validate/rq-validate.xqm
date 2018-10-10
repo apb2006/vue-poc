@@ -33,6 +33,6 @@ declare
 function tx:parameters( )
 {
    let $xq:=resolve-uri("tx-validate.xq")
-   return query-a:fields($xq)
+   return query-a:inspect($xq)
 };
 

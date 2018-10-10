@@ -82,7 +82,7 @@ declare  function xqd:gendoc2(
                     $target as xs:string,
                     $params as map(*)
 )
- {
+as map(*)* {
   let $ip:= $f/@name/resolve-uri(.,base-uri(.))
   let $xqdoc:= xqd:xqdoc($ip,map{})
   let $xq:= fetch:text($ip)
@@ -112,7 +112,7 @@ declare function xqd:store($data,$url as xs:string,$params as map(*))
 };
 
 (:~ 
- :save $data to $url , create fdolder if missing) 
+ : return intent to save $data to $url with serialization $params
  :)
 declare function xqd:store2($data,$url as xs:string,$params as map(*))
 {  
@@ -159,13 +159,15 @@ declare function xqd:export-resources($target as xs:string)
 archive:extract-to($target, file:read-binary(resolve-uri('resources.zip')))
 }; 
 (:~ 
- : return all rest:path annotations
+ : return all matching annotations in xqdoc
   :)
-declare function xqd:rxq($xqdoc  as element(xqdoc:xqdoc)) 
+declare function xqd:annotations($xqdoc  as element(xqdoc:xqdoc),
+                                 $annotns as xs:string,
+                                 $aname as xs:string) 
 as element(xqdoc:annotation)*
 {
-   let $restxq:=$xqdoc//xqdoc:namespace[@uri='http://exquery.org/ns/restxq']/@prefix/string()
-  return $xqdoc//xqdoc:annotations/xqdoc:annotation[@name=(for $p in $restxq return concat($p,':path'))]
+   let $prefixes:=$xqdoc//xqdoc:namespace[@uri=$annotns]/@prefix/string()
+  return $xqdoc//xqdoc:annotations/xqdoc:annotation[@name=(for $p in $prefixes return concat($p,':',$aname))]
 
 };
 

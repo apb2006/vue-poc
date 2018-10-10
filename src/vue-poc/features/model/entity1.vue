@@ -40,7 +40,9 @@
     <v-expansion-panel v-model="panel" expand >
     
       <v-expansion-panel-content>
-		      <div slot="header" class="title">Code</div>
+		      <div slot="header" class="title">Type: <code>{{ item.type }}</code></div>
+		       <prism language="xquery">{{ item.modules }}</prism>
+		       <prism language="xquery">{{ item.namespaces }}</prism>
 		      <prism language="xquery">{{ item.code }}</prism>
       </v-expansion-panel-content>
       
@@ -81,7 +83,7 @@
         {text: "description", value: "description"},
         {text: "xpath", value: "xpath"}
       ],
-      panel: [true,true]
+      panel: [false, true]
       }
   },
   methods:{

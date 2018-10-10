@@ -6,12 +6,13 @@
 module namespace query-a = 'vue-poc/query-a';
 
 import module namespace request = "http://exquery.org/ns/request";
-declare namespace map2='http://www.woerteler.de/xquery/modules/map-extras';
+
+
 (:~
  : attributes of a stored query including parameters and updating status.
  : @return json format
  :)
-declare function query-a:fields($mod as xs:anyURI)
+declare function query-a:inspect($mod as xs:anyURI)
 as element(json)
 {
 let $updating:=xquery:parse-uri($mod)/@updating/string()

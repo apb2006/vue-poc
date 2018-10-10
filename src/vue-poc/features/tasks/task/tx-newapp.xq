@@ -12,9 +12,11 @@ declare variable $name as xs:string  external :="myapp";
 
 
 (:~
-: new app
+: generate new app code with given name
 :)
-declare function local:new($name as xs:string){
+declare function local:new($name as xs:string)
+as xs:base64Binary
+{
     let $archive:=file:read-binary(fn:resolve-uri('./data/vuetif.zip'))
    let $contents := archive:extract-binary($archive)
    let $entries:= archive:entries($archive)

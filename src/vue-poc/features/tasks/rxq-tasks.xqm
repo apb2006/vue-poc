@@ -36,7 +36,7 @@ function vue-rest:task($task)
 {
   let $taskdef:=doc("taskdef.xml")/tasks/task[@name=$task]
   let $url:=resolve-uri($taskdef/@url)
-  let $info:=query-a:fields($url)
+  let $info:=query-a:inspect($url)
   return  $info
 };
   

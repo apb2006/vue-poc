@@ -38,5 +38,5 @@ declare
 function vue-api:settings()   
 {
     let $xq:=resolve-uri($vue-api:query)
-   return query-a:fields($xq)
+   return query-a:inspect($xq)
 };

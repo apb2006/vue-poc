@@ -119,7 +119,9 @@ return file:write-text($DEST,string-join(($comment,
 (:~
  : return sequence of file paths starting from $path matching $filter
  :)
- declare function vue:filelist($path as xs:string,$filter as xs:string){
+ declare function vue:filelist($path as xs:string,$filter as xs:string)
+ as xs:string*
+ {
       fw:directory-list($path,map{"include-filter": $filter})
              //c:file/@name/resolve-uri(.,base-uri(.))
  };

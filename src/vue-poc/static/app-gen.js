@@ -1,4 +1,4 @@
-// generated 2018-10-07T12:59:06.336+01:00
+// generated 2018-10-10T22:55:09.766+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -4468,7 +4468,9 @@ const Entity1=Vue.extend({template:`
     <v-expansion-panel v-model="panel" expand="">
     
       <v-expansion-panel-content>
-		      <div slot="header" class="title">Code</div>
+		      <div slot="header" class="title">Type: <code>{{ item.type }}</code></div>
+		       <prism language="xquery">{{ item.modules }}</prism>
+		       <prism language="xquery">{{ item.namespaces }}</prism>
 		      <prism language="xquery">{{ item.code }}</prism>
       </v-expansion-panel-content>
       
@@ -4508,7 +4510,7 @@ const Entity1=Vue.extend({template:`
         {text: "description", value: "description"},
         {text: "xpath", value: "xpath"}
       ],
-      panel: [true,true]
+      panel: [false, true]
       }
   },
   methods:{
@@ -5466,7 +5468,7 @@ const Settings=Vue.extend({template:`
  <v-container fluid="">
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
 <v-switch label="Dark theme" v-model="dark" @change="theme"></v-switch>
-<v-switch label="Use service worker" v-model="serviceworker"></v-switch>
+<v-switch label="Use service worker" v-model="serviceworker" @change="worker"></v-switch>
 	 <v-card>
 	   <v-card-title class="lime darken-1">Available settings</v-card-title>
 	  
@@ -5489,23 +5491,47 @@ const Settings=Vue.extend({template:`
     keys: ["?"],
     showDev: false,
     dark:false,
-    serviceworker:true
+    serviceworker: true
   }
   },
   methods:{
-   
     theme(){
-     this.$root.$emit("theme",this.dark)
+      settings.setItem('settings/dark',this.dark)
+      .then(v=>{
+        this.$root.$emit("theme",this.dark)
+      })
+      
+    },
+    worker(){
+      settings.setItem('features/serviceworker',this.serviceworker)
+      .then(v=>{
+        console.log("worker",this.serviceworker)
+      })
     }
   },
+  
   created(){
     console.log("settings")
     settings.keys()
     .then( v =>{
      this.keys=v
     })
-     
-  }
+   },
+   
+   beforeRouteEnter (to, from, next) {
+     Promise.all([
+      settings.getItem('features/serviceworker'),
+      settings.getItem('settings/dark')
+      ])
+      .then( v =>{
+        next(vm => {
+                   console.log("got ",v)
+                   vm.serviceworker = v[0];
+                   vm.dark = v[1];
+        })
+          })
+          
+   }
 }
 
       );
@@ -5614,7 +5640,11 @@ const Runtask=Vue.extend({template:`
       <v-icon>play_circle_outline</v-icon>
       Run</v-btn>
      </v-toolbar>
-    
+     
+     <v-card-text v-if="id">
+       {{ id }}
+     </v-card-text>
+     
     <v-card-text>
       <v-container fluid="">
         <v-layout row="" wrap="">   
@@ -5622,8 +5652,6 @@ const Runtask=Vue.extend({template:`
                  <vp-paramform ref="params" :endpoint="'tasks/'+task"></vp-paramform>
           </v-flex>
         </v-layout>
-      
-  
       </v-container>
     </v-card-text>
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
@@ -5663,6 +5691,22 @@ const Runtask=Vue.extend({template:`
         console.log(error);
       });
    }
+  },
+  watch:{
+    id(v){
+      this.$router.push({  query: { id: this.id }})
+      },
+      
+      $route(vnew,vold){
+         console.log("ROUTE",vnew,vold)    
+         var id=this.$route.query.id
+         this.id=id?id:null;
+         if(vnew.query.url != vold.query.url) alert("gg")
+      }
+  },
+  
+  created:function(){
+    this.id=this.$route.query.id
   }
 }
 
@@ -6867,8 +6911,8 @@ var settings = {
                       enableBasicAutocompletion:true,
                       enableLiveAutocompletion:true
                       },
-        
-       "features/serviceworker": true,
+       "settings/dark": false,
+       "features/serviceworker": false,
        "edit/items":[
          {name:"web.txt", id:"1", mode:"text", dirty: false, 
            text:`Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
@@ -6886,7 +6930,6 @@ return $a   `},
 </foo>`}
        ],
        "edit/currentId": "?",
-       "system/serviceworker": true,
        "images/thumbtask":`
 <thumbnail>
     <size width="100" height="100"/>

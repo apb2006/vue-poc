@@ -63,8 +63,8 @@ var settings = {
                       enableBasicAutocompletion:true,
                       enableLiveAutocompletion:true
                       },
-        
-       "features/serviceworker": true,
+       "settings/dark": false,
+       "features/serviceworker": false,
        "edit/items":[
          {name:"web.txt", id:"1", mode:"text", dirty: false, 
            text:`Lorem ipsum dolor sit amet, consectetur adipiscing elit, 
@@ -82,7 +82,6 @@ return $a   `},
 </foo>`}
        ],
        "edit/currentId": "?",
-       "system/serviceworker": true,
        "images/thumbtask":`
 <thumbnail>
     <size width="100" height="100"/>
