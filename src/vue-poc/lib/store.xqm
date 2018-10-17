@@ -11,7 +11,7 @@ declare %updating
 function store:store($docs as map(*)*,$base as xs:string)
 {
 let $base:=if(contains($base,"\"))then file:path-to-uri($base) else $base
-return $docs!store:store1(.,$base)
+return $docs!store:store1(.,trace($base,">>>>>"))
 };
 
 declare %updating 

@@ -16,6 +16,9 @@ declare variable $xqd:XML:=map{"indent": "no"};
 declare variable $xqd:mod-xslt external :="html-module.xsl";
 declare variable $xqd:index-xslt external :="html-index.xsl";
 
+(:~  @see https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods :)
+declare variable $xqd:methods:=("GET","HEAD","POST","PUT","DELETE","PATCH");
+
 (:~ 
  : save documentation for files to target
  : @param $files c:directory-list
@@ -168,6 +171,20 @@ as element(xqdoc:annotation)*
 {
    let $prefixes:=$xqdoc//xqdoc:namespace[@uri=$annotns]/@prefix/string()
   return $xqdoc//xqdoc:annotations/xqdoc:annotation[@name=(for $p in $prefixes return concat($p,':',$aname))]
+
+};
+
+(:~ 
+ : return annotations with namespace and name
+  :)
+declare function xqd:methods($annots  as element(xqdoc:annotations),
+                                 $annotns as xs:string,
+                                 $aname as xs:string) 
+as element(xqdoc:annotation)*
+{
+   let $ns:=$annots/ancestor::xqdoc:xqdoc/xqdoc:namespaces
+   let $prefixes:=$ns/xqdoc:namespace[@uri=$annotns]/@prefix/string()
+  return $annots/xqdoc:annotation[@name=(for $p in $prefixes return concat($p,':',$aname))]
 
 };
 
