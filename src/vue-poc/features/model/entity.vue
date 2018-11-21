@@ -3,19 +3,23 @@
 <v-card>
 	<v-toolbar >
 	 <v-toolbar-title> 
-	    <v-breadcrumbs >
-            <v-breadcrumbs-item  to="/entity" :exact="true">
-            Entities
-            </v-breadcrumbs-item>
+	    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]" >
+				     <template slot="item" slot-scope="props">
+			           <v-breadcrumbs-item  :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+			                {{ props.item.text }}
+			            </v-breadcrumbs-item>
+			        </template>
+         </v-breadcrumbs>
        </v-toolbar-title>
-	 <v-spacer></v-spacer>
+	 
 	 <v-text-field  prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"
    :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
-	 <v-btn @click="getItems"
+   <v-spacer></v-spacer>
+	 <v-btn @click="getItems" icon
 	  :loading="loading"
       :disabled="loading"
-	 >Refresh</v-btn>
+	 ><v-icon>refresh</v-icon></v-btn>
    <vp-entitylink entity="entity"></vp-entitylink>
 	 </v-toolbar>
 
@@ -41,14 +45,14 @@
         md4
         lg3
       >
-        <v-card :hover="true" active-class="default-class qd-active" >
+        <v-card :hover="true" active-class="default-class qd-active"  max-height="200px">
         
-          <v-toolbar  color="amber">
+          <v-toolbar  color="blue lighten-3"  dense>
 		          <v-card-title >
 		           <router-link :to="{path:'entity/'+ props.item.name}">
-		            <h3>
+		            
 		            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
-		            </h3>
+		            
 		            </router-link>
 		         </v-card-title>
           </v-toolbar>

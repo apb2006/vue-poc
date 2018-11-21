@@ -29,7 +29,7 @@
               </v-list-tile>             
           </v-list>         
       </v-menu>
-      <v-btn>*{{ nextId }}</v-btn>
+      <v-btn @click="EditTabs.addItem({txt:'hello'})">*{{  EditTabs.nextId }}</v-btn>
      
        <v-spacer></v-spacer>
        
@@ -110,13 +110,13 @@
     
         <v-menu left bottom  :close-on-content-click="false" >
           <a class="tabs__item" slot="activator">
-          {{ items.length }}
+          {{ EditTabs.items.length }}
             <v-icon>arrow_drop_down</v-icon>
           </a>
           <v-card>
             <v-card-title>Select Tab</v-card-title>
 	          <v-card-actions>
-	           <v-autocomplete :items="sorted" v-model="a1"
+	           <v-autocomplete :items="EditTabs.sorted()" v-model="a1"
 	          label="File"   class="input-group--focused"
 	          item-text="name" item-value="id"
 	          @change="setItem"
@@ -128,7 +128,7 @@
         
         <v-tabs   v-model="currentId" slot="extension">
 		      <v-tab
-		        v-for="item in items"
+		        v-for="item in EditTabs.items"
 		        :key="item.id"
 		        :href="'#T' + item.id" ripple
 		        style="text-transform: none;text-align:left"
@@ -149,7 +149,7 @@
    
       <v-tabs-items slot="body" v-model="currentId">
        <v-tab-item
-        v-for="item in items"
+        v-for="item in EditTabs.items"
         :key="item.id"
         :id="'T' + item.id"
       >
@@ -196,7 +196,6 @@
       return {
         showadd: false,  // showing add form
         showInfo: false, // showing info
-        nextId:4,
         a1:"",
         currentId: null, //href of current
         active: null,
@@ -205,21 +204,17 @@
       aceSettings: {},
       events:  new Vue({}),
       annotations: null,
-      folded:false
+      folded:false,
+      EditTabs: EditTabs
       }
   },
   
   methods:{
     tabClose(item){
       if(item.dirty){
-        alert("save first")
+        if (!confirm("Not saved continue? "))return;
       }else{
-	      var index=this.items.indexOf(item);
-	      if (index > -1) {
-	        this.items.splice(index, 1);
-	        index=(index==0)?0:index-1;
-	        this.currentId=(this.items.length)?"T"+this.items[index].id : null;
-	         }
+	      this.EditTabs.closeItem(item)
       }
     },
     
@@ -268,35 +263,10 @@
     },
     
     addItem(tab){
-      console.log("new: ",tab);
-      var def={name: "AA"+this.nextId, 
-               id: ""+this.nextId,
-               contentType: "text/xml",
-               mode: "xml",
-               text: "New text" +this.nextId
-               };
-      var etab = Object.assign(def,tab);
-      this.items.push (etab);
-      this.currentId="T" + this.nextId 
-      this.nextId++;
+      var tab=EditTabs.addItem({text:"aaa hello"})
+      this.currentId="T" + tab.id
     },
     
-    loadItem(url){
-      HTTP.get("get",{params: {url:url}})
-      .then(r=>{
-          console.log(r)
-          var tab={
-            text: ""+ r.data.data,
-            location: url,
-            name: url.split(/.*[\/|\\]/)[1]
-          };
-          this.addItem(tab);
-        })
-        .catch(error=> {
-          console.log(error);
-          alert("Get query error:\n"+url)
-        });
-    },
     
     changeContent(val){
       var item=this.active;
@@ -321,31 +291,25 @@
   
   watch:{
     currentId (val) {
-      this.active = this.items.find(e=> val=="T"+e.id);
+      this.active = EditTabs.items.find(e=> val=="T"+e.id);
       this.$router.push({  query: { id: val }});
       console.log("current",val)
     }
   },
   
   computed:{
-    sorted(){
-      return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name)) ;
-      },
+    
     dirty(){
         return this.active && this.active.dirty
       }
   },
   
   beforeRouteEnter (to, from, next) {
-    Promise.all([settings.getItem('settings/ace'), 
-                 settings.getItem('edit/items')
+    Promise.all([Settings.getItem('settings/ace')
                  ])
     .then(function(values) {
       next(vm => {
           vm.aceSettings = values[0];
-          vm.items = values[1];
-          vm.currentId = vm.items.length+1;
-          console.log("nextid: ",vm.currentId);
           })
           })
     },
@@ -354,14 +318,14 @@
     // called when the route that renders this component is about to
     // be navigated away from.
     // has access to `this` component instance.
-    settings.setItem('edit/items',this.items);
+    Settings.setItem('edit/items',EditTabs.items);
     next(true);
   },
 
     created:function(){
       var url=this.$route.query.url;
       if(url){
-        this.loadItem(url);
+        EditTabs.loadItem(url);
       }else{
       var id=this.$route.query.id;
       this.currentId=id?id:null;

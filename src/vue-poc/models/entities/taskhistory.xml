@@ -24,6 +24,6 @@
 			<xpath>h:file/@url</xpath>
 		</field>
 	</fields>
-	<views iconclass="fa fa-calendar"/>
+	<views iconclass="calendar_today"/>
 	<data type="element(h:event)">doc("vue-poc/history.xml")/h:history/h:event[task]</data>
 </entity>

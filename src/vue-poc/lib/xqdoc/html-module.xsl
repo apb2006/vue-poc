@@ -3,12 +3,13 @@
 	xmlns:doc="http://www.xqdoc.org/1.0" xmlns:xs="http://www.w3.org/2001/XMLSchema"
 	xmlns:xsl="http://www.w3.org/1999/XSL/Transform" xmlns:fn="http://www.w3.org/2005/02/xpath-functions"
 	xmlns:qd="http://www.quodatum.com/ns/xsl" exclude-result-prefixes="xs doc fn"
-	version="2.0">
+	version="3.0">
+	 <xsl:import href="xqdoc.xsl"/>
 	<!-- Standalone xqdoc:xqdoc transform mode"restxq" -->
-	<xsl:param name="project" as="xs:string" />
-	<xsl:param name="source" as="xs:string" />
-	<xsl:param name="filename" as="xs:string" />
-	<xsl:param name="id" as="xs:string" />
+	<xsl:param name="project" as="xs:string" select="'unknown'"/>
+	<xsl:param name="source" as="xs:string" >No code provided</xsl:param>
+	<xsl:param name="filename" as="xs:string" select="'?file'" />
+	<xsl:param name="ext-id" as="xs:string"></xsl:param>
 	<xsl:param name="show-private" as="xs:boolean" select="false()" />
 	<xsl:param name="resources" as="xs:string" select="'../resources/'" />
 
@@ -28,22 +29,16 @@
 			<head>
 				<meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
 				<meta http-equiv="Generator"
-					content="xqdoc-r - https://github.com/quodatum/xqdoc-r" />
+					content="xqdoc-r - https://github.com/quodatum/xqdoc-r 2018-11-02" />
 
 				<title>
 					<xsl:value-of select="$docuri" />
 					- xqDoc
-					<xsl:value-of select="$id" />
+					<xsl:value-of select="$ext-id" />
 				</title>
-				<link rel="shortcut icon" type="image/x-icon" href="{$resources}xqdoc.png" />
-				<link rel="stylesheet" type="text/css" href="{$resources}page.css" />
-				<link rel="stylesheet" type="text/css" href="{$resources}query.css" />
-				<link rel="stylesheet" type="text/css" href="{$resources}base.css" />
-
-				<link rel="stylesheet" type="text/css" href="{$resources}prettify.css" />
-        <link rel="stylesheet" type="text/css" href="{$resources}prism.css" />
-				<script src="{$resources}prettify.js" type="text/javascript">&#160;</script>
-				<script src="{$resources}prism.js" type="text/javascript">&#160;</script>
+				<xsl:call-template name="resources">
+             <xsl:with-param name="path" select="$resources"/>
+        </xsl:call-template>
 			</head>
 			<body class="home" id="top">
 				<div id="main">
@@ -82,20 +77,18 @@
 					</div>
 				</div>
 
-				<script type="application/javascript">
-					window.onload = function(){ prettyPrint(); }
-				</script>
 			</body>
 		</html>
 	</xsl:template>
 
 	<xsl:template match="doc:module">
 		<h1>
-			<xsl:value-of select="@type" />
-      module: &#160;
-			<span class="namespace">
-				<xsl:value-of select="doc:uri" />
-			</span>
+		  <span class="tag tag-success">
+		     <xsl:value-of select="doc:uri" />
+		   </span>
+		   <small>&#160;
+			<xsl:value-of select="@type" /> module 
+			</small>
 			
 		</h1>
 		<dl>
@@ -430,12 +423,12 @@
 			<div>
 				<a href="{$index}">
 					&#8624;
-					<xsl:value-of select="$project" /> :id= <xsl:value-of select="$id" />
+					<xsl:value-of select="$project" /> :id= <xsl:value-of select="$ext-id" />
 				</a>
 			</div>
 			<h2>
 				<a id="contents"></a>
-				<span class="namespace">
+				<span class="">
 					<xsl:value-of select="$docuri" />
 				</span>
 			</h2>

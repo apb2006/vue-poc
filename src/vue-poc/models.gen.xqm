@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-08-14T21:11:56.357+01:00 
+ : auto generated from xml files in entities folder at: 2018-10-26T22:55:28.159+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -348,6 +348,39 @@ declare variable $entity:list:=map {
        'filter': 'name description'
        }
    },
+  "repo": map{
+     "name": "repo",
+     "description": "An entry in the basex repository",
+     "access": map{ 
+       "name": function($_ as element()) as xs:string {$_/@name },
+       "type": function($_ as element()) as xs:string {$_/@type },
+       "version": function($_ as element()) as xs:string {$_/@version } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element name {  .} 
+                 },
+           "type": function($_ as element()) as element(type)? {
+            (: xs:string :)
+                        fn:data($_/@type)!element type {  .} 
+                 },
+           "version": function($_ as element()) as element(version)? {
+            (: xs:string :)
+                        fn:data($_/@version)!element version {  .} 
+                 } },
+       
+      "data": function() as element(package)*
+       { repo:list() },
+       
+       "views": map{ 
+       
+       }
+   },
   "search-result": map{
      "name": "search-result",
      "description": "About a search result.",
@@ -381,6 +414,87 @@ declare variable $entity:list:=map {
        
       "data": function() as element(search)*
        { () },
+       
+       "views": map{ 
+       
+       }
+   },
+  "task": map{
+     "name": "task",
+     "description": "predefined queries with parameters ",
+     "access": map{ 
+       "description": function($_ as element()) as xs:string {$_/fn:serialize(description/node()) },
+       "title": function($_ as element()) as xs:string {$_/title },
+       "to": function($_ as element()) as xs:string {$_/@name },
+       "url": function($_ as element()) as xs:string {$_/@url } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "description": function($_ as element()) as element(description)? {
+            (: xs:string :)
+                        fn:data($_/fn:serialize(description/node()))!element description {  .} 
+                 },
+           "title": function($_ as element()) as element(title)? {
+            (: xs:string :)
+                        fn:data($_/title)!element title {  .} 
+                 },
+           "to": function($_ as element()) as element(to)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element to {  .} 
+                 },
+           "url": function($_ as element()) as element(url)? {
+            (: xs:string :)
+                        fn:data($_/@url)!element url {  .} 
+                 } },
+       
+      "data": function() as element(task)*
+       { doc("tasks/taskdef.xml")/tasks/task },
+       
+       "views": map{ 
+       
+       }
+   },
+  "taskhistory": map{
+     "name": "taskhistory",
+     "description": "vue-poc task view events ",
+     "access": map{ 
+       "created": function($_ as element()) as xs:string {$_/@when },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "protocol": function($_ as element()) as xs:string {$_/h:file/@mode },
+       "url": function($_ as element()) as xs:string {$_/h:file/@url },
+       "user": function($_ as element()) as xs:string {$_/@user } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "created": function($_ as element()) as element(created)? {
+            (: xs:string :)
+                        fn:data($_/@when)!element created {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "protocol": function($_ as element()) as element(protocol)? {
+            (: xs:string :)
+                        fn:data($_/h:file/@mode)!element protocol {  .} 
+                 },
+           "url": function($_ as element()) as element(url)? {
+            (: xs:string :)
+                        fn:data($_/h:file/@url)!element url {  .} 
+                 },
+           "user": function($_ as element()) as element(user)? {
+            (: xs:string :)
+                        fn:data($_/@user)!element user {  .} 
+                 } },
+       
+      "data": function() as element(h:event)*
+       { doc("vue-poc/history.xml")/h:history/h:event[task] },
        
        "views": map{ 
        

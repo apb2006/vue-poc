@@ -105,8 +105,8 @@
     return {
       getValues: new perfStat(),
       postValues: new perfStat(),
-      repeat:{get:false,post:false},
-      counter:null
+      repeat: {get:false,post:false},
+      counter: "(unread)"
       }
   },
   methods:{

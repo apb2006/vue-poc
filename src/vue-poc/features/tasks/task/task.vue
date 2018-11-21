@@ -4,15 +4,14 @@
     <v-card >
     <v-toolbar>
     <v-toolbar-title>
-     <v-breadcrumbs >
-            <v-breadcrumbs-item  to="/tasks" :exact="true">
-            Tasks
-            </v-breadcrumbs-item>
-            
-              <v-breadcrumbs-item  >
-            {{ task }}
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
+       <v-breadcrumbs :items="crumbs">
+		      <template slot="item" slot-scope="props">
+		            <v-breadcrumbs-item  :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+		            {{ props.item.text }}
+		            </v-breadcrumbs-item>
+		      </template>
+      </v-breadcrumbs>
+ 
       </v-toolbar-title>  
     <v-spacer></v-spacer>
        <router-link :to="{name:'taskhistory', query:{task: task}}"><v-icon>history</v-icon></router-link>
@@ -55,7 +54,8 @@
 			loading: false,
 			snackbar: {show:false,msg:"",context:"success"},
 			valid: false,
-			id: null
+			id: null,
+			crumbs: [{to:"/tasks", text:"Tasks"},{text: this.task, disabled: true}]
 		  
     }
   },

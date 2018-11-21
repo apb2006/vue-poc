@@ -1,17 +1,23 @@
 <!DOCTYPE html>
 <template id="keys">
  <v-container fluid>
- <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
+ 
 	 <v-card>
 	  <v-toolbar dense>
-	   <v-toolbar-title >keys</v-toolbar-title>
+	   <v-toolbar-title> 
+         <qd-breadcrumbs 
+         :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Keys', disabled: true }]"
+         >crumbs</qd-breadcrumbs> 
+         </v-toolbar-title> 
+         <v-btn @click="showKey" :disabled="openIndex === null">Show: {{ keys[openIndex] }} </v-btn>
+           <v-btn @click="deleteKey" :disabled="openIndex === null">Delete</v-btn> 
 	   <v-spacer></v-spacer>
    <v-btn @click="wipe" color="error">Delete ALL</v-btn>
 	   </v-toolbar>
 
    <v-card-text>
-    <v-expansion-panel>
-    <v-expansion-panel-content popout
+    <v-expansion-panel v-model="openIndex">
+    <v-expansion-panel-content popout 
      v-for="key in keys"
       :key="key"
     >
@@ -25,27 +31,39 @@
      </v-expansion-panel> 
    </v-card-text>
    </v-card>
+   <v-snackbar v-model="true" >Settings are currently only stored locally in the browser, using <code>localstorage</code></v-snackbar>
  </v-container>
 </template>
 
 <script>{
   data(){return {
     keys: ["?"],
-    showDev: false,
-    dark:false
+    openIndex: null
   }
   },
   methods:{
     wipe(){
-      if(confirm("wipe localstorage? "+this.keys.length)) settings.clear();
+      if(confirm("wipe localstorage? ")) Settings.clear();
     },
-    theme(){
-     this.$root.$emit("theme",this.dark)
+    
+    showKey(){
+      var key=this.keys[this.openIndex]
+      console.log("index: ",key)
+      Settings.getItem(key).then(v=>{console.log("ffff",v)})
+      alert("show")
+    },
+    
+    deleteKey(){
+      var key=this.keys[this.openIndex]
+      console.log("index: ",key)
+      Settings.removeItem(key).then(v=>{console.log("ffff",v)})
+      alert("show")
     }
   },
+  
   created(){
     console.log("settings")
-    settings.keys()
+    Settings.keys()
     .then( v =>{
      this.keys=v
     })

@@ -25,6 +25,11 @@
     <description>XQdoc...</description>
   </task>
   
+  <task name="xqdoc-rest2" url="xqdoc/tx-xqrest2.xq">
+    <title>XQdoc rest2</title>
+    <description>XQdoc.2..</description>
+  </task>
+  
 	<task name="vuecompile">
 		<title>vue compile</title>
 		 <description>compile</description>

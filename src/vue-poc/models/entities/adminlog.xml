@@ -27,7 +27,7 @@
 			<xpath>.</xpath>
 		</field>
 	</fields>
-	<views iconclass="fa fa-calendar"/>
+	<views iconclass="calendar_today"/>
 
 	<data type="element(entry)">hof:top-k-by(admin:logs(), hof:id#1, 2)/string()!reverse(admin:logs(.,true()))</data>
 </entity>

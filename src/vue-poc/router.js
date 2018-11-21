@@ -48,7 +48,7 @@ const router = new VueRouter({
          ,children: [
            {
              path: '',
-             component: Settings, meta:{title:"Settings", requiresAuth:true}
+             component: Showsettings, meta:{title:"Settings", requiresAuth:true}
            },
           {
             path: 'keys',

@@ -12,13 +12,25 @@ declare variable $vue-login:SESSION-KEY := "id";
 declare variable $vue-login:SESSION-VALUE := session:get($vue-login:SESSION-KEY);
 
 (:~
+ : Permission check: Area for logged-in users.
+ : Checks if a session id exists for the current user; if not, redirects to the login page.
+ :)
+declare 
+(: %perm:check('/vue-poc') :)
+function vue-login:check-app() {
+  let $user := session:get('id')
+  where empty($user)
+  return web:redirect('/vue-poc/login')
+};
+(:~
  : get status
  :)
 declare
 %rest:GET %rest:path("/vue-poc/api/status")
+%rest:cookie-param("remember", "{ $remember }")
 %rest:produces("application/json")
 %output:method("json")   
-function vue-login:status( )   
+function vue-login:status($remember as xs:string? )   
 {
 let $user:=session:get("id","")
 let $role:=if($user and user:exists($user)) then user:list-details($user)/@permission/string() else ""
@@ -27,6 +39,7 @@ return  <json   type="object" >
             <permission>{$role}</permission>
             <session>{session:id()}</session>
             <created>{session:created()}</created>
+            <login>{ $remember }</login>
   </json>
 };
 
@@ -85,9 +98,8 @@ declare %private function vue-login:accept(
   $pass  as xs:string,
   $path  as xs:string?
 ) {
-  let $expires:=current-dateTime() + xs:dayTimeDuration('P7D')
-  let $pic:="[FNn,3-3],[D01] [MNn,3-3] [Y4] [H01]:[m01]:[s01] [z]"
-  let $val:=``[remember=`{ random:uuid() }`; path=/; expires=`{ format-dateTime($expires,$pic) }`;]``
+  
+  let $val:=vue-login:cookie("remember", random:uuid(),map{'expires': xs:dayTimeDuration('P7D')})
    return (
   session:set($vue-login:SESSION-KEY, $name),
   admin:write-log('VUEPOC user was logged in: ' || $name),
@@ -115,10 +127,28 @@ declare %private function vue-login:reject(
   $name     as xs:string,
   $message  as xs:string,
   $path     as xs:string?) 
- as element(json) {
-  admin:write-log('VUE login was denied: ' || $name),
+ {
+ let $cookie:=vue-login:cookie("remember", "", map{})
+ return ( admin:write-log('VUE login was denied: ' || $name),
+  <rest:response>
+    <http:response>
+       <http:header name="Set-Cookie" value="{ $cookie }"/> 
+    </http:response>   
+   </rest:response>, 
   <json type="object">
     <status type="boolean">false</status>
     <message>{$message}</message>
   </json>
+  )
 };
+
+(:~ return cookie string
+:)
+declare function vue-login:cookie($name as xs:string,$val,$opts as map(*)?)
+as xs:string
+{
+  let $pic:="[FNn,3-3],[D01] [MNn,3-3] [Y4] [H01]:[m01]:[s01] [z]"
+  let $expires:=if(map:contains($opts,"expires")) then  current-dateTime() + $opts?expires else ()
+  return``[`{ $name }`=`{ $val }`; path=/; expires=`{ format-dateTime($expires,$pic) }`;]``
+};
+

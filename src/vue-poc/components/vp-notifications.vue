@@ -18,16 +18,15 @@
               <v-list-tile-avatar>
                    <v-icon color="red">swap_horiz</v-icon>
               </v-list-tile-avatar>
-              <v-list-tile-content>
-              <v-tooltip>
-                <v-list-tile-title  slot="activator">{{ msg.created | fromNow("from") }}</v-list-tile-title>
-                <span v-text="msg.created"></span>
-                </v-tooltip>
-                <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-               <v-list-tile-action-text>#{{ msg.index }}</v-list-tile-action-text>
-              </v-list-tile-action>
+              
+             <v-list-tile-content>
+              <v-list-tile-title>{{  msg.created | fromNow("from") }}</v-list-tile-title>
+              <v-list-tile-sub-title v-html="msg.html">msg</v-list-tile-sub-title>
+            </v-list-tile-content>
+            
+            <v-list-tile-action-text v-if="msg.elapsed">{{ msg.elapsed }} ms </v-list-tile-action-text>
+            <v-list-tile-action-text>#{{ msg.index }}</v-list-tile-action-text>
+           
             </v-list-tile>
            </template>
          </v-list>

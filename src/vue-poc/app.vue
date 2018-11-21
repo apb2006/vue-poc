@@ -282,7 +282,8 @@
       this.$auth=Object.assign(this.$auth,r.data);
       console.log("AFTER: ",this.$auth);
       //this.$forceUpdate()
-    }) 
+    })
+    EditTabs.restore();
   },
   
   beforeDestroy(){

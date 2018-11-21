@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- 
  manage parameters for query
- including funtion to submit form
+ including  submit form function 
  -->
 <template id="vp-paramform">
        <v-form ref="form"  lazy-validation>

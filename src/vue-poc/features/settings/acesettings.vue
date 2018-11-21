@@ -6,7 +6,9 @@
     <v-flex xs12 sm8 offset-sm2>
       <v-card>
        <v-toolbar class="orange">
-        <v-card-title  >Common Ace editor settings</v-card-title>
+        <v-card-title  > <qd-breadcrumbs 
+         :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Common Ace editor settings', disabled: true }]"
+         >crumbs</qd-breadcrumbs></v-card-title>
         </v-toolbar>
       <v-card-text>
       <v-container fluid>
@@ -117,7 +119,7 @@
     }
   },
    beforeRouteLeave (to, from, next) {
-     settings.setItem('settings/ace',this.ace)
+     Settings.setItem('settings/ace',this.ace)
      .then(v=>{
      next()
      })
@@ -125,7 +127,7 @@
   mounted: function () {
   
  // console.log("$$$",this.ace)
-  settings.getItem('settings/ace')
+  Settings.getItem('settings/ace')
     .then( v =>{
               //alert("db\n"+JSON.stringify(v))
               this.ace = Object.assign({}, this.ace, v)

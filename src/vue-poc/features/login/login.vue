@@ -4,12 +4,10 @@
     <v-flex xs12 sm6 offset-sm3>
 					<v-card >
 					
-					      <v-card-title class="amber ">
+					      <v-card-title class="red">
 					        <span class="white--text">The current credentials do the give access this page, please login again</span>
 					      </v-card-title>
-					    <v-alert color="error" v-bind:value="showMessage">
-					      {{message}}
-					    </v-alert>
+					   
 					     <v-card-actions>
 					      <v-text-field
 					              name="input-name"
@@ -33,6 +31,10 @@
 					            ></v-text-field>      
 					    </v-card-actions>
 					    
+					     <v-alert color="error" v-bind:value="showMessage">
+                {{message}}
+              </v-alert>
+              
 					     <v-card-actions> 
 					     <v-switch 
                 label="Remember me"  v-model="remember">

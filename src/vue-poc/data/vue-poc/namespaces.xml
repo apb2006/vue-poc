@@ -122,5 +122,8 @@
 		<description>EXpath packaging
 		</description>
 	</namespace>
-
+<namespace uri="http://basex.org/modules/perm" prefix="perm">
+    <description>Web permissions
+    </description>
+  </namespace>
 </namespaces>

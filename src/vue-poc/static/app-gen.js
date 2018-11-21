@@ -1,4 +1,4 @@
-// generated 2018-10-10T22:55:09.766+01:00
+// generated 2018-11-21T11:42:40.952Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -21,6 +21,33 @@ Vue.component('qd-autoheight',{template:`
         // console.log("h",h)
         e.style.height=h +"px"; 
     }
+    }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-breadcrumbs.vue
+Vue.component('qd-breadcrumbs',{template:` 
+		<v-breadcrumbs :items="crumbs">
+		    <template slot="item" slot-scope="props">
+		        <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+		        
+		           <v-icon v-if="props.item.icon">props.item.icon</v-icon>
+		                 {{ props.item.text }}
+		                 <v-btn icon="" v-if="props.item.menu" @click="$emit(props.item.menu)" :class="props.item.menu">
+		                 <v-avatar>
+				              <v-icon>arrow_drop_down</v-icon>
+				              </v-avatar>
+				            </v-btn>
+				         
+		         </v-breadcrumbs-item>
+		     </template>
+		</v-breadcrumbs>
+ `,
+      
+  props: ['crumbs'],
+  created:function(){
+      console.log("qd-crumbs");
     }
 }
 
@@ -543,16 +570,15 @@ Vue.component('vp-notifications',{template:`
               <v-list-tile-avatar>
                    <v-icon color="red">swap_horiz</v-icon>
               </v-list-tile-avatar>
-              <v-list-tile-content>
-              <v-tooltip>
-                <v-list-tile-title slot="activator">{{ msg.created | fromNow("from") }}</v-list-tile-title>
-                <span v-text="msg.created"></span>
-                </v-tooltip>
-                <v-list-tile-sub-title v-html="msg.text"></v-list-tile-sub-title>
-              </v-list-tile-content>
-              <v-list-tile-action>
-               <v-list-tile-action-text>#{{ msg.index }}</v-list-tile-action-text>
-              </v-list-tile-action>
+              
+             <v-list-tile-content>
+              <v-list-tile-title>{{  msg.created | fromNow("from") }}</v-list-tile-title>
+              <v-list-tile-sub-title v-html="msg.html">msg</v-list-tile-sub-title>
+            </v-list-tile-content>
+            
+            <v-list-tile-action-text v-if="msg.elapsed">{{ msg.elapsed }} ms </v-list-tile-action-text>
+            <v-list-tile-action-text>#{{ msg.index }}</v-list-tile-action-text>
+           
             </v-list-tile>
            </template>
          </v-list>
@@ -943,6 +969,93 @@ const Auth={
 Vue.use(Auth);
 
 
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/EditTabs.js
+//Manage array of text sources  used for:edit tabs
+// item{
+//     name:
+//     contentType:
+//     text:
+//     id:
+//     url:
+//
+const EditTabs=new Vue({
+    data(){
+      return {
+                items:[],
+                nextId: 1,
+                currentId: null
+            }
+    },
+    
+    methods: {
+      addItem(tab){
+        console.log("new: ",tab);
+        var def={name: "AA"+this.nextId, 
+                 contentType: "text/xml",
+                 mode: "xml",
+                 text: "<foo>" +this.nextId +"</foo>",
+                 url: null
+                 };
+        var etab = Object.assign(def,tab);
+        etab.id= ""+this.nextId
+        this.items.push (etab);
+        this.nextId++;
+        return etab;
+      },
+      
+      closeItem(item){
+        var index=this.items.indexOf(item);
+        if (index > -1) {
+          alert("index: "+index)
+          this.items.splice(index, 1);
+          index=(index==0)?0:index-1;
+          this.currentId=(this.items.length)?"T"+this.items[index].id : null;
+        }
+      },
+      
+      // fetch content from server and create tab
+      loadItem(url){
+        HTTP.get("get",{params: {url:url}})
+        .then(r=>{
+            console.log(r)
+            var tab={
+              text: ""+ r.data.data,
+              url: url,
+              name: url.split(/.*[\/|\\]/)[1]
+            };
+            this.addItem(tab);
+          })
+          .catch(error=> {
+            console.log(error);
+            alert("Get query error:\n"+url)
+          });
+      },
+      
+      save(){
+        Settings.setItem('edit/items',this.items);
+      },
+      
+      restore(){
+        that=this
+        Settings.getItem('edit/items')
+        .then(function (v){
+           console.log("items ",v)
+           v.forEach(v =>that.addItem(v))
+           })
+         .catch(error=> {
+             console.log(error);
+             alert("load error")
+           });   
+      },
+      
+      sorted(){
+        return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name))
+      }
+    }
+});
+
+
+
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/filters.js
 /**
  * some vue filters, requires moment
@@ -1085,12 +1198,15 @@ const Notification={
     messages:[],
     nextId: 0,
     unseen:0,
-    add(msg){
-      var data={
-          text: msg,
+    add(opts){
+      var data=Object.assign({
+          html: 'no html',
           index: ++this.nextId,
-          created: new Date()
-      };
+          created: new Date(),
+          elapsed: null
+      },
+      opts);
+      console.log("opt",opts);
       this.messages.unshift(data);
       this.messages.length = Math.min(this.messages.length, 30);
       ++this.unseen;
@@ -1131,23 +1247,7 @@ const About=Vue.extend({template:`
     <v-container fill-height="">
       <v-layout align-center="">
         <v-flex>
-          <h3 class="display-3">Vue-poc<v-spacer></v-spacer>
-             <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
-      <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
-        <v-icon>account_circle</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="green">
-        <v-icon>edit</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="indigo">
-        <v-icon>add</v-icon>
-      </v-btn>
-      <v-btn fab="" dark="" small="" class="red">
-        <v-icon>delete</v-icon>
-      </v-btn>
-    </v-speed-dial>
-          </h3>
+          <h3 class="display-3">Vue-poc</h3>
           <span class="subheading">A development environment for managing XML sources and processes.</span>
       
           <v-divider class="my-3"></v-divider>
@@ -1164,7 +1264,9 @@ const About=Vue.extend({template:`
 					
 					  <li><a href="https://github.com/beautify-web/js-beautify" target="new">js-beautify</a></li>
 					    
-					    <li><a href="https://developers.google.com/web/tools/workbox/" target="new">workbox</a></li> 
+					    <li><a href="https://developers.google.com/web/tools/workbox/" target="new">workbox</a></li>
+              
+              <li><a href="https://material.io/tools/icons/?style=baseline" target="new">icons (material)</a></li>    
 					 </ul>
 					 </v-flex>
 					 <v-flex xs6="">
@@ -1377,12 +1479,14 @@ const Files=Vue.extend({template:`
 <v-toolbar dense="">
     
     <v-toolbar-title>
-		    <v-breadcrumbs>
+		    <v-breadcrumbs :items="crumbs">
 		        <span slot="divider" style="padding:0;"></span>
-				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" :to="{ query: { url:  item.path }}" :exact="true">
-				    <v-icon v-if="item.icon">{{ icon }}</v-icon>
-				    {{ item.name }}
-				    </v-breadcrumbs-item>
+		         <template slot="item" slot-scope="props">
+						    <v-breadcrumbs-item :to="{ query: { url:  props.item.path }}" :exact="true">
+						    <v-icon v-if="props.item.icon">{{ props.item.icon }}</v-icon>
+						    {{ props.item.name }}
+						    </v-breadcrumbs-item>
+				    </template>
 		    </v-breadcrumbs>
     </v-toolbar-title>
      <v-btn icon="" @click="load()">
@@ -2273,7 +2377,7 @@ const Edit=Vue.extend({template:`
     if(url) this.fetch(url)
   },
   beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
+    Settings.getItem('settings/ace')
     .then( v =>{
       next(vm => {vm.aceSettings = v;})
         })
@@ -2320,7 +2424,7 @@ const Tabs=Vue.extend({template:`
               </v-list-tile>             
           </v-list>         
       </v-menu>
-      <v-btn>*{{ nextId }}</v-btn>
+      <v-btn @click="EditTabs.addItem({txt:'hello'})">*{{  EditTabs.nextId }}</v-btn>
      
        <v-spacer></v-spacer>
        
@@ -2401,19 +2505,19 @@ const Tabs=Vue.extend({template:`
     
         <v-menu left="" bottom="" :close-on-content-click="false">
           <a class="tabs__item" slot="activator">
-          {{ items.length }}
+          {{ EditTabs.items.length }}
             <v-icon>arrow_drop_down</v-icon>
           </a>
           <v-card>
             <v-card-title>Select Tab</v-card-title>
 	          <v-card-actions>
-	           <v-autocomplete :items="sorted" v-model="a1" label="File" class="input-group--focused" item-text="name" item-value="id" @change="setItem" clearable="" open-on-clear=""></v-autocomplete>
+	           <v-autocomplete :items="EditTabs.sorted()" v-model="a1" label="File" class="input-group--focused" item-text="name" item-value="id" @change="setItem" clearable="" open-on-clear=""></v-autocomplete>
 	        </v-card-actions>
 	        </v-card>
         </v-menu>
         
         <v-tabs v-model="currentId" slot="extension">
-		      <v-tab v-for="item in items" :key="item.id" :href="'#T' + item.id" ripple="" style="text-transform: none;text-align:left">
+		      <v-tab v-for="item in EditTabs.items" :key="item.id" :href="'#T' + item.id" ripple="" style="text-transform: none;text-align:left">
 			       <v-avatar>
 			          <v-icon size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
@@ -2429,7 +2533,7 @@ const Tabs=Vue.extend({template:`
   
    
       <v-tabs-items slot="body" v-model="currentId">
-       <v-tab-item v-for="item in items" :key="item.id" :id="'T' + item.id">
+       <v-tab-item v-for="item in EditTabs.items" :key="item.id" :id="'T' + item.id">
 		      <v-card flat="" v-if="showInfo">
 					  <v-card-actions>
 				      <v-toolbar-title>Metadata for tab id: '{{ currentId }}'</v-toolbar-title>
@@ -2466,7 +2570,6 @@ const Tabs=Vue.extend({template:`
       return {
         showadd: false,  // showing add form
         showInfo: false, // showing info
-        nextId:4,
         a1:"",
         currentId: null, //href of current
         active: null,
@@ -2475,21 +2578,17 @@ const Tabs=Vue.extend({template:`
       aceSettings: {},
       events:  new Vue({}),
       annotations: null,
-      folded:false
+      folded:false,
+      EditTabs: EditTabs
       }
   },
   
   methods:{
     tabClose(item){
       if(item.dirty){
-        alert("save first")
+        if (!confirm("Not saved continue? "))return;
       }else{
-	      var index=this.items.indexOf(item);
-	      if (index > -1) {
-	        this.items.splice(index, 1);
-	        index=(index==0)?0:index-1;
-	        this.currentId=(this.items.length)?"T"+this.items[index].id : null;
-	         }
+	      this.EditTabs.closeItem(item)
       }
     },
     
@@ -2538,35 +2637,10 @@ const Tabs=Vue.extend({template:`
     },
     
     addItem(tab){
-      console.log("new: ",tab);
-      var def={name: "AA"+this.nextId, 
-               id: ""+this.nextId,
-               contentType: "text/xml",
-               mode: "xml",
-               text: "New text" +this.nextId
-               };
-      var etab = Object.assign(def,tab);
-      this.items.push (etab);
-      this.currentId="T" + this.nextId 
-      this.nextId++;
+      var tab=EditTabs.addItem({text:"aaa hello"})
+      this.currentId="T" + tab.id
     },
     
-    loadItem(url){
-      HTTP.get("get",{params: {url:url}})
-      .then(r=>{
-          console.log(r)
-          var tab={
-            text: ""+ r.data.data,
-            location: url,
-            name: url.split(/.*[\/|\\]/)[1]
-          };
-          this.addItem(tab);
-        })
-        .catch(error=> {
-          console.log(error);
-          alert("Get query error:\n"+url)
-        });
-    },
     
     changeContent(val){
       var item=this.active;
@@ -2591,31 +2665,25 @@ const Tabs=Vue.extend({template:`
   
   watch:{
     currentId (val) {
-      this.active = this.items.find(e=> val=="T"+e.id);
+      this.active = EditTabs.items.find(e=> val=="T"+e.id);
       this.$router.push({  query: { id: val }});
       console.log("current",val)
     }
   },
   
   computed:{
-    sorted(){
-      return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name)) ;
-      },
+    
     dirty(){
         return this.active && this.active.dirty
       }
   },
   
   beforeRouteEnter (to, from, next) {
-    Promise.all([settings.getItem('settings/ace'), 
-                 settings.getItem('edit/items')
+    Promise.all([Settings.getItem('settings/ace')
                  ])
     .then(function(values) {
       next(vm => {
           vm.aceSettings = values[0];
-          vm.items = values[1];
-          vm.currentId = vm.items.length+1;
-          console.log("nextid: ",vm.currentId);
           })
           })
     },
@@ -2624,14 +2692,14 @@ const Tabs=Vue.extend({template:`
     // called when the route that renders this component is about to
     // be navigated away from.
     // has access to `this` component instance.
-    settings.setItem('edit/items',this.items);
+    Settings.setItem('edit/items',EditTabs.items);
     next(true);
   },
 
     created:function(){
       var url=this.$route.query.url;
       if(url){
-        this.loadItem(url);
+        EditTabs.loadItem(url);
       }else{
       var id=this.$route.query.id;
       this.currentId=id?id:null;
@@ -2869,7 +2937,7 @@ const Eval=Vue.extend({template:`
   computed: { 
   },
   beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
+    Settings.getItem('settings/ace')
     .then( v =>{
       
       next(vm => {
@@ -3648,7 +3716,7 @@ const Images=Vue.extend({template:`
         var t1 = performance.now();
         var elapsed= 0.001 *(t1 - t0);
         var round = Vue.filter('round');
-        this.$notification.add("Found " + this.total + " in : "+ round(elapsed,1) +" secs");
+        this.$notification.add({html:"Found " + this.total, elapsed: round(elapsed,1)});
         }) 
     },
     slideShow(){
@@ -4215,12 +4283,10 @@ const Login=Vue.extend({template:`
     <v-flex xs12="" sm6="" offset-sm3="">
 					<v-card>
 					
-					      <v-card-title class="amber ">
+					      <v-card-title class="red">
 					        <span class="white--text">The current credentials do the give access this page, please login again</span>
 					      </v-card-title>
-					    <v-alert color="error" v-bind:value="showMessage">
-					      {{message}}
-					    </v-alert>
+					   
 					     <v-card-actions>
 					      <v-text-field name="input-name" label="User name" hint="Enter your name" v-model="name" required=""></v-text-field>
 					     </v-card-actions>
@@ -4229,6 +4295,10 @@ const Login=Vue.extend({template:`
 					         <v-text-field name="input-password" label="Password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" @click:append="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required=""></v-text-field>      
 					    </v-card-actions>
 					    
+					     <v-alert color="error" v-bind:value="showMessage">
+                {{message}}
+              </v-alert>
+              
 					     <v-card-actions> 
 					     <v-switch label="Remember me" v-model="remember">
               </v-switch> 
@@ -4355,14 +4425,18 @@ const Entity=Vue.extend({template:`
 <v-card>
 	<v-toolbar>
 	 <v-toolbar-title> 
-	    <v-breadcrumbs>
-            <v-breadcrumbs-item to="/entity" :exact="true">
-            Entities
-            </v-breadcrumbs-item>
-       </v-breadcrumbs></v-toolbar-title>
-	 <v-spacer></v-spacer>
+	    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]">
+				     <template slot="item" slot-scope="props">
+			           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+			                {{ props.item.text }}
+			            </v-breadcrumbs-item>
+			        </template>
+         </v-breadcrumbs>
+       </v-toolbar-title>
+	 
 	 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
-	 <v-btn @click="getItems" :loading="loading" :disabled="loading">Refresh</v-btn>
+   <v-spacer></v-spacer>
+	 <v-btn @click="getItems" icon="" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
    <vp-entitylink entity="entity"></vp-entitylink>
 	 </v-toolbar>
 
@@ -4370,14 +4444,14 @@ const Entity=Vue.extend({template:`
   
     <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :search="q" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
       <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
-        <v-card :hover="true" active-class="default-class qd-active">
+        <v-card :hover="true" active-class="default-class qd-active" max-height="200px">
         
-          <v-toolbar color="amber">
+          <v-toolbar color="blue lighten-3" dense="">
 		          <v-card-title>
 		           <router-link :to="{path:'entity/'+ props.item.name}">
-		            <h3>
+		            
 		            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
-		            </h3>
+		            
 		            </router-link>
 		         </v-card-title>
           </v-toolbar>
@@ -4437,41 +4511,37 @@ const Entity1=Vue.extend({template:`
 <v-card>
 	<v-toolbar>
 	 <v-toolbar-title> 
-	 <v-breadcrumbs>
-            <v-breadcrumbs-item to="/entity" :exact="true">
-            Entities
-            </v-breadcrumbs-item>
-            
-              <v-breadcrumbs-item>
-              <v-chip>
-              <v-avatar>
-              <v-icon>{{ item.iconclass }}</v-icon>
-              </v-avatar> 
-            {{ entity }}
-            </v-chip>
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
-	 </v-toolbar-title>
+         <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
+         </v-toolbar-title>   
+          <v-menu offset-y="" v-model="showmenu" activator=".todo">
+            <v-list dense="">
+                <v-subheader>Actions</v-subheader>
+                      <v-list-tile @click="getxml">
+                      <v-list-tile-title>View XML</v-list-tile-title>
+                    </v-list-tile>
+                     <v-list-tile>
+                      <v-list-tile-title><a :href="dataurl" target="data">Json</a></v-list-tile-title>
+                </v-list-tile>             
+            </v-list>         
+           </v-menu> 
+
 	 <v-spacer></v-spacer>
-	 <v-btn icon="" @click="getItem" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
 	 
-	  <v-btn @click="getxml" :loading="loading" :disabled="loading">XML</v-btn>
-   
-   <a :href="dataurl" target="data">Data</a>
+	 <v-btn icon="" @click="getItem" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+	
 	 </v-toolbar>
 
   <v-container fluid="" grid-list-md="">
-  <div v-if="item">
-    <div>{{item.description}}</div>
-   </div>
-   
+  
     <v-expansion-panel v-model="panel" expand="">
-    
+    <v-expansion-panel-content>
+          <div slot="header" class="title">Description: </div>
+         {{item.description}}
+          <pre v-if="xml"><code>{{ xml }}</code></pre> 
+      </v-expansion-panel-content>
       <v-expansion-panel-content>
 		      <div slot="header" class="title">Type: <code>{{ item.type }}</code></div>
-		       <prism language="xquery">{{ item.modules }}</prism>
-		       <prism language="xquery">{{ item.namespaces }}</prism>
-		      <prism language="xquery">{{ item.code }}</prism>
+		       <prism language="xquery">{{ code(item) }}</prism>
       </v-expansion-panel-content>
       
       <v-expansion-panel-content>
@@ -4499,7 +4569,7 @@ const Entity1=Vue.extend({template:`
       item: {description:null,
              code: null
       },
-
+      showmenu: false,
       loading: false,
       xml: null,
       selected: [],
@@ -4510,7 +4580,7 @@ const Entity1=Vue.extend({template:`
         {text: "description", value: "description"},
         {text: "xpath", value: "xpath"}
       ],
-      panel: [false, true]
+      panel: [true, false, true]
       }
   },
   methods:{
@@ -4522,18 +4592,26 @@ const Entity1=Vue.extend({template:`
         this.item=Object.assign({}, this.item, r.data)
         }) 
     },
+    code(item){
+      return item.modules + " " +  item.namespaces + " " +item.code       
+    },
     getxml(){
       HTTP.get("data/entity/"+this.entity,{ headers: {Accept: "text/xml"}})
       .then(r=>{
-        console.log(r.data)
         this.xml=r.data;
             }) 
+    },
+    todo(){
+      alert("TODO");
     }
   },
   computed: {
     dataurl(){
          return '/vue-poc/api/data/' + this.entity;
-       }
+       },
+       xquery(){
+         return '/vue-poc/api/data/' + this.entity;
+       }   
   },
   created:function(){
     this.getItem()
@@ -4548,11 +4626,13 @@ const Namespace=Vue.extend({template:`
  <v-card>
    <v-toolbar>
    <v-toolbar-title>
-   <v-breadcrumbs>
-            <v-breadcrumbs-item to="/namespace" :exact="true">
-            Namespaces
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
+    <v-breadcrumbs :items="crumbs">
+         <template slot="item" slot-scope="props">
+             <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+                  {{ props.item.text }}
+              </v-breadcrumbs-item>
+          </template>
+     </v-breadcrumbs>
    </v-toolbar-title>
 
    
@@ -4604,7 +4684,8 @@ const Namespace=Vue.extend({template:`
         
         { text: 'Description', value: 'description' },
         { text: 'Prefix', value: 'prefix' }
-        ]
+        ],
+        crumbs:[{to:"/namespace", text:"namespaces"}]
       }
   },
   methods: {
@@ -4783,22 +4864,18 @@ const Puzzle=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/repository.vue
 const Repo=Vue.extend({template:` 
  <v-container fluid="">
-  <v-card>
-   <v-toolbar>
-    <v-text-field append-icon="search" label="Filter repo" single-line="" hide-details="" v-model="search"></v-text-field>   
-      <v-spacer></v-spacer>     
-    </v-toolbar>
-<v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No repo found @todo">
+   <qd-table :headers="headers" data-uri="data/repo" entity="repo" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
-    <td class="vtop">
+      <td>
         <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
       </td>
-      <td class="vtop">{{ props.item.name }}</td>
-      <td class="vtop "><div>{{ props.item.permission }}</div>
-    </td></template>
-  </v-data-table>
-  </v-card>
+      <td>{{ props.item.name}}</td>
+      <td>{{ props.item.type }}</td>
+        <td>{{ props.item.version }}</td>
+    </template>
+   </qd-table>
  </v-container>
+
  `,
       
   data:  function(){
@@ -4808,28 +4885,16 @@ const Repo=Vue.extend({template:`
       search: null,
       selected: [],
       headers: [
-        {
-          text: 'Name',
-          left: true,
-          value: 'id'
-        },
-        { text: 'Permission', value: 'state' }
+        { text: 'Name', value: 'name'},
+        { text: 'Type', value: 'type' },
+        { text: 'Version', value: 'version' }
       ] 
       }
   },
-  methods:{
-      getUsers(){
-        this.loading=true;
-        HTTP.get("repo")
-        .then(r=>{
-           this.loading=false
-           this.items=r.data
-        })
-     }
-  },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
-  }
+ 
+created:function(){
+  console.log("repo")
+}
 }
 
       );
@@ -4941,16 +5006,30 @@ const Select=Vue.extend({template:`
 <v-card>
     <v-toolbar class="green darken-1">
     <v-card-title>
-      <span class="white--text">Selection</span>     
+      <span class="white--text">Selection2</span>     
     </v-card-title>
     <v-spacer></v-spacer>    
        <v-btn flat="" icon="" @click="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
   </v-toolbar>
+
   <qd-panel :show="showInfo">
   
 
-    <v-layout slot="body">
+    <v-layout slot="body" row="" wrap="">
      
+      <v-flex xs12="">
+          <v-treeview v-model="tree" :open="open" :items="items" activatable="" item-key="name" open-on-click="">
+          <template slot="prepend" slot-scope="{ item, open, leaf }">
+            <v-icon v-if="!item.file">
+              {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+            </v-icon>
+            <v-icon v-else="">
+              {{ files[item.file] }}
+            </v-icon>
+          </template>
+        </v-treeview> 
+     </v-flex>
+        
     <v-flex xs6="">
     <p>some text</p>
    
@@ -4967,18 +5046,21 @@ const Select=Vue.extend({template:`
       <v-select label="Select" v-bind:items="options" v-model="value2" item-text="name" item-value="name" multiple="" chips="" deletable-chips="" max-height="auto" autocomplete="">v-select</v-select>
             <pre>{{$data.value2 }}</pre>
     </v-flex>
+   
    </v-layout>
    
    <v-card slot="aside" flat=""> 
        <v-card-actions>
-      <v-toolbar-title>test</v-toolbar-title>
+      <v-toolbar-title>test aside</v-toolbar-title>
       <v-spacer></v-spacer>    
        <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-card-actions>
-    <v-card-text> blah blah protocol:  </v-card-text> 
+    <v-card-text> 
+ todo
+  </v-card-text> 
     </v-card>
   </qd-panel>
-  
+
 
 <v-card>
  </v-card></v-card></v-container>
@@ -4990,8 +5072,73 @@ const Select=Vue.extend({template:`
           value2: null,
           options: [],
           isLoading: false,
-          showInfo:true
+          showInfo:true,
+          open: ['public'],
+          files: {
+            html: 'mdi-language-html5',
+            js: 'mdi-nodejs',
+            json: 'mdi-json',
+            md: 'mdi-markdown',
+            pdf: 'mdi-file-pdf',
+            png: 'mdi-file-image',
+            txt: 'mdi-file-document-outline',
+            xls: 'mdi-file-excel'
+          },
+          tree: [],
+          items: [
+            {
+              name: '.git'
+            },
+            {
+              name: 'node_modules'
+            },
+            {
+              name: 'public',
+              children: [
+                {
+                  name: 'static',
+                  children: [{
+                    name: 'logo.png',
+                    file: 'png'
+                  }]
+                },
+                {
+                  name: 'favicon.ico',
+                  file: 'png'
+                },
+                {
+                  name: 'index.html',
+                  file: 'html'
+                }
+              ]
+            },
+            {
+              name: '.gitignore',
+              file: 'txt'
+            },
+            {
+              name: 'babel.config.js',
+              file: 'js'
+            },
+            {
+              name: 'package.json',
+              file: 'json'
+            },
+            {
+              name: 'README.md',
+              file: 'md'
+            },
+            {
+              name: 'vue.config.js',
+              file: 'js'
+            },
+            {
+              name: 'yarn.lock',
+              file: 'txt'
+            }
+          ]
       }
+
     },
     created:function(){
       this.asyncFind("")
@@ -5142,8 +5289,8 @@ const Ping=Vue.extend({template:`
     return {
       getValues: new perfStat(),
       postValues: new perfStat(),
-      repeat:{get:false,post:false},
-      counter:null
+      repeat: {get:false,post:false},
+      counter: "(unread)"
       }
   },
   methods:{
@@ -5290,7 +5437,7 @@ const Acesettings=Vue.extend({template:`
     <v-flex xs12="" sm8="" offset-sm2="">
       <v-card>
        <v-toolbar class="orange">
-        <v-card-title>Common Ace editor settings</v-card-title>
+        <v-card-title> <qd-breadcrumbs :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Common Ace editor settings', disabled: true }]">crumbs</qd-breadcrumbs></v-card-title>
         </v-toolbar>
       <v-card-text>
       <v-container fluid="">
@@ -5389,7 +5536,7 @@ const Acesettings=Vue.extend({template:`
     }
   },
    beforeRouteLeave (to, from, next) {
-     settings.setItem('settings/ace',this.ace)
+     Settings.setItem('settings/ace',this.ace)
      .then(v=>{
      next()
      })
@@ -5397,7 +5544,7 @@ const Acesettings=Vue.extend({template:`
   mounted: function () {
   
  // console.log("$$$",this.ace)
-  settings.getItem('settings/ace')
+  Settings.getItem('settings/ace')
     .then( v =>{
               //alert("db\n"+JSON.stringify(v))
               this.ace = Object.assign({}, this.ace, v)
@@ -5413,16 +5560,20 @@ const Acesettings=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/keys.vue
 const Keys=Vue.extend({template:` 
  <v-container fluid="">
- <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
+ 
 	 <v-card>
 	  <v-toolbar dense="">
-	   <v-toolbar-title>keys</v-toolbar-title>
+	   <v-toolbar-title> 
+         <qd-breadcrumbs :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Keys', disabled: true }]">crumbs</qd-breadcrumbs> 
+         </v-toolbar-title> 
+         <v-btn @click="showKey" :disabled="openIndex === null">Show: {{ keys[openIndex] }} </v-btn>
+           <v-btn @click="deleteKey" :disabled="openIndex === null">Delete</v-btn> 
 	   <v-spacer></v-spacer>
    <v-btn @click="wipe" color="error">Delete ALL</v-btn>
 	   </v-toolbar>
 
    <v-card-text>
-    <v-expansion-panel>
+    <v-expansion-panel v-model="openIndex">
     <v-expansion-panel-content popout="" v-for="key in keys" :key="key">
      <div slot="header">{{key}}</div>
   <v-card>
@@ -5434,26 +5585,38 @@ const Keys=Vue.extend({template:`
      </v-expansion-panel> 
    </v-card-text>
    </v-card>
+   <v-snackbar v-model="true">Settings are currently only stored locally in the browser, using <code>localstorage</code></v-snackbar>
  </v-container>
  `,
       
   data(){return {
     keys: ["?"],
-    showDev: false,
-    dark:false
+    openIndex: null
   }
   },
   methods:{
     wipe(){
-      if(confirm("wipe localstorage? "+this.keys.length)) settings.clear();
+      if(confirm("wipe localstorage? ")) Settings.clear();
     },
-    theme(){
-     this.$root.$emit("theme",this.dark)
+    
+    showKey(){
+      var key=this.keys[this.openIndex]
+      console.log("index: ",key)
+      Settings.getItem(key).then(v=>{console.log("ffff",v)})
+      alert("show")
+    },
+    
+    deleteKey(){
+      var key=this.keys[this.openIndex]
+      console.log("index: ",key)
+      Settings.removeItem(key).then(v=>{console.log("ffff",v)})
+      alert("show")
     }
   },
+  
   created(){
     console.log("settings")
-    settings.keys()
+    Settings.keys()
     .then( v =>{
      this.keys=v
     })
@@ -5464,7 +5627,7 @@ const Keys=Vue.extend({template:`
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/settings.vue
-const Settings=Vue.extend({template:` 
+const Showsettings=Vue.extend({template:` 
  <v-container fluid="">
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
 <v-switch label="Dark theme" v-model="dark" @change="theme"></v-switch>
@@ -5496,14 +5659,14 @@ const Settings=Vue.extend({template:`
   },
   methods:{
     theme(){
-      settings.setItem('settings/dark',this.dark)
+      Settings.setItem('settings/dark',this.dark)
       .then(v=>{
         this.$root.$emit("theme",this.dark)
       })
       
     },
     worker(){
-      settings.setItem('features/serviceworker',this.serviceworker)
+      Settings.setItem('features/serviceworker',this.serviceworker)
       .then(v=>{
         console.log("worker",this.serviceworker)
       })
@@ -5512,7 +5675,7 @@ const Settings=Vue.extend({template:`
   
   created(){
     console.log("settings")
-    settings.keys()
+    Settings.keys()
     .then( v =>{
      this.keys=v
     })
@@ -5520,8 +5683,8 @@ const Settings=Vue.extend({template:`
    
    beforeRouteEnter (to, from, next) {
      Promise.all([
-      settings.getItem('features/serviceworker'),
-      settings.getItem('settings/dark')
+      Settings.getItem('features/serviceworker'),
+      Settings.getItem('settings/dark')
       ])
       .then( v =>{
         next(vm => {
@@ -5623,15 +5786,14 @@ const Runtask=Vue.extend({template:`
     <v-card>
     <v-toolbar>
     <v-toolbar-title>
-     <v-breadcrumbs>
-            <v-breadcrumbs-item to="/tasks" :exact="true">
-            Tasks
-            </v-breadcrumbs-item>
-            
-              <v-breadcrumbs-item>
-            {{ task }}
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
+       <v-breadcrumbs :items="crumbs">
+		      <template slot="item" slot-scope="props">
+		            <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+		            {{ props.item.text }}
+		            </v-breadcrumbs-item>
+		      </template>
+      </v-breadcrumbs>
+ 
       </v-toolbar-title>  
     <v-spacer></v-spacer>
        <router-link :to="{name:'taskhistory', query:{task: task}}"><v-icon>history</v-icon></router-link>
@@ -5668,7 +5830,8 @@ const Runtask=Vue.extend({template:`
 			loading: false,
 			snackbar: {show:false,msg:"",context:"success"},
 			valid: false,
-			id: null
+			id: null,
+			crumbs: [{to:"/tasks", text:"Tasks"},{text: this.task, disabled: true}]
 		  
     }
   },
@@ -5719,10 +5882,12 @@ const Tasks=Vue.extend({template:`
  <v-card>
   <v-toolbar>
   <v-toolbar-title>
-     <v-breadcrumbs>
+     <v-breadcrumbs :items="crumbs">
+      <template slot="item" slot-scope="props">
             <v-breadcrumbs-item to="/tasks" :exact="true">
             Tasks
             </v-breadcrumbs-item>
+        </template>
         </v-breadcrumbs>
        </v-toolbar-title>  
      <v-spacer></v-spacer>
@@ -5754,6 +5919,8 @@ const Tasks=Vue.extend({template:`
       
   data(){
     return {
+      crumbs: [{to: "/tasks", text: "Tasks"}],
+ 
       items: [],
       loading: false,
       q: null,
@@ -5835,7 +6002,7 @@ const Vuecompile=Vue.extend({template:`
         this.waiting=false      
         this.snackbar={show:true,msg:r.data.msg,context:"success"}
         console.log(r.data)
-         settings.setItem('tasks/vuecompile',this.params)
+         Settings.setItem('tasks/vuecompile',this.params)
       })
       .catch(error=>{
         this.waiting=false
@@ -5845,7 +6012,7 @@ const Vuecompile=Vue.extend({template:`
    }
   },
    created: function () {
-    settings.getItem('tasks/vuecompile')
+    Settings.getItem('tasks/vuecompile')
     .then((v)=>{
       if(v)this.params=v
     })
@@ -5922,7 +6089,7 @@ const Xqdoc=Vue.extend({template:`
         this.id= r.data.id;
         this.alert={msg:r.data.msg,success:true,error:false}
         console.log(r.data)
-         settings.setItem('tasks/xqdoc',this.params)
+         Settings.setItem('tasks/xqdoc',this.params)
       })
       .catch(error=>{
         this.waiting=false
@@ -5933,7 +6100,7 @@ const Xqdoc=Vue.extend({template:`
    }
   },
   created: function () {
-    settings.getItem('tasks/xqdoc')
+    Settings.getItem('tasks/xqdoc')
     .then((v)=>{
       if(v)this.params=v
     })
@@ -6031,7 +6198,7 @@ const Thumbnail=Vue.extend({template:`
       }
   },
   beforeRouteEnter (to, from, next) {
-    Promise.all([settings.getItem('images/thumbtask')
+    Promise.all([Settings.getItem('images/thumbtask')
                  ])
     .then(function(values) {
       next(vm => {
@@ -6044,7 +6211,7 @@ const Thumbnail=Vue.extend({template:`
     // called when the route that renders this component is about to
     // be navigated away from.
     // has access to `this` component instance.
-    settings.setItem('images/thumbtask',this.taskxml);
+    Settings.setItem('images/thumbtask',this.taskxml);
     next(true);
   },
 
@@ -6391,7 +6558,7 @@ const Transform=Vue.extend({template:`
     },
   }, 
   beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
+    Settings.getItem('settings/ace')
     .then( v =>{
       
       next(vm => {
@@ -6459,7 +6626,7 @@ const router = new VueRouter({
          ,children: [
            {
              path: '',
-             component: Settings, meta:{title:"Settings", requiresAuth:true}
+             component: Showsettings, meta:{title:"Settings", requiresAuth:true}
            },
           {
             path: 'keys',
@@ -6834,7 +7001,8 @@ const Vuepoc=Vue.extend({template:`
       this.$auth=Object.assign(this.$auth,r.data);
       console.log("AFTER: ",this.$auth);
       //this.$forceUpdate()
-    }) 
+    })
+    EditTabs.restore();
   },
   
   beforeDestroy(){
@@ -6876,6 +7044,7 @@ HTTP.interceptors.request.use((config) => {
   config.qdStartTime=performance.now();
   return config;
 });
+
 HTTP.interceptors.response.use((response) => {
   // Do something with response data
   if(response.config && response.config.qdStartTime){
@@ -6883,11 +7052,12 @@ HTTP.interceptors.response.use((response) => {
     var c=response.config;
     var url=response.config.url + "?" + c.paramsSerializer(c.params);
     //console.log("interceptors time:",s, response.config);
-    var b=`<a href="${url}" target="vp-notification" >${url}</a> Time: ${s}`
-    Notification.add(b);
+    var b=`<a href="${url}" target="vp-notification" >${url}</a>`
+    Notification.add({html: b, elapsed: s});
   }
   return response;
 });
+
 
 // errors hidden
 const HTTPNE = axios.create(AXIOS_CONFIG);
@@ -6899,7 +7069,7 @@ localforage.config({
   name: 'vuepoc'
 });
 // https://vuejs.org/v2/guide/state-management.html
-var settings = {
+var Settings = {
     debug: false,
     defaults:{
       
@@ -6970,6 +7140,17 @@ return $a   `},
         console.log('set failed');
       });
    },
+   
+   removeItem (key) {
+     if (this.debug) console.log('deleteItem',key);
+     return localforage.removeItem(key) 
+     .then(value => {
+        console.log('deleted ',key);
+       
+     }).catch(err => {
+       console.log('delete failed');
+     });
+  },
     keys(){
       return localforage.keys() // returns array of keys 
  

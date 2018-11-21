@@ -28,6 +28,7 @@ HTTP.interceptors.request.use((config) => {
   config.qdStartTime=performance.now();
   return config;
 });
+
 HTTP.interceptors.response.use((response) => {
   // Do something with response data
   if(response.config && response.config.qdStartTime){
@@ -35,11 +36,12 @@ HTTP.interceptors.response.use((response) => {
     var c=response.config;
     var url=response.config.url + "?" + c.paramsSerializer(c.params);
     //console.log("interceptors time:",s, response.config);
-    var b=`<a href="${url}" target="vp-notification" >${url}</a> Time: ${s}`
-    Notification.add(b);
+    var b=`<a href="${url}" target="vp-notification" >${url}</a>`
+    Notification.add({html: b, elapsed: s});
   }
   return response;
 });
+
 
 // errors hidden
 const HTTPNE = axios.create(AXIOS_CONFIG);
@@ -51,7 +53,7 @@ localforage.config({
   name: 'vuepoc'
 });
 // https://vuejs.org/v2/guide/state-management.html
-var settings = {
+var Settings = {
     debug: false,
     defaults:{
       
@@ -122,6 +124,17 @@ return $a   `},
         console.log('set failed');
       });
    },
+   
+   removeItem (key) {
+     if (this.debug) console.log('deleteItem',key);
+     return localforage.removeItem(key) 
+     .then(value => {
+        console.log('deleted ',key);
+       
+     }).catch(err => {
+       console.log('delete failed');
+     });
+  },
     keys(){
       return localforage.keys() // returns array of keys 
  

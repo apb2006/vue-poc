@@ -28,7 +28,7 @@
 			<xpath>string-length(result)</xpath>
 		</field>
 	</fields>
-	<views iconclass="fa fa-file-code-o">
+	<views iconclass="code">
 		<view name="filter">name description</view>
 	</views>
 	<data type="element(jobrun)">collection("vue-poc/jobrun")/jobrun

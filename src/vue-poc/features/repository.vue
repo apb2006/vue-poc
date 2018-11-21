@@ -1,40 +1,22 @@
 <!DOCTYPE html>
 <template id="repo">
  <v-container fluid>
-  <v-card >
-   <v-toolbar >
-    <v-text-field
-        append-icon="search"
-        label="Filter repo"
-        single-line
-        hide-details
-        v-model="search"
-      ></v-text-field>   
-      <v-spacer></v-spacer>     
-    </v-toolbar>
-<v-data-table
-      :headers="headers"
-      :items="items"
-      :search="search"
-       v-model="selected"
-       select-all
-      class="elevation-1"
-      no-data-text="No repo found @todo"
-    >
+   <qd-table :headers="headers" data-uri="data/repo" entity="repo" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
-    <td class="vtop">
+      <td >
         <v-checkbox
           primary
           hide-details
           v-model="props.selected"
         ></v-checkbox>
       </td>
-      <td class="vtop">{{ props.item.name }}</td>
-      <td class="vtop "><div>{{ props.item.permission }}</div>
+      <td >{{ props.item.name}}</td>
+      <td >{{ props.item.type }}</td>
+        <td >{{ props.item.version }}</td>
     </template>
-  </v-data-table>
-  </v-card>
+   </qd-table>
  </v-container>
+
 </template>
 
 <script>{
@@ -45,28 +27,15 @@
       search: null,
       selected: [],
       headers: [
-        {
-          text: 'Name',
-          left: true,
-          value: 'id'
-        },
-        { text: 'Permission', value: 'state' }
+        { text: 'Name', value: 'name'},
+        { text: 'Type', value: 'type' },
+        { text: 'Version', value: 'version' }
       ] 
       }
   },
-  methods:{
-      getUsers(){
-        this.loading=true;
-        HTTP.get("repo")
-        .then(r=>{
-           this.loading=false
-           this.items=r.data
-        })
-     }
-  },
-  created:function(){
-    console.log("notfound",this.$route.query.q)
-  }
+ 
+created:function(){
+  console.log("repo")
+}
 }
 </script>
-

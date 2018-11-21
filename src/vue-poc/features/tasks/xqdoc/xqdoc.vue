@@ -69,7 +69,7 @@
         this.id= r.data.id;
         this.alert={msg:r.data.msg,success:true,error:false}
         console.log(r.data)
-         settings.setItem('tasks/xqdoc',this.params)
+         Settings.setItem('tasks/xqdoc',this.params)
       })
       .catch(error=>{
         this.waiting=false
@@ -80,7 +80,7 @@
    }
   },
   created: function () {
-    settings.getItem('tasks/xqdoc')
+    Settings.getItem('tasks/xqdoc')
     .then((v)=>{
       if(v)this.params=v
     })

@@ -5,10 +5,12 @@
  <v-card>
   <v-toolbar>
   <v-toolbar-title>
-     <v-breadcrumbs >
+     <v-breadcrumbs :items="crumbs">
+      <template slot="item" slot-scope="props">
             <v-breadcrumbs-item  to="/tasks" :exact="true">
             Tasks
             </v-breadcrumbs-item>
+        </template>
         </v-breadcrumbs>
        </v-toolbar-title>  
      <v-spacer></v-spacer>
@@ -49,6 +51,8 @@
 <script>{
   data(){
     return {
+      crumbs: [{to: "/tasks", text: "Tasks"}],
+ 
       items: [],
       loading: false,
       q: null,

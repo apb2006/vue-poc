@@ -4,11 +4,13 @@
  <v-card>
    <v-toolbar >
    <v-toolbar-title>
-   <v-breadcrumbs >
-            <v-breadcrumbs-item  to="/namespace" :exact="true">
-            Namespaces
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
+    <v-breadcrumbs :items="crumbs" >
+         <template slot="item" slot-scope="props">
+             <v-breadcrumbs-item  :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+                  {{ props.item.text }}
+              </v-breadcrumbs-item>
+          </template>
+     </v-breadcrumbs>
    </v-toolbar-title>
 
    
@@ -72,7 +74,8 @@
         
         { text: 'Description', value: 'description' },
         { text: 'Prefix', value: 'prefix' }
-        ]
+        ],
+        crumbs:[{to:"/namespace", text:"namespaces"}]
       }
   },
   methods: {

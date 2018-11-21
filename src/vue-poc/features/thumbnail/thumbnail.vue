@@ -92,7 +92,7 @@
       }
   },
   beforeRouteEnter (to, from, next) {
-    Promise.all([settings.getItem('images/thumbtask')
+    Promise.all([Settings.getItem('images/thumbtask')
                  ])
     .then(function(values) {
       next(vm => {
@@ -105,7 +105,7 @@
     // called when the route that renders this component is about to
     // be navigated away from.
     // has access to `this` component instance.
-    settings.setItem('images/thumbtask',this.taskxml);
+    Settings.setItem('images/thumbtask',this.taskxml);
     next(true);
   },
 

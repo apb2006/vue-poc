@@ -18,6 +18,6 @@
 			<xpath>"app.item.index({'name':'benchx'})"</xpath>
 		</field>
 	</fields>
-	<views iconclass="fa fa-question-circle" />
+	<views iconclass="search" />
 	<data type="element(search)"></data>
 </entity>

@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?xml-model href="../schema/pipeline.rnc" type="application/relax-ng-compact-syntax"?>
+<pipeline name='XQDoc generator' xmlns='http://quodatum.com/ns/pipeline'>
+
+	<directory-list href="C:\Users\andy\git\vue-poc\src\vue-poc\"
+		include-filter=".*\.xqm" />
+	<store base="C:/tmp/pipes/" fileExpression="'files.xml'" dated="true" />
+  <pipeline>
+  <xslt href="C:\Users\andy\git\vue-poc\src\vue-poc\lib\xqdoc\html-index.xsl">
+  <param/>
+  </xslt>
+  	<store base="C:/tmp/pipes/" fileExpression="'index.html'" dated="true"  output="html5"/>
+  </pipeline>
+  <pipeline>
+    <xquery href="getxqdoc.xq"/>
+    <store base="C:/tmp/pipes/" fileExpression="'F' || $position || '/xqdoc.xml'"  dated="true"/>
+    <identity/>
+    <!-- 
+<xslt href="C:\Users\andy\git\vue-poc\src\vue-poc\lib\xqdoc\html-module.xsl"/>
+ -->
+    <store base="C:/tmp/pipes/" fileExpression="'F' || $position || '/index.html'"  dated="true" output="html5"/>
+    
+  </pipeline>
+   <pipeline>
+    <xquery href="getxparse.xq"/>
+    <store base="C:/tmp/pipes/" fileExpression="'F' || $position || '/xparse.xml'"  dated="true"/>
+  </pipeline>
+  
+</pipeline>

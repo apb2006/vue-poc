@@ -7,13 +7,15 @@
 <v-toolbar dense >
     
     <v-toolbar-title>
-		    <v-breadcrumbs >
+		    <v-breadcrumbs :items="crumbs">
 		        <span slot="divider" style="padding:0;"></span>
-				    <v-breadcrumbs-item v-for="item in crumbs" :key="item.path" 
-				    :to="{ query: { url:  item.path }}" :exact="true">
-				    <v-icon v-if="item.icon">{{ icon }}</v-icon>
-				    {{ item.name }}
-				    </v-breadcrumbs-item>
+		         <template slot="item" slot-scope="props">
+						    <v-breadcrumbs-item  
+						    :to="{ query: { url:  props.item.path }}" :exact="true">
+						    <v-icon v-if="props.item.icon">{{ props.item.icon }}</v-icon>
+						    {{ props.item.name }}
+						    </v-breadcrumbs-item>
+				    </template>
 		    </v-breadcrumbs>
     </v-toolbar-title>
      <v-btn icon @click="load()">

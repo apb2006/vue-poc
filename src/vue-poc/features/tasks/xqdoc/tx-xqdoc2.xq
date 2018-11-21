@@ -23,8 +23,9 @@ let $project:=tokenize($efolder,"[/\\]")[last()]=>trace("xqdoc: ")
 let $files:= fw:directory-list($efolder,map{"include-filter":".*\.xqm"})
 let $id:=$state/last-id
 let $opts:=map{
+               "src-folder": $efolder, 
                "project": $project, 
-               "id": $id/string()
+               "ext-id": $id/string()
                }
 let $op:=xqd:save-xq($files,$target,$opts)
 let $result:=<json type="object">

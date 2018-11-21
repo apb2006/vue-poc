@@ -1,49 +1,44 @@
 <!DOCTYPE html>
 <template id="entity1">
-<v-card>
-	<v-toolbar >
+<v-card >
+	<v-toolbar>
 	 <v-toolbar-title> 
-	 <v-breadcrumbs >
-            <v-breadcrumbs-item  to="/entity" :exact="true">
-            Entities
-            </v-breadcrumbs-item>
-            
-              <v-breadcrumbs-item  >
-              <v-chip>
-              <v-avatar>
-              <v-icon>{{ item.iconclass }}</v-icon>
-              </v-avatar> 
-            {{ entity }}
-            </v-chip>
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
-	 </v-toolbar-title>
+         <qd-breadcrumbs @todo="showmenu= ! showmenu" 
+         :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]"
+         >crumbs</qd-breadcrumbs> 
+         </v-toolbar-title>   
+          <v-menu offset-y v-model="showmenu" activator=".todo">
+            <v-list dense>
+                <v-subheader >Actions</v-subheader>
+                      <v-list-tile @click="getxml" >
+                      <v-list-tile-title  >View XML</v-list-tile-title>
+                    </v-list-tile>
+                     <v-list-tile  >
+                      <v-list-tile-title ><a :href="dataurl" target="data">Json</a></v-list-tile-title>
+                </v-list-tile>             
+            </v-list>         
+           </v-menu> 
+
 	 <v-spacer></v-spacer>
+	 
 	 <v-btn icon @click="getItem"
 	  :loading="loading"
       :disabled="loading"
 	 ><v-icon>refresh</v-icon></v-btn>
-	 
-	  <v-btn @click="getxml"
-    :loading="loading"
-      :disabled="loading"
-   >XML</v-btn>
-   
-   <a :href="dataurl" target="data">Data</a>
+	
 	 </v-toolbar>
 
   <v-container fluid grid-list-md>
-  <div v-if="item">
-    <div>{{item.description}}</div>
-   </div>
-   
+  
     <v-expansion-panel v-model="panel" expand >
-    
+    <v-expansion-panel-content>
+          <div slot="header" class="title">Description: </div>
+         {{item.description}}
+          <pre v-if="xml"><code>{{ xml }}</code></pre> 
+      </v-expansion-panel-content>
       <v-expansion-panel-content>
 		      <div slot="header" class="title">Type: <code>{{ item.type }}</code></div>
-		       <prism language="xquery">{{ item.modules }}</prism>
-		       <prism language="xquery">{{ item.namespaces }}</prism>
-		      <prism language="xquery">{{ item.code }}</prism>
+		       <prism language="xquery">{{ code(item) }}</prism>
       </v-expansion-panel-content>
       
       <v-expansion-panel-content>
@@ -72,7 +67,7 @@
       item: {description:null,
              code: null
       },
-
+      showmenu: false,
       loading: false,
       xml: null,
       selected: [],
@@ -83,7 +78,7 @@
         {text: "description", value: "description"},
         {text: "xpath", value: "xpath"}
       ],
-      panel: [false, true]
+      panel: [true, false, true]
       }
   },
   methods:{
@@ -95,18 +90,26 @@
         this.item=Object.assign({}, this.item, r.data)
         }) 
     },
+    code(item){
+      return item.modules + " " +  item.namespaces + " " +item.code       
+    },
     getxml(){
       HTTP.get("data/entity/"+this.entity,{ headers: {Accept: "text/xml"}})
       .then(r=>{
-        console.log(r.data)
         this.xml=r.data;
             }) 
+    },
+    todo(){
+      alert("TODO");
     }
   },
   computed: {
     dataurl(){
          return '/vue-poc/api/data/' + this.entity;
-       }
+       },
+       xquery(){
+         return '/vue-poc/api/data/' + this.entity;
+       }   
   },
   created:function(){
     this.getItem()

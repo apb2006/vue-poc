@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<template id="settings">
+<template id="showsettings">
  <v-container fluid>
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
 <v-switch label="Dark theme" v-model="dark" @change="theme"></v-switch>
@@ -32,14 +32,14 @@
   },
   methods:{
     theme(){
-      settings.setItem('settings/dark',this.dark)
+      Settings.setItem('settings/dark',this.dark)
       .then(v=>{
         this.$root.$emit("theme",this.dark)
       })
       
     },
     worker(){
-      settings.setItem('features/serviceworker',this.serviceworker)
+      Settings.setItem('features/serviceworker',this.serviceworker)
       .then(v=>{
         console.log("worker",this.serviceworker)
       })
@@ -48,7 +48,7 @@
   
   created(){
     console.log("settings")
-    settings.keys()
+    Settings.keys()
     .then( v =>{
      this.keys=v
     })
@@ -56,8 +56,8 @@
    
    beforeRouteEnter (to, from, next) {
      Promise.all([
-      settings.getItem('features/serviceworker'),
-      settings.getItem('settings/dark')
+      Settings.getItem('features/serviceworker'),
+      Settings.getItem('settings/dark')
       ])
       .then( v =>{
         next(vm => {

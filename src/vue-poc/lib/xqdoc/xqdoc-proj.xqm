@@ -16,6 +16,8 @@ declare variable $xqd:XML:=map{"indent": "no"};
 declare variable $xqd:mod-xslt external :="html-module.xsl";
 declare variable $xqd:index-xslt external :="html-index.xsl";
 
+declare variable $xqd:cache external :=false();
+
 (:~  @see https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods :)
 declare variable $xqd:methods:=("GET","HEAD","POST","PUT","DELETE","PATCH");
 
@@ -59,11 +61,11 @@ declare  function xqd:gendoc(
    let $xqdoc:= xqd:xqdoc($ip,map{})
    let $xq:= fetch:text($ip)
    let $params:=map:merge((map{
-                "source":$xq,
-                "filename":$f/@name/string(),
-                "cache":true(),
-                "show-private":true(),
-                "resources":"../resources/"},
+                "source": $xq,
+                "filename": $f/@name/string(),
+                "cache": $xqd:cache,
+                "show-private": true(),
+                "resources": "../resources/"},
                 $params))
    return (
        $xq=>xqd:parse()=>xqd:store($dest || "/xparse.xml",$xqd:XML),
@@ -90,11 +92,11 @@ as map(*)* {
   let $xqdoc:= xqd:xqdoc($ip,map{})
   let $xq:= fetch:text($ip)
   let $params:=map:merge((map{
-                "source":$xq,
-                "filename":$f/@name/string(),
-                "cache":true(),
-                "show-private":true(),
-                "resources":"../resources/"},
+                "source": $xq,
+                "filename": $f/@name/string(),
+                "cache": $xqd:cache,
+                "show-private": true(),
+                "resources": "../resources/"},
                 $params))
    return (
        xqd:store2(xqd:parse($xq), "xparse.xml",$xqd:XML),

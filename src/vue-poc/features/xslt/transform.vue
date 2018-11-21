@@ -105,7 +105,7 @@
     },
   }, 
   beforeRouteEnter (to, from, next) {
-    settings.getItem('settings/ace')
+    Settings.getItem('settings/ace')
     .then( v =>{
       
       next(vm => {

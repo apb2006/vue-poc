@@ -3,12 +3,15 @@ const Notification={
     messages:[],
     nextId: 0,
     unseen:0,
-    add(msg){
-      var data={
-          text: msg,
+    add(opts){
+      var data=Object.assign({
+          html: 'no html',
           index: ++this.nextId,
-          created: new Date()
-      };
+          created: new Date(),
+          elapsed: null
+      },
+      opts);
+      console.log("opt",opts);
       this.messages.unshift(data);
       this.messages.length = Math.min(this.messages.length, 30);
       ++this.unseen;

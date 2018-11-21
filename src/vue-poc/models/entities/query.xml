@@ -24,7 +24,7 @@
 			<xpath>string-length(result)</xpath>
 		</field>
 	</fields>
-	<views iconclass="fa fa-file-code-o">
+	<views iconclass="input">
 		<view name="filter">name description</view>
 	</views>
 	<data type="element(query)">collection("replx/queries")/query

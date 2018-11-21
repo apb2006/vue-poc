@@ -6,8 +6,13 @@
 :)
 module namespace  qipe='http://quodatum.com/ns/pipeline';
 import module namespace schematron = "http://github.com/Schematron/schematron-basex";
+import module namespace fw="quodatum:file.walker";
 
-
+declare namespace c="http://www.w3.org/ns/xproc-step";
+declare variable $qipe:outputs:=map{
+                            "html5": map{"method": "html","version":"5.0"},
+                            "xml":  map{"indent": "no"}
+                            };
 (:~  run a pipeline 
  : @param $pipe the pipeline document
  : @param $initial starting data as sequence
@@ -24,6 +29,12 @@ as item()*
           $result,
           qipe:log( "end: ",$opts)
         )
+};
+
+declare function qipe:run($pipe as node() )
+as item()*
+{
+  qipe:run($pipe,())
 };
 
 (:~ check pipeline is valid against schema :)
@@ -45,9 +56,27 @@ declare function qipe:step($acc,$this as element(*),$opts as map(*))
   case element(qipe:xslt) return qipe:xslt($acc,$this,$opts)
   case element(qipe:load) return qipe:load($acc,$this,$opts)
   case element(qipe:store) return qipe:store($acc,$this,$opts)
+  case element(qipe:directory-list) return qipe:dir($acc,$this,$opts)
+  case element(qipe:pipeline) return qipe:pipeline($acc,$this,$opts)
+  case element(qipe:identity) return qipe:identity($acc,$this,$opts)
   default return error(xs:QName('qipe'), 'unknown step:' || name($this))
 };
 
+(:~  subpipe
+:)
+declare function qipe:pipeline($acc,$this as element(qipe:pipeline),$opts as map(*))
+{
+  let $a:=qipe:run($this,$acc)
+  return $acc
+};
+
+(:~  identity
+:)
+declare function qipe:identity($acc,$this as element(qipe:pipeline),$opts as map(*))
+{
+   $acc=>trace("IDENT")
+};
+ 
 (:~  run validate step based on @type
 :)
 declare function qipe:validate($acc,$this as element(qipe:validate),$opts as map(*))
@@ -77,12 +106,24 @@ declare function qipe:validate($acc,$this as element(qipe:validate),$opts as map
 };
 
 (:~  
+ : append directory-list  to accumulator
+ :)
+declare function qipe:dir($acc,$this  as element(qipe:directory-list),$opts as map(*))
+{
+  let $inc:=$this/@include-filter/string()
+  let $href:=$this/@href/string()
+  let $result:=fw:directory-list($href,map{"include-filter": $inc})
+  let $result:= document { $result } transform with { delete  node //c:directory[not(.//c:file)]}
+  return ($acc,$result)
+};
+
+(:~  
  : run xquery referenced by @href and append result sequence to accumulator
  :)
 declare function qipe:xquery($acc,$this  as element(qipe:xquery),$opts as map(*))
 {
-  let $href:=$this/@href/string()
-  let $result:=xquery:invoke($href)
+  let $href:=resolve-uri($this/@href,base-uri($this))=>trace("AT")
+  let $result:=xquery:invoke($href,map{'': $acc})
   return ($acc,$result)
 };
 
@@ -91,9 +132,10 @@ declare function qipe:xquery($acc,$this  as element(qipe:xquery),$opts as map(*)
  :)
 declare function qipe:xslt($acc,$this  as element(qipe:xslt),$opts as map(*))
 {
-  let $href:=qipe:resolve($this/@href)
+  let $href:=qipe:resolve($this/@href)=>trace("XSLT")
   for $d at $i in $acc
   let $_:=qipe:log("xslt: " || $i,$opts)
+  let $_:=trace($d,"ddd")
   return xslt:transform($d, $href)  
 };
 
@@ -105,21 +147,24 @@ declare function qipe:store($acc,$this  as element(qipe:store),$opts as map(*))
   let $href:=qipe:resolve($this/@base)
   let $dated:=boolean($this/@dated)
   let $name:=$this/@fileExpression/string()
+  let $output:=($this/@output/string(),"xml")[1]
   let $eval:="declare variable $position external :=0; " || $name
   let $href:=$href || (if( $dated) then 
                           format-date(current-date(),"/[Y0001][M01][D01]") 
                        else 
                           ())
   
-  return (
-          if(file:exists($href)) then () else file:create-dir($href),
           for $item at $pos in $acc
           let $name:=xquery:eval($eval,
                                  map{"":$item,
                                      "position": $pos}) (:eval against doc:)
           let $dest:=$href || "/" || $name
-          return ($dest,file:write($dest,$item))
-        )
+          let $dir:=file:parent($dest)
+          return (
+                 $item
+                 ,if(file:is-dir($dir)) then () else file:create-dir($dir)
+                 ,file:write($dest,$item,$qipe:outputs?($output))
+                 )
 };
 
 (:~  validate with xml-schema  :)

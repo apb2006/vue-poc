@@ -13,12 +13,16 @@ declare namespace xqdoc="http://www.xqdoc.org/1.0";
  : @default file:///C:/tmp/xqdoc/
  :)
 declare variable $target as xs:anyURI external :=
-"file:///C:/tmp/xqdoc/" cast as xs:anyURI;
+"file:///C:/tmp/xqdoca/" cast as xs:anyURI;
 
 declare variable $nsRESTXQ:= 'http://exquery.org/ns/restxq';
 
-(:~   map for each restxq:path :)
-declare function local:import($path,$id as item(),$folder)
+(:~   map for each restxq:path 
+ : @param 
+:)
+declare function local:import($path,
+                              $id as item(),
+                              $folder)
 as map(*)*
 {
   let $uri:=``[F`{ string($id) }`/]``
@@ -35,8 +39,13 @@ as map(*)*
        
 };
 
-declare function local:page($reps as map(*)*)
+(:~
+ : html for page. 
+ :)
+ declare function local:page($reps as map(*)*)
 {
+let $tree:=trace($reps?uri)
+let $tree:=tree:build($tree)=>trace("TRRES")
 let $op:= <div>
           <nav id="toc">
             <div>
@@ -46,7 +55,7 @@ let $op:= <div>
             </div>
             <h2>
                 <a id="contents"></a>
-                <span class="namespace">
+                <span >
                     RestXQ
                 </span>
             </h2>
@@ -57,14 +66,34 @@ let $op:= <div>
                         <span class="content">Introduction</span>
                     </a>
                 </li>
+                 <li  href="#main">
+                    <a >
+                        <span class="secno">2 </span>
+                        <span class="content">Paths</span>
+                    </a>
+                </li>
+                <li>
+                </li>
              </ol>
            </nav>
            <a href="index.html">index: </a>
+           <ol> { local:tree-list($tree) } </ol>
            <ul>{$reps!local:path-to-html(.)}</ul>
            </div>
 return  xqd:page($op,map{"resources": "resources/"})
 };
-          
+
+(:~ tree to list :)
+declare function local:tree-list($tree){
+  typeswitch ($tree )
+  case element(directory) 
+      return <li>{$tree/@name/string()}/<ul>{$tree/*!local:tree-list(.)}</ul></li>
+      
+  default 
+     return <li>{$tree/@name/string()}</li>
+};
+
+(:~  html for a path :)          
 declare function local:path-to-html($rep as map(*))
 as element(li){
    <li id="{ $rep?uri }">
@@ -74,10 +103,11 @@ as element(li){
        for $method in map:keys($methods)
        let $d:=$methods?($method)
        let $id:=head($d?function)
-       return <li><a href="{$d?uri}index.html#{$id }">{ $method }</a>
-       <div>{$d?description}</div></li>
-     }
-     </ul>
+       return <li>
+                    <a href="{$d?uri}index.html#{$id }">{ $method }</a>
+                    <div>{$d?description}</div>
+              </li>
+       }</ul>
    </li>
 };
 
@@ -102,8 +132,16 @@ let $data:=map:merge(for $report in $reports
 
 
 let $uris:=sort(map:keys($data))
-
-return local:page( $data?($uris))
+let $result:=<json type="object">
+                  <extra>hello</extra>
+                  <msg> {$target}, {count($data)} uris processed.</msg>
+                  <id>xqrest2 ID??</id>
+              </json>
+return 
+      (
+       local:page( $data?($uris))
        =>xqd:store2("restxq.html",$xqd:HTML5)
-       =>store:store($target)
+       =>store:store($target),
+       update:output($result)
+       )
  

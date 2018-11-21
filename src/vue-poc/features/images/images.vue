@@ -249,7 +249,7 @@
         var t1 = performance.now();
         var elapsed= 0.001 *(t1 - t0);
         var round = Vue.filter('round');
-        this.$notification.add("Found " + this.total + " in : "+ round(elapsed,1) +" secs");
+        this.$notification.add({html:"Found " + this.total, elapsed: round(elapsed,1)});
         }) 
     },
     slideShow(){
