@@ -3,21 +3,24 @@
 //     name:
 //     contentType:
 //     text:
-//     id:
+//     id: ids have the form "Tn"
 //     url:
+// requires: Settings,HTTP
 //
-const EditTabs=new Vue({
+const GEditTabs={
     data(){
       return {
                 items:[],
+                length: 0,
                 nextId: 1,
-                currentId: null
+                currentId: null,
+                restored: null
             }
     },
     
     methods: {
       addItem(tab){
-        console.log("new: ",tab);
+        //console.log("new: ",tab);
         var def={name: "AA"+this.nextId, 
                  contentType: "text/xml",
                  mode: "xml",
@@ -25,20 +28,17 @@ const EditTabs=new Vue({
                  url: null
                  };
         var etab = Object.assign(def,tab);
-        etab.id= ""+this.nextId
+        etab.id= "T" + this.nextId
         this.items.push (etab);
+        this.length++
         this.nextId++;
         return etab;
       },
       
       closeItem(item){
-        var index=this.items.indexOf(item);
-        if (index > -1) {
-          alert("index: "+index)
-          this.items.splice(index, 1);
-          index=(index==0)?0:index-1;
-          this.currentId=(this.items.length)?"T"+this.items[index].id : null;
-        }
+        //https://github.com/vuejs/vue/issues/5855
+        this.items=this.items.filter(t => t.id !== item.id)
+        this.length--;
       },
       
       // fetch content from server and create tab
@@ -65,7 +65,7 @@ const EditTabs=new Vue({
       
       restore(){
         that=this
-        Settings.getItem('edit/items')
+        this.restored=Settings.getItem('edit/items')
         .then(function (v){
            console.log("items ",v)
            v.forEach(v =>that.addItem(v))
@@ -76,9 +76,16 @@ const EditTabs=new Vue({
            });   
       },
       
-      sorted(){
-        return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name))
+      sorted(){ /* sorted indices */
+        var len=this.items.length
+        var indices = new Array(len);
+        for (var i = 0; i < len; ++i) indices[i] = i;
+        var list=this.items
+        return indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
       }
+    },
+    created(){
+      console.log("EditTabs created")
     }
-});
+};
 

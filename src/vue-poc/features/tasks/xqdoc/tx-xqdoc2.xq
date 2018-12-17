@@ -10,12 +10,13 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
  : @default C:/Users/andy/git/vue-poc/src/vue-poc
  :)
 declare variable $efolder as xs:anyURI  external :=
-"C:/Users/andy/git/vue-poc/src/vue-poc";
+xs:anyURI("C:/Users/andy/git/vue-poc/src/vue-poc");
 
 (:~ URL of the schema to use 
  : @default C:/tmp/xqdoc/
  :)
-declare variable $target as xs:anyURI external :="C:/tmp/xqdoc/";
+declare variable $target as xs:anyURI external :=
+xs:anyURI("C:/tmp/xqdoc/");
 
 declare variable $state as element(state):=db:open("vue-poc","/state.xml")/state;
                                  
@@ -29,7 +30,7 @@ let $opts:=map{
                }
 let $op:=xqd:save-xq($files,$target,$opts)
 let $result:=<json type="object">
-                  <extra>hello</extra>
+                  <extra>hello2</extra>
                   <msg> {$target}, {count($files//c:file)} files processed.</msg>
                   <id>{$id/string()}</id>
               </json>

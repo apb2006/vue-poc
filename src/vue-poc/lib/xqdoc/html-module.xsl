@@ -7,13 +7,13 @@
 	 <xsl:import href="xqdoc.xsl"/>
 	<!-- Standalone xqdoc:xqdoc transform mode"restxq" -->
 	<xsl:param name="project" as="xs:string" select="'unknown'"/>
-	<xsl:param name="source" as="xs:string" >No code provided</xsl:param>
+	<xsl:param name="source" as="xs:string" >Source not available</xsl:param>
 	<xsl:param name="filename" as="xs:string" select="'?file'" />
 	<xsl:param name="ext-id" as="xs:string"></xsl:param>
 	<xsl:param name="show-private" as="xs:boolean" select="false()" />
-	<xsl:param name="resources" as="xs:string" select="'../resources/'" />
-
-	<xsl:variable name="index" select="'../index.html'" />
+	<xsl:param name="resources" as="xs:string" select="'resources/'" />
+  <xsl:param name="root" as="xs:string" select="'../../'" />
+	<xsl:variable name="index" select="concat($root,'index.html')" />
 	<xsl:variable name="vars"
 		select="//doc:variable[$show-private or not(doc:annotations/doc:annotation/@name='private')]" />
 	<xsl:variable name="funs"
@@ -37,7 +37,7 @@
 					<xsl:value-of select="$ext-id" />
 				</title>
 				<xsl:call-template name="resources">
-             <xsl:with-param name="path" select="$resources"/>
+             <xsl:with-param name="path" select="concat($root,$resources)"/>
         </xsl:call-template>
 			</head>
 			<body class="home" id="top">

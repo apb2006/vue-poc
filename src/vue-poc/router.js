@@ -94,11 +94,19 @@ const router = new VueRouter({
       { path: 'tasks', name: 'taskhistory', component: Taskhistory, meta:{title: "Task History"} },
       ]
     },
-   
+    { path: '/labs', component: { template: '<router-view/>' }
+    ,children: [
+      { path: 'scratch', component: Scratch, meta:{title:"scratch"} },
+      { path: 'svg', component: Svg, meta:{title:"SVG"} },
+      { path: 'svg2', component: Svg2, meta:{title:"SVG2"} },
+      { path: 'timeline', component: Timeline,meta:{title:"timeline"} },
+      { path: 'tree', component: Tree, meta:{title:"tree"} },
+      { path: 'tree2', component: Tree2, meta:{title:"tree2"} },
+      ]
+    },
     
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
-    { path: '/svg', component: Svg, meta:{title:"SVG"} },
-    { path: '/svg2', component: Svg2, meta:{title:"SVG2"} },
+   
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     
@@ -113,16 +121,15 @@ const router = new VueRouter({
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
     { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
         
-    { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
-    { path: '/tree', component: Tree, meta:{title:"tree"} },
-    { path: '/tree2', component: Tree2, meta:{title:"tree2"} },
+   
+   
     { path: '/map', component: Leaflet,meta:{title:"map"} },
     
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
     { path: '/form3', component: Formsschema, meta:{title:"vue-form-json-schema"} },
     
-    { path: '/scratch', component: Scratch, meta:{title:"scratch"} },
+    
     { path: '/about', component: About, meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],
@@ -132,7 +139,7 @@ router.afterEach(function(route) {
 });
 
 router.beforeEach((to, from, next) => {
-  console.log("before: ",to)
+  //console.log("before: ",to)
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.

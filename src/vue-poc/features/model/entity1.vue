@@ -32,7 +32,7 @@
   
     <v-expansion-panel v-model="panel" expand >
     <v-expansion-panel-content>
-          <div slot="header" class="title">Description: </div>
+          <div slot="header" class="title"><v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}</div>
          {{item.description}}
           <pre v-if="xml"><code>{{ xml }}</code></pre> 
       </v-expansion-panel-content>

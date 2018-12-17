@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-10-26T22:55:28.159+01:00 
+ : auto generated from xml files in entities folder at: 2018-11-30T09:48:45.409Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -11,12 +11,12 @@ declare namespace c='http://www.w3.org/ns/xproc-step';
 declare variable $entity:list:=map { 
   "basexlog": map{
      "name": "basexlog",
-     "description": "BaseX log entry ",
+     "description": "BaseX log entries ",
      "access": map{ 
        "address": function($_ as element()) as xs:string {$_/@address },
        "ms": function($_ as element()) as xs:integer {$_/@ms },
        "text": function($_ as element()) as xs:string {$_/. },
-       "time": function($_ as element()) as xs:string {$_/@time },
+       "time": function($_ as element()) as xs:string {$_/concat(@date,'T',@time) },
        "type": function($_ as element()) as xs:string {$_/@type },
        "user": function($_ as element()) as xs:string {$_/@user } },
     
@@ -39,7 +39,7 @@ declare variable $entity:list:=map {
                  },
            "time": function($_ as element()) as element(time)? {
             (: xs:string :)
-                        fn:data($_/@time)!element time {  .} 
+                        fn:data($_/concat(@date,'T',@time))!element time {  .} 
                  },
            "type": function($_ as element()) as element(type)? {
             (: xs:string :)
@@ -51,7 +51,15 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(entry)*
-       { hof:top-k-by(admin:logs(), hof:id#1, 2)/string()!reverse(admin:logs(.,true())) },
+       { 
+let $add-date:=function($logs as element(*)*,$d as xs:string){
+    $logs!(. transform with { insert node attribute date {$d} into .})
+}
+
+return 
+hof:top-k-by(admin:logs(), string#1, 2)  
+!(reverse(admin:logs(.,true()))=>$add-date(.))
+	 },
        
        "views": map{ 
        

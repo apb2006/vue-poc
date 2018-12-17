@@ -256,7 +256,6 @@
                                  path: a.slice(0,i+1).join("/")+"/"}}
          );
        url[0].icon=this.icon;
-       console.log("CRUM",url)
        return url;  
       },
    selection(){

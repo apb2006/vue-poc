@@ -1,10 +1,10 @@
 <entity name="basexlog" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>BaseX log entry </description>
+	<description>BaseX log entries </description>
 
 	<fields>
 		<field name="time" type="xs:string">
 			<description>time of event</description>
-			<xpath>@time</xpath>
+			<xpath>concat(@date,'T',@time)</xpath>
 		</field>
 		<field name="address" type="xs:string">
 			<description>IP address</description>
@@ -29,5 +29,13 @@
 	</fields>
 	<views iconclass="calendar_today"/>
 
-	<data type="element(entry)">hof:top-k-by(admin:logs(), hof:id#1, 2)/string()!reverse(admin:logs(.,true()))</data>
+	<data type="element(entry)">
+let $add-date:=function($logs as element(*)*,$d as xs:string){
+    $logs!(. transform with { insert node attribute date {$d} into .})
+}
+
+return 
+hof:top-k-by(admin:logs(), string#1, 2)  
+!(reverse(admin:logs(.,true()))=>$add-date(.))
+	</data>
 </entity>

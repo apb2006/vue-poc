@@ -40,7 +40,7 @@ as element(c:directory)
              db:list()!
              <c:directory name="{db:property(.,'name')}" content-type="text/directory"
                      last-modified="{db:property(.,'timestamp')}" 
-                     size="{db:property(.,'size')}"/>
+                     size="-1"/>
            
         else
           let $db:=substring-before(substring($url,2),"/")

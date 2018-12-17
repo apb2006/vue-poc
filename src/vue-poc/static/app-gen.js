@@ -1,4 +1,4 @@
-// generated 2018-11-21T11:42:40.952Z
+// generated 2018-12-17T10:20:51.102Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -79,42 +79,51 @@ Vue.component('qd-confirm',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-fileupload.vue
 Vue.component('qd-fileupload',{template:` 
-  <vue-clip :options="options">
-    <template slot-scope="clip-uploader-action">
-      <div>
-        <div class="dz-message"><h2> Click or Drag and Drop files here upload </h2></div>
-      </div>
-    </template>
-
-    <template slot-scope="clip-uploader-body" scope="props">
-      <div v-for="file in props.files">
-        <img v-bind:src="file.dataUrl">
-        {{ file.name }} {{ file.status }}
-      </div>
-    </template>
-
-  </vue-clip>
+	<div>
+	  <v-btn @click="openFileDialog">
+	      Select
+	   </v-btn>
+	   
+	   <v-btn @click="uploadFile" icon="">
+      <v-icon>cloud_upload</v-icon>
+     </v-btn>
+     
+      <input type="file" name="files" ref="file-upload" multiple="multiple" style="display:none" @change="onFileChange">
+   </div>
  `,
       
-    data () {
-      return {
-        options: {
-          url: '/vue-poc/api/upload',
-          paramName: 'file',
-          maxFilesize: {
-            limit: 1,
-            message: '{{ filesize }} is greater than the {{ maxFilesize }}'
-          },
-          maxFiles: {
-            limit: 5,
-            message: 'You can only upload a max of 5 files'
-          }
-        }
-      }
-    }
-
-  }
-
+		props: ['url'
+		  ],
+		data() {
+		  return {
+		    formData: new FormData()
+		  }
+		},
+		methods: {
+		  openFileDialog() {
+		    this.$refs['file-upload'].click();
+		  },
+		  onFileChange(e) {
+		      var self = this;
+		      var files = e.target.files || e.dataTransfer.files;       
+		      if(files.length > 0){
+		          for(var i = 0; i< files.length; i++){
+		              self.formData.append("files", files[i], files[i].name);
+		          }
+		          
+		      }   
+		  },
+		  uploadFile() {
+		      var self = this; 
+		      HTTP.post( this.url, self.formData).then(function (response) {
+		          console.log(response);
+		          self.$emit("complete",response)
+		      }).catch(function (error) {
+		          console.log(error);
+		      });
+		  }
+		}
+}
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-fullscreen.vue
@@ -371,6 +380,62 @@ Vue.component('qd-table',{template:`
   }
 }
 
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-tablist.vue
+Vue.component('qd-tablist',{template:` 
+  <v-menu left="" bottom="" :close-on-content-click="false">
+    <v-chip slot="activator">
+    
+    {{ EditTabs.length }}
+    <v-avatar>
+      <v-icon right="">arrow_drop_down</v-icon>
+      </v-avatar>
+    </v-chip>
+   <v-card>
+    <v-toolbar>
+      <v-text-field prepend-icon="filter_list" label="type filter text" single-line="" hide-details="" v-model="search" clearable=""></v-text-field>  
+
+  </v-toolbar>
+	<v-card-text>
+	  <v-list style="height: 300px; overflow-y: auto;"> 
+	        <v-list-tile v-for="index in edittabs.sorted()" :key="index" avatar="" dense="" ripple="" @click="setItem(index)" :inactive="index == current">
+	          <v-list-tile-avatar>
+	            <v-icon v-if="index == current">check_circle</v-icon>
+	            <v-icon v-else="">insert_drive_file</v-icon>
+	          </v-list-tile-avatar>
+	
+	          <v-list-tile-content>
+	            <v-list-tile-title>{{ edittabs.items[index].name }}</v-list-tile-title>
+	          </v-list-tile-content>
+	
+	          <v-list-tile-action>
+	            {{ edittabs.items[index].id }} [{{ index }}]
+	          </v-list-tile-action>
+	        </v-list-tile>
+	  </v-list>
+  </v-card-text>
+  <v-card-actions>
+  current : {{ current }}
+  </v-card-actions>
+</v-card>
+</v-menu>
+ `,
+      
+  props: ['edittabs',
+          'current'
+    ],
+  data () {
+    return {
+      search:null
+    }
+  },
+  methods: {
+    setItem(index){     
+       this.$emit('selected', index)
+    }, 
+  }
+}
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vis-time-line.vue
@@ -804,6 +869,8 @@ Vue.component('vue-ace',{template:`
           'events',  // event bus if set handles "eventFired",cmd 
           'settings',
           'minLines',
+          'completer',
+          'snippets'
           ],
   data () {
     return {
@@ -817,9 +884,10 @@ Vue.component('vue-ace',{template:`
           enableBasicAutocompletion:true,
           enableLiveAutocompletion:true
           },
+          
       annots:{
         error:0,warning:0,info:0
-        } 
+        }
       }
   },
   
@@ -832,6 +900,8 @@ Vue.component('vue-ace',{template:`
     'mode' (value) {
         var session=this.editor.getSession()
         session.setMode(`ace/mode/${value}`)
+
+      
     },
     'wrap' (value) {
       var session=this.editor.getSession()
@@ -934,7 +1004,7 @@ Vue.component('vue-ace',{template:`
     this.editor.getSession().selection.on('changeCursor', (e) => {
       var position = this.editor.selection.cursor;
       var token =  this.editor.getSession().getTokenAt(position.row, position.column);
-      console.log("token",token);
+      //console.log("token",token);
       this.$emit('token', token);
     });
     
@@ -945,10 +1015,83 @@ Vue.component('vue-ace',{template:`
       }else this.command(cmd);
     });
     }
+    
+    if(this.completer){
+	    var langTools = ace.require("ace/ext/language_tools");
+	    langTools.addCompleter(this.completer);  
+    }
+    
+    if(this.snippets){
+      var snippetManager = ace.require("ace/snippets").snippetManager;
+      snippetManager.register(this.snippets, "xquery");
+      }
   }
 }
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/aceextras.js
+// ace customisations
+const AceExtras={
+    rhymeCompleter:  {
+      // test completer
+      getCompletions: function(editor, session, pos, prefix, callback) {
+        if (prefix.length === 0) { callback(null, []); return }
+        axios.get("http://rhymebrain.com/talk",{params:{function:"getRhymes",word:prefix}})
+        .then(
+            function(wordList) {
+                // wordList like [{"word":"flow","freq":24,"score":300,"flags":"bc","syllables":"1"}]
+                var r=wordList.data.map(function(ea) {
+                  return {name: ea.word, value: ea.word, score: ea.score, meta: "rhyme"}
+                })
+                callback(null,r)
+                })
+ 
+      }
+    },
+    
+    //basex functions
+    basexCompleter: {
+      getCompletions: function(editor, session, pos, prefix, callback) {
+        if (prefix.length === 0) { callback(null, []); return }
+        console.log("dd",prefix)
+        callback(null, [{
+              caption: "archive:create#2",
+              snippet: "archive:create(${1:entries}, ${2:contents})",
+              score: 100,
+              meta: "archive",
+              completer: this
+          }, {
+              caption: "archive:create#3",
+              snippet: "archive:create(${1:entries}, ${2:contents}, ${3:options})",
+              score: 100,
+              meta: "archive",
+              completer: this
+          }])
+      }
+  },
+
+    
+    snippets:[
+          {
+            name: "test",
+            content: "something",
+            tabTrigger: "test:"
+          },
+          {
+            name: "test2",
+            content: "some2",
+            tabTrigger: "he"
+          }
+    ],
+    install: function(Vue){
+        Object.defineProperty(Vue.prototype, '$aceExtras', {
+          get () { return AceExtras }
+      })  
+    }
+};
+Vue.use(AceExtras);
+
+
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/auth.js
 // Authorization Object
 const Auth={
@@ -975,21 +1118,24 @@ Vue.use(Auth);
 //     name:
 //     contentType:
 //     text:
-//     id:
+//     id: ids have the form "Tn"
 //     url:
+// requires: Settings,HTTP
 //
-const EditTabs=new Vue({
+const GEditTabs={
     data(){
       return {
                 items:[],
+                length: 0,
                 nextId: 1,
-                currentId: null
+                currentId: null,
+                restored: null
             }
     },
     
     methods: {
       addItem(tab){
-        console.log("new: ",tab);
+        //console.log("new: ",tab);
         var def={name: "AA"+this.nextId, 
                  contentType: "text/xml",
                  mode: "xml",
@@ -997,20 +1143,17 @@ const EditTabs=new Vue({
                  url: null
                  };
         var etab = Object.assign(def,tab);
-        etab.id= ""+this.nextId
+        etab.id= "T" + this.nextId
         this.items.push (etab);
+        this.length++
         this.nextId++;
         return etab;
       },
       
       closeItem(item){
-        var index=this.items.indexOf(item);
-        if (index > -1) {
-          alert("index: "+index)
-          this.items.splice(index, 1);
-          index=(index==0)?0:index-1;
-          this.currentId=(this.items.length)?"T"+this.items[index].id : null;
-        }
+        //https://github.com/vuejs/vue/issues/5855
+        this.items=this.items.filter(t => t.id !== item.id)
+        this.length--;
       },
       
       // fetch content from server and create tab
@@ -1037,7 +1180,7 @@ const EditTabs=new Vue({
       
       restore(){
         that=this
-        Settings.getItem('edit/items')
+        this.restored=Settings.getItem('edit/items')
         .then(function (v){
            console.log("items ",v)
            v.forEach(v =>that.addItem(v))
@@ -1048,11 +1191,18 @@ const EditTabs=new Vue({
            });   
       },
       
-      sorted(){
-        return this.items.slice(0).sort((a,b) => a.name.localeCompare(b.name))
+      sorted(){ /* sorted indices */
+        var len=this.items.length
+        var indices = new Array(len);
+        for (var i = 0; i < len; ++i) indices[i] = i;
+        var list=this.items
+        return indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
       }
+    },
+    created(){
+      console.log("EditTabs created")
     }
-});
+};
 
 
 
@@ -1206,7 +1356,6 @@ const Notification={
           elapsed: null
       },
       opts);
-      console.log("opt",opts);
       this.messages.unshift(data);
       this.messages.length = Math.min(this.messages.length, 30);
       ++this.unseen;
@@ -1400,7 +1549,7 @@ const Log=Vue.extend({template:`
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" v-bind:pagination.sync="pagination">
     <template slot="items" slot-scope="props">
-      <td class="text-xs-right">{{ props.item.time }}</td>
+      <td :title="props.item.time">{{ props.item.time  }}</td>
       <td class="text-xs-right">{{ props.item.user }}</td>
       <td class="text-xs-right">{{ props.item.type }}</td>
       <td class="text-xs-right">{{ props.item.ms }}</td>
@@ -1723,7 +1872,6 @@ const Files=Vue.extend({template:`
                                  path: a.slice(0,i+1).join("/")+"/"}}
          );
        url[0].icon=this.icon;
-       console.log("CRUM",url)
        return url;  
       },
    selection(){
@@ -2225,7 +2373,7 @@ const Edit=Vue.extend({template:`
 <v-card-text v-if="!busy">
 <v-flex xs12="" style="height:70vh" fill-height="">
   
-    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :settings="aceSettings" :events="events" v-resize="onResize" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
+    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :settings="aceSettings" :events="events" v-resize="onResize" :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
  </v-flex> 
 </v-card-text>
 </v-card>
@@ -2517,7 +2665,7 @@ const Tabs=Vue.extend({template:`
         </v-menu>
         
         <v-tabs v-model="currentId" slot="extension">
-		      <v-tab v-for="item in EditTabs.items" :key="item.id" :href="'#T' + item.id" ripple="" style="text-transform: none;text-align:left">
+		      <v-tab v-for="item in EditTabs.items" :key="item.id" ripple="" style="text-transform: none;text-align:left">
 			       <v-avatar>
 			          <v-icon size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
@@ -2533,7 +2681,7 @@ const Tabs=Vue.extend({template:`
   
    
       <v-tabs-items slot="body" v-model="currentId">
-       <v-tab-item v-for="item in EditTabs.items" :key="item.id" :id="'T' + item.id">
+       <v-tab-item v-for="item in EditTabs.items" :key="item.id" :value="item.id">
 		      <v-card flat="" v-if="showInfo">
 					  <v-card-actions>
 				      <v-toolbar-title>Metadata for tab id: '{{ currentId }}'</v-toolbar-title>
@@ -2665,9 +2813,9 @@ const Tabs=Vue.extend({template:`
   
   watch:{
     currentId (val) {
+      console.log("currentId: ",val)
       this.active = EditTabs.items.find(e=> val=="T"+e.id);
       this.$router.push({  query: { id: val }});
-      console.log("current",val)
     }
   },
   
@@ -4207,13 +4355,13 @@ const Jobs=Vue.extend({template:`
         <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
       </td>
       <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
-      <td class="vtop "><div>{{ props.item.state }}</div>
-                                     <div>{{ props.item.type }}</div> </td>
-      <td class="vtop text-xs-right">{{ props.item.duration }}</td>
+      <td class="vtop "><div>{{ props.item.state }}</div><div>{{ props.item.type }}</div> </td>
+      <td class="vtop " :title="props.item.registered">{{ props.item.registered | fromNow}}</td>
+      <td class="vtop " :title="props.item.start">{{ props.item.start | fromNow}}</td>
+       <td class="vtop text-xs-right">{{ props.item.duration }}</td>    
        <td class="vtop text-xs-right">{{ props.item.writes }}</td>
         <td class="vtop text-xs-right">{{ props.item.reads }}</td>
       <td class="vtop text-xs-right">{{ props.item.user }}</td>
-       <td class="vtop"><code class="multiline-ellipsis">{{ props.item.text }}</code></td>
     </template>
   </v-data-table>
  </v-card>
@@ -4228,11 +4376,12 @@ const Jobs=Vue.extend({template:`
           value: 'id'
         },
         { text: 'State', value: 'state' },
+        { text: 'Registered', value: 'registered' },
+        { text: 'Start', value: 'start' },
         { text: 'Duration', value: 'duration' },
         { text: 'WriteL', value: 'writes' },
         { text: 'ReadL', value: 'reads' },
-        { text: 'User', value: 'user' },
-        { text: 'Query', value: 'text' }
+        { text: 'User', value: 'user' }
       ],
       items:[        
       ],
@@ -4284,7 +4433,7 @@ const Login=Vue.extend({template:`
 					<v-card>
 					
 					      <v-card-title class="red">
-					        <span class="white--text">The current credentials do the give access this page, please login again</span>
+					        <span class="white--text">The current credentials do the give access this page, please login.</span>
 					      </v-card-title>
 					   
 					     <v-card-actions>
@@ -4306,7 +4455,7 @@ const Login=Vue.extend({template:`
                 
 					    <v-card-actions>
 					       <v-spacer></v-spacer>
-					       <v-btn color="primary" @click="go()">Continue</v-btn>
+					       <v-btn color="primary" @click="go()">Login</v-btn>
 					    </v-card-actions>
 					</v-card>
     </v-flex>
@@ -4535,7 +4684,7 @@ const Entity1=Vue.extend({template:`
   
     <v-expansion-panel v-model="panel" expand="">
     <v-expansion-panel-content>
-          <div slot="header" class="title">Description: </div>
+          <div slot="header" class="title"><v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}</div>
          {{item.description}}
           <pre v-if="xml"><code>{{ xml }}</code></pre> 
       </v-expansion-panel-content>
@@ -4902,27 +5051,142 @@ created:function(){
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/scratch.vue
 const Scratch=Vue.extend({template:` 
  <v-container fluid="">
- <qd-fileupload title="Up it" selected-callback="upit">up load</qd-fileupload>
- <qd-autoheight>
-  <vue-ace :content="ace" mode="xml"></vue-ace>
- </qd-autoheight>
+   <v-toolbar tabs="" dense="">
+   <v-toolbar-title>Tab index {{ curIndex }}</v-toolbar-title>
+   <v-btn v-if="active">{{ active.mode }}</v-btn>
+      <v-btn v-if="active"> {{ active.name }}, id: {{ active.id }}</v-btn>
+   <v-spacer></v-spacer>
+
+   <v-btn @click="add">Add</v-btn>
+    <v-btn @click="curIndex=2">set</v-btn>
+    <qd-tablist :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
+
+    <v-tabs v-model="curIndex" slot="extension">
+          <v-tab v-for="(item,index) in EditTabs.items" :key="item.id" ripple="" style="text-transform: none;text-align:left">
+             <v-avatar>
+                <v-icon size="16px">insert_drive_file</v-icon>
+             </v-avatar>
+             <span>{{ (item.dirty?"*":"") }}</span>
+              <span>{{ item.name  }}</span>
+             <v-spacer></v-spacer>
+             <v-btn icon="" @click.stop="tabClose(item,index)">
+                <v-icon size="16px">close</v-icon>
+              </v-btn>
+          </v-tab>
+     </v-tabs>
+  </v-toolbar>
+  
+   
+      <v-tabs-items v-model="curIndex">
+       <v-tab-item v-for="item in EditTabs.items" :key="item.id">
+          <v-card>
+            <div style="height:200px" ref="ace" v-resize="onResize">
+            <v-flex xs12="" fill-height="">
+              <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
+            </v-flex>
+            </div> 
+          </v-card>
+        
+      </v-tab-item>
+   </v-tabs-items>
  </v-container>
  `,
       
   data:  function(){
     return {
-      message: 'bad route!',
-      ace:"<xml>here</xml>"
+      curIndex: null, //index of current
+      active: null,
+      showInfo: false, // showing info
+      wrap: true,
+      events:  new Vue({}),
+      aceSettings: {},
+      annotations: null,
+      folded: false,
+      EditTabs: EditTabs
       }
   },
   methods:{
-    upit:function(s){
-      alert("up")
+    add(){
+      var a=this.EditTabs.addItem({text:"hi "+ new Date()})
+      this.curIndex=this.EditTabs.items.indexOf(a)
+    },
+  
+    tabClose(item,index){
+      if(item.dirty){
+        if (!confirm("Not saved continue? "+ index))return;
+      }else{
+        this.EditTabs.closeItem(item)
+        this.curIndex=0
+      }
+    },
+    setItem(v){
+      this.curIndex=v;
+    },
+    annotation(counts){
+      this.annotations=counts
+      //console.log("annotations: ",counts)
+    },
+    changeContent(val){
+      var item=this.active;
+      //console.log("change",val);
+ 
+      if (item.text !== val) {
+        item.text = val;
+        item.dirty=true;
+      }
+    },
+    onResize(){
+      var el=this.$refs["ace"];
+      for (e of el){
+      //console.log("top",e.offsetTop)
+      var h=Math.max(1,window.innerHeight - e.offsetTop -200) 
+      // console.log("h",h)
+      e.style.height=h +"px";
+    }
+    }
+    
+  },
+  
+  computed:{
+    count(){
+      console.log("LEN:",this.EditTabs.length)
+      return this.EditTabs.length
+      }
+  },
+  
+  watch:{
+    curIndex (val) {
+      this.active = EditTabs.items[val];
+      console.log("curIndex: ",val)
+      if(this.active) this.$router.push({  query: { id: this.active.id }});
     }
   },
- mounted:function(){
-    console.log("scratch",this.$route.path)
-  }
+  
+  beforeRouteEnter (to, from, next) {
+    Promise.all([Settings.getItem('settings/ace')
+                 ])
+    .then(function(values) {
+      next(vm => {
+          vm.aceSettings = values[0];
+          console.log("SSS",JSON.parse(JSON.stringify(EditTabs.items)))
+          })
+          })
+    },
+    created:function(){
+      var url=this.$route.query.url;
+      if(url){
+        EditTabs.loadItem(url);
+      }else{
+      var tid=this.$route.query.id;
+      var id=EditTabs.items.findIndex(i=>i.id ==tid)
+      console.log("set tab",tid,id)
+      EditTabs.restored.then(()=>{
+        var id=EditTabs.items.findIndex(i=>i.id ==tid)
+        console.log("set tab",tid,id)
+        this.curIndex= id;
+      });
+      }
+    }
 }
 
       );
@@ -5348,20 +5612,30 @@ const Ping=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/upload.vue
 const Upload=Vue.extend({template:` 
-  <v-card>
-  <v-card-title>Upload</v-card-title>
-  <v-card-actions>
-    <qd-fileupload>up..</qd-fileupload> 
-    </v-card-actions>
-    </v-card> 
-	 `,
+ <v-container fluid="">
+ <v-snackbar v-model="snack" color="success">File upload complete</v-snackbar>
+ <v-card>
+ <v-card-title>File transfers</v-card-title>
+ <v-card-text>
+ <qd-fileupload url="upload" @complete="upit">up load</qd-fileupload>
+ </v-card-text>
+</v-card>
+ </v-container>
+ `,
       
   data:  function(){
-    return { 
-      fab: false
-  }
+    return {
+      snack: false
+      }
+  },
+  methods:{
+    upit:function(s){
+      this.snack=true;
+    },
+    
   }
 }
+
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/session.vue
@@ -6672,11 +6946,19 @@ const router = new VueRouter({
       { path: 'tasks', name: 'taskhistory', component: Taskhistory, meta:{title: "Task History"} },
       ]
     },
-   
+    { path: '/labs', component: { template: '<router-view/>' }
+    ,children: [
+      { path: 'scratch', component: Scratch, meta:{title:"scratch"} },
+      { path: 'svg', component: Svg, meta:{title:"SVG"} },
+      { path: 'svg2', component: Svg2, meta:{title:"SVG2"} },
+      { path: 'timeline', component: Timeline,meta:{title:"timeline"} },
+      { path: 'tree', component: Tree, meta:{title:"tree"} },
+      { path: 'tree2', component: Tree2, meta:{title:"tree2"} },
+      ]
+    },
     
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
-    { path: '/svg', component: Svg, meta:{title:"SVG"} },
-    { path: '/svg2', component: Svg2, meta:{title:"SVG2"} },
+   
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     
@@ -6691,16 +6973,15 @@ const router = new VueRouter({
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
     { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
         
-    { path: '/timeline', component: Timeline,meta:{title:"timeline"} },
-    { path: '/tree', component: Tree, meta:{title:"tree"} },
-    { path: '/tree2', component: Tree2, meta:{title:"tree2"} },
+   
+   
     { path: '/map', component: Leaflet,meta:{title:"map"} },
     
     { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
     { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
     { path: '/form3', component: Formsschema, meta:{title:"vue-form-json-schema"} },
     
-    { path: '/scratch', component: Scratch, meta:{title:"scratch"} },
+    
     { path: '/about', component: About, meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],
@@ -6710,7 +6991,7 @@ router.afterEach(function(route) {
 });
 
 router.beforeEach((to, from, next) => {
-  console.log("before: ",to)
+  //console.log("before: ",to)
   if (to.matched.some(record => record.meta.requiresAuth)) {
     // this route requires auth, check if logged in
     // if not, redirect to login page.
@@ -6804,7 +7085,8 @@ const Vuepoc=Vue.extend({template:`
                 <v-list-tile-title><qd-fullscreen> Full screen</qd-fullscreen></v-list-tile-title>
               </v-list-tile>
               <v-list-tile>
-                <v-list-tile-title><v-switch label="Dark theme" v-model="dark"></v-switch></v-list-tile-title>
+                <v-list-tile-title>Dark theme</v-list-tile-title>
+                 <v-list-tile-action><v-switch v-model="dark"></v-switch> </v-list-tile-action>
               </v-list-tile>
               <v-divider></v-divider>
                <v-list-tile>
@@ -6925,7 +7207,18 @@ const Vuepoc=Vue.extend({template:`
       {href: '/tree',text: 'Tree',icon: 'nature'},
       {href: '/tree2',text: 'Tree 2',icon: 'nature'}
       ]},
-      
+      {
+        icon: 'toys',
+        text: 'Labs' ,
+        model: false,
+        children: [
+      {href: '/labs/scratch',text: 'Scratch pad',icon: 'filter_frames'},    
+      {href: '/labs/timeline',text: 'Time line',icon: 'timelapse'},
+      {href: '/labs/svg',text: 'SVG',icon: 'extension'},
+      {href: '/labs/svg2',text: 'SVG2',icon: 'extension'},
+      {href: '/labs/tree',text: 'Tree',icon: 'nature'},
+      {href: '/labs/tree2',text: 'Tree 2',icon: 'nature'}
+      ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
       {href: '/about',text: 'About (v0.3.2)' , icon: 'help'    }, 
     ]
@@ -7215,6 +7508,7 @@ Vue.component('l-marker', Vue2Leaflet.LMarker);
 //  Vue.component('form-schema', window["vue-json-schema"].default);
 //};
 //Vue.use({ install: install });
+var EditTabs=new Vue(GEditTabs)
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')
 

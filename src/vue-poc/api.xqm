@@ -1,3 +1,4 @@
+xquery version "3.1";
 (:~
  : vue-poc api.
  :
@@ -93,4 +94,18 @@ as element(json)
   <name>{$j}</name>
  </_>
  }</json>
+};
+
+declare
+  %rest:POST
+  %rest:path("/vue-poc/api/upload")
+  %rest:form-param("files", "{$files}")
+function vue-api:upload($files) {
+  for $name    in map:keys($files)
+  let $content := $files($name)
+  let $path    := file:temp-dir() || $name
+  return (
+    file:write-binary($path, $content),
+    <file name="{ $name }" size="{ file:size($path) }"/>
+  )
 };

@@ -58,7 +58,7 @@
       v-bind:pagination.sync="pagination"
     >
     <template slot="items" slot-scope="props">
-      <td class="text-xs-right">{{ props.item.time }}</td>
+      <td   :title="props.item.time">{{ props.item.time  }}</td>
       <td class="text-xs-right">{{ props.item.user }}</td>
       <td class="text-xs-right">{{ props.item.type }}</td>
       <td class="text-xs-right">{{ props.item.ms }}</td>

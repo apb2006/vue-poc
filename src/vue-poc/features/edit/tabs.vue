@@ -130,7 +130,7 @@
 		      <v-tab
 		        v-for="item in EditTabs.items"
 		        :key="item.id"
-		        :href="'#T' + item.id" ripple
+		        ripple
 		        style="text-transform: none;text-align:left"
 		      >
 			       <v-avatar >
@@ -151,7 +151,7 @@
        <v-tab-item
         v-for="item in EditTabs.items"
         :key="item.id"
-        :id="'T' + item.id"
+        :value="item.id"
       >
 		      <v-card flat v-if="showInfo" >
 					  <v-card-actions >
@@ -291,9 +291,9 @@
   
   watch:{
     currentId (val) {
+      console.log("currentId: ",val)
       this.active = EditTabs.items.find(e=> val=="T"+e.id);
       this.$router.push({  query: { id: val }});
-      console.log("current",val)
     }
   },
   

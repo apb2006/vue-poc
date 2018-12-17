@@ -84,7 +84,8 @@
                 <v-list-tile-title><qd-fullscreen> Full screen</qd-fullscreen></v-list-tile-title>
               </v-list-tile>
               <v-list-tile  >
-                <v-list-tile-title><v-switch label="Dark theme" v-model="dark"></v-switch></v-list-tile-title>
+                <v-list-tile-title>Dark theme</v-list-tile-title>
+                 <v-list-tile-action ><v-switch  v-model="dark"></v-switch> </v-list-tile-action>
               </v-list-tile>
               <v-divider ></v-divider>
                <v-list-tile  >
@@ -206,7 +207,18 @@
       {href: '/tree',text: 'Tree',icon: 'nature'},
       {href: '/tree2',text: 'Tree 2',icon: 'nature'}
       ]},
-      
+      {
+        icon: 'toys',
+        text: 'Labs' ,
+        model: false,
+        children: [
+      {href: '/labs/scratch',text: 'Scratch pad',icon: 'filter_frames'},    
+      {href: '/labs/timeline',text: 'Time line',icon: 'timelapse'},
+      {href: '/labs/svg',text: 'SVG',icon: 'extension'},
+      {href: '/labs/svg2',text: 'SVG2',icon: 'extension'},
+      {href: '/labs/tree',text: 'Tree',icon: 'nature'},
+      {href: '/labs/tree2',text: 'Tree 2',icon: 'nature'}
+      ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
       {href: '/about',text: 'About (v0.3.2)' , icon: 'help'    }, 
     ]

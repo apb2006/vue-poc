@@ -1,17 +1,6 @@
 <package xmlns="http://expath.org/ns/pkg" name="http://expkg-zone58.github.io/ex-dotml"
 	abbrev="vue-poc" version="0.0.4" spec="1.0">
 	<title>vue-poc test of vue.js.</title>
-	<dependency name="ace" version="1.3.3" />
-	<dependency name="vuetify" version="0.15.2" />
-	<dependency name="vue" version="2.4.1" />
-	<dependency name="vue-router" version="2.5.3" />
-  <dependency name="vue-treeselect" version="0.0.25" />
-	<dependency name="google-material" version="0.0.0" />
-	<dependency name="js-beautify" version="1.6.12" />
-	<dependency name="axios" version="0.17.1" />
-	<dependency name="qs" version="6.4.0" />
-	<dependency name="localforage" version="1.7.1" />
-	<dependency name="moment.js" version="2.18.1" />
 	<dependency name="file-walker" version="0.5.2" />
 	<dependency name="ex-thumbnailator" version="5.0.11" />
 </package>

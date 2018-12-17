@@ -5,7 +5,7 @@
 					<v-card >
 					
 					      <v-card-title class="red">
-					        <span class="white--text">The current credentials do the give access this page, please login again</span>
+					        <span class="white--text">The current credentials do the give access this page, please login.</span>
 					      </v-card-title>
 					   
 					     <v-card-actions>
@@ -43,7 +43,7 @@
                 
 					    <v-card-actions >
 					       <v-spacer></v-spacer>
-					       <v-btn  color="primary"  @click="go()">Continue</v-btn>
+					       <v-btn  color="primary"  @click="go()">Login</v-btn>
 					    </v-card-actions>
 					</v-card>
     </v-flex>

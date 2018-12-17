@@ -32,7 +32,7 @@ declare function xqd:save-xq($files,$target,$params as map(*))
 let $f:=  document{$files} transform with { delete  node //c:directory[not(.//c:file)]}
  
 return (
-    $files//c:file!xqd:gendoc(.,"F" || position(),$target,$params),
+    $files//c:file!xqd:gendoc(.,"modules/F" || position(),$target,$params),
     $f=>xqd:store($target || "/files.xml",$xqd:XML),
     $f=>xqd:index-html($params)=>xqd:store($target || "/index.html",$xqd:HTML5),
     xqd:export-resources($target)
@@ -65,7 +65,7 @@ declare  function xqd:gendoc(
                 "filename": $f/@name/string(),
                 "cache": $xqd:cache,
                 "show-private": true(),
-                "resources": "../resources/"},
+                "resources": "resources/"},
                 $params))
    return (
        $xq=>xqd:parse()=>xqd:store($dest || "/xparse.xml",$xqd:XML),
@@ -96,7 +96,8 @@ as map(*)* {
                 "filename": $f/@name/string(),
                 "cache": $xqd:cache,
                 "show-private": true(),
-                "resources": "../resources/"},
+                "root": "../../",
+                "resources": "resources/"},
                 $params))
    return (
        xqd:store2(xqd:parse($xq), "xparse.xml",$xqd:XML),
@@ -209,10 +210,6 @@ as element(html)
         <link rel="stylesheet" type="text/css" href="{$opts?resources}query.css" />
         <link rel="stylesheet" type="text/css" href="{$opts?resources}base.css" />
 
-        <link rel="stylesheet" type="text/css" href="{$opts?resources}prettify.css" />
-
-        <script src="{$opts?resources}prettify.js" type="text/javascript">&#160;</script>
-        <script src="{$opts?resources}lang-xq.js" type="text/javascript">&#160;</script>
       </head>
 
       <body class="home" id="top">

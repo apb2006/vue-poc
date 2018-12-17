@@ -199,5 +199,6 @@ Vue.component('l-marker', Vue2Leaflet.LMarker);
 //  Vue.component('form-schema', window["vue-json-schema"].default);
 //};
 //Vue.use({ install: install });
+var EditTabs=new Vue(GEditTabs)
 Vue.use(Vuetify);
 new Vuepoc().$mount('#app')

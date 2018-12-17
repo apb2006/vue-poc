@@ -1,4 +1,5 @@
-(:~ 
+xquery version "3.1";
+(:~
 : dice utils - sort, filter, and serialize as json.
 : can read parameters from request: sort,start,limit.
 : @requires basex 8.6 for map:merge

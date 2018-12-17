@@ -135,7 +135,7 @@
 <v-flex xs12 style="height:70vh"  fill-height>
   
     <vue-ace  :content="contentA" :mode="mode" :wrap="wrap"  :settings="aceSettings"
-    :events="events" v-resize="onResize"
+    :events="events" v-resize="onResize"   :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets"
 v-on:change-content="changeContentA" 
 v-on:annotation="annotation"></vue-ace>
  </v-flex> 

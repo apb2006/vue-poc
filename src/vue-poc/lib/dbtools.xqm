@@ -1,12 +1,16 @@
-(:~ 
+xquery version "3.1";
+(:~
 : tools for databases..
 : @author andy bunce
 : @since mar 2013
 :)
 
 module namespace dbtools = 'quodatum.dbtools';
+import module namespace file="http://expath.org/ns/file";
+import module namespace db="http://basex.org/modules/db";
+import module namespace archive="http://basex.org/modules/archive";
+import module namespace hof="http://basex.org/modules/hof";
 
- 
 (:  trailing slash :)
 declare variable $dbtools:webpath:= db:system()/globaloptions/webpath/fn:string()
                              || file:dir-separator();

@@ -4,11 +4,11 @@ ace editor for vue.js
 //https://jsfiddle.net/bc_rikko/gbpw2q9x/3/
 events:
 event fired cmd outline
- --> 
+ -->
 <template id="vue-ace">
-<div  style="width: 100%; height: 100%;"></div>
+<div style="width: 100%; height: 100%;"></div>
 </template>
-<script>{
+<script type="text/javascript">{
   props: [ 'content',
           'mode', 
           'wrap',
@@ -16,6 +16,8 @@ event fired cmd outline
           'events',  // event bus if set handles "eventFired",cmd 
           'settings',
           'minLines',
+          'completer',
+          'snippets'
           ],
   data () {
     return {
@@ -29,9 +31,10 @@ event fired cmd outline
           enableBasicAutocompletion:true,
           enableLiveAutocompletion:true
           },
+          
       annots:{
         error:0,warning:0,info:0
-        } 
+        }
       }
   },
   
@@ -44,6 +47,8 @@ event fired cmd outline
     'mode' (value) {
         var session=this.editor.getSession()
         session.setMode(`ace/mode/${value}`)
+
+      
     },
     'wrap' (value) {
       var session=this.editor.getSession()
@@ -146,7 +151,7 @@ event fired cmd outline
     this.editor.getSession().selection.on('changeCursor', (e) => {
       var position = this.editor.selection.cursor;
       var token =  this.editor.getSession().getTokenAt(position.row, position.column);
-      console.log("token",token);
+      //console.log("token",token);
       this.$emit('token', token);
     });
     
@@ -157,5 +162,15 @@ event fired cmd outline
       }else this.command(cmd);
     });
     }
+    
+    if(this.completer){
+	    var langTools = ace.require("ace/ext/language_tools");
+	    langTools.addCompleter(this.completer);  
+    }
+    
+    if(this.snippets){
+      var snippetManager = ace.require("ace/snippets").snippetManager;
+      snippetManager.register(this.snippets, "xquery");
+      }
   }
 }</script>

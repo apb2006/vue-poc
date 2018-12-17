@@ -41,6 +41,8 @@ as element(*)*
      ,<type>{$j/@type/string()}</type>
      ,<state>{$j/@state/string()}</state>
      ,<user>{$j/@user/string()}</user>
+      ,<registered>{$j/@time/string()}</registered>
+      ,<start>{$j/@start/string()}</start>
      ,<duration>{$j/@duration/string()}</duration>
      ,<text>{$j/string()}</text>
       ,<reads>{$j/@reads/string()}</reads>

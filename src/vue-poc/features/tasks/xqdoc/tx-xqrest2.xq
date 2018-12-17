@@ -13,7 +13,7 @@ declare namespace xqdoc="http://www.xqdoc.org/1.0";
  : @default file:///C:/tmp/xqdoc/
  :)
 declare variable $target as xs:anyURI external :=
-"file:///C:/tmp/xqdoca/" cast as xs:anyURI;
+"file:///C:/tmp/xqdoc/" cast as xs:anyURI;
 
 declare variable $nsRESTXQ:= 'http://exquery.org/ns/restxq';
 
@@ -25,7 +25,7 @@ declare function local:import($path,
                               $folder)
 as map(*)*
 {
-  let $uri:=``[F`{ string($id) }`/]``
+  let $uri:=``[modules/F`{ string($id) }`/]``
   let $doc:=doc(resolve-uri($uri || "xqdoc.xml",$folder))
   let $annots:=xqd:annotations($doc/*, $nsRESTXQ,"path")
   return $annots!map{
@@ -69,28 +69,49 @@ let $op:= <div>
                  <li  href="#main">
                     <a >
                         <span class="secno">2 </span>
-                        <span class="content">Paths</span>
+                        <span class="content">Paths.</span>
                     </a>
                 </li>
                 <li>
+      
+                 <ol  class="toc"> { $tree/*/*!local:tree-list(.,2) } </ol>
                 </li>
              </ol>
            </nav>
            <a href="index.html">index: </a>
-           <ol> { local:tree-list($tree) } </ol>
+          
            <ul>{$reps!local:path-to-html(.)}</ul>
            </div>
 return  xqd:page($op,map{"resources": "resources/"})
 };
 
 (:~ tree to list :)
-declare function local:tree-list($tree){
+declare function local:tree-list($tree as element(*),$seq as xs:integer*){
   typeswitch ($tree )
   case element(directory) 
-      return <li>{$tree/@name/string()}/<ul>{$tree/*!local:tree-list(.)}</ul></li>
-      
+      return <li>
+                 <span class="secno">{string-join($seq,'.')}</span>
+                 <span class="content">{$tree/@name/string()}/</span>
+                 <ol class="toc">{$tree/*!local:tree-list(.,($seq,position()))}</ol>
+             </li>
+   case element(file) 
+      return <li>{if($tree/@target) then
+                   <a href="#{$tree/@target}">
+                     <span class="secno">{string-join($seq,'.')}</span>
+                     
+                      <span class="content" title="{$tree/@target}">{  $tree/@name/string() }</span>
+                      <div class="tag tag-success" 
+                            title="RESTXQ: {$tree/@target}">GET
+                      </div>
+                      <div class="tag tag-danger"  style="float:right"
+                            title="RESTXQ: {$tree/@target}">X
+                      </div>
+                   </a>
+               else 
+                <span class="content">{$tree/@name/string()}</span>
+             }</li>   
   default 
-     return <li>{$tree/@name/string()}</li>
+     return <li>unknown</li>
 };
 
 (:~  html for a path :)          
@@ -133,7 +154,7 @@ let $data:=map:merge(for $report in $reports
 
 let $uris:=sort(map:keys($data))
 let $result:=<json type="object">
-                  <extra>hello</extra>
+                  <extra>hello2</extra>
                   <msg> {$target}, {count($data)} uris processed.</msg>
                   <id>xqrest2 ID??</id>
               </json>

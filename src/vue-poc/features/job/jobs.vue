@@ -47,13 +47,13 @@
         ></v-checkbox>
       </td>
       <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
-      <td class="vtop "><div>{{ props.item.state }}</div>
-                                     <div>{{ props.item.type }}</div> </td>
-      <td class="vtop text-xs-right">{{ props.item.duration }}</td>
+      <td class="vtop "><div>{{ props.item.state }}</div><div>{{ props.item.type }}</div> </td>
+      <td class="vtop " :title="props.item.registered">{{ props.item.registered | fromNow}}</td>
+      <td class="vtop " :title="props.item.start">{{ props.item.start | fromNow}}</td>
+       <td class="vtop text-xs-right">{{ props.item.duration }}</td>    
        <td class="vtop text-xs-right">{{ props.item.writes }}</td>
         <td class="vtop text-xs-right">{{ props.item.reads }}</td>
       <td class="vtop text-xs-right">{{ props.item.user }}</td>
-       <td class="vtop" ><code class="multiline-ellipsis">{{ props.item.text }}</code></td>
     </template>
   </v-data-table>
  </v-card>
@@ -69,11 +69,12 @@
           value: 'id'
         },
         { text: 'State', value: 'state' },
+        { text: 'Registered', value: 'registered' },
+        { text: 'Start', value: 'start' },
         { text: 'Duration', value: 'duration' },
         { text: 'WriteL', value: 'writes' },
         { text: 'ReadL', value: 'reads' },
-        { text: 'User', value: 'user' },
-        { text: 'Query', value: 'text' }
+        { text: 'User', value: 'user' }
       ],
       items:[        
       ],

@@ -11,7 +11,6 @@ const Notification={
           elapsed: null
       },
       opts);
-      console.log("opt",opts);
       this.messages.unshift(data);
       this.messages.length = Math.min(this.messages.length, 30);
       ++this.unseen;
