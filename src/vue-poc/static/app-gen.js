@@ -1,8 +1,8 @@
-// generated 2018-12-17T10:20:51.102Z
+// generated 2019-01-23T22:04:55.22Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
-	<v-layout style="height:200px;overflow:hidden;" row="" wrap="" ref="auto" v-resize="onResize" class="green">
+	<v-layout style="height:200px;overflow:hidden;" row wrap ref="auto" v-resize="onResize" class="green">
 			<slot>i will auto2</slot>
 	</v-layout>
  `,
@@ -34,7 +34,7 @@ Vue.component('qd-breadcrumbs',{template:`
 		        
 		           <v-icon v-if="props.item.icon">props.item.icon</v-icon>
 		                 {{ props.item.text }}
-		                 <v-btn icon="" v-if="props.item.menu" @click="$emit(props.item.menu)" :class="props.item.menu">
+		                 <v-btn icon v-if="props.item.menu" @click="$emit(props.item.menu)" :class="props.item.menu">
 		                 <v-avatar>
 				              <v-icon>arrow_drop_down</v-icon>
 				              </v-avatar>
@@ -84,7 +84,7 @@ Vue.component('qd-fileupload',{template:`
 	      Select
 	   </v-btn>
 	   
-	   <v-btn @click="uploadFile" icon="">
+	   <v-btn @click="uploadFile" icon>
       <v-icon>cloud_upload</v-icon>
      </v-btn>
      
@@ -167,18 +167,93 @@ Vue.component('qd-link',{template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-mimelist.vue
+Vue.component('qd-mimelist',{template:` 
+  <v-menu v-model="show" left bottom :close-on-content-click="false">
+    <v-chip slot="activator">
+    
+    {{ mimetype }}
+    <v-avatar>
+      <v-icon right>arrow_drop_down</v-icon>
+      </v-avatar>
+    </v-chip>
+   <v-card>
+    <v-toolbar>
+      <v-text-field prepend-icon="filter_list" label="type filter for mimetypes" single-line hide-details v-model="q" clearable></v-text-field>  
+
+  </v-toolbar>
+	<v-card-text>
+	  <v-list style="height: 300px; overflow-y: auto;"> 
+	  
+	        <v-list-tile v-for="(mime,index) in items" :key="index" avatar dense ripple @click="setItem(mime,index)">
+	          <v-list-tile-avatar>
+	            <v-icon v-if="false">check_circle</v-icon>
+	            <v-icon v-else>insert_drive_file</v-icon>
+	          </v-list-tile-avatar>
+	
+	          <v-list-tile-content>
+	            <v-list-tile-title>{{ mime.name }}</v-list-tile-title>
+	          </v-list-tile-content>
+	
+	          <v-list-tile-action>
+	           {{ mime.mode }}
+	          </v-list-tile-action>
+	        </v-list-tile>
+	     
+	  </v-list>
+  </v-card-text>
+  <v-card-actions>
+ 
+  </v-card-actions>
+</v-card>
+</v-menu>
+ `,
+      
+  props: {
+    mimetype:{
+       type:String, default:"(default)"
+    }
+  },
+    
+  data () {
+    return {
+      q: null,
+      show: false
+    }
+  },
+  
+  methods:{
+    setItem(mime,index){
+      console.log("selected ",mime)
+      this.$emit('selected', mime)
+      this.show=false
+    }
+  },
+  
+  computed:{
+  items(){
+    return this.$MimeTypes.list().filter(item=>{return (!this.q) || item.name.toLowerCase().includes(this.q.toLowerCase())})
+  }
+  }, 
+  
+  created:function(){
+    console.log("qd-mimelist",this.$MimeTypes.list())
+  }
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-navlist.vue
 Vue.component('qd-navlist',{template:` 
- <v-list dense="">
+ <v-list dense>
     <template v-for="(item, i) in items">
-          <v-list-group v-if="item.children" v-bind:key="item.text" :prepend-icon="item.icon" no-action="">
+          <v-list-group v-if="item.children" v-bind:key="item.text" :prepend-icon="item.icon" no-action>
             <v-list-tile slot="activator">
               <v-list-tile-content>
                 <v-list-tile-title>{{ item.text }}</v-list-tile-title>
               </v-list-tile-content>
             </v-list-tile>
             
-            <v-list-tile v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text" :prepend-icon="subItem.icon" :to="subItem.href" avatar="" ripple="">
+            <v-list-tile v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text" :prepend-icon="subItem.icon" :to="subItem.href" avatar ripple>
               <v-list-tile-avatar>
 		             <v-icon>{{ subItem.icon }}</v-icon>
 		          </v-list-tile-avatar>
@@ -188,7 +263,7 @@ Vue.component('qd-navlist',{template:`
             </v-list-tile>
           </v-list-group>
           
-          <v-list-tile v-else="" v-bind:key="item.text" :to="item.href" ripple="">
+          <v-list-tile v-else v-bind:key="item.text" :to="item.href" ripple>
               <v-list-tile-avatar>
                  <v-icon>{{ item.icon }}</v-icon>
               </v-list-tile-avatar>
@@ -213,7 +288,7 @@ Vue.component('qd-panel',{template:`
 		<slot name="body"></slot>
 		</v-flex>
 		
-		<v-flex v-if="show" xs4="" grey="" lighten-3="">
+		<v-flex v-if="show" xs4 grey lighten-3>
 		<slot name="aside"></slot>
 		</v-flex>
 </v-layout>
@@ -229,11 +304,11 @@ Vue.component('qd-panel',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-search.vue
 Vue.component('qd-search',{template:` 
-  <v-combobox placeholder="Search..." prepend-icon="search" autocomplete="" :loading="loading" clearable="" :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q">
+  <v-combobox placeholder="Search..." prepend-icon="search" autocomplete :loading="loading" clearable :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q">
             
             <template slot="item" slot-scope="{ index, item, parent }">
 		             <v-list-tile-action>
-		                 <v-btn icon="" :to="item.value">
+		                 <v-btn icon :to="item.value">
 		                  <v-icon>pages</v-icon>
 		                 </v-btn>
 		            </v-list-tile-action>
@@ -242,8 +317,8 @@ Vue.component('qd-search',{template:`
 					          {{ item.text }}
 					      </v-list-tile-title>
 					      <v-spacer></v-spacer>
-					      <v-list-tile-action @click.stop="">
-					        <v-btn icon="" :to="item.value">
+					      <v-list-tile-action @click.stop>
+					        <v-btn icon :to="item.value">
                         <v-icon>arrow_forward</v-icon>					         
 					        </v-btn>
 					      </v-list-tile-action>
@@ -307,21 +382,21 @@ Vue.component('qd-search',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-table.vue
 Vue.component('qd-table',{template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-card>
    <v-toolbar>
-    <v-text-field prepend-icon="filter_list" label="Filter items..." single-line="" hide-details="" v-model="search" clearable=""></v-text-field>   
+    <v-text-field prepend-icon="filter_list" label="Filter items..." single-line hide-details v-model="search" clearable></v-text-field>   
       <v-spacer></v-spacer>
-         <v-btn icon="" :loading="loading" :disabled="loading" @click="getItems">
+         <v-btn icon :loading="loading" :disabled="loading" @click="getItems">
     <v-icon>refresh</v-icon>
     </v-btn> 
     <span>{{ entity }}</span>
     </v-toolbar>
     
-   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" :no-data-text="noDataMsg">
+   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all class="elevation-1" :no-data-text="noDataMsg">
     <template slot="items" slot-scope="props">
      <td>
-        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
+        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
       </td>
       <td v-for="col in headers" :key="col.name">{{ foo(props,col) }}</td>
     </template>
@@ -384,25 +459,25 @@ Vue.component('qd-table',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-tablist.vue
 Vue.component('qd-tablist',{template:` 
-  <v-menu left="" bottom="" :close-on-content-click="false">
+  <v-menu left bottom :close-on-content-click="false">
     <v-chip slot="activator">
     
-    {{ EditTabs.length }}
+    {{ edittabs.length }}
     <v-avatar>
-      <v-icon right="">arrow_drop_down</v-icon>
+      <v-icon right>arrow_drop_down</v-icon>
       </v-avatar>
     </v-chip>
    <v-card>
     <v-toolbar>
-      <v-text-field prepend-icon="filter_list" label="type filter text" single-line="" hide-details="" v-model="search" clearable=""></v-text-field>  
+      <v-text-field prepend-icon="filter_list" label="type filter text" single-line hide-details v-model="q" clearable></v-text-field>  
 
   </v-toolbar>
 	<v-card-text>
 	  <v-list style="height: 300px; overflow-y: auto;"> 
-	        <v-list-tile v-for="index in edittabs.sorted()" :key="index" avatar="" dense="" ripple="" @click="setItem(index)" :inactive="index == current">
+	        <v-list-tile v-for="index in edittabs.sorted(q)" :key="index" avatar dense ripple @click="setItem(index)" :inactive="index == current">
 	          <v-list-tile-avatar>
 	            <v-icon v-if="index == current">check_circle</v-icon>
-	            <v-icon v-else="">insert_drive_file</v-icon>
+	            <v-icon v-else>insert_drive_file</v-icon>
 	          </v-list-tile-avatar>
 	
 	          <v-list-tile-content>
@@ -425,16 +500,18 @@ Vue.component('qd-tablist',{template:`
   props: ['edittabs',
           'current'
     ],
+    
   data () {
     return {
-      search:null
+      q:null
     }
   },
+  
   methods: {
     setItem(index){     
        this.$emit('selected', index)
     }, 
-  }
+  } 
 }
       );
       
@@ -479,8 +556,8 @@ Vue.component('vp-entitylink',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-favorite.vue
 Vue.component('vp-favorite',{template:` 
-  <v-menu :close-on-click="false" offset-x="" :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
-      <v-btn slot="activator" @click.stop="set(!frmfav)" icon="" flat="" title="Bookmark this page">
+  <v-menu :close-on-click="false" offset-x :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
+      <v-btn slot="activator" @click.stop="set(!frmfav)" icon flat title="Bookmark this page">
        <v-icon>star_border</v-icon>
        </v-btn>
        <v-card style="width:400px;">
@@ -492,13 +569,13 @@ Vue.component('vp-favorite',{template:`
           
          <v-card-text>
             <h6>{{$route.meta.title}}</h6>
-            <v-combobox multiple="" v-model="tags" label="tags" chips="" tags="" :items="taglist"></v-combobox>
+            <v-combobox multiple v-model="tags" label="tags" chips tags :items="taglist"></v-combobox>
          </v-card-text>
          
          <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" flat="" @click.stop="set(false)">Cancel</v-btn>
-            <v-btn color="primary" flat="" @click.stop="favorite(); set(false)">Save</v-btn>
+            <v-btn color="primary" flat @click.stop="set(false)">Cancel</v-btn>
+            <v-btn color="primary" flat @click.stop="favorite(); set(false)">Save</v-btn>
           </v-card-actions>
         </v-card>
    </v-menu> `,
@@ -537,7 +614,7 @@ Vue.component('vp-filepicker',{template:`
 		<slot name="body"></slot>
 		</v-flex>
 		
-		<v-flex v-if="show" xs4="" grey="" lighten-3="">
+		<v-flex v-if="show" xs4 grey lighten-3>
 		<slot name="aside"></slot>
 		</v-flex>
 </v-layout>
@@ -555,17 +632,17 @@ Vue.component('vp-filepicker',{template:`
 Vue.component('vp-job',{template:` 
  <v-card>
 
-     <v-toolbar dense="">
+     <v-toolbar dense>
      <v-card-title>Details:</v-card-title>
        <v-chip class="primary white--text">{{job.id}}</v-chip>
          <v-spacer></v-spacer>
            <v-chip class="primary white--text">{{job.job}}</v-chip>
       
-           <v-chip label="" class="grey white--text"> 
+           <v-chip label class="grey white--text"> 
            <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
            {{ jobState.writes }}</v-chip>
            
-            <v-chip label="" class="grey white--text"> 
+            <v-chip label class="grey white--text"> 
               <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
               {{ jobState.reads }}</v-chip>
  
@@ -576,13 +653,13 @@ Vue.component('vp-job',{template:`
          {{elapsed}}ms</v-chip>
     </v-toolbar>
     <v-card-text>
-  <v-flex xs12="" style="height:60px;" fill-height="">
+  <v-flex xs12 style="height:60px;" fill-height>
   <vue-ace :content="query" mode="xquery" wrap="true" :read-only="true"></vue-ace>
     </v-flex>
    </v-card-text>
    <!-- result -->
     <v-card-text>
-  <v-flex xs12="" style="height:60px;" fill-height="">
+  <v-flex xs12 style="height:60px;" fill-height>
   <vue-ace :content="result" mode="xquery" min-lines="1" wrap="true" read-only="true"></vue-ace>
     </v-flex>
    </v-card-text>
@@ -621,17 +698,17 @@ Vue.component('vp-job',{template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-notifications.vue
 Vue.component('vp-notifications',{template:` 
    <v-card>
-         <v-toolbar class="amber white--text" scroll-off-screen="">
+         <v-toolbar class="amber white--text" scroll-off-screen>
                 <v-toolbar-title>Notifications </v-toolbar-title>
                 {{ $notification.nextId }}
-                 <v-btn @click="refresh" icon=""><v-icon>refresh</v-icon></v-btn>
+                 <v-btn @click="refresh" icon><v-icon>refresh</v-icon></v-btn>
           <v-spacer></v-spacer>
-          <v-btn @click="set(false)" icon=""><v-icon>close</v-icon></v-btn>
+          <v-btn @click="set(false)" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           <v-card-text>
-        <v-list three-line="">
+        <v-list three-line>
           <template v-for="msg in $notification.messages">
-           <v-list-tile avatar="" v-bind:key="msg.index" @click="">
+           <v-list-tile avatar v-bind:key="msg.index" @click>
               <v-list-tile-avatar>
                    <v-icon color="red">swap_horiz</v-icon>
               </v-list-tile-avatar>
@@ -683,21 +760,21 @@ Vue.component('vp-notifications',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-paramform.vue
 Vue.component('vp-paramform',{template:` 
-       <v-form ref="form" lazy-validation="">
+       <v-form ref="form" lazy-validation>
               <div class="title">{{ description }}</div>
               <div :title="url">{{ updating }}</div>
-              <v-layout row="">
+              <v-layout row>
               
-              <v-layout column="" xs11=""> 
+              <v-layout column xs11> 
               <v-flex v-for="field in fields" :key="field.model">
               
-              <v-text-field v-if="field.type === 'xs:anyURI'" :full-width="true" v-model="params[field.model]" :label="field.label" clearable="" :rules="fieldrules(field)" box="" append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
+              <v-text-field v-if="field.type === 'xs:anyURI'" :full-width="true" v-model="params[field.model]" :label="field.label" clearable :rules="fieldrules(field)" box append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
               
               <v-switch v-else-if="field.type === 'xs:boolean'" :full-width="true" :label="field.label" v-model="params[field.model]">
               </v-switch>
               
               
-              <v-text-field v-else="" :full-width="true" amber="" v-model="params[field.model]" :label="field.type" clearable="" box=""></v-text-field>
+              <v-text-field v-else :full-width="true" amber v-model="params[field.model]" :label="field.type" clearable box></v-text-field>
                 
               </v-flex>
               <v-flex>
@@ -705,7 +782,7 @@ Vue.component('vp-paramform',{template:`
               </v-flex>
               </v-layout>
               
-              <v-layout align-center="" justify-center="" column="" fill-height="" xs1="" amber="" lighten-5="">
+              <v-layout align-center justify-center column fill-height xs1 amber lighten-5>
                <v-btn @click="clear()">Clear</v-btn>
 					     <v-btn @click="reset()">Reset</v-btn>
               </v-layout>
@@ -761,8 +838,8 @@ Vue.component('vp-paramform',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-selectpath.vue
 Vue.component('vp-selectpath',{template:` 
-   <v-dialog v-model="frmfav" persistent="" max-width="800">
-      <v-btn slot="activator" @click.stop="set(!frmfav)" icon="" flat="" title="Add ">
+   <v-dialog v-model="frmfav" persistent max-width="800">
+      <v-btn slot="activator" @click.stop="set(!frmfav)" icon flat title="Add ">
       <slot>
       <v-icon>add_circle</v-icon>
        </slot>
@@ -777,7 +854,7 @@ Vue.component('vp-selectpath',{template:`
          <v-card-text>
          Content:
          
-          <v-tabs v-model="type" icons-and-text="" centered="">
+          <v-tabs v-model="type" icons-and-text centered>
              <v-tab v-for="item in protocols" :key="item.name">
               {{item.name}}
                 <v-icon>{{item.icon}}</v-icon>
@@ -785,7 +862,7 @@ Vue.component('vp-selectpath',{template:`
     
  
               <v-tab-item v-for="item in protocols" :key="item.name">
-                <v-card flat="">
+                <v-card flat>
                   <v-card-text>
                     <v-text-field v-for="f in item.fields" :key="f.model" :label="f.label" :v-model="f.model"></v-text-field>
                   </v-card-text>
@@ -796,8 +873,8 @@ Vue.component('vp-selectpath',{template:`
          </v-card-text>
         <v-card-actions>
                <v-spacer></v-spacer>
-               <v-btn color="primary" flat="" @click.stop="set(false)">Cancel</v-btn>
-               <v-btn color="primary" flat="" @click.stop="favorite(); set(false)">Add tab</v-btn>
+               <v-btn color="primary" flat @click.stop="set(false)">Cancel</v-btn>
+               <v-btn color="primary" flat @click.stop="favorite(); set(false)">Add tab</v-btn>
          </v-card-actions>
         </v-card>
    </v-dialog>
@@ -1058,6 +1135,7 @@ const AceExtras={
               caption: "archive:create#2",
               snippet: "archive:create(${1:entries}, ${2:contents})",
               score: 100,
+              content: "this is a test completer",
               meta: "archive",
               completer: this
           }, {
@@ -1074,11 +1152,11 @@ const AceExtras={
     snippets:[
           {
             name: "test",
-            content: "something",
+            content: "this is a test snippet",
             tabTrigger: "test:"
           },
           {
-            name: "test2",
+            name: "sniptest2",
             content: "some2",
             tabTrigger: "he"
           }
@@ -1115,11 +1193,12 @@ Vue.use(Auth);
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/EditTabs.js
 //Manage array of text sources  used for:edit tabs
 // item{
-//     name:
-//     contentType:
+//     name: 
+//     contentType: "text/xml",
+//     mode: "xml",
 //     text:
 //     id: ids have the form "Tn"
-//     url:
+//     url: path to save to
 // requires: Settings,HTTP
 //
 const GEditTabs={
@@ -1191,12 +1270,14 @@ const GEditTabs={
            });   
       },
       
-      sorted(){ /* sorted indices */
+      sorted(q){ /* return sorted and filtered array of tab indices */
         var len=this.items.length
         var indices = new Array(len);
         for (var i = 0; i < len; ++i) indices[i] = i;
-        var list=this.items
-        return indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
+        var list=this.items;
+        indices=indices.filter(a=>(!q) || list[a].name.toLowerCase().includes(q.toLowerCase()))
+        var i= indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
+        return i
       }
     },
     created(){
@@ -1307,33 +1388,50 @@ Vue.use(Fullscreen);
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/mimetypes.js
 // Mimetype info
 // 
+// 
 const MimeTypes=new function(){
- this.toMode=[
-            {name: "text/plain", mode: "text"},
-            {name: "text/xml", mode: "xml"},
-            {name: "application/xml", mode:"xml"},
-            {name: "application/xquery", mode:"xquery"},
-            {name: "text/ecmascript", mode:"javascript"},
-            {name: "application/sparql-query", mode:"sparql"},
-            {name: "text/html", mode:"html"},
-            {name: "text/turtle", mode:"turtle"},
-            {name: "text/css", mode:"css"},
-            {name: "image/svg+xml", mode:"svg"}
-            ],
-  this.formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});
-  this.formatjs= t=>js_beautify(t, { indent_size: 2 });
+  var formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});
+  var formatjs= t=>js_beautify(t, { indent_size: 2 });
+  var formatcss= t=>css_beautify(t, { indent_size: 2 });
+  
+ this.contentType={
+     "text/plain":{ mode: "text"},
+     "text/xml":{ mode: "xml"},
+     "application/xml":{ mode:"xml"},
+     "application/xquery":{ mode:"xquery"},
+     "text/ecmascript":{ mode:"javascript"},
+     "application/sparql-query": {mode:"sparql"},
+     "text/html":{ mode:"html"},
+     "text/turtle":{ mode:"turtle"},
+     "text/css": {mode:"css"},
+    "image/svg+xml":{ mode:"svg"}
+ };
+
   
   this.mode={
-    "text": {},
+    "text": {
+      icon: "library_books"
+    },
     "javascript": {
-      "format":this.formatjs
+      "format": formatjs
     },
    "xml": {
-     "format":this.formatdom
+     "format": formatdom
     },
-    "css": {}
+    "html": {
+      "format": formatdom
+    },
+    "css": {
+      "format": formatcss
+    }
   };
-  
+  this.list=function(){
+    var that=this
+    var h= Object.keys(this.contentType).map(
+        function(k){ return {name: k, mode: that.contentType[k].mode}}
+        )
+    return h
+  }
   this.install=function(Vue){
       Object.defineProperty(Vue.prototype, '$MimeTypes', {
         get () { return MimeTypes }
@@ -1371,7 +1469,7 @@ Vue.use(Notification);
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/404.vue
 const Notfound=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  Not found
  </v-container>
  `,
@@ -1393,8 +1491,8 @@ const About=Vue.extend({template:`
 
   <v-jumbotron color="grey lighten-2">
       
-    <v-container fill-height="">
-      <v-layout align-center="">
+    <v-container fill-height>
+      <v-layout align-center>
         <v-flex>
           <h3 class="display-3">Vue-poc</h3>
           <span class="subheading">A development environment for managing XML sources and processes.</span>
@@ -1402,8 +1500,8 @@ const About=Vue.extend({template:`
           <v-divider class="my-3"></v-divider>
        
           <div class="title mb-3">Links</div>
-           <v-layout row="" wrap="">
-          <v-flex xs6="">
+           <v-layout row wrap>
+          <v-flex xs6>
 	        <ul>
 	         <li><a href="https://vuejs.org/" target="new">vue.js</a></li>
               
@@ -1418,7 +1516,7 @@ const About=Vue.extend({template:`
               <li><a href="https://material.io/tools/icons/?style=baseline" target="new">icons (material)</a></li>    
 					 </ul>
 					 </v-flex>
-					 <v-flex xs6="">
+					 <v-flex xs6>
 					 <ul>
 					  <li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
 					  <li><a href="/dba" target="new">DBA app</a></li>
@@ -1447,7 +1545,7 @@ const Logadd=Vue.extend({template:`
 
  <v-card>
     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
       <span class="white--text">Create log entry</span>      
     </v-card-title>
@@ -1458,11 +1556,11 @@ const Logadd=Vue.extend({template:`
     <v-btn @click="clear">clear</v-btn>
     </v-toolbar>
     <v-card-text>
-      <v-container fluid="">
-<v-form ref="form" v-model="valid" lazy-validation="">
-    <v-text-field v-model="message" :rules="[v => !!v || 'message is required']" :counter="10" label="Message" required=""></v-text-field>
+      <v-container fluid>
+<v-form ref="form" v-model="valid" lazy-validation>
+    <v-text-field v-model="message" :rules="[v => !!v || 'message is required']" :counter="10" label="Message" required></v-text-field>
    
-    <v-select v-model="type" :items="types" :rules="[v => !!v || 'type is required']" label="Type" required=""></v-select>
+    <v-select v-model="type" :items="types" :rules="[v => !!v || 'type is required']" label="Type" required></v-select>
     <v-checkbox v-model="checkbox" label="Add more?"></v-checkbox>
 
    
@@ -1519,26 +1617,26 @@ const Logadd=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logs.vue
 const Log=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-card>
    <v-toolbar>
    
     
-      <v-text-field prepend-icon="filter_list" label="Filter logs" single-line="" hide-details="" clearable="" v-model="search"></v-text-field>
+      <v-text-field prepend-icon="filter_list" label="Filter logs" single-line hide-details clearable v-model="search"></v-text-field>
      
-        <v-btn icon="" :color="autorefresh?'green':''" :loading="loading" :disabled="loading" @click="getItems" @dblclick="toggle">
+        <v-btn icon :color="autorefresh?'green':''" :loading="loading" :disabled="loading" @click="getItems" @dblclick="toggle">
     <v-icon>refresh</v-icon>
     </v-btn>
     
-      <v-btn to="add" append="" small="" absolute="" bottom="" right="" fab="">
+      <v-btn to="add" append small absolute bottom right fab>
               <v-icon>add</v-icon>
        </v-btn>
      <v-spacer></v-spacer>
-      <v-menu bottom="" left="" min-width="300px">
-            <v-btn icon="" slot="activator">
+      <v-menu bottom left min-width="300px">
+            <v-btn icon slot="activator">
               <v-icon>settings</v-icon>
             </v-btn>
-            <v-list subheader="">
+            <v-list subheader>
           <v-subheader>Settings</v-subheader>
               
               <v-list-tile>
@@ -1621,11 +1719,11 @@ const Log=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/files.vue
 const Files=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  
 <v-card>
 
-<v-toolbar dense="">
+<v-toolbar dense>
     
     <v-toolbar-title>
 		    <v-breadcrumbs :items="crumbs">
@@ -1638,19 +1736,19 @@ const Files=Vue.extend({template:`
 				    </template>
 		    </v-breadcrumbs>
     </v-toolbar-title>
-     <v-btn icon="" @click="load()">
+     <v-btn icon @click="load()">
     <v-icon>refresh</v-icon>
     </v-btn> 
-   <v-btn v-if="clipboard" @click="clipboard=null" icon=""><v-icon>content_paste</v-icon></v-btn>
+   <v-btn v-if="clipboard" @click="clipboard=null" icon><v-icon>content_paste</v-icon></v-btn>
     <v-spacer></v-spacer>
      <v-btn v-if="selection.length" @click="selectNone">S: {{selection.length}}</v-btn>
      
- <v-text-field v-if="!selection.length" prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
+ <v-text-field v-if="!selection.length" prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
    
  
     <v-toolbar-items v-if="!selection.length">
     
-   <v-btn icon="" v-for="b in buttons" :key="b.icon" @click="action(b)">
+   <v-btn icon v-for="b in buttons" :key="b.icon" @click="action(b)">
       <v-avatar>
         <v-icon v-text="b.icon"></v-icon>
        </v-avatar>
@@ -1660,14 +1758,14 @@ const Files=Vue.extend({template:`
 
   
     <v-toolbar-items v-if="selection.length">
-		   <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
+		   <v-btn icon v-for="b in selopts" :key="b.icon" @click="action(b)">
 		        <v-icon v-text="b.icon"></v-icon>
 		    </v-btn>
    </v-toolbar-items>
  
     
- <v-menu offset-y="" v-if="selection.length">
-      <v-btn icon="" slot="activator">
+ <v-menu offset-y v-if="selection.length">
+      <v-btn icon slot="activator">
       <v-icon>more_vert</v-icon>
      </v-btn>
       <v-list>
@@ -1689,11 +1787,11 @@ const Files=Vue.extend({template:`
   
   <v-layout v-if="!busy">
 	  <v-flex>
-	  <v-list two-line="" subheader="">
-	    <v-subheader inset="">
+	  <v-list two-line subheader>
+	    <v-subheader inset>
 	         <span>Folders ({{ xfolders.length }})</span> 
 	     </v-subheader>
-	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" v-model="item.selected" @click="folder(item)" avatar="">
+	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" v-model="item.selected" @click="folder(item)" avatar>
 	        <v-list-tile-avatar @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
@@ -1705,18 +1803,18 @@ const Files=Vue.extend({template:`
 	                                 </v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon="" @click.stop="info(item)">
+	          <v-btn icon @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
 	      </v-list-tile>
 	    
-	    <v-divider inset=""></v-divider>
-	    <v-subheader inset="">
+	    <v-divider inset></v-divider>
+	    <v-subheader inset>
 	       <span>Files ({{ xfiles.length }})</span> 
 	        </v-subheader> 
 	      <v-list-tile v-for="item in xfiles" v-bind:key="item.name">
-	        <v-list-tile-avatar avatar="" @click.prevent.stop="item.selected =! item.selected ">
+	        <v-list-tile-avatar avatar @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-tile-avatar>
 	        <v-list-tile-content @click="file(item.name)">
@@ -1727,7 +1825,7 @@ const Files=Vue.extend({template:`
 	            </v-list-tile-sub-title>
 	        </v-list-tile-content>
 	        <v-list-tile-action>
-	          <v-btn icon="" ripple="" @click.stop="info(item)">
+	          <v-btn icon ripple @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
 	        </v-list-tile-action>
@@ -1901,7 +1999,7 @@ const Files=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/svg.vue
 const Svg=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
 <div id="canvasqPWKOg" class="canvas"></div>
 <button id="resetButtonqPWKOg">Reset</button>
 <div>
@@ -1943,10 +2041,10 @@ const Svg=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/svg2.vue
 const Svg2=Vue.extend({template:` 
 <div ref="panel" v-resize="onResize">
-  <v-toolbar dense="">
+  <v-toolbar dense>
 	  <v-btn @click="view.reset()">Reset</v-btn>
 	   <v-btn @click="size()">Size</v-btn>
-	     <v-select v-model="url" combobox="" clearable="" open-on-clear="" :items="svgs"></v-select>
+	     <v-select v-model="url" combobox clearable open-on-clear :items="svgs"></v-select>
 	   
 	    <v-btn @click="load()">set</v-btn>
 	</v-toolbar>
@@ -2032,7 +2130,7 @@ const Svg2=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/timeline.vue
 const Timeline=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-card>
  <v-toolbar class="lime darken-1">
 	 <v-card-title>Line 1</v-card-title>
@@ -2083,7 +2181,7 @@ created(){
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/tree.vue
 const Tree=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-card>
  <v-toolbar class="lime darken-1">
    <v-card-title><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@2.1.16</qd-link> </v-card-title>
@@ -2098,10 +2196,10 @@ const Tree=Vue.extend({template:`
    <v-card-text>
    <v-layout>
   
-   <v-flex xs6="">
-    <v-jstree :data="data" text-field-name="label" ref="tree" :async="loadData" show-checkbox="" multiple="" allow-batch="" whole-row="" @item-click="itemClick"></v-jstree>
+   <v-flex xs6>
+    <v-jstree :data="data" text-field-name="label" ref="tree" :async="loadData" show-checkbox multiple allow-batch whole-row @item-click="itemClick"></v-jstree>
     </v-flex>
-    <v-flex xs6="">
+    <v-flex xs6>
     <pre>    {{ JSON.stringify(data, null, '\t') }}
     </pre>
     </v-flex>
@@ -2172,7 +2270,7 @@ mounted: function(){
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/tree2.vue
 const Tree2=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-card>
  <v-toolbar class="lime darken-1">
    <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.29</qd-link> </v-card-title>
@@ -2180,15 +2278,15 @@ const Tree2=Vue.extend({template:`
    <v-btn>todo</v-btn>
    </v-toolbar>
    <v-card-text>
-     <v-layout row="" wrap="">
-     <v-flex xs4="">
+     <v-layout row wrap>
+     <v-flex xs4>
      Select some things:
      </v-flex>
-      <v-flex xs4="">
+      <v-flex xs4>
 		    <treeselect v-model="value" :multiple="true" :options="source">
     </treeselect></v-flex>
     
-    <v-flex xs4="">
+    <v-flex xs4>
        <pre>{{ value }}</pre>
     </v-flex>
    </v-layout>
@@ -2239,18 +2337,18 @@ created:function(){
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/edit.vue
 const Edit=Vue.extend({template:` 
-<v-container fluid="">
-      <v-snackbar top="" color="error" v-model="snackbar">
+<v-container fluid>
+      <v-snackbar top color="error" v-model="snackbar">
       {{ message }}
-      <v-btn flat="" @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
+      <v-btn flat @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-snackbar>
     
 <v-card>
-<v-toolbar dense="">
-<v-tooltip top="">
+<v-toolbar dense>
+<v-tooltip top>
 <v-menu slot="activator">
 
-  <v-btn color="primary" icon="" slot="activator"><v-icon>{{icon}}</v-icon></v-btn>
+  <v-btn color="primary" icon slot="activator"><v-icon>{{icon}}</v-icon></v-btn>
   <v-list>
       <v-list-tile v-for="(item,index) in path" :key="index">
         <v-list-tile-content @click="showfiles()">
@@ -2262,57 +2360,57 @@ const Edit=Vue.extend({template:`
 <span>{{ path.join('/') }}</span>
 </v-tooltip>
   
-   <v-badge right="" v-model="dirty">
+   <v-badge right v-model="dirty">
      <span slot="badge">*</span>
      <v-toolbar-title>{{ name }}</v-toolbar-title>
      </v-badge>
-     <v-btn v-if="dirty" icon="" @click="save()">
+     <v-btn v-if="dirty" icon @click="save()">
       <v-icon>file_upload</v-icon>
     </v-btn>
     <v-spacer></v-spacer>
 
-  <v-menu left="" transition="v-fade-transition">
-      <v-chip label="" small="" slot="activator">{{ mode }}</v-chip>
-          <v-list dense="">
-              <v-list-tile v-for="type in $MimeTypes.toMode" :key="type.name">
+  <v-menu left transition="v-fade-transition">
+      <v-chip label small slot="activator">{{ mode }}</v-chip>
+          <v-list dense>
+              <v-list-tile v-for="type in $MimeTypes.list()" :key="type.name">
                 <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>           
           </v-list>         
    </v-menu>
    
-  <v-tooltip top="">
+  <v-tooltip top>
      <v-chip @click="acecmd('goToNextError')" slot="activator">
             <span class="red ">{{annotations &amp;&amp; annotations.error}}</span>
             <span class="yellow ">{{annotations &amp;&amp; annotations.warning}}</span>   
             <span class="green ">{{annotations &amp;&amp; annotations.info}}</span>
  
            <v-avatar>
-              <v-icon black="">navigate_next</v-icon>
+              <v-icon black>navigate_next</v-icon>
            </v-avatar>
       </v-chip>
       <span>Annotations: Errors,Warning and Info</span>
    </v-tooltip>
 <v-spacer></v-spacer>
-   <v-btn icon="" @click="acecmd('outline')" title="outline -todo">
+   <v-btn icon @click="acecmd('outline')" title="outline -todo">
       <v-icon>label_outline</v-icon>
     </v-btn>
 
-  <v-menu left="" transition="v-fade-transition">
-      <v-btn icon="" slot="activator" title="display settings">
+  <v-menu left transition="v-fade-transition">
+      <v-btn icon slot="activator" title="display settings">
         <v-icon>playlist_play</v-icon>
       </v-btn>
      
-      <v-list dense="">
+      <v-list dense>
            <v-subheader>Display settings</v-subheader>
          
-           <v-list-tile @click="togglefold" avatar="">
+           <v-list-tile @click="togglefold" avatar>
              <v-list-tile-avatar>
                    <v-icon>vertical_align_center</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-title>Toggle folds</v-list-tile-title>
            </v-list-tile>
            
-           <v-list-tile @click="wrap=!wrap" avatar="">
+           <v-list-tile @click="wrap=!wrap" avatar>
              <v-list-tile-avatar>
                    <v-icon>wrap_text</v-icon>
               </v-list-tile-avatar>
@@ -2320,14 +2418,14 @@ const Edit=Vue.extend({template:`
            </v-list-tile>
              <v-divider></v-divider>
               <v-subheader>Help</v-subheader>
-             <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
+             <v-list-tile @click="acecmd('showSettingsMenu')" avatar>
                <v-list-tile-avatar>
               <v-icon>settings</v-icon>
             </v-list-tile-avatar>
               <v-list-tile-title @click="acecmd('showSettingsMenu')">Show ACE settings</v-list-tile-title>
             </v-list-tile>
                       
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
               <v-list-tile-avatar>
               <v-icon>keyboard</v-icon>
             </v-list-tile-avatar>
@@ -2336,27 +2434,27 @@ const Edit=Vue.extend({template:`
       </v-list>
     </v-menu>
     
-    <v-btn icon="" @click="beautify()">
+    <v-btn icon @click="beautify()">
       <v-icon>format_align_center</v-icon>
     </v-btn>
-    <v-btn icon="" @click="clearDialog = true">
+    <v-btn icon @click="clearDialog = true">
       <v-icon>delete</v-icon>
     </v-btn>
       
-    <v-menu left="" transition="v-fade-transition">
-      <v-btn icon="" slot="activator">
+    <v-menu left transition="v-fade-transition">
+      <v-btn icon slot="activator">
         <v-icon>more_vert</v-icon>
       </v-btn>
      
-          <v-list dense="">
-               <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
+          <v-list dense>
+               <v-list-tile @click="acecmd('showSettingsMenu')" avatar>
                <v-list-tile-avatar>
               <v-icon>settings</v-icon>
             </v-list-tile-avatar>
               <v-list-tile-title @click="acecmd('showSettingsMenu')">Show ACE settings</v-list-tile-title>
             </v-list-tile>
                       
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
               <v-list-tile-avatar>
               <v-icon>keyboard</v-icon>
             </v-list-tile-avatar>
@@ -2371,7 +2469,7 @@ const Edit=Vue.extend({template:`
    <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
 
 <v-card-text v-if="!busy">
-<v-flex xs12="" style="height:70vh" fill-height="">
+<v-flex xs12 style="height:70vh" fill-height>
   
     <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :settings="aceSettings" :events="events" v-resize="onResize" :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
  </v-flex> 
@@ -2544,25 +2642,25 @@ const Edit=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/tabs.vue
 const Tabs=Vue.extend({template:` 
 <div> 
-  <v-toolbar tabs="" dense="">
+  <v-toolbar tabs dense>
      <v-toolbar-items>
-	      <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
-	      <v-btn icon="" @click="openUri"><v-icon>insert_drive_file</v-icon></v-btn>
+	      <vp-selectpath :frmfav.sync="showadd" @selectpath="add"> <v-icon>add_circle</v-icon></vp-selectpath>
+	      <v-btn icon @click="openUri"><v-icon>insert_drive_file</v-icon></v-btn>
       </v-toolbar-items>
-      <v-toolbar-title>{{ currentId   }} </v-toolbar-title>
+      <v-toolbar-title>{{ curIndex   }} </v-toolbar-title>
       
-       <v-menu v-if="active" left="" transition="v-fade-transition">
-       <v-chip label="" small="" slot="activator">{{ active.mode }}</v-chip>
-          <v-list dense="">
-                <v-list-tile v-for="type in $MimeTypes.toMode" :key="type.name">
+       <v-menu v-if="active" left transition="v-fade-transition">
+       <v-chip label small slot="activator">{{ active.mode }}</v-chip>
+          <v-list dense>
+                <v-list-tile v-for="type in $MimeTypes.list()" :key="type.name">
                 <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>         
           </v-list>         
       </v-menu>
       
-       <v-menu v-if="active" left="" transition="v-fade-transition">
+       <v-menu v-if="active" left transition="v-fade-transition">
         <v-btn slot="activator">Action<v-icon>arrow_drop_down</v-icon></v-btn>
-          <v-list dense="">
+          <v-list dense>
           <v-subheader>Actions</v-subheader>
                 <v-list-tile @click="format()">
                 <v-list-tile-title>Format</v-list-tile-title>
@@ -2572,39 +2670,39 @@ const Tabs=Vue.extend({template:`
               </v-list-tile>             
           </v-list>         
       </v-menu>
-      <v-btn @click="EditTabs.addItem({txt:'hello'})">*{{  EditTabs.nextId }}</v-btn>
+      <v-btn @click="add">*{{  EditTabs.nextId }}</v-btn>
      
        <v-spacer></v-spacer>
        
-         <v-tooltip top="">
+         <v-tooltip top>
 			     <v-chip @click="acecmd('goToNextError')" slot="activator">
 			            <span class="red ">{{annotations &amp;&amp; annotations.error}}</span>
 			            <span class="yellow ">{{annotations &amp;&amp; annotations.warning}}</span>   
 			            <span class="green ">{{annotations &amp;&amp; annotations.info}}</span>
 			 
 			           <v-avatar>
-			              <v-icon black="">navigate_next</v-icon>
+			              <v-icon black>navigate_next</v-icon>
 			           </v-avatar>
 			      </v-chip>
 			      <span>Annotations: Errors,Warning and Info</span>
 			   </v-tooltip>
    
-        <v-menu left="" transition="v-fade-transition">
-      <v-btn :disabled="!active" icon="" slot="activator" title="display settings">
+        <v-menu left transition="v-fade-transition">
+      <v-btn :disabled="!active" icon slot="activator" title="display settings">
         <v-icon>playlist_play</v-icon>
       </v-btn>
      
-      <v-list dense="">
+      <v-list dense>
            <v-subheader>Display settings</v-subheader>
          
-           <v-list-tile @click="togglefold" avatar="">
+           <v-list-tile @click="togglefold" avatar>
              <v-list-tile-avatar>
                    <v-icon>vertical_align_center</v-icon>
               </v-list-tile-avatar>
               <v-list-tile-title>Toggle folds</v-list-tile-title>
            </v-list-tile>
            
-           <v-list-tile @click="wrap=!wrap" avatar="">
+           <v-list-tile @click="wrap=!wrap" avatar>
              <v-list-tile-avatar>
                    <v-icon>wrap_text</v-icon>
               </v-list-tile-avatar>
@@ -2612,14 +2710,14 @@ const Tabs=Vue.extend({template:`
            </v-list-tile>
              <v-divider></v-divider>
               <v-subheader>Help</v-subheader>
-             <v-list-tile @click="acecmd('showSettingsMenu')" avatar="">
+             <v-list-tile @click="acecmd('showSettingsMenu')" avatar>
                <v-list-tile-avatar>
               <v-icon>settings</v-icon>
             </v-list-tile-avatar>
               <v-list-tile-title @click="acecmd('showSettingsMenu')">Show ACE settings</v-list-tile-title>
             </v-list-tile>
                       
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar="">
+            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
               <v-list-tile-avatar>
               <v-icon>keyboard</v-icon>
             </v-list-tile-avatar>
@@ -2629,8 +2727,8 @@ const Tabs=Vue.extend({template:`
     </v-menu>
     
     <v-menu>
-          <v-btn icon="" slot="activator"><v-icon>view_quilt</v-icon></v-btn>
-          <v-list dense="">
+          <v-btn icon slot="activator"><v-icon>view_quilt</v-icon></v-btn>
+          <v-list dense>
           <v-subheader>View</v-subheader>
            <v-list-tile @click="showInfo = false">
 		           <v-list-tile-action>
@@ -2651,28 +2749,17 @@ const Tabs=Vue.extend({template:`
           </v-list>         
     </v-menu>
     
-        <v-menu left="" bottom="" :close-on-content-click="false">
-          <a class="tabs__item" slot="activator">
-          {{ EditTabs.items.length }}
-            <v-icon>arrow_drop_down</v-icon>
-          </a>
-          <v-card>
-            <v-card-title>Select Tab</v-card-title>
-	          <v-card-actions>
-	           <v-autocomplete :items="EditTabs.sorted()" v-model="a1" label="File" class="input-group--focused" item-text="name" item-value="id" @change="setItem" clearable="" open-on-clear=""></v-autocomplete>
-	        </v-card-actions>
-	        </v-card>
-        </v-menu>
+    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
         
-        <v-tabs v-model="currentId" slot="extension">
-		      <v-tab v-for="item in EditTabs.items" :key="item.id" ripple="" style="text-transform: none;text-align:left">
+        <v-tabs v-model="curIndex" slot="extension">
+		      <v-tab v-for="item in EditTabs.items" :key="item.id" ripple style="text-transform: none;text-align:left">
 			       <v-avatar>
 			          <v-icon size="16px">insert_drive_file</v-icon>
 			       </v-avatar>
 			       <span>{{ (item.dirty?"*":"") }}</span>
 			        <span>{{ item.name  }}</span>
 			       <v-spacer></v-spacer>
-			       <v-btn icon="" @click.stop="tabClose(item)">
+			       <v-btn icon @click.stop="tabClose(item)">
 			          <v-icon size="16px">close</v-icon>
 			        </v-btn>
 		      </v-tab>
@@ -2680,30 +2767,12 @@ const Tabs=Vue.extend({template:`
   </v-toolbar>
   
    
-      <v-tabs-items slot="body" v-model="currentId">
-       <v-tab-item v-for="item in EditTabs.items" :key="item.id" :value="item.id">
-		      <v-card flat="" v-if="showInfo">
-					  <v-card-actions>
-				      <v-toolbar-title>Metadata for tab id: '{{ currentId }}'</v-toolbar-title>
-				      <v-spacer></v-spacer>    
-				       <v-btn flat=""> <v-icon>highlight_off</v-icon>todo</v-btn>
-			      </v-card-actions>
-			      
-			       <v-card-text v-if="active"> 
-									<v-layout row="" v-for="x in ['name','id','mode','contentType','dirty','location']" :key="x">
-							      <v-flex xs3="">
-							        <v-subheader>{{ x}}</v-subheader>
-							      </v-flex>
-							      <v-flex xs9="">
-							        <v-text-field :name="x" label="Hint Text" :value="active[x]" single-line=""></v-text-field>
-							      </v-flex>
-							    </v-layout>
-				    </v-card-text>
-			    </v-card>
-			    
-			    <v-card v-else="">
+      <v-tabs-items v-model="curIndex">
+       <v-tab-item v-for="item in EditTabs.items" :key="item.id">
+
+			    <v-card>
 		        <div style="height:200px" ref="ace" v-resize="onResize">
-		        <v-flex xs12="" fill-height="">
+		        <v-flex xs12 fill-height>
 					    <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
 					  </v-flex>
 		        </div> 
@@ -2719,7 +2788,7 @@ const Tabs=Vue.extend({template:`
         showadd: false,  // showing add form
         showInfo: false, // showing info
         a1:"",
-        currentId: null, //href of current
+        curIndex: null, //index of current
         active: null,
         items: [],
       wrap: true,
@@ -2732,17 +2801,28 @@ const Tabs=Vue.extend({template:`
   },
   
   methods:{
-    tabClose(item){
+    add(){
+      var a=this.EditTabs.addItem({text:"hi "+ new Date()})
+      this.curIndex=this.EditTabs.items.indexOf(a)
+    },
+  
+    tabClose(item,index){
       if(item.dirty){
-        if (!confirm("Not saved continue? "))return;
+        if (!confirm("Not saved continue? "+ index))return;
       }else{
-	      this.EditTabs.closeItem(item)
+        this.EditTabs.closeItem(item)
+        this.curIndex=0
       }
     },
-    
     setItem(v){
-      if(v) this.currentId="T"+v;
+      this.curIndex=v;
     },
+    setmime(mime){
+      this.$set(this.active, 'contentType', mime.contentType)
+      this.$set(this.active, 'mode', mime.mode)
+      //alert(mime.contentType+" "+mime.mode)
+    },
+    
     
     openUri(){
       alert("openUri TODO")
@@ -2784,10 +2864,7 @@ const Tabs=Vue.extend({template:`
         alert("no validate yet");
     },
     
-    addItem(tab){
-      var tab=EditTabs.addItem({text:"aaa hello"})
-      this.currentId="T" + tab.id
-    },
+   
     
     
     changeContent(val){
@@ -2812,10 +2889,10 @@ const Tabs=Vue.extend({template:`
   },
   
   watch:{
-    currentId (val) {
-      console.log("currentId: ",val)
-      this.active = EditTabs.items.find(e=> val=="T"+e.id);
-      this.$router.push({  query: { id: val }});
+    curIndex (val) {
+      this.active = EditTabs.items[val];
+      console.log("curIndex: ",val)
+      if(this.active) this.$router.push({  query: { id: this.active.id }});
     }
   },
   
@@ -2844,26 +2921,32 @@ const Tabs=Vue.extend({template:`
     next(true);
   },
 
-    created:function(){
-      var url=this.$route.query.url;
-      if(url){
-        EditTabs.loadItem(url);
-      }else{
-      var id=this.$route.query.id;
-      this.currentId=id?id:null;
-      }
+  created:function(){
+    var url=this.$route.query.url;
+    if(url){
+      EditTabs.loadItem(url);
+    }else{
+    var tid=this.$route.query.id;
+    var id=EditTabs.items.findIndex(i=>i.id ==tid)
+    console.log("set tab",tid,id)
+    EditTabs.restored.then(()=>{
+      var id=EditTabs.items.findIndex(i=>i.id ==tid)
+      console.log("set tab",tid,id)
+      this.curIndex= id;
+    });
     }
+  }
 }
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/eval/eval.vue
 const Eval=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-card @keyup.ctrl.enter="submit">
-     <v-toolbar dense="">
+     <v-toolbar dense>
      
-     <v-menu offset-x="">
-       <v-btn slot="activator" flat="" icon="" color="pink">
+     <v-menu offset-x>
+       <v-btn slot="activator" flat icon color="pink">
               <v-icon>label_outline</v-icon>
         </v-btn>
         <v-card>
@@ -2871,8 +2954,8 @@ const Eval=Vue.extend({template:`
        </v-card>
     </v-menu>
     
-      <v-menu offset-x="">
-       <v-btn slot="activator" flat="" icon="" color="pink">
+      <v-menu offset-x>
+       <v-btn slot="activator" flat icon color="pink">
               <v-icon>add_circle</v-icon>
             </v-btn>
             <v-card>
@@ -2888,11 +2971,11 @@ const Eval=Vue.extend({template:`
     <v-btn @click="submit">
       <v-icon>play_circle_outline</v-icon>jobs:run
       </v-btn>
-    <v-menu offset-y="">
-      <v-btn slot="activator" flat="" icon="">
+    <v-menu offset-y>
+      <v-btn slot="activator" flat icon>
          <v-icon>more_vert</v-icon>
       </v-btn>
-      <v-list dense="">
+      <v-list dense>
          <v-subheader>More actions...</v-subheader>
         <v-divider></v-divider>
         
@@ -2917,7 +3000,7 @@ const Eval=Vue.extend({template:`
     BEFORE<vp-job :job="job" :result:="result" :query="xq" :job-state="jobState" :elapsed="elapsed">IN</vp-job>AFTER
        </v-card-text>
   <v-card-text>
-  <v-flex xs12="" style="height:200px" fill-height="">
+  <v-flex xs12 style="height:200px" fill-height>
   <vue-ace :content="xq" mode="xquery" wrap="true" :settings="aceSettings" v-on:change-content="onChange"></vue-ace>
     </v-flex>
    </v-card-text>
@@ -2926,16 +3009,16 @@ const Eval=Vue.extend({template:`
        <v-chip class="primary white--text">{{job.id}}</v-chip>
            <v-chip class="primary white--text">{{job.job}}</v-chip>
       
-           <v-chip label="" class="grey white--text"> 
+           <v-chip label class="grey white--text"> 
            <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
            {{ jobState.writes }}</v-chip>
            
-            <v-chip label="" class="grey white--text"> 
+            <v-chip label class="grey white--text"> 
 	            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
 	            {{ jobState.reads }}</v-chip>
  
         <v-spacer></v-spacer>
-          <v-progress-circular v-if="waiting" indeterminate="" class="primary--text"></v-progress-circular>
+          <v-progress-circular v-if="waiting" indeterminate class="primary--text"></v-progress-circular>
           <v-chip>{{ jobState.state }}</v-chip>
          <v-chip class="primary white--text">
           <v-avatar>  <v-icon>timer</v-icon></v-avatar>
@@ -2947,7 +3030,7 @@ const Eval=Vue.extend({template:`
     </v-card-text>
     
      <v-card-text v-if="showResult">
-		     <v-flex xs12="" style="height:200px" fill-height="">
+		     <v-flex xs12 style="height:200px" fill-height>
 		        <vue-ace :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"></vue-ace>
         </v-flex> 
      </v-card-text>
@@ -3107,7 +3190,7 @@ const Eval=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/eval/evalid.vue
 const Evalid=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  todo {{id}}
  </v-container>
  `,
@@ -3126,19 +3209,19 @@ const Evalid=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/brutusin.vue
 const Brutusin=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
      <v-card>
      <v-card-title><qd-link href="https://github.com/vue-generators/vue-form-generator">vue-form-generator@2.2.1</qd-link> </v-card-title>
      <v-card-text>
-      <v-container grid-list-md="" text-xs-center="">
-    <v-layout row="" wrap="">
-      <v-flex xs8="">
+      <v-container grid-list-md text-xs-center>
+    <v-layout row wrap>
+      <v-flex xs8>
       <v-form>
        <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
        </v-form>
        </v-flex>
        
-       <v-flex xs4="">
+       <v-flex xs4>
         <pre style="text-align:left">{{ model | pretty }}</pre>
        </v-flex>
        </v-layout>
@@ -3256,7 +3339,7 @@ const Brutusin=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/form-json-schema.vue
 const Formsschema=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
      <v-card>
         <v-card-title><qd-link href="https://github.com/jarvelov/vue-form-json-schema">vue-form-json-schema@1.15.3</qd-link> </v-card-title>
         
@@ -3305,15 +3388,15 @@ const Formsschema=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/formschema.vue
 const Formsjson=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
      <v-card>
-     <v-toolbar dense="">
+     <v-toolbar dense>
         <v-card-title><qd-link href="https://gitlab.com/formschema/native">vue-json-schema@1.1.1</qd-link> </v-card-title>
       </v-toolbar> 
      <v-card-text>
-        <v-container grid-list-md="" text-xs-center="">
-				    <v-layout row="" wrap="">
-				      <v-flex xs8="">
+        <v-container grid-list-md text-xs-center>
+				    <v-layout row wrap>
+				      <v-flex xs8>
 				     
 				          <form-schema v-if="schema2" ref="formSchema" :schema="schema2" v-model="model" @submit.stop="submit" input-wrapping-class="text-xs-left">
 				             <v-btn color="success" type="submit">Send</v-btn>
@@ -3321,7 +3404,7 @@ const Formsjson=Vue.extend({template:`
 				    
 				       </v-flex>
 				       
-				       <v-flex xs4="">
+				       <v-flex xs4>
 				        <pre style="text-align:left">{{ model | pretty }}</pre>
 				       </v-flex>
 				       </v-layout>
@@ -3368,7 +3451,7 @@ const Filehistory=Vue.extend({template:`
   <v-card-title>File History</v-card-title>
  <v-card-text>
     <v-list>
-            <v-list-tile v-for="item in items" v-bind:key="item.title" avatar="">
+            <v-list-tile v-for="item in items" v-bind:key="item.title" avatar>
               <v-list-tile-action>
                <v-chip v-text="item.protocol">Example Chip</v-chip>
               </v-list-tile-action>
@@ -3377,12 +3460,12 @@ const Filehistory=Vue.extend({template:`
               </v-list-tile-content>
               
               <v-list-tile-action>
-              <v-btn :to="{name:'edit', query:{ url:item.url, protocol:item.protocol}}" icon="" ripple="">
+              <v-btn :to="{name:'edit', query:{ url:item.url, protocol:item.protocol}}" icon ripple>
                 <v-icon color="grey lighten-1">info</v-icon>
               </v-btn>
               </v-list-tile-action>
               <v-list-tile-action>
-              <v-btn :to="{name:'multi-edit', query:{  url:item.protocol + ':' +item.url }}" icon="" ripple="">
+              <v-btn :to="{name:'multi-edit', query:{  url:item.protocol + ':' +item.url }}" icon ripple>
                 <v-icon color="grey lighten-1">switch_camera</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -3418,7 +3501,7 @@ const Filehistory=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/history/taskhistory.vue
 const Taskhistory=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
  <v-card>
   <v-toolbar>
@@ -3431,14 +3514,14 @@ const Taskhistory=Vue.extend({template:`
        </v-toolbar-title>  
      <v-spacer></v-spacer>
    
-   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" clearable=""></v-text-field>
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
    
    <v-spacer></v-spacer>
    <vp-entitylink entity="task"></vp-entitylink>    
    </v-toolbar>
    
    <v-card-text>
-    <v-data-table :headers="headers" :items="items" hide-actions="" :search="q" class="elevation-1">
+    <v-data-table :headers="headers" :items="items" hide-actions :search="q" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td><router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
       <td>{{ props.item.description }}</td>
@@ -3487,22 +3570,22 @@ const Taskhistory=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/home.vue
 const Home=Vue.extend({template:` 
 
-<v-card hover="" raised=""> 
+<v-card hover raised> 
 <v-card-title class="pa-5 indigo">
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
 <v-spacer></v-spacer>
-  <v-speed-dial v-model="fab" hover="" right="" direction="bottom" transition="slide-y-reverse-transition">
-      <v-btn slot="activator" class="blue darken-2" dark="" fab="" hover="" v-model="fab">
+  <v-speed-dial v-model="fab" hover right direction="bottom" transition="slide-y-reverse-transition">
+      <v-btn slot="activator" class="blue darken-2" dark fab hover v-model="fab">
         <v-icon>account_circle</v-icon>
         <v-icon>close</v-icon>
       </v-btn>
-      <v-btn fab="" dark="" small="" class="green">
+      <v-btn fab dark small class="green">
         <v-icon>edit</v-icon>
       </v-btn>
-      <v-btn fab="" dark="" small="" class="indigo">
+      <v-btn fab dark small class="indigo">
         <v-icon>add</v-icon>
       </v-btn>
-      <v-btn fab="" dark="" small="" class="red">
+      <v-btn fab dark small class="red">
         <v-icon>delete</v-icon>
       </v-btn>
     </v-speed-dial>
@@ -3541,10 +3624,10 @@ const Home=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/dates.vue
 const Dates=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-card>
     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
      <v-chip>Images by year and month</v-chip>   
     </v-card-title>
@@ -3554,10 +3637,10 @@ const Dates=Vue.extend({template:`
     </v-toolbar>
     <v-card-text>
      <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-<v-container v-if="!busy" fluid="">
+<v-container v-if="!busy" fluid>
  <v-layout v-for="year in items" :key="year.year">
       <v-flex v-text="year.year"></v-flex> 
-      <v-flex v-for="(m,i) in year.months" :key="i"><v-btn icon="" color="primary" :disabled="0==m" @click="go(year.year,i)">{{m}}</v-btn></v-flex>       
+      <v-flex v-for="(m,i) in year.months" :key="i"><v-btn icon color="primary" :disabled="0==m" @click="go(year.year,i)">{{m}}</v-btn></v-flex>       
   </v-layout>            
 </v-container>
 <v-layout>
@@ -3607,10 +3690,10 @@ const Dates=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/image.vue
 const Image=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-card>
     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
      <v-chip> {{ image.name }}</v-chip>   
     </v-card-title>
@@ -3621,12 +3704,12 @@ const Image=Vue.extend({template:`
     </v-toolbar>
     <v-card-text>
  <v-layout>
-		 <v-flex xs5="">
+		 <v-flex xs5>
 		<pre style="overflow:auto;">{{ image.doc }}</pre>
 		  <a :href="meta" target="_new">full metadata</a>
 		 </v-flex>
 		 
-		 <v-flex xs7="">
+		 <v-flex xs7>
 		 <iframe :src="path" style="border:0;width:100%;height:100%;min-height:400px;">image</iframe>
 		 </v-flex>
  </v-layout>
@@ -3664,16 +3747,16 @@ const Image=Vue.extend({template:`
 const Images=Vue.extend({template:` 
 
       <v-card>
-      <v-toolbar dense="">
-      <v-btn @click.stop="showFilter = true" icon=""><v-icon>filter_list</v-icon></v-btn>
+      <v-toolbar dense>
+      <v-btn @click.stop="showFilter = true" icon><v-icon>filter_list</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
-        <v-tooltip top="" v-if="query.keyword || query.from || query.until">      
-        <v-btn @click="clear" icon="" slot="activator">
+        <v-tooltip top v-if="query.keyword || query.from || query.until">      
+        <v-btn @click="clear" icon slot="activator">
             <v-icon>clear</v-icon>
          </v-btn>
          <span>Clear search</span>
          </v-tooltip>
-           <v-btn icon="" @click="getImages">
+           <v-btn icon @click="getImages">
                     <v-avatar>
                       <v-icon>refresh</v-icon>
                      </v-avatar>
@@ -3681,14 +3764,14 @@ const Images=Vue.extend({template:`
            <v-spacer></v-spacer>
            <span v-if="!busy">
               <v-toolbar-items v-if="!selection.length">
-							   <v-btn icon="" v-for="b in buttons" :key="b.icon" @click="action(b)">
+							   <v-btn icon v-for="b in buttons" :key="b.icon" @click="action(b)">
 							      <v-avatar>
 							        <v-icon v-text="b.icon"></v-icon>
 							       </v-avatar>
 							    </v-btn>
           </v-toolbar-items>
           <v-toolbar-items v-if="selection.length">
-                 <v-btn icon="" v-for="b in selopts" :key="b.icon" @click="action(b)">
+                 <v-btn icon v-for="b in selopts" :key="b.icon" @click="action(b)">
                     <v-avatar>
                       <v-icon v-text="b.icon"></v-icon>
                      </v-avatar>
@@ -3697,12 +3780,12 @@ const Images=Vue.extend({template:`
           </span>
            <v-spacer></v-spacer>
           <v-toolbar-items>
-          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon="">
+          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon>
            <v-avatar>
            <v-icon>arrow_back</v-icon>
            </v-avatar>
            </v-btn>
-           <v-btn @click.stop="pageNext()" icon="">
+           <v-btn @click.stop="pageNext()" icon>
             <v-avatar>
             <v-icon>arrow_forward</v-icon>
             </v-avatar>
@@ -3711,13 +3794,13 @@ const Images=Vue.extend({template:`
         
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-        <v-container v-if="!busy" fluid="" grid-list-md="">
-          <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
-            <v-flex height="80px" xs2="" v-for="image in images" :key="image.name">
-              <v-card flat="" tile="">
+        <v-container v-if="!busy" fluid grid-list-md>
+          <v-layout row wrap v-touch="{ left: () => pageNext(), right: () => pageBack()}">
+            <v-flex height="80px" xs2 v-for="image in images" :key="image.name">
+              <v-card flat tile>
                 <div :style="style(image)" v-bind:class="{ selcard: image.selected}" @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected ">
                  <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
-                 <v-avatar icon="" small="" v-if="image.geo">
+                 <v-avatar icon small v-if="image.geo">
                   <v-icon>place</v-icon>
                 </v-avatar>
                 </div>
@@ -3731,16 +3814,16 @@ const Images=Vue.extend({template:`
           </v-layout>
         </v-container>
 
- <v-navigation-drawer left="" fixed="" v-model="showFilter" :disable-route-watcher="true">
+ <v-navigation-drawer left fixed v-model="showFilter" :disable-route-watcher="true">
          <v-card>
           <v-toolbar class="green white--text">
                 <v-toolbar-title>Show images with...</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn @click="showFilter = false" icon=""><v-icon>close</v-icon></v-btn>
+          <v-btn @click="showFilter = false" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           
         <v-card-text>    
-         <v-autocomplete v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" clearable="">
+         <v-autocomplete v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" clearable>
              <template slot="item" slot-scope="data">
                   <v-list-tile-content>
                     <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
@@ -3749,29 +3832,29 @@ const Images=Vue.extend({template:`
               </template>
             </v-autocomplete>
             
-          <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
-             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly="" clearable=""></v-text-field>
+          <v-menu lazy :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y full-width :nudge-left="40" max-width="290px">
+             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly clearable></v-text-field>
          
-          <v-date-picker v-model="query.from" scrollable="" actions="">
+          <v-date-picker v-model="query.from" scrollable actions>
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
-                <v-btn flat="" color="primary" @click="save()">Save</v-btn>
+                <v-btn flat color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat color="primary" @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
             
          
           </v-date-picker></v-menu>
           
-           <v-menu lazy="" :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
+           <v-menu lazy :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y full-width :nudge-left="40" max-width="290px">
            
-            <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly="" clearable=""></v-text-field>
+            <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly clearable></v-text-field>
          
-          <v-date-picker v-model="query.until" scrollable="" actions="">
+          <v-date-picker v-model="query.until" scrollable actions>
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
-                <v-btn flat="" color="primary" @click="save()">Save</v-btn>
+                <v-btn flat color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat color="primary" @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
           </v-date-picker>
@@ -3788,12 +3871,12 @@ const Images=Vue.extend({template:`
         </v-card-actions>
       </v-card>
       </v-navigation-drawer>
-        <v-navigation-drawer left="" fixed="" v-model="showInfo" :disable-route-watcher="true">
+        <v-navigation-drawer left fixed v-model="showInfo" :disable-route-watcher="true">
                <v-card> 
                  <v-toolbar class="green white--text">
                 <v-toolbar-title>{{selection.length}} selected</v-toolbar-title>
                 <v-spacer></v-spacer>    
-                 <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+                 <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
               </v-toolbar>
               <v-card-text> 
                <ul>
@@ -3966,11 +4049,11 @@ const Imagesfilter=Vue.extend({template:`
           <v-toolbar class="green white--text">
                 <v-toolbar-title>Show images with...</v-toolbar-title>
           <v-spacer></v-spacer>
-          <v-btn @click="showFilter = false" icon=""><v-icon>close</v-icon></v-btn>
+          <v-btn @click="showFilter = false" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           
         <v-card-text>    
-         <v-autocomplete v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" clearable="">
+         <v-autocomplete v-bind:items="keywords" v-model="query.keyword" label="Keyword" item-value="text" item-text="text" clearable>
              <template slot="item" slot-scope="data">
                   <v-list-tile-content>
                     <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
@@ -3979,27 +4062,27 @@ const Imagesfilter=Vue.extend({template:`
               </template>
             </v-autocomplete>
             
-          <v-menu lazy="" :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
-             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly="" clearable=""></v-text-field>
+          <v-menu lazy :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y full-width :nudge-left="40" max-width="290px">
+             <v-text-field slot="activator" label="Earliest date" v-model="query.from" prepend-icon="event" readonly clearable></v-text-field>
          
-          <v-date-picker v-model="query.from" scrollable="" actions="">
+          <v-date-picker v-model="query.from" scrollable actions>
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
-                <v-btn flat="" color="primary" @click="save()">Save</v-btn>
+                <v-btn flat color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat color="primary" @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
           </v-date-picker></v-menu>
           
-           <v-menu lazy="" :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y="" full-width="" :nudge-left="40" max-width="290px">
+           <v-menu lazy :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y full-width :nudge-left="40" max-width="290px">
            
-            <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly="" clearable=""></v-text-field>
+            <v-text-field slot="activator" label="Latest date" v-model="query.until" prepend-icon="event" readonly clearable></v-text-field>
          
-          <v-date-picker v-model="query.until" scrollable="" actions="">
+          <v-date-picker v-model="query.until" scrollable actions>
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat="" color="primary" @click="cancel()">Cancel</v-btn>
-                <v-btn flat="" color="primary" @click="save()">Save</v-btn>
+                <v-btn flat color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn flat color="primary" @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
           </v-date-picker>
@@ -4101,10 +4184,10 @@ const Imagesfilter=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/ireport.vue
 const Report=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-card>
     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
      <v-chip>todo</v-chip>   
     </v-card-title>
@@ -4159,22 +4242,22 @@ const Report=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/keywords.vue
 const Keywords=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-card>
     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
      <v-chip>click to show</v-chip>   
     </v-card-title>
    
     <v-spacer></v-spacer> 
-  <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
+  <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
     </v-toolbar>
     <v-card-text>
     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-        <v-container v-if="!busy" fluid="" grid-list-md="">
-          <v-layout row="" wrap="" v-touch="{ left: () => pageNext(), right: () => pageBack()}">
-            <v-flex height="80px" @click="show(keyword)" xs3="" v-for="keyword in items" :key="keyword.text">
+        <v-container v-if="!busy" fluid grid-list-md>
+          <v-layout row wrap v-touch="{ left: () => pageNext(), right: () => pageBack()}">
+            <v-flex height="80px" @click="show(keyword)" xs3 v-for="keyword in items" :key="keyword.text">
               <v-card class="grey lighten-2 pt-1">
                        <v-toolbar>
                  <v-card-title v-text="keyword.text"></v-card-title>
@@ -4227,10 +4310,10 @@ const Keywords=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/people.vue
 const People=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-card>
     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
      <v-chip>todo</v-chip>   
     </v-card-title>
@@ -4254,15 +4337,15 @@ people
 const Job=Vue.extend({template:` 
   <v-card>
    <v-toolbar>
-      <v-btn icon="" to="./"><v-icon>arrow_back</v-icon></v-btn>
+      <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
       <v-toolbar-title>{{ job }}</v-toolbar-title>
     
      <v-btn v-if="!finished" @click="stop()" :disabled="finished">Stop</v-btn>
      <v-btn v-if="finished &amp;&amp; !result" @click="getResult()" :disabled="result || !finished">Result</v-btn>
     <v-chip class="orange white--text">{{  jobstate.state }}</v-chip>
   
-        <v-chip label="" class="grey white--text"><v-icon class="red">lock</v-icon>{{  jobstate.writes }}</v-chip>
-       <v-chip label="" class="grey white--text"><v-icon class="amber">lock</v-icon>{{  jobstate.reads }}</v-chip>
+        <v-chip label class="grey white--text"><v-icon class="red">lock</v-icon>{{  jobstate.writes }}</v-chip>
+       <v-chip label class="grey white--text"><v-icon class="amber">lock</v-icon>{{  jobstate.reads }}</v-chip>
       <v-spacer></v-spacer>
        <v-chip class="primary white--text">
       <v-avatar>
@@ -4272,7 +4355,7 @@ const Job=Vue.extend({template:`
        <v-chip class="green white--text">
         <v-avatar><v-icon>timer</v-icon></v-avatar>
        {{  jobstate.duration }}</v-chip>
-      <v-btn icon="" :loading="loading" @click="getJob()" :disabled="loading || finished">
+      <v-btn icon :loading="loading" @click="getJob()" :disabled="loading || finished">
          <v-icon>refresh</v-icon>
     </v-btn>     
     </v-toolbar>
@@ -4338,21 +4421,21 @@ const Job=Vue.extend({template:`
 const Jobs=Vue.extend({template:` 
   <v-card>
    <v-toolbar>
-     <v-text-field prepend-icon="filter_list" label="Filter jobs" single-line="" hide-details="" clearable="" v-model="search"></v-text-field> 
+     <v-text-field prepend-icon="filter_list" label="Filter jobs" single-line hide-details clearable v-model="search"></v-text-field> 
       <v-spacer></v-spacer>
      <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
    
-      <v-btn icon=""><v-icon>add</v-icon></v-btn>   
+      <v-btn icon><v-icon>add</v-icon></v-btn>   
       <v-spacer></v-spacer>
       
-       <v-btn icon="" :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
+       <v-btn icon :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
     <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
     </v-btn>
     </v-toolbar>
-  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all="" class="elevation-1" no-data-text="No Jobs currently running">
+  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all class="elevation-1" no-data-text="No Jobs currently running">
     <template slot="items" slot-scope="props">
     <td class="vtop">
-        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
+        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
       </td>
       <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
       <td class="vtop "><div>{{ props.item.state }}</div><div>{{ props.item.type }}</div> </td>
@@ -4429,7 +4512,7 @@ const Jobs=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/login/login.vue
 const Login=Vue.extend({template:` 
  <v-layout>
-    <v-flex xs12="" sm6="" offset-sm3="">
+    <v-flex xs12 sm6 offset-sm3>
 					<v-card>
 					
 					      <v-card-title class="red">
@@ -4437,11 +4520,11 @@ const Login=Vue.extend({template:`
 					      </v-card-title>
 					   
 					     <v-card-actions>
-					      <v-text-field name="input-name" label="User name" hint="Enter your name" v-model="name" required=""></v-text-field>
+					      <v-text-field name="input-name" label="User name" hint="Enter your name" v-model="name" required></v-text-field>
 					     </v-card-actions>
 					  
 					    <v-card-actions>    
-					         <v-text-field name="input-password" label="Password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" @click:append="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required=""></v-text-field>      
+					         <v-text-field name="input-password" label="Password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" @click:append="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required></v-text-field>      
 					    </v-card-actions>
 					    
 					     <v-alert color="error" v-bind:value="showMessage">
@@ -4507,9 +4590,9 @@ const Login=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/map.vue
 const Leaflet=Vue.extend({template:` 
- <v-container fluid="">
-     <v-layout row="" wrap="">
-      <v-flex xs12="" style="height:400px">
+ <v-container fluid>
+     <v-layout row wrap>
+      <v-flex xs12 style="height:400px">
      <l-map :zoom="zoom" :center="center">
       <l-tilelayer :url="url" :attribution="attribution"></l-tilelayer>
       <l-marker :lat-lng="marker"></l-marker>
@@ -4537,10 +4620,11 @@ const Leaflet=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/documentation.vue
 const Documentation=Vue.extend({template:` 
- <v-container fluid="">
-    <a href="file:///c:/tmp" target="doc">go<!--</a-->
- </a></v-container><a href="file:///c:/tmp" target="doc">
-</a> `,
+ <v-container fluid>
+    <h1>TODO</h1>
+    <a href="/vue-poc/api/xqdoc" target="doc">list</a>
+ </v-container>
+ `,
       
   data:  function(){
     return {
@@ -4578,31 +4662,31 @@ const Entity=Vue.extend({template:`
 				     <template slot="item" slot-scope="props">
 			           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
 			                {{ props.item.text }}
-			            </v-breadcrumbs-item>
-			        </template>
-         </v-breadcrumbs>
-       </v-toolbar-title>
+			           </v-breadcrumbs-item>
+			       </template>
+     </v-breadcrumbs>
+   </v-toolbar-title>
 	 
-	 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
+	 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
    <v-spacer></v-spacer>
-	 <v-btn @click="getItems" icon="" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+	 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
    <vp-entitylink entity="entity"></vp-entitylink>
 	 </v-toolbar>
 
-  <v-container fluid="" grid-list-md="">
+  <v-container fluid grid-list-md>
   
-    <v-data-iterator content-tag="v-layout" row="" wrap="" :loading="loading" :items="items" :search="q" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all="" :value="selected">
-      <v-flex slot="item" slot-scope="props" xs12="" sm6="" md4="" lg3="">
+    <v-data-iterator content-tag="v-layout" row wrap :loading="loading" :items="items" :search="q" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all :value="selected">
+      <v-flex slot="item" slot-scope="props" xs12 sm6 md4 lg3>
         <v-card :hover="true" active-class="default-class qd-active" max-height="200px">
         
-          <v-toolbar color="blue lighten-3" dense="">
-		          <v-card-title>
+          <v-toolbar color="blue lighten-3" dense>
+		          <v-toolbar-title>
 		           <router-link :to="{path:'entity/'+ props.item.name}">
 		            
 		            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
 		            
-		            </router-link>
-		         </v-card-title>
+		            </router-link></v-toolbar-title>
+		         
           </v-toolbar>
           <v-card-text>{{ props.item.description }}<!--<v-card-text-->
           <v-card-text>
@@ -4662,8 +4746,8 @@ const Entity1=Vue.extend({template:`
 	 <v-toolbar-title> 
          <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
          </v-toolbar-title>   
-          <v-menu offset-y="" v-model="showmenu" activator=".todo">
-            <v-list dense="">
+          <v-menu offset-y v-model="showmenu" activator=".todo">
+            <v-list dense>
                 <v-subheader>Actions</v-subheader>
                       <v-list-tile @click="getxml">
                       <v-list-tile-title>View XML</v-list-tile-title>
@@ -4676,13 +4760,13 @@ const Entity1=Vue.extend({template:`
 
 	 <v-spacer></v-spacer>
 	 
-	 <v-btn icon="" @click="getItem" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+	 <v-btn icon @click="getItem" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
 	
 	 </v-toolbar>
 
-  <v-container fluid="" grid-list-md="">
+  <v-container fluid grid-list-md>
   
-    <v-expansion-panel v-model="panel" expand="">
+    <v-expansion-panel v-model="panel" expand>
     <v-expansion-panel-content>
           <div slot="header" class="title"><v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}</div>
          {{item.description}}
@@ -4771,7 +4855,7 @@ const Entity1=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace.vue
 const Namespace=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-card>
    <v-toolbar>
    <v-toolbar-title>
@@ -4785,18 +4869,18 @@ const Namespace=Vue.extend({template:`
    </v-toolbar-title>
 
    
-     <v-btn @click="load" icon="" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+     <v-btn @click="load" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
    
    <v-spacer></v-spacer>
    
-   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" clearable=""></v-text-field>
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
    
    <v-spacer></v-spacer>
    <vp-entitylink entity="namespace"></vp-entitylink>
   
    </v-toolbar>
    <v-card-text>
-    <v-data-table :headers="headers" :items="items" hide-actions="" :search="q" class="elevation-1">
+    <v-data-table :headers="headers" :items="items" :loading="loading" hide-actions :search="q" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td><router-link :to="{path:'namespace/item?xmlns='+ props.item.xmlns}">
                  {{ props.item.xmlns }}
@@ -4805,6 +4889,11 @@ const Namespace=Vue.extend({template:`
       <td>{{ props.item.prefix }}</td>
      
     </template>
+    
+    <template slot="no-data">
+        No result available.
+    </template>
+    
     <template slot="no-data">
       <v-alert :value="true" icon="warning">
         No matching items.
@@ -4894,10 +4983,10 @@ const Namespace1=Vue.extend({template:`
 	 <v-toolbar-title>
 
 	 <v-spacer></v-spacer>
-	 <v-btn @click="getItem" icon="" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+	 <v-btn @click="getItem" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
 	 </v-toolbar-title></v-toolbar>
 
-  <v-container fluid="" grid-list-md="">
+  <v-container fluid grid-list-md>
   
   
       hello
@@ -4933,7 +5022,7 @@ const Namespace1=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/puzzle.vue
 const Puzzle=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-layout>
  
   <table>
@@ -5012,11 +5101,11 @@ const Puzzle=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/repository.vue
 const Repo=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
    <qd-table :headers="headers" data-uri="data/repo" entity="repo" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
       <td>
-        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
+        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
       </td>
       <td>{{ props.item.name}}</td>
       <td>{{ props.item.type }}</td>
@@ -5050,26 +5139,27 @@ created:function(){
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/scratch.vue
 const Scratch=Vue.extend({template:` 
- <v-container fluid="">
-   <v-toolbar tabs="" dense="">
+ <v-container fluid>
+   <v-toolbar tabs dense>
    <v-toolbar-title>Tab index {{ curIndex }}</v-toolbar-title>
    <v-btn v-if="active">{{ active.mode }}</v-btn>
-      <v-btn v-if="active"> {{ active.name }}, id: {{ active.id }}</v-btn>
+   <qd-mimelist v-if="active" :mimetype="active.contentType" @selected="setmime">{{ active.mode }}</qd-mimelist>
+   <v-btn v-if="active"> {{ active.name }}, id: {{ active.id }}</v-btn>
    <v-spacer></v-spacer>
 
    <v-btn @click="add">Add</v-btn>
     <v-btn @click="curIndex=2">set</v-btn>
-    <qd-tablist :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
 
+    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
     <v-tabs v-model="curIndex" slot="extension">
-          <v-tab v-for="(item,index) in EditTabs.items" :key="item.id" ripple="" style="text-transform: none;text-align:left">
+          <v-tab v-for="(item,index) in EditTabs.items" :key="item.id" ripple style="text-transform: none;text-align:left">
              <v-avatar>
                 <v-icon size="16px">insert_drive_file</v-icon>
              </v-avatar>
              <span>{{ (item.dirty?"*":"") }}</span>
               <span>{{ item.name  }}</span>
              <v-spacer></v-spacer>
-             <v-btn icon="" @click.stop="tabClose(item,index)">
+             <v-btn icon @click.stop="tabClose(item,index)">
                 <v-icon size="16px">close</v-icon>
               </v-btn>
           </v-tab>
@@ -5081,8 +5171,8 @@ const Scratch=Vue.extend({template:`
        <v-tab-item v-for="item in EditTabs.items" :key="item.id">
           <v-card>
             <div style="height:200px" ref="ace" v-resize="onResize">
-            <v-flex xs12="" fill-height="">
-              <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
+            <v-flex xs12 fill-height>
+              <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation" :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets"></vue-ace>
             </v-flex>
             </div> 
           </v-card>
@@ -5121,6 +5211,11 @@ const Scratch=Vue.extend({template:`
     },
     setItem(v){
       this.curIndex=v;
+    },
+    setmime(mime){
+      this.$set(this.active, 'contentType', mime.name)
+      this.$set(this.active, 'mode', mime.mode)
+      //alert(mime.contentType+" "+mime.mode)
     },
     annotation(counts){
       this.annotations=counts
@@ -5193,15 +5288,15 @@ const Scratch=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/search/search.vue
 const Search=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-alert color="warning" value="true">Not finished</v-alert>
  <v-text-field label="Search..." v-model="q" v-on:keyup="send"></v-text-field> 
   <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
   <v-layout>
     <v-flex>
-    <v-list v-if="!busy" two-line="" subheader="">
+    <v-list v-if="!busy" two-line subheader>
       
-        <v-list-tile v-for="(item,index) in results" v-bind:key="item.uri" :to="item.uri" v-model="selected[index]" avatar="">
+        <v-list-tile v-for="(item,index) in results" v-bind:key="item.uri" :to="item.uri" v-model="selected[index]" avatar>
           <v-list-tile-avatar @click.prevent.stop="select(index)">
             <v-icon v-text="icon(index)"></v-icon>
           </v-list-tile-avatar>
@@ -5210,7 +5305,7 @@ const Search=Vue.extend({template:`
             <v-list-tile-sub-title>{{ item.uri }}</v-list-tile-sub-title>
           </v-list-tile-content>
           <v-list-tile-action>
-            <v-btn icon="" ripple="">
+            <v-btn icon ripple>
               <v-icon class="grey--text text--lighten-1">info</v-icon>
             </v-btn>
           </v-list-tile-action>
@@ -5266,58 +5361,58 @@ const Search=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/select.vue
 const Select=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
 <v-card>
     <v-toolbar class="green darken-1">
     <v-card-title>
       <span class="white--text">Selection2</span>     
     </v-card-title>
     <v-spacer></v-spacer>    
-       <v-btn flat="" icon="" @click="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
+       <v-btn flat icon @click="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
   </v-toolbar>
 
   <qd-panel :show="showInfo">
   
 
-    <v-layout slot="body" row="" wrap="">
+    <v-layout slot="body" row wrap>
      
-      <v-flex xs12="">
-          <v-treeview v-model="tree" :open="open" :items="items" activatable="" item-key="name" open-on-click="">
+      <v-flex xs12>
+          <v-treeview v-model="tree" :open="open" :items="items" activatable item-key="name" open-on-click>
           <template slot="prepend" slot-scope="{ item, open, leaf }">
             <v-icon v-if="!item.file">
               {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
             </v-icon>
-            <v-icon v-else="">
+            <v-icon v-else>
               {{ files[item.file] }}
             </v-icon>
           </template>
         </v-treeview> 
      </v-flex>
         
-    <v-flex xs6="">
+    <v-flex xs6>
     <p>some text</p>
    
   
-     <v-autocomplete label="Select" v-bind:items="options" v-model="value" item-text="name" item-value="name" chips="" max-height="auto" clearable="" deletable-chips="">      
+     <v-autocomplete label="Select" v-bind:items="options" v-model="value" item-text="name" item-value="name" chips max-height="auto" clearable deletable-chips>      
            
        </v-autocomplete>
          <pre>{{$data.value }}</pre>
     </v-flex>
 
-    <v-flex xs6="">
+    <v-flex xs6>
     <p>multi select</p>
     
-      <v-select label="Select" v-bind:items="options" v-model="value2" item-text="name" item-value="name" multiple="" chips="" deletable-chips="" max-height="auto" autocomplete="">v-select</v-select>
+      <v-select label="Select" v-bind:items="options" v-model="value2" item-text="name" item-value="name" multiple chips deletable-chips max-height="auto" autocomplete>v-select</v-select>
             <pre>{{$data.value2 }}</pre>
     </v-flex>
    
    </v-layout>
    
-   <v-card slot="aside" flat=""> 
+   <v-card slot="aside" flat> 
        <v-card-actions>
       <v-toolbar-title>test aside</v-toolbar-title>
       <v-spacer></v-spacer>    
-       <v-btn flat="" icon="" @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+       <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-card-actions>
     <v-card-text> 
  todo
@@ -5447,29 +5542,33 @@ const Basexsettings=Vue.extend({template:`
 }
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/ping.vue
-const Ping=Vue.extend({template:` 
- <v-container fluid="">
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/dicetest.vue
+const Dicetest=Vue.extend({template:` 
+ <v-container fluid>
  <v-card>
  <v-toolbar>
- <v-toolbar-title>Simple performance measure</v-toolbar-title>
+ <v-toolbar-title>Dice entity list</v-toolbar-title>
+ 
  <v-spacer></v-spacer>
  <v-btn @click="reset()">Reset</v-btn>
  </v-toolbar>
  <v-card-text>
-  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
-  <h3>Counter: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
+  <p>Read json data for 1st page for entity.</p>
+   <v-flex xs12 sm6>
+      <v-text-field v-model="url" label="url"></v-text-field>
+    </v-flex>
+ 
   <table class="v-table">
       <thead> 
         <tr>
-         <th xs1="">Action</th>
-          <th xs1="">Repeat</th>
-          <th xs1="">Last</th>
-          <th xs1="">Count</th>
-          <th xs1="">Avg</th>
-          <th xs1="">min</th>
-          <th xs1="">max</th>
-          <th xs1="">Median</th>
+         <th xs1>Action</th>
+          <th xs1>Repeat</th>
+          <th xs1>Last</th>
+          <th xs1>Count</th>
+          <th xs1>Avg</th>
+          <th xs1>min</th>
+          <th xs1>max</th>
+          <th xs1>Median</th>
         </tr>
       </thead>
       <tbody>
@@ -5478,7 +5577,127 @@ const Ping=Vue.extend({template:`
           <tr>
               <td>
                <v-btn @click="get()">
-                   Read <v-icon right="">compare_arrows</v-icon> 
+                   Read <v-icon right>compare_arrows</v-icon> 
+                </v-btn>
+             
+               </td>
+               <td>
+                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
+
+             </td>    
+              <td>
+                  <span>{{getValues.last}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.count}}</span>
+              </td>   
+            
+              <td>
+                  <span>{{getValues.avg | round(2)}}</span>
+              </td>
+            
+              <td>
+                  <span>{{getValues.min}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.max}}</span>
+              </td>
+                <td>
+                  <span>{{getValues.median}}</span>
+              </td>
+          </tr>
+          
+          
+      </tbody>
+    </table>
+     <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
+     <pre>{{ result | pretty}}</pre>
+    </v-card-text>
+    </v-card>
+    
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      getValues: new perfStat(),
+      repeat: {get:false},
+      url: "data/entity",
+      counter: 0,
+      result: null
+      }
+  },
+  methods:{
+
+    get(){
+     var _start = performance.now();
+     HTTP.get(this.url,axios_json)
+     .then(r=>{
+       var elapsed=Math.floor(performance.now() - _start);
+       this.counter++;
+       this.result=r.data;
+       Object.assign(this.getValues,this.getValues.log(elapsed))
+       this.$forceUpdate()
+        if(this.repeat.get){
+          this.get(); //does this leak??
+        }
+     })
+    },
+    gchange(v){
+      if(v)this.get() 
+    },
+    
+    reset(){
+      Object.assign(this.getValues,this.getValues.clear());
+      this.$forceUpdate()
+    }
+  },
+  beforeRouteLeave(to, from, next){
+    var on=this.repeat.get 
+
+    if (on) {
+      alert("running!") //<--undefined
+      return next(false)
+    } else {
+      return next()
+    }
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/ping.vue
+const Ping=Vue.extend({template:` 
+ <v-container fluid>
+ <v-card>
+ <v-toolbar>
+ <v-toolbar-title>Simple response counter</v-toolbar-title>
+ <v-spacer></v-spacer>
+ <v-btn @click="reset()">Reset</v-btn>
+ </v-toolbar>
+ <v-card-text>
+  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
+  <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
+  <table class="v-table">
+      <thead> 
+        <tr>
+         <th xs1>Action</th>
+          <th xs1>Repeat</th>
+          <th xs1>Last</th>
+          <th xs1>Count</th>
+          <th xs1>Avg</th>
+          <th xs1>min</th>
+          <th xs1>max</th>
+          <th xs1>Median</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      
+          <tr>
+              <td>
+               <v-btn @click="get()">
+                   Read <v-icon right>compare_arrows</v-icon> 
                 </v-btn>
              
                </td>
@@ -5511,7 +5730,7 @@ const Ping=Vue.extend({template:`
             <tr>
           <td>
            <v-btn @click="update()">
-                 Write <v-icon right="">compare_arrows</v-icon>
+                 Write <v-icon right>compare_arrows</v-icon>
             </v-btn>
           </td>
           
@@ -5612,7 +5831,7 @@ const Ping=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/upload.vue
 const Upload=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-snackbar v-model="snack" color="success">File upload complete</v-snackbar>
  <v-card>
  <v-card-title>File transfers</v-card-title>
@@ -5640,7 +5859,7 @@ const Upload=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/session.vue
 const Session=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
   <v-layout>
    <v-btn v-on:click="redraw">this.$forceUpdate()</v-btn>
     <v-btn v-on:click="logout">logout</v-btn>
@@ -5705,50 +5924,50 @@ const Session=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/acesettings.vue
 const Acesettings=Vue.extend({template:` 
-<v-container fluid="">
+<v-container fluid>
 
-  <v-layout row="">
-    <v-flex xs12="" sm8="" offset-sm2="">
+  <v-layout row>
+    <v-flex xs12 sm8 offset-sm2>
       <v-card>
        <v-toolbar class="orange">
         <v-card-title> <qd-breadcrumbs :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Common Ace editor settings', disabled: true }]">crumbs</qd-breadcrumbs></v-card-title>
         </v-toolbar>
       <v-card-text>
-      <v-container fluid="">
-       <v-layout row="">
-          <v-flex xs6="" class="pa-3">
-        <v-layout row="">
+      <v-container fluid>
+       <v-layout row>
+          <v-flex xs6 class="pa-3">
+        <v-layout row>
           
           <v-flex>
             <v-select v-bind:items="themes" v-model="ace.theme" label="Theme"></v-select>
           </v-flex>
         </v-layout>
        
-        <v-layout row="">
+        <v-layout row>
          
           <v-flex>
             <v-select v-bind:items="keybindings" v-model="ace.keybinding" label="Key binding"></v-select>
            
           </v-flex>
         </v-layout>
-        <v-layout row="">
+        <v-layout row>
          
           <v-flex>
             <v-text-field label="Font size (px)" v-model="ace.fontsize"></v-text-field>
           </v-flex>
         </v-layout>
          </v-flex>
-        <v-flex xs6="" style="height:30vh" class="grey pa-3" fill-height="">
+        <v-flex xs6 style="height:30vh" class="grey pa-3" fill-height>
             <vue-ace mode="xquery" content="test" :settings="ace"></vue-ace>
         </v-flex>
         </v-layout>
        <v-divider></v-divider>
  
         
-        <v-list two-line="" subheader="">
+        <v-list two-line subheader>
           <v-subheader>Ace editor settings</v-subheader>
    
-            <v-list-tile avatar="">
+            <v-list-tile avatar>
               <v-list-tile-action>
                 <v-checkbox v-model="ace.enableSnippets"></v-checkbox>
               </v-list-tile-action>
@@ -5759,7 +5978,7 @@ const Acesettings=Vue.extend({template:`
               </v-list-tile-content>
             </v-list-tile>
     
-            <v-list-tile avatar="">
+            <v-list-tile avatar>
               <v-list-tile-action>
                 <v-checkbox v-model="ace.enableBasicAutocompletion"></v-checkbox>
               </v-list-tile-action>
@@ -5769,7 +5988,7 @@ const Acesettings=Vue.extend({template:`
               </v-list-tile-content>
             </v-list-tile>
          
-            <v-list-tile avatar="">
+            <v-list-tile avatar>
               <v-list-tile-action>
                 <v-checkbox v-model="ace.enableLiveAutocompletion"></v-checkbox>
               </v-list-tile-action>
@@ -5833,10 +6052,10 @@ const Acesettings=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/keys.vue
 const Keys=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  
 	 <v-card>
-	  <v-toolbar dense="">
+	  <v-toolbar dense>
 	   <v-toolbar-title> 
          <qd-breadcrumbs :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Keys', disabled: true }]">crumbs</qd-breadcrumbs> 
          </v-toolbar-title> 
@@ -5848,7 +6067,7 @@ const Keys=Vue.extend({template:`
 
    <v-card-text>
     <v-expansion-panel v-model="openIndex">
-    <v-expansion-panel-content popout="" v-for="key in keys" :key="key">
+    <v-expansion-panel-content popout v-for="key in keys" :key="key">
      <div slot="header">{{key}}</div>
   <v-card>
         <v-card-text>Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor 
@@ -5902,7 +6121,7 @@ const Keys=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/settings/settings.vue
 const Showsettings=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
 <v-switch label="Dark theme" v-model="dark" @change="theme"></v-switch>
 <v-switch label="Use service worker" v-model="serviceworker" @change="worker"></v-switch>
@@ -5910,7 +6129,7 @@ const Showsettings=Vue.extend({template:`
 	   <v-card-title class="lime darken-1">Available settings</v-card-title>
 	  
 	 <v-card-text>
-	   <v-list dense="">
+	   <v-list dense>
 		   <v-list-tile>
 		      <router-link to="settings/ace">Editor</router-link>
 		   </v-list-tile>
@@ -5975,10 +6194,10 @@ const Showsettings=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/model.build/model.vue
 const Model=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
     <v-card>
     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
       <span class="white--text">Generate <code>model.gen.xqm</code></span>      
     </v-card-title>
@@ -5988,17 +6207,17 @@ const Model=Vue.extend({template:`
       Run</v-btn>
     </v-toolbar>
     <v-card-text>
-      <v-container fluid="">
-        <v-layout row="" wrap="">
+      <v-container fluid>
+        <v-layout row wrap>
           
-          <v-flex xs12="">
+          <v-flex xs12>
             <v-text-field v-model="params.efolder" label="Folder containing model  definitions as xml"></v-text-field>
           </v-flex>
         
-          <v-flex xs12="">
+          <v-flex xs12>
             <v-text-field v-model="params.target" label="Path to xqm file to generate"></v-text-field>
           </v-flex>
-           <v-flex xs12="">
+           <v-flex xs12>
             <code>{{code}}</code>
           </v-flex>
         </v-layout>
@@ -6008,7 +6227,7 @@ const Model=Vue.extend({template:`
  
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
       {{ snackbar.msg }}
-      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
+      <v-btn dark flat @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
   </v-card>
  </v-container>
@@ -6056,7 +6275,7 @@ const Model=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/task/task.vue
 const Runtask=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
     <v-card>
     <v-toolbar>
     <v-toolbar-title>
@@ -6082,9 +6301,9 @@ const Runtask=Vue.extend({template:`
      </v-card-text>
      
     <v-card-text>
-      <v-container fluid="">
-        <v-layout row="" wrap="">   
-          <v-flex xs12="">
+      <v-container fluid>
+        <v-layout row wrap>   
+          <v-flex xs12>
                  <vp-paramform ref="params" :endpoint="'tasks/'+task"></vp-paramform>
           </v-flex>
         </v-layout>
@@ -6092,7 +6311,7 @@ const Runtask=Vue.extend({template:`
     </v-card-text>
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
       {{ snackbar.msg }}
-      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
+      <v-btn dark flat @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
   </v-card>
  </v-container>
@@ -6151,7 +6370,7 @@ const Runtask=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/tasks.vue
 const Tasks=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
  <v-card>
   <v-toolbar>
@@ -6166,14 +6385,14 @@ const Tasks=Vue.extend({template:`
        </v-toolbar-title>  
      <v-spacer></v-spacer>
    
-   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details="" single-line="" @keyup.enter="setfilter" clearable=""></v-text-field>
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
    
    <v-spacer></v-spacer>
    <vp-entitylink entity="task"></vp-entitylink>    
    </v-toolbar>
    
    <v-card-text>
-    <v-data-table :headers="headers" :items="items" hide-actions="" :search="q" class="elevation-1">
+    <v-data-table :headers="headers" :items="items" hide-actions :search="q" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td><router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
       <td>{{ props.item.description }}</td>
@@ -6223,10 +6442,10 @@ const Tasks=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/vue-compile/vuecompile.vue
 const Vuecompile=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
     <v-card>
     <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
       <span class="white--text">compile</span>      
     </v-card-title>
@@ -6236,14 +6455,14 @@ const Vuecompile=Vue.extend({template:`
       Run</v-btn>
     </v-toolbar>
     <v-card-text>
-      <v-container fluid="">
-        <v-layout row="" wrap="">   
-          <v-flex xs12="">
+      <v-container fluid>
+        <v-layout row wrap>   
+          <v-flex xs12>
             <v-text-field v-model="params.proj" label="vue project to compile"></v-text-field>
           </v-flex>
         </v-layout>
-         <v-layout row="" wrap="">
-           <v-flex xs12="">
+         <v-layout row wrap>
+           <v-flex xs12>
             <code>{{code}}</code>
           </v-flex>
         </v-layout>
@@ -6253,7 +6472,7 @@ const Vuecompile=Vue.extend({template:`
    
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
       {{ snackbar.msg }}
-      <v-btn dark="" flat="" @click="snackbar.show = false">Close</v-btn>
+      <v-btn dark flat @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
   </v-card>
  </v-container>
@@ -6300,10 +6519,10 @@ const Vuecompile=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/xqdoc/xqdoc.vue
 const Xqdoc=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
     <v-card>
      <v-toolbar class="orange darken-1">
-     <v-btn icon="" to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
+     <v-btn icon to="/tasks"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
       <span class="white--text">Task: Generate <code>xqdoc</code></span>      
     </v-card-title>
@@ -6314,14 +6533,14 @@ const Xqdoc=Vue.extend({template:`
       Run</v-btn>
     </v-toolbar>
     <v-card-text>
-      <v-container fluid="">
-        <v-layout row="" wrap="">
+      <v-container fluid>
+        <v-layout row wrap>
           
-          <v-flex xs12="">
+          <v-flex xs12>
             <v-text-field v-model="params.efolder" label="Root Folder containing xq files"></v-text-field>
           </v-flex>
         
-          <v-flex xs12="">
+          <v-flex xs12>
             <v-text-field v-model="params.target" label="Path for xqdoc files"></v-text-field>
           </v-flex>
         
@@ -6389,45 +6608,45 @@ const Xqdoc=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/thumbnail/thumbnail.vue
 const Thumbnail=Vue.extend({template:` 
- <v-container fluid="">
- <v-stepper v-model="step" non-linear="">
+ <v-container fluid>
+ <v-stepper v-model="step" non-linear>
   <v-stepper-header>
-      <v-stepper-step step="1" :complete="step > 1" editable="">Select image location</v-stepper-step>
+      <v-stepper-step step="1" :complete="step > 1" editable>Select image location</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="2" :complete="step > 2" editable="">Set thumbnail details</v-stepper-step>
+      <v-stepper-step step="2" :complete="step > 2" editable>Set thumbnail details</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="3" editable="">Result</v-stepper-step>
+      <v-stepper-step step="3" editable>Result</v-stepper-step>
     </v-stepper-header>
   <v-stepper-items>
-  <v-stepper-content step="1" non-linear="">
+  <v-stepper-content step="1" non-linear>
     <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required=""></v-text-field>
+    <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required></v-text-field>
     </v-card>
         <v-btn color="primary" @click="step = 2">Next</v-btn>
   </v-stepper-content>
   
-  <v-stepper-content step="2" non-linear="">
+  <v-stepper-content step="2" non-linear>
     <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
     <vue-ace editor-id="editorA" :content="taskxml" mode="xml" wrap="true" v-on:change-content="onChange"></vue-ace>
 		</v-card>
    
-    <v-btn flat="" @click="step -= 1">Back</v-btn>
+    <v-btn flat @click="step -= 1">Back</v-btn>
     <v-btn color="primary" @click="validate()">Validate</v-btn>
      <v-btn color="primary" @click="step = 3">Next</v-btn>  
   </v-stepper-content>
 
-  <v-stepper-content step="3" non-linear="">
+  <v-stepper-content step="3" non-linear>
     <v-card class="grey lighten-1 z-depth-1 mb-5">
      <v-card-actions>
-    <v-btn flat="" @click="step -= 1">Back</v-btn>
+    <v-btn flat @click="step -= 1">Back</v-btn>
      <v-btn color="primary" @click="go()">go</v-btn>
      </v-card-actions>
     <v-card-text>
-    <v-layout style="height:200px" fill-height="">
-    <v-flex xs6="">
+    <v-layout style="height:200px" fill-height>
+    <v-flex xs6>
     <img :src="image" class="contain" style="width:100%; height:100%;">
     </v-flex>
-    <v-flex xs6="">
+    <v-flex xs6>
     <img :src="image" class="contain" style="width:50%; height:50%;object-position: 50% 50%;">
     </v-flex>
     </v-layout>
@@ -6495,11 +6714,11 @@ const Thumbnail=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/users/users.vue
 const Users=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
    <qd-table :headers="headers" data-uri="data/user" entity="user" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
       <td>
-        <v-checkbox primary="" hide-details="" v-model="props.selected"></v-checkbox>
+        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
       </td>
       <td>{{ props.item.name}}</td>
       <td>{{ props.item.permission }}</td>
@@ -6531,7 +6750,7 @@ created:function(){
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/validate/validate.vue
 const Validate=Vue.extend({template:` 
-  <v-container fluid="">
+  <v-container fluid>
     <v-card>
      <v-toolbar class="orange">
         
@@ -6540,8 +6759,8 @@ const Validate=Vue.extend({template:`
              <span v-text="elapsed">?</span>ms.
             <v-spacer></v-spacer>
             
-              <v-menu offset-y="" left="">
-             <v-btn icon="" slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-menu offset-y left>
+             <v-btn icon slot="activator"><v-icon>settings</v-icon></v-btn>
               <v-card>
               <v-toolbar class="green">
                   <v-card-title>@TODO.......</v-card-title>
@@ -6553,14 +6772,14 @@ const Validate=Vue.extend({template:`
               </v-menu>
           </v-toolbar>
     <v-card-text v-resize="onResize" style="height:100px" ref="auto">
-      <v-container fluid="">
+      <v-container fluid>
         
-          <v-layout row="" wrap=""> 
+          <v-layout row wrap> 
           <v-flex>
           <vp-paramform ref="params" endpoint="validate"></vp-paramform>
           </v-flex>
          
-          <v-flex green="" fill-height="">
+          <v-flex green fill-height>
           <vp-validationreport :report="result"></vp-validationreport>
           </v-flex>
           </v-layout>
@@ -6625,7 +6844,7 @@ const Validate=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/websocket/websocket.vue
 const Websocket=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
  <v-card>
  <v-toolbar>
  <v-toolbar-title>Web socket <a href="https://github.com/nathantsoi/vue-native-websocket">Git</a></v-toolbar-title>
@@ -6662,7 +6881,7 @@ const Websocket=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/xqdoc/xqdoc.vue
 const Xqdoc2=Vue.extend({template:` 
-  <v-container fluid="" v-resize="onResize">
+  <v-container fluid v-resize="onResize">
 <v-card>
      <v-toolbar class="orange">
           <v-btn @click="validate" :loading="loading" :disabled="loading"><v-icon>play_circle_outline</v-icon>xqdoc</v-btn>
@@ -6670,8 +6889,8 @@ const Xqdoc2=Vue.extend({template:`
           <span v-text="height"></span>
             <v-spacer></v-spacer>
          
-              <v-menu offset-y="" left="">
-             <v-btn icon="" dark="" slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-menu offset-y left>
+             <v-btn icon dark slot="activator"><v-icon>settings</v-icon></v-btn>
               <v-card>
               <v-toolbar class="green">
                   <v-card-title>Settings................</v-card-title>
@@ -6734,27 +6953,27 @@ const Xqdoc2=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/xslt/transform.vue
 const Transform=Vue.extend({template:` 
- <v-container fluid="">
+ <v-container fluid>
 <v-card>
      <v-toolbar class="orange">
           <v-btn @click="transform" :loading="loading" :disabled="loading"><v-icon>play_circle_outline</v-icon>Run</v-btn>
           <span v-text="elapsed"></span>ms. Height: 
           <span v-text="height"></span>
             <v-spacer></v-spacer>
-           <v-btn-toggle v-model="showOptions" multiple="">
+           <v-btn-toggle v-model="showOptions" multiple>
            <v-icon>visibility</v-icon>
-              <v-btn flat="" value="result">
+              <v-btn flat value="result">
                 <span :class="resultValid?'':'red'">Result</span>
               </v-btn>
-              <v-btn flat="" value="xml">
+              <v-btn flat value="xml">
                <span :class="xmlValid?'':'red'">XML</span>
               </v-btn>
-              <v-btn flat="" value="xslt">
+              <v-btn flat value="xslt">
                  <span :class="xslValid?'':'red'">XSLT</span>
               </v-btn>
             </v-btn-toggle>
-              <v-menu offset-y="" left="">
-             <v-btn icon="" dark="" slot="activator"><v-icon>settings</v-icon></v-btn>
+              <v-menu offset-y left>
+             <v-btn icon dark slot="activator"><v-icon>settings</v-icon></v-btn>
               <v-card>
               <v-toolbar class="green">
 				          <v-card-title>Settings................</v-card-title>
@@ -6769,15 +6988,15 @@ const Transform=Vue.extend({template:`
     <v-card-text class="amber">
        <qd-autoheight>
 
-      <v-flex v-if="showOptions.includes('result')" fill-height="" xs12="">
+      <v-flex v-if="showOptions.includes('result')" fill-height xs12>
         <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
       </v-flex>
  
-      <v-flex v-if="showOptions.includes('xml')" fill-height="">
+      <v-flex v-if="showOptions.includes('xml')" fill-height>
 	      <vue-ace :content="xml" mode="xml" wrap="true" v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
      </v-flex>
      
-       <v-flex v-if="showOptions.includes('xslt')" fill-height="">
+       <v-flex v-if="showOptions.includes('xslt')" fill-height>
 	       <vue-ace :content="xslt" mode="xml" wrap="true" v-on:change-content="v => this.xslt=v" v-on:annotation="a => this.xslValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
       </v-flex>
       
@@ -6935,6 +7154,7 @@ const router = new VueRouter({
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} },
+      { path: 'dicetest', component: Dicetest,meta:{title:"Dice test"} },
       { path: 'upload', component: Upload,meta:{title:"Upload"} },
       { path: 'websocket', component: Websocket,meta:{title:"Web socket"} },
       { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} }
@@ -7012,16 +7232,16 @@ router.beforeEach((to, from, next) => {
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\app.vue
 const Vuepoc=Vue.extend({template:` 
  <v-app id="app" :dark="dark">
-  <v-navigation-drawer stateless="" v-model="showNotifications" right="" :disable-route-watcher="true" app="" width="500">
+  <v-navigation-drawer stateless v-model="showNotifications" right :disable-route-watcher="true" app width="500">
     <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
   </v-navigation-drawer>
   
- <v-navigation-drawer app="" :mini-variant.sync="mini" v-model="drawer" :enable-resize-watcher="true">
+ <v-navigation-drawer app :mini-variant.sync="mini" v-model="drawer" :enable-resize-watcher="true">
   <v-list class="pa-0">
 
-          <v-list-tile avatar="" tag="div">
+          <v-list-tile avatar tag="div">
             <v-list-tile-avatar>
-              <v-btn icon="" @click="session">
+              <v-btn icon @click="session">
               <v-avatar size="36">
               <img src="/vue-poc/ui/quodatum.gif">
               </v-avatar>
@@ -7031,7 +7251,7 @@ const Vuepoc=Vue.extend({template:`
               <v-list-tile-title>Vue PoC</v-list-tile-title>
             </v-list-tile-content>
             <v-list-tile-action>
-              <v-btn icon="" @click.stop="mini = !mini">
+              <v-btn icon @click.stop="mini = !mini">
                 <v-icon>chevron_left</v-icon>
               </v-btn>
             </v-list-tile-action>
@@ -7041,7 +7261,7 @@ const Vuepoc=Vue.extend({template:`
     <qd-navlist :items="items" :mini="mini"></qd-navlist>
  </v-navigation-drawer>
   
- <v-toolbar class="indigo" app="" dark="">
+ <v-toolbar class="indigo" app dark>
   <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
@@ -7052,13 +7272,13 @@ const Vuepoc=Vue.extend({template:`
      
   <v-spacer></v-spacer>
   
-   <v-menu left="" transition="v-fade-transition">
-      <v-btn dark="" icon="" slot="activator">
+   <v-menu left transition="v-fade-transition">
+      <v-btn dark icon slot="activator">
         {{$auth.user}}
       </v-btn>
      
           <v-list>
-              <v-list-tile to="/session" avatar="" ripple="">
+              <v-list-tile to="/session" avatar ripple>
                 <v-list-tile-title>Session</v-list-tile-title>
               </v-list-tile>
               <v-list-tile @click="logout()">
@@ -7070,14 +7290,14 @@ const Vuepoc=Vue.extend({template:`
             
           </v-list>
       </v-menu>
-       <v-btn @click.stop="showNotifications = ! showNotifications" icon="" flat="" title="Notifications">
-       <v-badge overlap="" color="orange">
+       <v-btn @click.stop="showNotifications = ! showNotifications" icon flat title="Notifications">
+       <v-badge overlap color="orange">
       <span slot="badge" v-if=" $notification.unseen">{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
-    <v-menu bottom="" left="" min-width="300px">
-            <v-btn icon="" slot="activator">
+    <v-menu bottom left min-width="300px">
+            <v-btn icon slot="activator">
               <v-icon>more_vert</v-icon>
             </v-btn>
             <v-list>
@@ -7098,7 +7318,7 @@ const Vuepoc=Vue.extend({template:`
 </v-toolbar>
  
  <v-content> 
- <v-alert color="error" value="true" dismissible="" v-model="alert.show">
+ <v-alert color="error" value="true" dismissible v-model="alert.show">
       <pre style="overflow:auto;">{{ alert.msg }}</pre>
     </v-alert>   
     <transition name="fade" mode="out-in">
@@ -7169,6 +7389,7 @@ const Vuepoc=Vue.extend({template:`
           {href: '/server/websocket',text: 'Web socket',icon: 'swap_calls'},
           {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
           {href: '/server/ping',text: 'Ping',icon: 'update'},
+          {href: '/server/dicetest',text: 'Dice performance',icon: 'update'},
           {href: '/server/settings',text: 'Server settings',icon: 'settings_applications'}
       ]},
       {
@@ -7404,7 +7625,8 @@ return $a   `},
     </filters>
     <output format="gif"/>         
 </thumbnail>
-`       
+`,
+      "edit/query": "todo edit/query"
     },
     
     

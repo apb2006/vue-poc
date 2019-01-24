@@ -3,15 +3,15 @@
 <div> 
   <v-toolbar   tabs dense>
      <v-toolbar-items>
-	      <vp-selectpath :frmfav.sync="showadd" @selectpath="addItem"> <v-icon>add_circle</v-icon></vp-selectpath>
+	      <vp-selectpath :frmfav.sync="showadd" @selectpath="add"> <v-icon>add_circle</v-icon></vp-selectpath>
 	      <v-btn icon @click="openUri"><v-icon>insert_drive_file</v-icon></v-btn>
       </v-toolbar-items>
-      <v-toolbar-title>{{ currentId   }} </v-toolbar-title>
+      <v-toolbar-title>{{ curIndex   }} </v-toolbar-title>
       
        <v-menu v-if="active"  left  transition="v-fade-transition" >
        <v-chip label small slot="activator" >{{ active.mode }}</v-chip>
           <v-list dense>
-                <v-list-tile v-for="type in $MimeTypes.toMode"  :key="type.name">
+                <v-list-tile v-for="type in $MimeTypes.list()"  :key="type.name">
                 <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
               </v-list-tile>         
           </v-list>         
@@ -29,7 +29,7 @@
               </v-list-tile>             
           </v-list>         
       </v-menu>
-      <v-btn @click="EditTabs.addItem({txt:'hello'})">*{{  EditTabs.nextId }}</v-btn>
+      <v-btn @click="add">*{{  EditTabs.nextId }}</v-btn>
      
        <v-spacer></v-spacer>
        
@@ -108,25 +108,9 @@
           </v-list>         
     </v-menu>
     
-        <v-menu left bottom  :close-on-content-click="false" >
-          <a class="tabs__item" slot="activator">
-          {{ EditTabs.items.length }}
-            <v-icon>arrow_drop_down</v-icon>
-          </a>
-          <v-card>
-            <v-card-title>Select Tab</v-card-title>
-	          <v-card-actions>
-	           <v-autocomplete :items="EditTabs.sorted()" v-model="a1"
-	          label="File"   class="input-group--focused"
-	          item-text="name" item-value="id"
-	          @change="setItem"
-	          clearable open-on-clear
-	        ></v-autocomplete>
-	        </v-card-actions>
-	        </v-card>
-        </v-menu>
+    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
         
-        <v-tabs   v-model="currentId" slot="extension">
+        <v-tabs   v-model="curIndex" slot="extension">
 		      <v-tab
 		        v-for="item in EditTabs.items"
 		        :key="item.id"
@@ -147,37 +131,13 @@
   </v-toolbar>
   
    
-      <v-tabs-items slot="body" v-model="currentId">
+      <v-tabs-items  v-model="curIndex">
        <v-tab-item
         v-for="item in EditTabs.items"
         :key="item.id"
-        :value="item.id"
       >
-		      <v-card flat v-if="showInfo" >
-					  <v-card-actions >
-				      <v-toolbar-title >Metadata for tab id: '{{ currentId }}'</v-toolbar-title>
-				      <v-spacer></v-spacer>    
-				       <v-btn flat > <v-icon>highlight_off</v-icon>todo</v-btn>
-			      </v-card-actions>
-			      
-			       <v-card-text v-if="active"> 
-									<v-layout row v-for="x in ['name','id','mode','contentType','dirty','location']" :key="x">
-							      <v-flex xs3>
-							        <v-subheader>{{ x}}</v-subheader>
-							      </v-flex>
-							      <v-flex xs9>
-							        <v-text-field
-							          :name="x"
-							          label="Hint Text"
-							          :value="active[x]"
-							          single-line
-							        ></v-text-field>
-							      </v-flex>
-							    </v-layout>
-				    </v-card-text>
-			    </v-card>
-			    
-			    <v-card v-else>
+
+			    <v-card >
 		        <div style="height:200px" ref="ace" v-resize="onResize" >
 		        <v-flex xs12  fill-height >
 					    <vue-ace  :content="item.text"  v-on:change-content="changeContent"  :events="events"
@@ -197,7 +157,7 @@
         showadd: false,  // showing add form
         showInfo: false, // showing info
         a1:"",
-        currentId: null, //href of current
+        curIndex: null, //index of current
         active: null,
         items: [],
       wrap: true,
@@ -210,17 +170,28 @@
   },
   
   methods:{
-    tabClose(item){
+    add(){
+      var a=this.EditTabs.addItem({text:"hi "+ new Date()})
+      this.curIndex=this.EditTabs.items.indexOf(a)
+    },
+  
+    tabClose(item,index){
       if(item.dirty){
-        if (!confirm("Not saved continue? "))return;
+        if (!confirm("Not saved continue? "+ index))return;
       }else{
-	      this.EditTabs.closeItem(item)
+        this.EditTabs.closeItem(item)
+        this.curIndex=0
       }
     },
-    
     setItem(v){
-      if(v) this.currentId="T"+v;
+      this.curIndex=v;
     },
+    setmime(mime){
+      this.$set(this.active, 'contentType', mime.contentType)
+      this.$set(this.active, 'mode', mime.mode)
+      //alert(mime.contentType+" "+mime.mode)
+    },
+    
     
     openUri(){
       alert("openUri TODO")
@@ -262,10 +233,7 @@
         alert("no validate yet");
     },
     
-    addItem(tab){
-      var tab=EditTabs.addItem({text:"aaa hello"})
-      this.currentId="T" + tab.id
-    },
+   
     
     
     changeContent(val){
@@ -290,10 +258,10 @@
   },
   
   watch:{
-    currentId (val) {
-      console.log("currentId: ",val)
-      this.active = EditTabs.items.find(e=> val=="T"+e.id);
-      this.$router.push({  query: { id: val }});
+    curIndex (val) {
+      this.active = EditTabs.items[val];
+      console.log("curIndex: ",val)
+      if(this.active) this.$router.push({  query: { id: this.active.id }});
     }
   },
   
@@ -322,13 +290,19 @@
     next(true);
   },
 
-    created:function(){
-      var url=this.$route.query.url;
-      if(url){
-        EditTabs.loadItem(url);
-      }else{
-      var id=this.$route.query.id;
-      this.currentId=id?id:null;
-      }
+  created:function(){
+    var url=this.$route.query.url;
+    if(url){
+      EditTabs.loadItem(url);
+    }else{
+    var tid=this.$route.query.id;
+    var id=EditTabs.items.findIndex(i=>i.id ==tid)
+    console.log("set tab",tid,id)
+    EditTabs.restored.then(()=>{
+      var id=EditTabs.items.findIndex(i=>i.id ==tid)
+      console.log("set tab",tid,id)
+      this.curIndex= id;
+    });
     }
+  }
 }</script>

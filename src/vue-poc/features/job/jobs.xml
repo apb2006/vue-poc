@@ -1,0 +1,3 @@
+<jobs>
+  <job base-uri="file:///C:/Users/andy/git/vue-poc/src/vue-poc/tasks/file2" id="cleanup" interval="PT1M">admin:write-log("cleanup","QDS")</job>
+</jobs>

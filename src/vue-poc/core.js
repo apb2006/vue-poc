@@ -95,7 +95,8 @@ return $a   `},
     </filters>
     <output format="gif"/>         
 </thumbnail>
-`       
+`,
+      "edit/query": "todo edit/query"
     },
     
     

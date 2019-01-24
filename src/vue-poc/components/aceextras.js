@@ -42,11 +42,11 @@ const AceExtras={
     snippets:[
           {
             name: "test",
-            content: "something",
+            content: "this is a test snippet",
             tabTrigger: "test:"
           },
           {
-            name: "test2",
+            name: "sniptest2",
             content: "some2",
             tabTrigger: "he"
           }

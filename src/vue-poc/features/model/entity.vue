@@ -7,14 +7,14 @@
 				     <template slot="item" slot-scope="props">
 			           <v-breadcrumbs-item  :to="props.item.to" :disabled="props.item.disabled" :exact="true">
 			                {{ props.item.text }}
-			            </v-breadcrumbs-item>
-			        </template>
-         </v-breadcrumbs>
-       </v-toolbar-title>
+			           </v-breadcrumbs-item>
+			       </template>
+     </v-breadcrumbs>
+   </v-toolbar-title>
 	 
 	 <v-text-field  prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
    hide-details single-line  @keyup.enter="setfilter"
-   :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
+   clearable></v-text-field>
    <v-spacer></v-spacer>
 	 <v-btn @click="getItems" icon
 	  :loading="loading"
@@ -48,12 +48,12 @@
         <v-card :hover="true" active-class="default-class qd-active"  max-height="200px">
         
           <v-toolbar  color="blue lighten-3"  dense>
-		          <v-card-title >
+		          <v-toolbar-title>
 		           <router-link :to="{path:'entity/'+ props.item.name}">
 		            
 		            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
 		            
-		            </router-link>
+		            </v-toolbar-title>
 		         </v-card-title>
           </v-toolbar>
           <v-card-text>{{ props.item.description }}</<v-card-text>

@@ -1,11 +1,11 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2018-11-30T09:48:45.409Z 
+ : auto generated from xml files in entities folder at: 2019-01-23T21:27:22.427Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
-import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";declare namespace ent='https://github.com/Quodatum/app-doc/entity';
+import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";declare namespace xqdoc='http://www.xqdoc.org/1.0';
+declare namespace ent='https://github.com/Quodatum/app-doc/entity';
 declare namespace h='urn:quodatum:vue-poc.history';
-declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
 declare variable $entity:list:=map { 
@@ -63,6 +63,80 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        "views": map{ 
        
+       }
+   },
+  "basexjob": map{
+     "name": "basexjob",
+     "description": "A BaseX job",
+     "access": map{ 
+       "duration": function($_ as element()) as xs:string {$_/@duration },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "interval": function($_ as element()) as xs:string {$_/@interval },
+       "reads": function($_ as element()) as xs:string {$_/@reads },
+       "registered": function($_ as element()) as xs:string {$_/@time },
+       "start": function($_ as element()) as xs:string {$_/@start },
+       "state": function($_ as element()) as xs:string {$_/@state },
+       "text": function($_ as element()) as xs:string {$_/. },
+       "type": function($_ as element()) as xs:string {$_/@type },
+       "user": function($_ as element()) as xs:string {$_/@user },
+       "writes": function($_ as element()) as xs:string {$_/@writes } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "duration": function($_ as element()) as element(duration)? {
+            (: xs:string :)
+                        fn:data($_/@duration)!element duration {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "interval": function($_ as element()) as element(interval)? {
+            (: xs:string :)
+                        fn:data($_/@interval)!element interval {  .} 
+                 },
+           "reads": function($_ as element()) as element(reads)? {
+            (: xs:string :)
+                        fn:data($_/@reads)!element reads {  .} 
+                 },
+           "registered": function($_ as element()) as element(registered)? {
+            (: xs:string :)
+                        fn:data($_/@time)!element registered {  .} 
+                 },
+           "start": function($_ as element()) as element(start)? {
+            (: xs:string :)
+                        fn:data($_/@start)!element start {  .} 
+                 },
+           "state": function($_ as element()) as element(state)? {
+            (: xs:string :)
+                        fn:data($_/@state)!element state {  .} 
+                 },
+           "text": function($_ as element()) as element(text)? {
+            (: xs:string :)
+                        fn:data($_/.)!element text {  .} 
+                 },
+           "type": function($_ as element()) as element(type)? {
+            (: xs:string :)
+                        fn:data($_/@type)!element type {  .} 
+                 },
+           "user": function($_ as element()) as element(user)? {
+            (: xs:string :)
+                        fn:data($_/@user)!element user {  .} 
+                 },
+           "writes": function($_ as element()) as element(writes)? {
+            (: xs:string :)
+                        fn:data($_/@writes)!element writes {  .} 
+                 } },
+       
+      "data": function() as element(job)*
+       { jobs:list()[. != jobs:current()] !jobs:list-details(.)=>reverse()
+	 },
+       
+       "views": map{ 
+       'filter': 'name description'
        }
    },
   "entity.field": map{
@@ -427,6 +501,49 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        }
    },
+  "service": map{
+     "name": "service",
+     "description": "basex services ",
+     "access": map{ 
+       "base-uri": function($_ as element()) as xs:string {$_/@base-uri },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "interval": function($_ as element()) as xs:string {$_/@interval },
+       "query": function($_ as element()) as xs:string {$_/. },
+       "running": function($_ as element()) as xs:boolean {$_/jobs:list()=@id } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "base-uri": function($_ as element()) as element(base-uri)? {
+            (: xs:string :)
+                        fn:data($_/@base-uri)!element base-uri {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "interval": function($_ as element()) as element(interval)? {
+            (: xs:string :)
+                        fn:data($_/@interval)!element interval {  .} 
+                 },
+           "query": function($_ as element()) as element(query)? {
+            (: xs:string :)
+                        fn:data($_/.)!element query {  .} 
+                 },
+           "running": function($_ as element()) as element(running)? {
+            (: xs:boolean :)
+                        fn:data($_/jobs:list()=@id)!element running { attribute type {'boolean'}, .} 
+                 } },
+       
+      "data": function() as element(job)*
+       { jobs:services() },
+       
+       "views": map{ 
+       
+       }
+   },
   "task": map{
      "name": "task",
      "description": "predefined queries with parameters ",
@@ -598,7 +715,8 @@ hof:top-k-by(admin:logs(), string#1, 2)
      "name": "xqdoc",
      "description": "XQuery documentation set ",
      "access": map{ 
-       "root": function($_ as element()) as xs:string {$_/@root },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "root": function($_ as element()) as xs:string {$_/"file:///C:/tmp/xqdoc/" },
        "time": function($_ as element()) as xs:string {$_/@time } },
     
      "filter": function($item,$q) as xs:boolean{ 
@@ -606,9 +724,13 @@ hof:top-k-by(admin:logs(), string#1, 2)
          fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
       },
        "json":   map{ 
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
            "root": function($_ as element()) as element(root)? {
             (: xs:string :)
-                        fn:data($_/@root)!element root {  .} 
+                        fn:data($_/"file:///C:/tmp/xqdoc/")!element root {  .} 
                  },
            "time": function($_ as element()) as element(time)? {
             (: xs:string :)

@@ -169,6 +169,7 @@
           {href: '/server/websocket',text: 'Web socket',icon: 'swap_calls'},
           {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
           {href: '/server/ping',text: 'Ping',icon: 'update'},
+          {href: '/server/dicetest',text: 'Dice performance',icon: 'update'},
           {href: '/server/settings',text: 'Server settings',icon: 'settings_applications'}
       ]},
       {

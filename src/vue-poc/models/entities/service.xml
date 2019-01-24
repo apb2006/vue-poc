@@ -1,0 +1,27 @@
+<entity name="service" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>basex services </description>
+	<fields>
+		<field name="id" type="xs:string">
+			<description>job id</description>
+			<xpath>@id</xpath>
+		</field>
+		<field name="base-uri" type="xs:string">
+			<description>base-uri</description>
+			<xpath>@base-uri</xpath>
+		</field>
+		<field name="interval" type="xs:string">
+			<description>interval</description>
+			<xpath>@interval</xpath>
+		</field>
+		<field name="query" type="xs:string">
+			<description>task description</description>
+			<xpath>.</xpath>
+		</field>
+		<field name="running" type="xs:boolean">
+			<description>service is running</description>
+			<xpath>jobs:list()=@id</xpath>
+		</field>
+	</fields>
+	<views iconclass="shop" />
+	<data type="element(job)">jobs:services()</data>
+</entity>

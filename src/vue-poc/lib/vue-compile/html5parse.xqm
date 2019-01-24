@@ -8,8 +8,11 @@ declare namespace Element="java:ch.digitalfondue.jfiveparse.Element";
 declare namespace Node="java:ch.digitalfondue.jfiveparse.Node";
 declare namespace Parser="java:ch.digitalfondue.jfiveparse.Parser";
 declare namespace Selector="java:ch.digitalfondue.jfiveparse.Selector";
+declare namespace Option="java:ch.digitalfondue.jfiveparse.Option";
+declare namespace EnumSet="java:java.util.EnumSet";
 declare namespace list="java:java.util.ArrayList";
 
+declare variable $html5:opt:=EnumSet:of(Option:valueOf("HIDE_EMPTY_ATTRIBUTE_VALUE"));
 (:~
  : parse html text string into jfiveparse.Document 
  :)
@@ -53,7 +56,7 @@ as xs:string
 declare function html5:getInnerHTML($node)
 as xs:string
 {
- Node:getInnerHTML($node)
+ Node:getInnerHTML($node,$html5:opt)
 };
 (:~ 
  : @return matcher for given element and attribute with value

@@ -45,14 +45,21 @@ function vue-poc:file(
 
 
 (:~
- :web serve $file if it exists otherwise serve $vue-poc:index
+ : Returns a file.
+ : @param  $file  file or unknown path
+ : @return rest binary data
  :)
-declare function vue-poc:get-file($file)
+declare function vue-poc:get-file( $file as xs:string) 
+as item()+ 
 {
   let $path := resolve-uri( 'static/' || $file,static-base-uri())
-  let $path:=if(file:exists($path))then $path else ($vue-poc:index,prof:dump($path," Not found"))
+  let $path:= if(file:exists($path))then $path else ($vue-poc:index,prof:dump($path," Not found"))
+  let $content-type:= vue-poc:content-type($path)
   return (
-    web:response-header(map { 'media-type': vue-poc:content-type($path) }),
+    web:response-header(
+                     map { 'media-type': $content-type },
+                     map { 'Cache-Control': 'max-age=3600,public' }
+                     ),
     file:read-binary($path)
   )
 };

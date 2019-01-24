@@ -1,7 +1,8 @@
 <!DOCTYPE html>
 <template id="documentation">
  <v-container fluid>
-    <a href="file:///c:/tmp" target="doc">go</</a>
+    <h1>TODO</h1>
+    <a href="/vue-poc/api/xqdoc" target="doc">list</a>
  </v-container>
 </template>
 

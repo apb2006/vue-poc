@@ -1,10 +1,11 @@
 //Manage array of text sources  used for:edit tabs
 // item{
-//     name:
-//     contentType:
+//     name: 
+//     contentType: "text/xml",
+//     mode: "xml",
 //     text:
 //     id: ids have the form "Tn"
-//     url:
+//     url: path to save to
 // requires: Settings,HTTP
 //
 const GEditTabs={
@@ -76,12 +77,14 @@ const GEditTabs={
            });   
       },
       
-      sorted(){ /* sorted indices */
+      sorted(q){ /* return sorted and filtered array of tab indices */
         var len=this.items.length
         var indices = new Array(len);
         for (var i = 0; i < len; ++i) indices[i] = i;
-        var list=this.items
-        return indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
+        var list=this.items;
+        indices=indices.filter(a=>(!q) || list[a].name.toLowerCase().includes(q.toLowerCase()))
+        var i= indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
+        return i
       }
     },
     created(){

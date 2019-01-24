@@ -1,15 +1,21 @@
 <!DOCTYPE html>
-<template id="ping">
+<template id="dicetest">
  <v-container fluid>
  <v-card>
  <v-toolbar >
- <v-toolbar-title>Simple response counter</v-toolbar-title>
+ <v-toolbar-title>Dice entity list</v-toolbar-title>
+ 
  <v-spacer></v-spacer>
  <v-btn @click="reset()">Reset</v-btn>
  </v-toolbar>
  <v-card-text>
-  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
-  <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
+  <p>Read json data for 1st page for entity.</p>
+   <v-flex xs12 sm6>
+      <v-text-field v-model="url"
+        label="url"
+      ></v-text-field>
+    </v-flex>
+ 
   <table class="v-table">
       <thead> 
         <tr>
@@ -59,41 +65,11 @@
               </td>
           </tr>
           
-            <tr>
-          <td>
-           <v-btn @click="update()"  >
-                 Write <v-icon right>compare_arrows</v-icon>
-            </v-btn>
-          </td>
           
-          <td>
-           <v-switch  v-on:change="pchange"  v-model="repeat.post"></v-switch>
-          </td>
-           <td class="col-md-1">
-                        <span >{{postValues.last}}</span>
-                    </td>
-          <td class="col-md-1">
-            <span >{{postValues.count}}</span>
-          </td >
-        
-           
-          <td class="col-md-1">
-            <span >{{postValues.avg | round(2)}}</span>
-          </td>
-          
-         
-          <td class="col-md-1">
-                        <span >{{postValues.min}}</span>
-          </td>
-          <td class="col-md-1">
-              <span >{{postValues.max}}</span>
-          </td>
-            <td class="col-md-1">
-                        <span >{{postValues.median}}</span>
-           </td>
-        </tr>
       </tbody>
     </table>
+     <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
+     <pre>{{ result | pretty}}</pre>
     </v-card-text>
     </v-card>
     
@@ -104,31 +80,21 @@
   data:  function(){
     return {
       getValues: new perfStat(),
-      postValues: new perfStat(),
-      repeat: {get:false,post:false},
-      counter: "(unread)"
+      repeat: {get:false},
+      url: "data/entity",
+      counter: 0,
+      result: null
       }
   },
   methods:{
-    update () {
-       var _start = performance.now();
-      HTTP.post("ping",axios_json)
-      .then(r=>{
-        var elapsed=Math.floor(performance.now() - _start);
-        this.counter=r.data
-        Object.assign(this.postValues,this.postValues.log(elapsed))
-        if(this.repeat.post){
-          this.update(); //does this leak??
-        }
-      })
-    },
-    
+
     get(){
      var _start = performance.now();
-     HTTP.get("ping",axios_json)
+     HTTP.get(this.url,axios_json)
      .then(r=>{
        var elapsed=Math.floor(performance.now() - _start);
-       this.counter=r.data
+       this.counter++;
+       this.result=r.data;
        Object.assign(this.getValues,this.getValues.log(elapsed))
        this.$forceUpdate()
         if(this.repeat.get){
@@ -139,17 +105,14 @@
     gchange(v){
       if(v)this.get() 
     },
-    pchange(v){
-      if(v)this.update() 
-    },
+    
     reset(){
       Object.assign(this.getValues,this.getValues.clear());
-      Object.assign(this.postValues,this.postValues.clear());
       this.$forceUpdate()
     }
   },
   beforeRouteLeave(to, from, next){
-    var on=this.repeat.get || this.repeat.post
+    var on=this.repeat.get 
 
     if (on) {
       alert("running!") //<--undefined

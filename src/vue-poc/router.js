@@ -83,6 +83,7 @@ const router = new VueRouter({
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} },
+      { path: 'dicetest', component: Dicetest,meta:{title:"Dice test"} },
       { path: 'upload', component: Upload,meta:{title:"Upload"} },
       { path: 'websocket', component: Websocket,meta:{title:"Web socket"} },
       { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} }

@@ -4,13 +4,14 @@
    <v-toolbar tabs dense>
    <v-toolbar-title>Tab index {{ curIndex }}</v-toolbar-title>
    <v-btn v-if="active">{{ active.mode }}</v-btn>
-      <v-btn v-if="active"> {{ active.name }}, id: {{ active.id }}</v-btn>
+   <qd-mimelist  v-if="active" :mimetype="active.contentType" @selected="setmime">{{ active.mode }}</qd-mimelist>
+   <v-btn v-if="active"> {{ active.name }}, id: {{ active.id }}</v-btn>
    <v-spacer></v-spacer>
 
    <v-btn @click="add">Add</v-btn>
     <v-btn @click="curIndex=2">set</v-btn>
-    <qd-tablist :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
 
+    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
     <v-tabs   v-model="curIndex" slot="extension">
           <v-tab
             v-for="(item,index) in EditTabs.items"
@@ -41,7 +42,10 @@
             <div style="height:200px" ref="ace" v-resize="onResize" >
             <v-flex xs12  fill-height >
               <vue-ace  :content="item.text"  v-on:change-content="changeContent"  :events="events"
-              :mode="item.mode" :wrap="wrap"  :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
+              :mode="item.mode" :wrap="wrap"  :settings="aceSettings" 
+              v-on:annotation="annotation"
+              :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets" 
+              ></vue-ace>
             </v-flex>
             </div> 
           </v-card>
@@ -81,6 +85,11 @@
     },
     setItem(v){
       this.curIndex=v;
+    },
+    setmime(mime){
+      this.$set(this.active, 'contentType', mime.name)
+      this.$set(this.active, 'mode', mime.mode)
+      //alert(mime.contentType+" "+mime.mode)
     },
     annotation(counts){
       this.annotations=counts

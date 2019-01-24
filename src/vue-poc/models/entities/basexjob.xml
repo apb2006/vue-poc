@@ -1,0 +1,55 @@
+<entity name="basexjob" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>A BaseX job</description>
+	<namespace prefix="xqdoc" uri="http://www.xqdoc.org/1.0" />
+  <fields>
+		<field name="id" type="xs:string">
+			<description>unique id</description>
+			<xpath>@id</xpath>
+		</field>
+		<field name="state" type="xs:string">
+			<description>state</description>
+			<xpath>@state</xpath>
+		</field>
+		  <field name="type" type="xs:string">
+      <description>type of job</description>
+      <xpath>@type</xpath>
+    </field>
+		<field name="user" type="xs:string">
+			<description>user</description>
+			<xpath>@user</xpath>
+		</field>
+		<field name="registered" type="xs:string">
+			<description>registered time</description>
+			<xpath>@time</xpath>
+		</field>
+		<field name="start" type="xs:string">
+			<description>start</description>
+			<xpath>@start</xpath>
+		</field>
+		<field name="duration" type="xs:string">
+      <description>start</description>
+      <xpath>@duration</xpath>
+    </field>
+      <field name="interval" type="xs:string">
+      <description>interval</description>
+      <xpath>@interval</xpath>
+    </field>
+    <field name="text" type="xs:string">
+      <description>text</description>
+      <xpath>.</xpath>
+    </field>
+     <field name="reads" type="xs:string">
+      <description>reads</description>
+      <xpath>@reads</xpath>
+    </field>
+     <field name="writes" type="xs:string">
+      <description>writes</description>
+      <xpath>@writes</xpath>
+    </field>
+	</fields>
+	<views iconclass="code">
+		<view name="filter">name description</view>
+	</views>
+	<data type="element(job)">jobs:list()[. != jobs:current()] !jobs:list-details(.)=>reverse()
+	</data>
+</entity>

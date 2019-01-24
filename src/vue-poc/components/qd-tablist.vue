@@ -1,13 +1,12 @@
 <!DOCTYPE html>
 <!-- 
- A fixed height card showing files in a tabset. 
- An item can be selected
+ Show tab editor for tab list. 
  -->
 <template id="qd-tablist">
   <v-menu left bottom  :close-on-content-click="false" >
     <v-chip  slot="activator">
     
-    {{ EditTabs.length }}
+    {{ edittabs.length }}
     <v-avatar>
       <v-icon right>arrow_drop_down</v-icon>
       </v-avatar>
@@ -19,7 +18,7 @@
             label="type filter text"
             single-line
             hide-details
-            v-model="search"
+            v-model="q"
             clearable
           ></v-text-field>  
 
@@ -27,7 +26,7 @@
 	<v-card-text>
 	  <v-list  style="height: 300px; overflow-y: auto;"> 
 	        <v-list-tile
-	          v-for="index in edittabs.sorted()" :key="index"
+	          v-for="index in edittabs.sorted(q)" :key="index"
 	          avatar dense ripple
 	          @click="setItem(index)" :inactive="index == current"
 	        >
@@ -57,14 +56,16 @@
   props: ['edittabs',
           'current'
     ],
+    
   data () {
     return {
-      search:null
+      q:null
     }
   },
+  
   methods: {
     setItem(index){     
        this.$emit('selected', index)
     }, 
-  }
+  } 
 }</script>

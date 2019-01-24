@@ -33,6 +33,7 @@
     <v-data-table
     :headers="headers"
     :items="items"
+    :loading="loading"
     hide-actions
      :search="q"
     class="elevation-1"
@@ -45,8 +46,13 @@
       <td >{{ props.item.prefix }}</td>
      
     </template>
+    
     <template slot="no-data">
-      <v-alert :value="true" icon="warning">
+        No result available.
+    </template>
+    
+    <template slot="no-data">
+      <v-alert :value="true" icon="warning" >
         No matching items.
       </v-alert>
     </template>

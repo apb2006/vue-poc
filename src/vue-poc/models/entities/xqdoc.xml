@@ -2,13 +2,17 @@
 	<description>XQuery documentation set </description>
 
 	<fields>
+	<field name="id" type="xs:string">
+      <description>id for doc run e.g 56</description>
+      <xpath>@id</xpath>
+    </field>
 		<field name="time" type="xs:string">
 			<description>time of generation</description>
 			<xpath>@time</xpath>
 		</field>
 		<field name="root" type="xs:string">
 			<description>root folder to scan</description>
-			<xpath>@root</xpath>
+			<xpath>"file:///C:/tmp/xqdoc/"</xpath>
 		</field>
 	</fields>
 	<views iconclass="pages"/>
