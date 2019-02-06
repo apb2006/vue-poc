@@ -1,4 +1,4 @@
-// generated 2019-01-23T22:04:55.22Z
+// generated 2019-02-05T23:14:56.207Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -475,12 +475,12 @@ Vue.component('qd-tablist',{template:`
 	<v-card-text>
 	  <v-list style="height: 300px; overflow-y: auto;"> 
 	        <v-list-tile v-for="index in edittabs.sorted(q)" :key="index" avatar dense ripple @click="setItem(index)" :inactive="index == current">
-	          <v-list-tile-avatar>
+	          <v-list-tile-avatar :title="edittabs.items[index].contentType">
 	            <v-icon v-if="index == current">check_circle</v-icon>
 	            <v-icon v-else>insert_drive_file</v-icon>
 	          </v-list-tile-avatar>
 	
-	          <v-list-tile-content>
+	          <v-list-tile-content :title="edittabs.items[index].url">
 	            <v-list-tile-title>{{ edittabs.items[index].name }}</v-list-tile-title>
 	          </v-list-tile-content>
 	
@@ -1135,7 +1135,6 @@ const AceExtras={
               caption: "archive:create#2",
               snippet: "archive:create(${1:entries}, ${2:contents})",
               score: 100,
-              content: "this is a test completer",
               meta: "archive",
               completer: this
           }, {
@@ -1193,12 +1192,12 @@ Vue.use(Auth);
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/EditTabs.js
 //Manage array of text sources  used for:edit tabs
 // item{
-//     name: 
+//     name: file name
 //     contentType: "text/xml",
 //     mode: "xml",
 //     text:
 //     id: ids have the form "Tn"
-//     url: path to save to
+//     uri: path to save to
 // requires: Settings,HTTP
 //
 const GEditTabs={
@@ -1213,20 +1212,22 @@ const GEditTabs={
     },
     
     methods: {
+      // add tab return index
       addItem(tab){
         //console.log("new: ",tab);
         var def={name: "AA"+this.nextId, 
                  contentType: "text/xml",
                  mode: "xml",
                  text: "<foo>" +this.nextId +"</foo>",
-                 url: null
+                 uri: null
                  };
         var etab = Object.assign(def,tab);
         etab.id= "T" + this.nextId
         this.items.push (etab);
         this.length++
         this.nextId++;
-        return etab;
+        var ind=this.items.indexOf(etab)
+        return ind;
       },
       
       closeItem(item){
@@ -1422,16 +1423,27 @@ const MimeTypes=new function(){
       "format": formatdom
     },
     "css": {
-      "format": formatcss
+      "format": formatcss,
+      "icon": "school"
+    },
+    "xquery": {
+      "icon": "spa"
     }
   };
+  // return [{name:.. mode:..}..]
   this.list=function(){
     var that=this
     var h= Object.keys(this.contentType).map(
         function(k){ return {name: k, mode: that.contentType[k].mode}}
         )
     return h
-  }
+  };
+  
+  this.icon=function(mode){
+    var i= this.mode[mode] && this.mode[mode].icon
+    return  i || "insert_drive_file"
+  };
+  
   this.install=function(Vue){
       Object.defineProperty(Vue.prototype, '$MimeTypes', {
         get () { return MimeTypes }
@@ -2752,11 +2764,11 @@ const Tabs=Vue.extend({template:`
     <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
         
         <v-tabs v-model="curIndex" slot="extension">
-		      <v-tab v-for="item in EditTabs.items" :key="item.id" ripple style="text-transform: none;text-align:left">
+		      <v-tab v-for="item in EditTabs.items" :key="item.id" ripple :title="item.uri" style="text-transform: none;text-align:left">
 			       <v-avatar>
-			          <v-icon size="16px">insert_drive_file</v-icon>
+			          <v-icon :title="item.mode">{{ $MimeTypes.icon(item.mode) }}</v-icon> 
 			       </v-avatar>
-			       <span>{{ (item.dirty?"*":"") }}</span>
+			        <span>{{ (item.dirty?"*":"") }}</span>
 			        <span>{{ item.name  }}</span>
 			       <v-spacer></v-spacer>
 			       <v-btn icon @click.stop="tabClose(item)">
@@ -2767,18 +2779,17 @@ const Tabs=Vue.extend({template:`
   </v-toolbar>
   
    
-      <v-tabs-items v-model="curIndex">
-       <v-tab-item v-for="item in EditTabs.items" :key="item.id">
-
-			    <v-card>
-		        <div style="height:200px" ref="ace" v-resize="onResize">
-		        <v-flex xs12 fill-height>
-					    <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
-					  </v-flex>
-		        </div> 
-		      </v-card>
-      </v-tab-item>
-   </v-tabs-items>
+  <v-tabs-items v-model="curIndex">
+     <v-tab-item v-for="item in EditTabs.items" :key="item.id">
+	    <v-card>
+        <div style="height:200px" ref="ace" v-resize="onResize">
+        <v-flex xs12 fill-height>
+			    <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
+			  </v-flex>
+        </div> 
+      </v-card>
+    </v-tab-item>
+ </v-tabs-items>
  
 </div>
  `,
@@ -2802,8 +2813,7 @@ const Tabs=Vue.extend({template:`
   
   methods:{
     add(){
-      var a=this.EditTabs.addItem({text:"hi "+ new Date()})
-      this.curIndex=this.EditTabs.items.indexOf(a)
+      this.curIndex=this.EditTabs.addItem({text:"hi "+ new Date()})
     },
   
     tabClose(item,index){
@@ -2861,7 +2871,7 @@ const Tabs=Vue.extend({template:`
         var d=this.active.mode;
         var f=this.$MimeTypes.mode[d];
         var f=f && f.validate;
-        alert("no validate yet");
+        this.curIndex=this.EditTabs.addItem({text:"validate: todo\n "+ this.curIndex +"\n" + new Date()})
     },
     
    
@@ -3797,7 +3807,7 @@ const Images=Vue.extend({template:`
         <v-container v-if="!busy" fluid grid-list-md>
           <v-layout row wrap v-touch="{ left: () => pageNext(), right: () => pageBack()}">
             <v-flex height="80px" xs2 v-for="image in images" :key="image.name">
-              <v-card flat tile>
+              <v-card tile :elevation="2" :hover="true" color="grey lighten-3">
                 <div :style="style(image)" v-bind:class="{ selcard: image.selected}" @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected ">
                  <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
                  <v-avatar icon small v-if="image.geo">
@@ -4512,7 +4522,7 @@ const Jobs=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/login/login.vue
 const Login=Vue.extend({template:` 
  <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
+    <v-flex>
 					<v-card>
 					
 					      <v-card-title class="red">
@@ -4520,26 +4530,25 @@ const Login=Vue.extend({template:`
 					      </v-card-title>
 					   
 					     <v-card-actions>
-					      <v-text-field name="input-name" label="User name" hint="Enter your name" v-model="name" required></v-text-field>
-					     </v-card-actions>
-					  
-					    <v-card-actions>    
-					         <v-text-field name="input-password" label="Password" hint="Enter your password" v-model="password" :append-icon="hidepass ? 'visibility' : 'visibility_off'" @click:append="() => (hidepass = !hidepass)" :type="hidepass ? 'password' : 'text'" required></v-text-field>      
-					    </v-card-actions>
-					    
+					    <v-form v-model="valid" ref="form">
+                        <v-text-field label="Enter your user id " v-model="name" :rules="nameRules" required></v-text-field>
+                        <v-text-field label="Enter your password" v-model="password" min="8" :append-icon="hidepass ? 'visibility' : 'visibility_off'" @click:append="() => hidepass = !hidepass" :type="hidepass ? 'password' : 'text'" :rules="passwordRules" counter required></v-text-field>
+                        <v-switch label="Remember me" v-model="remember">
+              </v-switch> 
+                        <v-layout justify-space-between>
+                           <v-spacer></v-spacer>
+                            <v-btn @click="submit" :class=" { 'blue darken-4 white--text' : valid, disabled: !valid }">Login</v-btn>
+                           
+                        </v-layout>
+              </v-form>
+              </v-card-actions>
+              <v-card-actions>
+					     <a href>Forgot Password</a>
 					     <v-alert color="error" v-bind:value="showMessage">
                 {{message}}
               </v-alert>
-              
-					     <v-card-actions> 
-					     <v-switch label="Remember me" v-model="remember">
-              </v-switch> 
               </v-card-actions>
-                
-					    <v-card-actions>
-					       <v-spacer></v-spacer>
-					       <v-btn color="primary" @click="go()">Login</v-btn>
-					    </v-card-actions>
+					   
 					</v-card>
     </v-flex>
 </v-layout>
@@ -4547,9 +4556,16 @@ const Login=Vue.extend({template:`
       
     data () {
       return {
-        hidepass: true,
-        name:'',
+        valid: false,
         password: '',
+        passwordRules: [
+          (v) => !!v || 'Password is required',
+        ],
+        name: '',
+        nameRules: [
+          (v) => !!v || 'Name is required'
+        ],
+        hidepass: true,
         remember: false,
         redirect: this.$route.query.redirect,
         message:"",
@@ -4557,6 +4573,14 @@ const Login=Vue.extend({template:`
       }
     },
     methods:{
+      submit () {
+        if (this.$refs.form.validate()) {
+          this.go()
+        }
+      },
+      clear () {
+        this.$refs.form.reset()
+      },
       go () {
        this.hidepass=true
        this.showMessage=false
@@ -4621,8 +4645,23 @@ const Leaflet=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/documentation.vue
 const Documentation=Vue.extend({template:` 
  <v-container fluid>
-    <h1>TODO</h1>
-    <a href="/vue-poc/api/xqdoc" target="doc">list</a>
+    <v-toolbar dense>
+        <v-toolbar-title>documentation</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <a href="/vue-poc/api/xqdocjob" target="doc">list</a>
+    </v-toolbar>
+
+     <v-container fluid grid-list-md>
+       <v-layout row wrap>
+         <v-flex height="80px" xs2 v-for="item in items" :key="item.id">
+           <v-card :hover="true">
+           <v-card-title>{{ item.id }}</v-card-title>
+           <v-card-text>{{ item.name }}</v-card-text>
+           </v-card>
+           </v-flex>
+        </v-layout>
+      </v-container>
+              
  </v-container>
  `,
       
@@ -4634,9 +4673,9 @@ const Documentation=Vue.extend({template:`
   },
   methods:{
     get() {
-      HTTP.get('xqdoc')
+      HTTP.get('xqdocjob')
       .then((res) => {
-        this.items = res.data.items;
+        this.items = res.data;
         console.log("items",this.items)
       });
     },
@@ -5555,7 +5594,8 @@ const Dicetest=Vue.extend({template:`
  <v-card-text>
   <p>Read json data for 1st page for entity.</p>
    <v-flex xs12 sm6>
-      <v-text-field v-model="url" label="url"></v-text-field>
+     <v-combobox v-model="url" :items="urls" label="Select target"></v-combobox>
+      
     </v-flex>
  
   <table class="v-table">
@@ -5623,6 +5663,7 @@ const Dicetest=Vue.extend({template:`
       getValues: new perfStat(),
       repeat: {get:false},
       url: "data/entity",
+      urls: ["data/entity","data/taskhistory"],
       counter: 0,
       result: null
       }
@@ -5697,7 +5738,7 @@ const Ping=Vue.extend({template:`
           <tr>
               <td>
                <v-btn @click="get()">
-                   Read <v-icon right>compare_arrows</v-icon> 
+                   Read Db<v-icon right>compare_arrows</v-icon> 
                 </v-btn>
              
                </td>
@@ -5730,7 +5771,7 @@ const Ping=Vue.extend({template:`
             <tr>
           <td>
            <v-btn @click="update()">
-                 Write <v-icon right>compare_arrows</v-icon>
+                 Write Db<v-icon right>compare_arrows</v-icon>
             </v-btn>
           </td>
           
@@ -5770,9 +5811,11 @@ const Ping=Vue.extend({template:`
       
   data:  function(){
     return {
+      nothingValues: new perfStat(),
+      staticValues: new perfStat(),
       getValues: new perfStat(),
       postValues: new perfStat(),
-      repeat: {get:false,post:false},
+      repeat: {get: false, post: false, staticx: false, nothing: false},
       counter: "(unread)"
       }
   },
@@ -5803,6 +5846,18 @@ const Ping=Vue.extend({template:`
         }
      })
     },
+    nothing () {
+      var _start = performance.now();
+     HTTP.post("nothing",axios_json)
+     .then(r=>{
+       var elapsed=Math.floor(performance.now() - _start);
+       this.counter=r.data
+       Object.assign(this.nothingValues,this.nothingValues.log(elapsed))
+       if(this.repeat.nothing){
+         this.nothing(); //does this leak??
+       }
+     })
+   },
     gchange(v){
       if(v)this.get() 
     },
@@ -6078,7 +6133,7 @@ const Keys=Vue.extend({template:`
      </v-expansion-panel> 
    </v-card-text>
    </v-card>
-   <v-snackbar v-model="true">Settings are currently only stored locally in the browser, using <code>localstorage</code></v-snackbar>
+   <v-snackbar :value="true">Settings are currently only stored locally in the browser, using <code>localstorage</code></v-snackbar>
  </v-container>
  `,
       
@@ -6089,7 +6144,7 @@ const Keys=Vue.extend({template:`
   },
   methods:{
     wipe(){
-      if(confirm("wipe localstorage? ")) Settings.clear();
+       if(confirm("wipe localstorage? ")) Settings.clear();
     },
     
     showKey(){
@@ -6111,6 +6166,7 @@ const Keys=Vue.extend({template:`
     console.log("settings")
     Settings.keys()
     .then( v =>{
+      console.log("keys: ",v)
      this.keys=v
     })
      
@@ -7377,6 +7433,7 @@ const Vuepoc=Vue.extend({template:`
           {href: '/namespace', text: 'Namespaces',icon: 'label' },
           {href: '/entity', text: 'Entities',icon: 'redeem' },
       ]},
+      
       {
         icon: 'cast_connected',
         text: 'Server' ,
@@ -7392,6 +7449,7 @@ const Vuepoc=Vue.extend({template:`
           {href: '/server/dicetest',text: 'Dice performance',icon: 'update'},
           {href: '/server/settings',text: 'Server settings',icon: 'settings_applications'}
       ]},
+      
       {
         icon: 'camera_roll',
         text: 'Images' ,
@@ -7405,6 +7463,7 @@ const Vuepoc=Vue.extend({template:`
           {href: '/map',text: 'Map',icon: 'place'}, 
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
+          
           {
             icon: 'format_list_bulleted',
             text: 'Forms' ,
@@ -7604,11 +7663,11 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
 ut aliquip ex ea commodo consequat.`},
        
-         {name:"Shopping.xq", id:"2", mode: "xquery" ,dirty: false,
+         {name:"shopping.xq", id:"2", mode: "xquery" ,dirty: false,
            text:`let $a:=1 to 5
 return $a   `},
       
-         {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "xmldb:/vue-poc/aaa/bca/videos.xml",
+         {name:"videos.xml", id:"3", mode:"xml",dirty: false, uri: "xmldb:/vue-poc/aaa/bca/videos.xml",
            text:`<foo version="1.0">
   <node>hello</node>
 </foo>`}

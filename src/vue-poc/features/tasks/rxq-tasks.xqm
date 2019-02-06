@@ -41,7 +41,7 @@ function vue-rest:task($task)
 };
   
 (:~
- :   task run
+ :   Run the named task and log history 
  :)
 declare
 %rest:POST %rest:path("/vue-poc/api/tasks/{$task}")

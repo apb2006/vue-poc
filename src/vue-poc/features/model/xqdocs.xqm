@@ -5,7 +5,7 @@ module namespace j = 'quodatum.test.xqdoc';
  :  job list
  :)
 declare  
-%rest:GET %rest:path("/vue-poc/api/xqdoc")
+%rest:GET %rest:path("/vue-poc/api/xqdocjob")
 %output:method("json")   
 function j:list()
 as element(json)
@@ -24,7 +24,7 @@ as element(json)
  :  job info
  :)
 declare  
-%rest:GET %rest:path("/vue-poc/api/xqdoc/{$job}")
+%rest:GET %rest:path("/vue-poc/api/xqdocjob/{$job}")
 %output:method("json")   
 function j:job($job)
 as element(json)

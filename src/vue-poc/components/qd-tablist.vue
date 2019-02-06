@@ -1,6 +1,9 @@
 <!DOCTYPE html>
 <!-- 
  Show tab editor for tab list. 
+   props
+    'edittabs' object
+     'current' integer current index 0  based
  -->
 <template id="qd-tablist">
   <v-menu left bottom  :close-on-content-click="false" >
@@ -30,12 +33,12 @@
 	          avatar dense ripple
 	          @click="setItem(index)" :inactive="index == current"
 	        >
-	          <v-list-tile-avatar>
+	          <v-list-tile-avatar :title="edittabs.items[index].contentType">
 	            <v-icon v-if="index == current">check_circle</v-icon>
 	            <v-icon v-else>insert_drive_file</v-icon>
 	          </v-list-tile-avatar>
 	
-	          <v-list-tile-content>
+	          <v-list-tile-content  :title="edittabs.items[index].url">
 	            <v-list-tile-title>{{ edittabs.items[index].name }}</v-list-tile-title>
 	          </v-list-tile-content>
 	

@@ -34,16 +34,27 @@ const MimeTypes=new function(){
       "format": formatdom
     },
     "css": {
-      "format": formatcss
+      "format": formatcss,
+      "icon": "school"
+    },
+    "xquery": {
+      "icon": "spa"
     }
   };
+  // return [{name:.. mode:..}..]
   this.list=function(){
     var that=this
     var h= Object.keys(this.contentType).map(
         function(k){ return {name: k, mode: that.contentType[k].mode}}
         )
     return h
-  }
+  };
+  
+  this.icon=function(mode){
+    var i= this.mode[mode] && this.mode[mode].icon
+    return  i || "insert_drive_file"
+  };
+  
   this.install=function(Vue){
       Object.defineProperty(Vue.prototype, '$MimeTypes', {
         get () { return MimeTypes }

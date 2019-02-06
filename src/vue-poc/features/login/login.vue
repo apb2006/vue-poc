@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="login">
  <v-layout>
-    <v-flex xs12 sm6 offset-sm3>
+    <v-flex >
 					<v-card >
 					
 					      <v-card-title class="red">
@@ -9,42 +9,41 @@
 					      </v-card-title>
 					   
 					     <v-card-actions>
-					      <v-text-field
-					              name="input-name"
-					              label="User name"
-					              hint="Enter your name"
-					              v-model="name"
-					              required
-					             ></v-text-field>
-					     </v-card-actions>
-					  
-					    <v-card-actions>    
-					         <v-text-field
-					              name="input-password"
-					              label="Password"
-					              hint="Enter your password"
-					              v-model="password"
-					              :append-icon="hidepass ? 'visibility' : 'visibility_off'"
-					              @click:append="() => (hidepass = !hidepass)"
-					              :type="hidepass ? 'password' : 'text'"
-					              required
-					            ></v-text-field>      
-					    </v-card-actions>
-					    
+					    <v-form v-model="valid" ref="form">
+                        <v-text-field
+                          label="Enter your user id "
+                          v-model="name"
+                          :rules="nameRules"
+                          required
+                        ></v-text-field>
+                        <v-text-field
+                          label="Enter your password"
+                          v-model="password"
+                          min="8"
+                          :append-icon="hidepass ? 'visibility' : 'visibility_off'"
+                          @click:append="() => hidepass = !hidepass"
+                          :type="hidepass ? 'password' : 'text'"
+                          :rules="passwordRules"
+                          counter
+                          required
+                        ></v-text-field>
+                        <v-switch 
+                label="Remember me"  v-model="remember">
+              </v-switch> 
+                        <v-layout justify-space-between>
+                           <v-spacer></v-spacer>
+                            <v-btn @click="submit" :class=" { 'blue darken-4 white--text' : valid, disabled: !valid }">Login</v-btn>
+                           
+                        </v-layout>
+              </v-form>
+              </v-card-actions>
+              <v-card-actions>
+					     <a href="">Forgot Password</a>
 					     <v-alert color="error" v-bind:value="showMessage">
                 {{message}}
               </v-alert>
-              
-					     <v-card-actions> 
-					     <v-switch 
-                label="Remember me"  v-model="remember">
-              </v-switch> 
               </v-card-actions>
-                
-					    <v-card-actions >
-					       <v-spacer></v-spacer>
-					       <v-btn  color="primary"  @click="go()">Login</v-btn>
-					    </v-card-actions>
+					   
 					</v-card>
     </v-flex>
 </v-layout>
@@ -53,9 +52,16 @@
 <script>{
     data () {
       return {
-        hidepass: true,
-        name:'',
+        valid: false,
         password: '',
+        passwordRules: [
+          (v) => !!v || 'Password is required',
+        ],
+        name: '',
+        nameRules: [
+          (v) => !!v || 'Name is required'
+        ],
+        hidepass: true,
         remember: false,
         redirect: this.$route.query.redirect,
         message:"",
@@ -63,6 +69,14 @@
       }
     },
     methods:{
+      submit () {
+        if (this.$refs.form.validate()) {
+          this.go()
+        }
+      },
+      clear () {
+        this.$refs.form.reset()
+      },
       go () {
        this.hidepass=true
        this.showMessage=false

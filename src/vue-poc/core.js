@@ -74,11 +74,11 @@ sed do eiusmod tempor incididunt ut labore et dolore magna aliqua.
 Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi 
 ut aliquip ex ea commodo consequat.`},
        
-         {name:"Shopping.xq", id:"2", mode: "xquery" ,dirty: false,
+         {name:"shopping.xq", id:"2", mode: "xquery" ,dirty: false,
            text:`let $a:=1 to 5
 return $a   `},
       
-         {name:"videos.xml", id:"3", mode:"xml",dirty: false, location: "xmldb:/vue-poc/aaa/bca/videos.xml",
+         {name:"videos.xml", id:"3", mode:"xml",dirty: false, uri: "xmldb:/vue-poc/aaa/bca/videos.xml",
            text:`<foo version="1.0">
   <node>hello</node>
 </foo>`}

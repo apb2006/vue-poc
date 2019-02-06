@@ -31,7 +31,7 @@
      </v-expansion-panel> 
    </v-card-text>
    </v-card>
-   <v-snackbar v-model="true" >Settings are currently only stored locally in the browser, using <code>localstorage</code></v-snackbar>
+   <v-snackbar :value="true" >Settings are currently only stored locally in the browser, using <code>localstorage</code></v-snackbar>
  </v-container>
 </template>
 
@@ -43,7 +43,7 @@
   },
   methods:{
     wipe(){
-      if(confirm("wipe localstorage? ")) Settings.clear();
+       if(confirm("wipe localstorage? ")) Settings.clear();
     },
     
     showKey(){
@@ -65,6 +65,7 @@
     console.log("settings")
     Settings.keys()
     .then( v =>{
+      console.log("keys: ",v)
      this.keys=v
     })
      

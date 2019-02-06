@@ -1,8 +1,27 @@
 <!DOCTYPE html>
 <template id="documentation">
  <v-container fluid>
-    <h1>TODO</h1>
-    <a href="/vue-poc/api/xqdoc" target="doc">list</a>
+    <v-toolbar dense >
+        <v-toolbar-title>documentation</v-toolbar-title>
+        <v-spacer></v-spacer>
+        <a href="/vue-poc/api/xqdocjob" target="doc">json</a>
+    </v-toolbar>
+
+     <v-container fluid grid-list-md>
+       <v-layout row wrap >
+         <v-flex height="80px"
+           xs2
+           v-for="item in items"
+           :key="item.id"
+         >
+           <v-card    :hover="true"  >
+           <v-card-title>{{ item.id }}</v-card-title>
+           <v-card-text>{{ item.name }}</v-card-text>
+           </v-card>
+           </v-flex>
+        </v-layout>
+      </v-container>
+              
  </v-container>
 </template>
 
@@ -15,9 +34,9 @@
   },
   methods:{
     get() {
-      HTTP.get('xqdoc')
+      HTTP.get('xqdocjob')
       .then((res) => {
-        this.items = res.data.items;
+        this.items = res.data;
         console.log("items",this.items)
       });
     },

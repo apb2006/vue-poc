@@ -60,8 +60,9 @@
               v-for="image in images"
               :key="image.name"
             >
-              <v-card  flat tile  >
-                <div :style="style(image)" v-bind:class="{ selcard: image.selected}" 
+              <v-card   tile :elevation="2"  :hover="true" color="grey lighten-3" >
+                <div :style="style(image)"  v-bind:class="{ selcard: image.selected}" 
+               
                 @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected ">
                  <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
                  <v-avatar icon small v-if="image.geo">

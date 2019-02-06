@@ -11,9 +11,12 @@
  <v-card-text>
   <p>Read json data for 1st page for entity.</p>
    <v-flex xs12 sm6>
-      <v-text-field v-model="url"
-        label="url"
-      ></v-text-field>
+     <v-combobox
+          v-model="url"
+          :items="urls"
+          label="Select target"
+        ></v-combobox>
+      
     </v-flex>
  
   <table class="v-table">
@@ -82,6 +85,7 @@
       getValues: new perfStat(),
       repeat: {get:false},
       url: "data/entity",
+      urls: ["data/entity","data/taskhistory"],
       counter: 0,
       result: null
       }

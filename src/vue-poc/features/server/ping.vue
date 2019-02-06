@@ -29,7 +29,7 @@
           <tr>
               <td>
                <v-btn @click="get()"  >
-                   Read <v-icon right>compare_arrows</v-icon> 
+                   Read Db<v-icon right>compare_arrows</v-icon> 
                 </v-btn>
              
                </td>
@@ -62,7 +62,7 @@
             <tr>
           <td>
            <v-btn @click="update()"  >
-                 Write <v-icon right>compare_arrows</v-icon>
+                 Write Db<v-icon right>compare_arrows</v-icon>
             </v-btn>
           </td>
           
@@ -103,9 +103,11 @@
 <script>{
   data:  function(){
     return {
+      nothingValues: new perfStat(),
+      staticValues: new perfStat(),
       getValues: new perfStat(),
       postValues: new perfStat(),
-      repeat: {get:false,post:false},
+      repeat: {get: false, post: false, staticx: false, nothing: false},
       counter: "(unread)"
       }
   },
@@ -136,6 +138,18 @@
         }
      })
     },
+    nothing () {
+      var _start = performance.now();
+     HTTP.post("nothing",axios_json)
+     .then(r=>{
+       var elapsed=Math.floor(performance.now() - _start);
+       this.counter=r.data
+       Object.assign(this.nothingValues,this.nothingValues.log(elapsed))
+       if(this.repeat.nothing){
+         this.nothing(); //does this leak??
+       }
+     })
+   },
     gchange(v){
       if(v)this.get() 
     },

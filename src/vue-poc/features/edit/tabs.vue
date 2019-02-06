@@ -115,12 +115,13 @@
 		        v-for="item in EditTabs.items"
 		        :key="item.id"
 		        ripple
+		        :title="item.uri"
 		        style="text-transform: none;text-align:left"
 		      >
 			       <v-avatar >
-			          <v-icon  size="16px">insert_drive_file</v-icon>
+			          <v-icon  :title="item.mode" >{{ $MimeTypes.icon(item.mode) }}</v-icon> 
 			       </v-avatar>
-			       <span >{{ (item.dirty?"*":"") }}</span>
+			        <span >{{ (item.dirty?"*":"") }}</span>
 			        <span >{{ item.name  }}</span>
 			       <v-spacer></v-spacer>
 			       <v-btn icon @click.stop="tabClose(item)">
@@ -131,22 +132,21 @@
   </v-toolbar>
   
    
-      <v-tabs-items  v-model="curIndex">
-       <v-tab-item
-        v-for="item in EditTabs.items"
-        :key="item.id"
-      >
-
-			    <v-card >
-		        <div style="height:200px" ref="ace" v-resize="onResize" >
-		        <v-flex xs12  fill-height >
-					    <vue-ace  :content="item.text"  v-on:change-content="changeContent"  :events="events"
-					    :mode="item.mode" :wrap="wrap"  :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
-					  </v-flex>
-		        </div> 
-		      </v-card>
-      </v-tab-item>
-   </v-tabs-items>
+  <v-tabs-items  v-model="curIndex">
+     <v-tab-item
+      v-for="item in EditTabs.items"
+      :key="item.id"
+    >
+	    <v-card >
+        <div style="height:200px" ref="ace" v-resize="onResize" >
+        <v-flex xs12  fill-height >
+			    <vue-ace  :content="item.text"  v-on:change-content="changeContent"  :events="events"
+			    :mode="item.mode" :wrap="wrap"  :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
+			  </v-flex>
+        </div> 
+      </v-card>
+    </v-tab-item>
+ </v-tabs-items>
  
 </div>
 </template>
@@ -171,8 +171,7 @@
   
   methods:{
     add(){
-      var a=this.EditTabs.addItem({text:"hi "+ new Date()})
-      this.curIndex=this.EditTabs.items.indexOf(a)
+      this.curIndex=this.EditTabs.addItem({text:"hi "+ new Date()})
     },
   
     tabClose(item,index){
@@ -230,7 +229,7 @@
         var d=this.active.mode;
         var f=this.$MimeTypes.mode[d];
         var f=f && f.validate;
-        alert("no validate yet");
+        this.curIndex=this.EditTabs.addItem({text:"validate: todo\n "+ this.curIndex +"\n" + new Date()})
     },
     
    

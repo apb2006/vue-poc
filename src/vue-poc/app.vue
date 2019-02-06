@@ -157,6 +157,7 @@
           {href: '/namespace', text: 'Namespaces',icon: 'label' },
           {href: '/entity', text: 'Entities',icon: 'redeem' },
       ]},
+      
       {
         icon: 'cast_connected',
         text: 'Server' ,
@@ -172,6 +173,7 @@
           {href: '/server/dicetest',text: 'Dice performance',icon: 'update'},
           {href: '/server/settings',text: 'Server settings',icon: 'settings_applications'}
       ]},
+      
       {
         icon: 'camera_roll',
         text: 'Images' ,
@@ -185,6 +187,7 @@
           {href: '/map',text: 'Map',icon: 'place'}, 
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
+          
           {
             icon: 'format_list_bulleted',
             text: 'Forms' ,

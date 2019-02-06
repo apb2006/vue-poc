@@ -1,11 +1,11 @@
 //Manage array of text sources  used for:edit tabs
 // item{
-//     name: 
+//     name: file name
 //     contentType: "text/xml",
 //     mode: "xml",
 //     text:
 //     id: ids have the form "Tn"
-//     url: path to save to
+//     uri: path to save to
 // requires: Settings,HTTP
 //
 const GEditTabs={
@@ -20,20 +20,22 @@ const GEditTabs={
     },
     
     methods: {
+      // add tab return index
       addItem(tab){
         //console.log("new: ",tab);
         var def={name: "AA"+this.nextId, 
                  contentType: "text/xml",
                  mode: "xml",
                  text: "<foo>" +this.nextId +"</foo>",
-                 url: null
+                 uri: null
                  };
         var etab = Object.assign(def,tab);
         etab.id= "T" + this.nextId
         this.items.push (etab);
         this.length++
         this.nextId++;
-        return etab;
+        var ind=this.items.indexOf(etab)
+        return ind;
       },
       
       closeItem(item){

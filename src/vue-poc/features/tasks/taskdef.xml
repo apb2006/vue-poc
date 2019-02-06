@@ -1,43 +1,36 @@
 <tasks>
 	<task name="model" url="model.build/tx-model.xq">
 		<title>Generate model.gen.xqm</title>
-		<description> Generate
-      <code>model.gen.xqm</code></description>
+		<description>
+			Generate
+			<code>model.gen.xqm</code>
+		</description>
 	</task>
 
-<task name="import" url="task/tx-dbimport.xq">
-    <title>Load files into database</title>
-    <description>Load files into database</description>
-  </task>
-  
-	<task name="xqdoc" url="xqdoc/tx-xqdoc.xq">
-		<title>XQdoc</title>
-		<description>Generate documentation for folder</description>
+	<task name="import" url="task/tx-dbimport.xq">
+		<title>Load files into database</title>
+		<description>Load files into database</description>
 	</task>
-	
+
 	<task name="xqdoc2" url="xqdoc/tx-xqdoc2.xq">
-    <title>XQdoc 2</title>
-    <description>Generate xquery documentation for folder. Using standard task.</description>
-  </task>
-  
-<task name="xqdoc-rest" url="xqdoc/tx-xqrest.xq">
-    <title>XQdoc rest</title>
-    <description>XQdoc...</description>
-  </task>
-  
-  <task name="xqdoc-rest2" url="xqdoc/tx-xqrest2.xq">
-    <title>XQdoc rest2</title>
-    <description>XQdoc.2..</description>
-  </task>
-  
+		<title>XQdoc 2</title>
+		<description>Generate xquery documentation for folder. Using standard
+			task.</description>
+	</task>
+
+	<task name="xqdoc-rest2" url="xqdoc/tx-xqrest2.xq">
+		<title>XQdoc rest2</title>
+		<description>XQdoc.2..</description>
+	</task>
+
 	<task name="vuecompile">
 		<title>vue compile</title>
-		 <description>compile</description>
+		<description>compile</description>
 	</task>
 
 	<task name="newapp" url="task/tx-newapp.xq">
 		<title>application template</title>
-		 <description>application template</description>
+		<description>application template</description>
 		<params>
 			<param name="appname">Name for new application</param>
 		</params>

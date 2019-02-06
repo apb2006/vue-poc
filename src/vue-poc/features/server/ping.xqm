@@ -1,6 +1,6 @@
 module namespace ping = 'quodatum.test.ping';
 declare variable $ping:db as xs:string:="vue-poc";
-declare variable $ping:state as element(state):=db:open($ping:db,"/state.xml")/state;
+declare %basex:lazy variable $ping:state as element(state):=db:open($ping:db,"/state.xml")/state;
 
 (:~
  :  ping incr counter
@@ -23,4 +23,15 @@ declare
 function ping:dostate()
 {
   $ping:state/ping
+};
+
+(:~
+ :  ping fastest no work
+ :)
+declare 
+%output:method("text")  
+%rest:GET %rest:path("/vue-poc/api/nodb")
+function ping:nodb()
+{
+  "ok"
 };
