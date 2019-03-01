@@ -6,14 +6,15 @@ module namespace page = 'quodatum.test.schema';
  :)
 declare  
 %rest:GET %rest:path("/vue-poc/api/form/schema")
+%rest:query-param("uri", "{$uri}")
 %output:method("json")   
-function page:schema()
+function page:schema($uri as xs:string?)
 as element(json)
 {
- let $s:="schema.json"
-         =>resolve-uri(static-base-uri())
-         =>fetch:text()
-         =>json:parse()
-  return $s/*
+ let $file:=if(empty($uri)) then"person.json" else $uri
+ let $path:=resolve-uri("schema.json/" || $file ,static-base-uri())=>trace("full")
+ let $s:=$path=>fetch:text()
+              =>json:parse()
+  return trace($s,"JSON")/*
 };
 

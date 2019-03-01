@@ -22,7 +22,7 @@ function vue-api:thumbnail($url,$task )
  let $x:=fn:parse-xml($task)=>fn:trace("task: ")
  let $thumb:=fetch:binary($url)=>t:task($x/thumbnail)
  
- return (qweb:download-response("raw","xx.gif"), $thumb)
+ return (qweb:download-response("basex","xx.gif"), $thumb)
 };
 
 (:~

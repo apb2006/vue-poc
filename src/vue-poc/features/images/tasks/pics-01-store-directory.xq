@@ -1,7 +1,7 @@
 (:~ 
 : create xml file list by scanning $cfg:IMAGEDIR and write to db $cfg:DB-IMAGE
 :)
-import module namespace cfg = "quodatum:media.image.configure" at "../../../config.xqm";
+import module namespace cfg = "quodatum:media.image.configure" at "../config.xqm";
 import module namespace fw="quodatum:file.walker";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 

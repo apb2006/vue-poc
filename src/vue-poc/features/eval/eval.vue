@@ -30,7 +30,7 @@
     <v-btn  @click="submit" >
       <v-icon>play_circle_outline</v-icon>jobs:run
       </v-btn>
-    <v-menu offset-y>
+    <v-menu offset-y left>
       <v-btn  slot="activator" flat icon>
          <v-icon>more_vert</v-icon>
       </v-btn>

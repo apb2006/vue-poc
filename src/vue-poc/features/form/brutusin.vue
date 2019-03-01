@@ -2,17 +2,37 @@
 <template id="brutusin">
  <v-container fluid>
      <v-card>
-     <v-card-title><qd-link href="https://github.com/vue-generators/vue-form-generator">vue-form-generator@2.2.1</qd-link> </v-card-title>
+     <v-toolbar flat>
+	     <v-toolbar-title>Form </v-toolbar-title>
+	
+	        <v-chip v-if="formValid" color="success">valid</v-chip>
+	        <v-chip v-else color="danger">invalid</v-chip>
+	        <v-btn color="primary" @click="$refs.myForm.validate()">validate</v-btn>
+	      <v-spacer></v-spacer>
+	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@0.21.0</qd-link>
+     </v-toolbar>
+     <v-card-actions>
+     <v-layout row wrap>
+       <v-flex xs2>
+      <v-select :items="schemas" v-model="schemaUri"  label="Choose an Schema" @change="applyExample" />
+      </v-flex>
+        <v-flex>
+      <v-btn @click="showschema()">show</v-btn>
+      </v-flex>
+      </v-layout>
+      </v-card-actions>
      <v-card-text>
-      <v-container grid-list-md text-xs-center>
+      <v-container grid-list-md >
     <v-layout row wrap>
       <v-flex xs8>
-      <v-form>
-       <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
+      <v-form ref="myForm" v-model="formValid">
+        <v-btn @click="submit" :disabled="!formValid">submit</v-btn>
+          <v-jsonschema-form v-if="schema" :schema="schema" :model="model" :options="options" @error="e => window.alert(e)" />
        </v-form>
        </v-flex>
        
-       <v-flex xs4>
+       <v-flex xs4 class="grey lighten-2">
+        <h2 class="title my-4">Data:</h2>
         <pre style="text-align:left">{{ model | pretty }}</pre>
        </v-flex>
        </v-layout>
@@ -24,90 +44,28 @@
 
 <script>{
   components: {
-    "vue-form-generator": VueFormGenerator.component
+    "v-jsonschema-form": VJsonschemaForm.default
    },
    data() {
      return {
-       model: {
-           id: 1,
-           name: "John Doe",
-           password: "J0hnD03!x4",
-           age: 35,
-           skills: ["Javascript", "VueJS"],
-           email: "john.doe@gmail.com",
-           status: true
-       },
-       schema: {
-           fields: [{
-               type: "input",
-               inputType: "text",
-               label: "ID",
-               model: "id",
-               readonly: true,
-               featured: false,
-               disabled: true
-           }, {
-               type: "input",
-               inputType: "text",
-               label: "Name",
-               model: "name",
-               readonly: false,
-               featured: true,
-               required: true,
-               disabled: false,
-               placeholder: "User's name",
-               validator: VueFormGenerator.validators.string
-           }, {
-               type: "input",
-               inputType: "password",
-               label: "Password",
-               model: "password",
-               min: 6,
-               required: true,
-               hint: "Minimum 6 characters",
-               validator: VueFormGenerator.validators.string
-           }, {
-               type: "input",
-               inputType: "number",
-               label: "Age",
-               model: "age",
-               min: 18,
-               validator: VueFormGenerator.validators.number
-           }, {
-               type: "input",
-               inputType: "email",
-               label: "E-mail",
-               model: "email",
-               placeholder: "User's e-mail address",
-               validator: VueFormGenerator.validators.email
-           }, {
-               type: "checklist",
-               label: "Skills",
-               model: "skills",
-               multi: true,
-               required: true,
-               multiSelect: true,
-               values: ["HTML5", "Javascript", "CSS3", "CoffeeScript", "AngularJS", "ReactJS", "VueJS"]
-           }, {
-              type: "switch",
-               label: "Status",
-               model: "status",
-               multi: true,
-               readonly: false,
-               featured: false,
-               disabled: false,
-               default: true,
-               textOn: "Active",
-               textOff: "Inactive"
-           }]
-       },
-
-       formOptions: {
-           validateAfterLoad: true,
-           validateAfterChanged: true
+       model: {},
+       schema: null,
+       schemaUri: "person.json",
+       schemas: [
+         "person.json",
+         "select.json",
+         "arrays.json"
+       ],
+       formValid: false,
+       options: {
+         debug: true,
+         disableAll: false,
+         autoFoldObjects: true,
+         httpLib: HTTP
        }
      };
    },
+   
   methods:{
     onResize(){
       var el=this.$refs["page"]
@@ -115,8 +73,24 @@
       var h=Math.max(1,window.innerHeight - el.offsetTop)-60
        console.log("h",h)
       el.style.height=h +"px"
+    },
+    applyExample(uri){
+      console.log(uri);
+      this.model={}
+      this.schema=null
+      HTTP.get("form/schema",{params: {uri: uri}})
+      .then(r=>{
+        this.schema=r.data;
+      })
+    },
+    submit(){
+      alert("todo")
+    },
+    showschema(){
+      alert("as")
     }
   },
+  
   filters: {
     pretty: function(value) {
       return JSON.stringify(value, null, 2);
@@ -124,6 +98,10 @@
   },
   created:function(){
     console.log("form")
+    HTTP.get("form/schema",{})
+    .then(r=>{
+      this.schema=r.data;
+    })
   }
 }
 </script>

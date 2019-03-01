@@ -21,8 +21,8 @@ const GEditTabs={
     
     methods: {
       // add tab return index
-      addItem(tab){
-        //console.log("new: ",tab);
+      addItem(tab,pos){
+        //console.log("new: ",tab," ,pos:",pos);
         var def={name: "AA"+this.nextId, 
                  contentType: "text/xml",
                  mode: "xml",
@@ -31,7 +31,11 @@ const GEditTabs={
                  };
         var etab = Object.assign(def,tab);
         etab.id= "T" + this.nextId
-        this.items.push (etab);
+        if(pos){
+          this.items.splice(pos, 0, etab)
+        }else{
+          this.items.push (etab);
+        };
         this.length++
         this.nextId++;
         var ind=this.items.indexOf(etab)
@@ -70,7 +74,7 @@ const GEditTabs={
         that=this
         this.restored=Settings.getItem('edit/items')
         .then(function (v){
-           console.log("items ",v)
+           //console.log("items ",v)
            v.forEach(v =>that.addItem(v))
            })
          .catch(error=> {

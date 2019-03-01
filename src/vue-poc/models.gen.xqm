@@ -1,9 +1,9 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2019-01-23T21:27:22.427Z 
+ : auto generated from xml files in entities folder at: 2019-02-23T22:59:34.827Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
-import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";declare namespace xqdoc='http://www.xqdoc.org/1.0';
+import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace ent='https://github.com/Quodatum/app-doc/entity';
 declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace c='http://www.w3.org/ns/xproc-step';
@@ -176,7 +176,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  } },
        
       "data": function() as element(ent:field)*
-       { collection("doc-doc")//ent:field },
+       { collection("doc-doc")/ent:entity/ent:fields/ent:field },
        
        "views": map{ 
        'filter': 'name description'
@@ -254,7 +254,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  } },
        
       "data": function() as element(ent:entity)*
-       { collection("vue-poc")//ent:entity },
+       { collection("vue-poc")/ent:entity },
        
        "views": map{ 
        'filter': 'name description'

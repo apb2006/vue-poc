@@ -27,5 +27,5 @@
 	<views iconclass="pin_drop">
         <view name="filter">name description</view>
     </views>
-	<data type="element(ent:field)">collection("doc-doc")//ent:field</data>
+	<data type="element(ent:field)">collection("doc-doc")/ent:entity/ent:fields/ent:field</data>
 </entity>

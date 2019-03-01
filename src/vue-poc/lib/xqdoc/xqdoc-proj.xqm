@@ -58,7 +58,7 @@ declare  function xqd:gendoc(
   let $ip:= $f/@name/resolve-uri(.,base-uri(.))
    let $dest:= file:resolve-path($op,$target)
   
-   let $xqdoc:= xqd:xqdoc($ip,map{})
+   let $xqdoc:= xqd:xqdoc($ip,map{"source": $ip})
    let $xq:= fetch:text($ip)
    let $params:=map:merge((map{
                 "source": $xq,
@@ -134,11 +134,18 @@ as element(*)
   xp:parse($xq || "",map{"lang":"xquery","version":"3.1 basex-20161204"}) 
 };
 
-(:~ Generate xqdoc :)
+(:~ 
+ : Generate xqdoc adding custom opts 
+ :)
 declare function xqd:xqdoc($url as xs:string,$opts as map(*))
 as element(xqdoc:xqdoc)
 {  
- inspect:xqdoc($url)
+  inspect:xqdoc($url)
+  transform with {
+          for $tag in map:keys($opts)
+          return insert node <xqdoc:custom tag="_{ $tag }">{ $opts[$tag] }</xqdoc:custom> 
+          into xqdoc:module[@type="library"]/xqdoc:comment
+  }
 };
          
 (:~ transform xqdoc to html :)

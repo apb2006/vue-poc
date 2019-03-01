@@ -31,7 +31,7 @@ HTTP.interceptors.request.use((config) => {
 
 HTTP.interceptors.response.use((response) => {
   // Do something with response data
-  if(response.config && response.config.qdStartTime){
+  if( response && response.config && response.config.qdStartTime){
     var s=Math.floor(performance.now() - response.config.qdStartTime);
     var c=response.config;
     var url=response.config.url + "?" + c.paramsSerializer(c.params);
@@ -181,19 +181,11 @@ function debounce(func, wait, immediate) {
 
 Vue.component('treeselect', VueTreeselect.Treeselect);
 
-//Vue.use( VueFormJsonSchema);
-function install (Vue) {
- Vue.component('vue-form-json-schema', VueFormJsonSchema);
-};
-Vue.use({ install: install });
 var sockhost=('https:'==window.location.protocol?'wss:':'ws:')+'//'+ window.location.host +'/ws';
 //Vue.use(VueNativeSock.default, sockhost);
 //console.log("SOCK UP",VueNativeSock,sockhost);
 
-//leaflet
-Vue.component('l-map', Vue2Leaflet.LMap);
-Vue.component('l-tilelayer', Vue2Leaflet.LTileLayer);
-Vue.component('l-marker', Vue2Leaflet.LMarker);
+
 
 
 //function install (Vue) {
@@ -202,4 +194,5 @@ Vue.component('l-marker', Vue2Leaflet.LMarker);
 //Vue.use({ install: install });
 var EditTabs=new Vue(GEditTabs)
 Vue.use(Vuetify);
+
 new Vuepoc().$mount('#app')

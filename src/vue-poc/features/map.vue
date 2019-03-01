@@ -13,6 +13,13 @@
 </template>
 
 <script>{
+//leaflet
+ components: {
+    "l-map": Vue2Leaflet.LMap,
+    "l-tilelayer": Vue2Leaflet.LTileLayer,
+    "l-marker": Vue2Leaflet.LMarker
+   },
+  
   data:  function(){
     return {
       zoom: 13,

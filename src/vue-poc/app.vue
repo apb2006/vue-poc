@@ -40,7 +40,7 @@
     <qd-navlist  :items="items" :mini="mini"></qd-navlist>
  </v-navigation-drawer>
   
- <v-toolbar class="indigo" app dark >
+ <v-toolbar class="indigo" app dark dense >
   <v-toolbar-side-icon @click.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down" >{{$route.meta.title}}</v-toolbar-title>
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
@@ -110,6 +110,7 @@
 
 <script>{
   router,
+  store,
   data:function(){return {
 
     searchItems:[],
@@ -124,7 +125,7 @@
     frmfav: false,
   
     items: [
-      {href: '/',text: 'Home', icon: 'home'    },
+      {href: '/',text: 'Dashboard', icon: 'dashboard'    },
       {
         icon: 'input',
         text: 'Actions' ,
@@ -167,7 +168,7 @@
           {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
-          {href: '/server/websocket',text: 'Web socket',icon: 'swap_calls'},
+        
           {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
           {href: '/server/ping',text: 'Ping',icon: 'update'},
           {href: '/server/dicetest',text: 'Dice performance',icon: 'update'},
@@ -188,40 +189,28 @@
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
           
-          {
-            icon: 'format_list_bulleted',
-            text: 'Forms' ,
-            model: false,
-            children: [
-         
-          {href: '/form',text: 'vue-form-generator',icon: 'format_list_bulleted'  },
-          {href: '/form2',text: 'vue-json-schema',icon: 'format_list_bulleted'  },
-          {href: '/form3',text: 'vue-form-json-schema',icon: 'format_list_bulleted'  }
-          ]},   
       {
         icon: 'more_horiz',
         text: 'More' ,
         model: false,
         children: [
-      {href: '/timeline',text: 'Time line',icon: 'timelapse'},
+      {href: '/html',text: 'HTML test',icon: 'receipt'},
       {href: '/select',text: 'Select',icon: 'extension'},
-      {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
-      {href: '/svg',text: 'SVG',icon: 'extension'},
-      {href: '/svg2',text: 'SVG2',icon: 'extension'},
-      {href: '/tree',text: 'Tree',icon: 'nature'},
-      {href: '/tree2',text: 'Tree 2',icon: 'nature'}
+      {href: '/puzzle',text: 'Puzzle',icon: 'extension'}
       ]},
       {
         icon: 'toys',
         text: 'Labs' ,
         model: false,
         children: [
-      {href: '/labs/scratch',text: 'Scratch pad',icon: 'filter_frames'},    
+      {href: '/labs/scratch',text: 'Scratch pad',icon: 'filter_frames'},
+      {href: '/labs/form',text: 'Forms',icon: 'subtitles'  },
       {href: '/labs/timeline',text: 'Time line',icon: 'timelapse'},
       {href: '/labs/svg',text: 'SVG',icon: 'extension'},
       {href: '/labs/svg2',text: 'SVG2',icon: 'extension'},
       {href: '/labs/tree',text: 'Tree',icon: 'nature'},
-      {href: '/labs/tree2',text: 'Tree 2',icon: 'nature'}
+      {href: '/labs/tree2',text: 'Tree 2',icon: 'nature'},
+      {href: '/labs/websocket',text: 'Web socket',icon: 'swap_calls'},
       ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
       {href: '/about',text: 'About (v0.3.2)' , icon: 'help'    }, 
@@ -288,7 +277,10 @@
    (error) =>{
      // interupt restxq single
      console.log("HTTP.interceptors.response.use ",error)
-     if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
+     if (!error.response) {
+    // network error
+       this.showAlert("network error\n"+"server down")
+  }else if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
      return Promise.reject(error);
    });
    

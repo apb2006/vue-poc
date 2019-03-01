@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="scratch">
  <v-container fluid>
-   <v-toolbar tabs dense>
+   <v-toolbar  tabs dense>
    <v-toolbar-title>Tab index {{ curIndex }}</v-toolbar-title>
    <v-btn v-if="active">{{ active.mode }}</v-btn>
    <qd-mimelist  v-if="active" :mimetype="active.contentType" @selected="setmime">{{ active.mode }}</qd-mimelist>
@@ -10,9 +10,10 @@
 
    <v-btn @click="add">Add</v-btn>
     <v-btn @click="curIndex=2">set</v-btn>
-
-    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
-    <v-tabs   v-model="curIndex" slot="extension">
+  
+    <v-layout slot="extension">
+    <v-flex xs11>
+    <v-tabs   v-model="curIndex" >
           <v-tab
             v-for="(item,index) in EditTabs.items"
             :key="item.id"
@@ -30,8 +31,13 @@
               </v-btn>
           </v-tab>
      </v-tabs>
+     </v-flex>
+     <v-flex xs1>
+    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
+
+    </v-flex>
+     </v-layout>
   </v-toolbar>
-  
    
       <v-tabs-items  v-model="curIndex">
        <v-tab-item

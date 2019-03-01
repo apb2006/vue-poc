@@ -3,7 +3,7 @@
  : done in batches of 1000
  : @return initial number of missing docs  
 :)
-import module namespace cfg = "quodatum:media.image.configure" at "../../../config.xqm";
+import module namespace cfg = "quodatum:media.image.configure" at "../config.xqm";
 import module namespace imgmeta = "expkg-zone58:image.metadata" ;
 declare namespace c="http://www.w3.org/ns/xproc-step";
 

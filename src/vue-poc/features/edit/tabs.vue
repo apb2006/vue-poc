@@ -6,7 +6,7 @@
 	      <vp-selectpath :frmfav.sync="showadd" @selectpath="add"> <v-icon>add_circle</v-icon></vp-selectpath>
 	      <v-btn icon @click="openUri"><v-icon>insert_drive_file</v-icon></v-btn>
       </v-toolbar-items>
-      <v-toolbar-title>{{ curIndex   }} </v-toolbar-title>
+      <v-toolbar-title>i={{ curIndex   }} </v-toolbar-title>
       
        <v-menu v-if="active"  left  transition="v-fade-transition" >
        <v-chip label small slot="activator" >{{ active.mode }}</v-chip>
@@ -45,7 +45,9 @@
 			      </v-chip>
 			      <span>Annotations: Errors,Warning and Info</span>
 			   </v-tooltip>
-   
+			   
+        <qd-mimelist  v-if="active" :mimetype="active.contentType" @selected="setmime">{{ active.mode }}</qd-mimelist>
+        
         <v-menu  left  transition="v-fade-transition">
       <v-btn  :disabled="!active" icon slot="activator" title="display settings">
         <v-icon>playlist_play</v-icon>
@@ -107,9 +109,9 @@
               </v-list-tile>             
           </v-list>         
     </v-menu>
-    
-    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
-        
+    <v-layout slot="extension">
+   
+     <v-flex xs11>   
         <v-tabs   v-model="curIndex" slot="extension">
 		      <v-tab
 		        v-for="item in EditTabs.items"
@@ -129,6 +131,11 @@
 			        </v-btn>
 		      </v-tab>
      </v-tabs>
+     </v-flex>
+      <v-flex xs1>
+       <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
+     </v-flex>
+     </v-layout>
   </v-toolbar>
   
    
@@ -171,7 +178,10 @@
   
   methods:{
     add(){
-      this.curIndex=this.EditTabs.addItem({text:"hi "+ new Date()})
+      var tab={name:"@" + this.active.name, 
+               text:"active: "+ JSON.stringify(this.active, null, 2) 
+      }
+      this.curIndex=this.EditTabs.addItem(tab, this.curIndex+1)
     },
   
     tabClose(item,index){
@@ -229,7 +239,8 @@
         var d=this.active.mode;
         var f=this.$MimeTypes.mode[d];
         var f=f && f.validate;
-        this.curIndex=this.EditTabs.addItem({text:"validate: todo\n "+ this.curIndex +"\n" + new Date()})
+        var t={name:"validate", text:"validate: todo\n "+ this.curIndex +"\n" + new Date()};
+        this.curIndex=this.EditTabs.addItem(t)
     },
     
    

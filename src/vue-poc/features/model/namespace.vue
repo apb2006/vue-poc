@@ -2,6 +2,7 @@
 <template id="namespace">
  <v-container fluid>
  <v-card>
+ 
    <v-toolbar >
    <v-toolbar-title>
     <v-breadcrumbs :items="crumbs" >
@@ -12,10 +13,7 @@
           </template>
      </v-breadcrumbs>
    </v-toolbar-title>
-
-   
-     <v-btn @click="load" icon
-    :loading="loading"
+     <v-btn @click="load" icon :loading="loading"
       :disabled="loading"
    ><v-icon>refresh</v-icon></v-btn>
    
@@ -26,9 +24,9 @@
    clearable></v-text-field>
    
    <v-spacer></v-spacer>
-   <vp-entitylink entity="namespace"></vp-entitylink>
-  
+   <vp-entitylink entity="namespace"></vp-entitylink> 
    </v-toolbar>
+   
    <v-card-text>
     <v-data-table
     :headers="headers"
@@ -47,14 +45,12 @@
      
     </template>
     
-    <template slot="no-data">
-        No result available.
+    <template slot="no-results">
+        No matching results.
     </template>
     
     <template slot="no-data">
-      <v-alert :value="true" icon="warning" >
         No matching items.
-      </v-alert>
     </template>
   </v-data-table>
    </v-card-text>
@@ -93,11 +89,6 @@
         this.items= r.data.items
         this.loading= false
         })
-        .catch(error=> {
-          console.log(error);
-          this.loading= false
-          alert("Get query error"+url)
-        });
       
     },
     setfilter(){

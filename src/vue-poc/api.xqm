@@ -51,6 +51,26 @@ function vue-api:test-select($q )
 };
 
 (:~
+ : generate html report for test
+ :)
+declare
+%rest:GET %rest:path("/vue-poc/api/test/html")
+%output:method("html")  %output:version("5.0") 
+function vue-api:test-html()   
+{
+<div id="A0">
+something
+<ol>
+<li><a href="#A30" >A30</a></li>
+<li><a href="#A50">A50</a></li>
+</ol>
+{for $i in 1 to 50 return <p>{$i}: 
+<a id="A{$i}" name="A{$i}">Lorem ipsum</a> dolor sit amet, consectetur adipiscing elit. Morbi aliquam sodales justo, aliquet eleifend ex bibendum eget. Nullam vitae maximus ipsum. Sed maximus felis in interdum maximus. Vestibulum quis urna vel dolor placerat iaculis non at metus. Curabitur nec dictum mauris. Duis placerat magna non pellentesque pulvinar. Nam a eleifend sapien. Suspendisse potenti. Vestibulum nunc massa, eleifend a dolor quis, feugiat condimentum est. Integer diam eros, blandit in purus in, euismod ultrices felis. Donec ipsum magna, elementum non lacus vel, rutrum ornare ante. Integer egestas sapien quam, ut posuere nisi rhoncus nec. Etiam ornare enim eu tellus laoreet, in laoreet urna sodales. Donec interdum, augue non lobortis sodales, leo elit tincidunt mi, vitae varius augue libero vel lectus. Cras imperdiet quis dolor nec gravida. 
+<a href="#A0">top</a></p>
+}
+</div>
+};
+(:~
  : Returns wadl.
  :)
 declare

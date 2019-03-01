@@ -1,7 +1,16 @@
+(:~
+ : support tree view
+ : @author apb
+ : @exampletag some value
+ :)
 module namespace j = 'quodatum.test.components';
 
-
-declare function j:tax($items){
+(:~
+ : @return sequence of json arrary items for each item 
+ :)
+declare function j:tax($items)
+as element(_)*
+{
  for $a in $items
 return <_ type="object">
     <id>{$a/@id/string()}</id>

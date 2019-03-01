@@ -82,11 +82,12 @@ const router = new VueRouter({
       
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+      { path: 'upload', component: Upload,meta:{title:"Upload"} },
+     
+      { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} },
       { path: 'dicetest', component: Dicetest,meta:{title:"Dice test"} },
-      { path: 'upload', component: Upload,meta:{title:"Upload"} },
-      { path: 'websocket', component: Websocket,meta:{title:"Web socket"} },
-      { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} }
+
      ]
     },
     { path: '/history', component: { template: '<router-view/>' }
@@ -103,11 +104,14 @@ const router = new VueRouter({
       { path: 'timeline', component: Timeline,meta:{title:"timeline"} },
       { path: 'tree', component: Tree, meta:{title:"tree"} },
       { path: 'tree2', component: Tree2, meta:{title:"tree2"} },
+      { path: 'form', component: Brutusin, meta:{title:"Form demo"} },
+      { path: 'websocket', component: Websocket,meta:{title:"Web socket"} },
       ]
     },
     
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
-   
+    { path: '/html', component: Testhtml, meta:{title:"HTML test"} },
+    
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     
@@ -126,10 +130,8 @@ const router = new VueRouter({
    
     { path: '/map', component: Leaflet,meta:{title:"map"} },
     
-    { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
-    { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
-    { path: '/form3', component: Formsschema, meta:{title:"vue-form-json-schema"} },
-    
+ 
+     
     
     { path: '/about', component: About, meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound, meta:{title:"Page not found"} }

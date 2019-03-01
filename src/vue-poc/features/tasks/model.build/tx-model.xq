@@ -19,7 +19,7 @@ declare variable $target as xs:anyURI  external
 :=xs:anyURI("C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm");
 
 
-let $config:='import module namespace cfg = "quodatum:media.image.configure" at "config.xqm";'
+let $config:='import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";'
 let $src:=bf:module(bf:entities($efolder),$config)
 return (
   prof:variables(),

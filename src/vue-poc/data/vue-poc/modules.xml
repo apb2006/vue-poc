@@ -1,0 +1,45 @@
+<!-- common module namespaces -->
+<namespaces>
+
+	<namespace uri="http://www.w3.org/2005/xpath-functions/math"
+		prefix="math">
+		<description>Xpath math </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2005/xpath-functions/map"
+		prefix="map">
+		<description>Xpath map </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2005/xpath-functions/array"
+		prefix="array">
+		<description>Xpath array </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2005/xqt-errors" prefix="err">
+		<description>Xpath errors </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2010/xslt-xquery-serialization"
+		prefix="output">
+		<description>serialization parameters </description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2005/xpath-functions"
+		prefix="fn">
+		<description>XPath functions
+		</description>
+	</namespace>
+
+	<namespace uri="http://www.w3.org/2005/xquery-local-functions"
+		prefix="local">
+		<description>Xquery functions
+		</description>
+	</namespace>
+
+	
+<namespace uri="http://basex.org/modules/perm" prefix="perm">
+    <description>Web permissions
+    </description>
+  </namespace>
+</namespaces>

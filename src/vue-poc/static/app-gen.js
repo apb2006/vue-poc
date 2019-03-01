@@ -1,4 +1,4 @@
-// generated 2019-02-05T23:14:56.207Z
+// generated 2019-03-01T23:13:01.734Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -601,6 +601,8 @@ Vue.component('vp-favorite',{template:`
     },
     
     favorite(){
+      this.$store.commit('increment')
+      console.log(this.$store.state.count)
       alert("save");
     }
   }
@@ -717,9 +719,11 @@ Vue.component('vp-notifications',{template:`
               <v-list-tile-title>{{  msg.created | fromNow("from") }}</v-list-tile-title>
               <v-list-tile-sub-title v-html="msg.html">msg</v-list-tile-sub-title>
             </v-list-tile-content>
+            <v-list-tile-action-text>
+              <v-chip>#{{ msg.index }}</v-chip>
+           </v-list-tile-action-text>
+            <v-list-tile-action-text v-if="msg.elapsed"> ({{ msg.elapsed }} ms) </v-list-tile-action-text>
             
-            <v-list-tile-action-text v-if="msg.elapsed">{{ msg.elapsed }} ms </v-list-tile-action-text>
-            <v-list-tile-action-text>#{{ msg.index }}</v-list-tile-action-text>
            
             </v-list-tile>
            </template>
@@ -1213,8 +1217,8 @@ const GEditTabs={
     
     methods: {
       // add tab return index
-      addItem(tab){
-        //console.log("new: ",tab);
+      addItem(tab,pos){
+        //console.log("new: ",tab," ,pos:",pos);
         var def={name: "AA"+this.nextId, 
                  contentType: "text/xml",
                  mode: "xml",
@@ -1223,7 +1227,11 @@ const GEditTabs={
                  };
         var etab = Object.assign(def,tab);
         etab.id= "T" + this.nextId
-        this.items.push (etab);
+        if(pos){
+          this.items.splice(pos, 0, etab)
+        }else{
+          this.items.push (etab);
+        };
         this.length++
         this.nextId++;
         var ind=this.items.indexOf(etab)
@@ -1262,7 +1270,7 @@ const GEditTabs={
         that=this
         this.restored=Settings.getItem('edit/items')
         .then(function (v){
-           console.log("items ",v)
+           //console.log("items ",v)
            v.forEach(v =>that.addItem(v))
            })
          .catch(error=> {
@@ -1500,13 +1508,32 @@ const Notfound=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/about.vue
 const About=Vue.extend({template:` 
-
-  <v-jumbotron color="grey lighten-2">
-      
+  
     <v-container fill-height>
+    <v-card hover raised> 
+<v-card-title class="pa-5 indigo">
+<div class="display-1 white--text text-xs-center">VUE-POC</div>
+<v-spacer></v-spacer>
+  <v-speed-dial v-model="fab" hover right direction="bottom" transition="slide-y-reverse-transition">
+      <v-btn slot="activator" class="blue darken-2" dark fab hover v-model="fab">
+        <v-icon>account_circle</v-icon>
+        <v-icon>close</v-icon>
+      </v-btn>
+      <v-btn fab dark small class="green">
+        <v-icon>edit</v-icon>
+      </v-btn>
+      <v-btn fab dark small class="indigo">
+        <v-icon>add</v-icon>
+      </v-btn>
+      <v-btn fab dark small class="red">
+        <v-icon>delete</v-icon>
+      </v-btn>
+    </v-speed-dial>
+ </v-card-title> 
+
+ <v-card-text>
       <v-layout align-center>
-        <v-flex>
-          <h3 class="display-3">Vue-poc</h3>
+        <v-flex color="grey lighten-2">
           <span class="subheading">A development environment for managing XML sources and processes.</span>
       
           <v-divider class="my-3"></v-divider>
@@ -1538,9 +1565,9 @@ const About=Vue.extend({template:`
 					</v-layout>
         </v-flex>
       </v-layout>
- 
+ </v-card-text>
+ </v-card>
     </v-container>
-    </v-jumbotron>
       
 	 `,
       
@@ -2195,30 +2222,48 @@ created(){
 const Tree=Vue.extend({template:` 
  <v-container fluid>
  <v-card>
- <v-toolbar class="lime darken-1">
-   <v-card-title><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@2.1.16</qd-link> </v-card-title>
-   <v-spacer></v-spacer>
-   <v-btn>todo</v-btn>
+   <v-toolbar card color="grey lighten-3"> 
+		   <v-card-title>Taxonomy test</v-card-title>
+		   <v-spacer></v-spacer>
+		   <v-btn>todo</v-btn>
    </v-toolbar>
-   
-    <v-card-text>
-     {{ selected }}
-    </v-card-text>
-    
-   <v-card-text>
-   <v-layout>
-  
-   <v-flex xs6>
-    <v-jstree :data="data" text-field-name="label" ref="tree" :async="loadData" show-checkbox multiple allow-batch whole-row @item-click="itemClick"></v-jstree>
-    </v-flex>
-    <v-flex xs6>
-    <pre>    {{ JSON.stringify(data, null, '\t') }}
-    </pre>
-    </v-flex>
-   </v-layout>
+
+     <v-card-text>
+       <v-layout>
+      
+       <v-flex xs6>
+       <v-sheet class="pa-3 primary lighten-2">
+      <v-text-field v-model="search" label="Filter tag" flat solo-inverted hide-details clearable></v-text-field>
+      <v-checkbox v-model="caseSensitive" dark hide-details label="Case sensitive search"></v-checkbox>
+    </v-sheet>
+        <v-treeview :items="items" item-text="label" v-model="tree" :search="search" :open.sync="open" activatable active-class="grey lighten-4 indigo--text" selected-color="indigo" open-on-click selectable>
+           <template slot="prepend" slot-scope="{ item, open }">
+				      <v-icon v-if="item.children">
+				        {{ open ? 'folder_open' : 'folder' }}
+				      </v-icon>
+				      <v-icon v-else>
+				        {{ 'label' }}
+				      </v-icon>
+				    </template>
+         </v-treeview>
+        </v-flex>
+        <v-divider vertical></v-divider>
+        <v-flex xs6>
+          <div v-if="tree.length === 0" key="title" class="title font-weight-light grey--text pa-3 text-xs-center">
+            Select some tags
+          </div>
+
+          <v-scroll-x-transition group hide-on-leave>
+            <v-chip v-for="leaf, i) in tree" :key="i" color="grey" dark small>
+              <v-icon left small>label</v-icon>
+              {{ leaf }}
+            </v-chip>
+          </v-scroll-x-transition>
+        </v-flex>
+       </v-layout>
+   </v-card-text>
    
 
-   </v-card-text>
  </v-card>
  </v-container>
  `,
@@ -2226,54 +2271,28 @@ const Tree=Vue.extend({template:`
   data:function(){
     return {
 		  data: [],
-		   
-		  loadData: function (oriNode, resolve) {
-		    var id = oriNode.data.id ? oriNode.data.id : 0
-		    console.log("LOAD DATA",id);
-		    HTTP.get("components/tree")
-		    .then(r=>{
-		      console.log(r);
-		      resolve(r.data)
-		      })
-		      .catch(error=> {
-		        console.log(error);
-		       
-		        alert("Get query error"+url)
-		      });
-		  }
+		  items: [],
+		  tree: [],
+	    search: null,
+	    open: [1, 2],
+	    caseSensitive: false
 	  }
   },
   
 methods: {
 
-  itemClick (node) {
-    node.model.selected= !node.model.selected;
-    console.log(' clicked !',node.model)
-  },
-  
-  load(){
-    this.asyncData = [this.$refs.tree.initializeLoading()];
-    this.$refs.tree.handleAsyncLoad(this.asyncData, this.$refs.tree)
-  },
-  
-  sel1(item){
-    if(item.children){
-      var res=[];
-      for (const node of item.children) {res.push(this.sel1(node))}
-      return res;
-    }else{
-      return item.selected?item.label:[]
-    }
-  }
 },
 
 computed:{
-  selected(){
-    return this.sel1(this.data);
-  },
+
 },
-mounted: function(){
-  this.load()
+
+created:function(){
+  HTTP.get("components/tree")
+  .then(r=>{
+    console.log("loaded tree:",r);
+    this.items= r.data;
+    })
 }
 
 }
@@ -2659,7 +2678,7 @@ const Tabs=Vue.extend({template:`
 	      <vp-selectpath :frmfav.sync="showadd" @selectpath="add"> <v-icon>add_circle</v-icon></vp-selectpath>
 	      <v-btn icon @click="openUri"><v-icon>insert_drive_file</v-icon></v-btn>
       </v-toolbar-items>
-      <v-toolbar-title>{{ curIndex   }} </v-toolbar-title>
+      <v-toolbar-title>i={{ curIndex   }} </v-toolbar-title>
       
        <v-menu v-if="active" left transition="v-fade-transition">
        <v-chip label small slot="activator">{{ active.mode }}</v-chip>
@@ -2698,7 +2717,9 @@ const Tabs=Vue.extend({template:`
 			      </v-chip>
 			      <span>Annotations: Errors,Warning and Info</span>
 			   </v-tooltip>
-   
+			   
+        <qd-mimelist v-if="active" :mimetype="active.contentType" @selected="setmime">{{ active.mode }}</qd-mimelist>
+        
         <v-menu left transition="v-fade-transition">
       <v-btn :disabled="!active" icon slot="activator" title="display settings">
         <v-icon>playlist_play</v-icon>
@@ -2760,9 +2781,9 @@ const Tabs=Vue.extend({template:`
               </v-list-tile-content></v-list-tile>             
           </v-list>         
     </v-menu>
-    
-    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
-        
+    <v-layout slot="extension">
+   
+     <v-flex xs11>   
         <v-tabs v-model="curIndex" slot="extension">
 		      <v-tab v-for="item in EditTabs.items" :key="item.id" ripple :title="item.uri" style="text-transform: none;text-align:left">
 			       <v-avatar>
@@ -2776,6 +2797,11 @@ const Tabs=Vue.extend({template:`
 			        </v-btn>
 		      </v-tab>
      </v-tabs>
+     </v-flex>
+      <v-flex xs1>
+       <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
+     </v-flex>
+     </v-layout>
   </v-toolbar>
   
    
@@ -2813,7 +2839,10 @@ const Tabs=Vue.extend({template:`
   
   methods:{
     add(){
-      this.curIndex=this.EditTabs.addItem({text:"hi "+ new Date()})
+      var tab={name:"@" + this.active.name, 
+               text:"active: "+ JSON.stringify(this.active, null, 2) 
+      }
+      this.curIndex=this.EditTabs.addItem(tab, this.curIndex+1)
     },
   
     tabClose(item,index){
@@ -2871,7 +2900,8 @@ const Tabs=Vue.extend({template:`
         var d=this.active.mode;
         var f=this.$MimeTypes.mode[d];
         var f=f && f.validate;
-        this.curIndex=this.EditTabs.addItem({text:"validate: todo\n "+ this.curIndex +"\n" + new Date()})
+        var t={name:"validate", text:"validate: todo\n "+ this.curIndex +"\n" + new Date()};
+        this.curIndex=this.EditTabs.addItem(t)
     },
     
    
@@ -2981,7 +3011,7 @@ const Eval=Vue.extend({template:`
     <v-btn @click="submit">
       <v-icon>play_circle_outline</v-icon>jobs:run
       </v-btn>
-    <v-menu offset-y>
+    <v-menu offset-y left>
       <v-btn slot="activator" flat icon>
          <v-icon>more_vert</v-icon>
       </v-btn>
@@ -3221,17 +3251,37 @@ const Evalid=Vue.extend({template:`
 const Brutusin=Vue.extend({template:` 
  <v-container fluid>
      <v-card>
-     <v-card-title><qd-link href="https://github.com/vue-generators/vue-form-generator">vue-form-generator@2.2.1</qd-link> </v-card-title>
+     <v-toolbar flat>
+	     <v-toolbar-title>Form </v-toolbar-title>
+	
+	        <v-chip v-if="formValid" color="success">valid</v-chip>
+	        <v-chip v-else color="danger">invalid</v-chip>
+	        <v-btn color="primary" @click="$refs.myForm.validate()">validate</v-btn>
+	      <v-spacer></v-spacer>
+	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@0.21.0</qd-link>
+     </v-toolbar>
+     <v-card-actions>
+     <v-layout row wrap>
+       <v-flex xs2>
+      <v-select :items="schemas" v-model="schemaUri" label="Choose an Schema" @change="applyExample">
+      </v-select></v-flex>
+        <v-flex>
+      <v-btn @click="showschema()">show</v-btn>
+      </v-flex>
+      </v-layout>
+      </v-card-actions>
      <v-card-text>
-      <v-container grid-list-md text-xs-center>
+      <v-container grid-list-md>
     <v-layout row wrap>
       <v-flex xs8>
-      <v-form>
-       <vue-form-generator :schema="schema" :model="model" :options="formOptions"></vue-form-generator>
-       </v-form>
+      <v-form ref="myForm" v-model="formValid">
+        <v-btn @click="submit" :disabled="!formValid">submit</v-btn>
+          <v-jsonschema-form v-if="schema" :schema="schema" :model="model" :options="options" @error="e => window.alert(e)">
+       </v-jsonschema-form></v-form>
        </v-flex>
        
-       <v-flex xs4>
+       <v-flex xs4 class="grey lighten-2">
+        <h2 class="title my-4">Data:</h2>
         <pre style="text-align:left">{{ model | pretty }}</pre>
        </v-flex>
        </v-layout>
@@ -3242,90 +3292,28 @@ const Brutusin=Vue.extend({template:`
  `,
       
   components: {
-    "vue-form-generator": VueFormGenerator.component
+    "v-jsonschema-form": VJsonschemaForm.default
    },
    data() {
      return {
-       model: {
-           id: 1,
-           name: "John Doe",
-           password: "J0hnD03!x4",
-           age: 35,
-           skills: ["Javascript", "VueJS"],
-           email: "john.doe@gmail.com",
-           status: true
-       },
-       schema: {
-           fields: [{
-               type: "input",
-               inputType: "text",
-               label: "ID",
-               model: "id",
-               readonly: true,
-               featured: false,
-               disabled: true
-           }, {
-               type: "input",
-               inputType: "text",
-               label: "Name",
-               model: "name",
-               readonly: false,
-               featured: true,
-               required: true,
-               disabled: false,
-               placeholder: "User's name",
-               validator: VueFormGenerator.validators.string
-           }, {
-               type: "input",
-               inputType: "password",
-               label: "Password",
-               model: "password",
-               min: 6,
-               required: true,
-               hint: "Minimum 6 characters",
-               validator: VueFormGenerator.validators.string
-           }, {
-               type: "input",
-               inputType: "number",
-               label: "Age",
-               model: "age",
-               min: 18,
-               validator: VueFormGenerator.validators.number
-           }, {
-               type: "input",
-               inputType: "email",
-               label: "E-mail",
-               model: "email",
-               placeholder: "User's e-mail address",
-               validator: VueFormGenerator.validators.email
-           }, {
-               type: "checklist",
-               label: "Skills",
-               model: "skills",
-               multi: true,
-               required: true,
-               multiSelect: true,
-               values: ["HTML5", "Javascript", "CSS3", "CoffeeScript", "AngularJS", "ReactJS", "VueJS"]
-           }, {
-              type: "switch",
-               label: "Status",
-               model: "status",
-               multi: true,
-               readonly: false,
-               featured: false,
-               disabled: false,
-               default: true,
-               textOn: "Active",
-               textOff: "Inactive"
-           }]
-       },
-
-       formOptions: {
-           validateAfterLoad: true,
-           validateAfterChanged: true
+       model: {},
+       schema: null,
+       schemaUri: "person.json",
+       schemas: [
+         "person.json",
+         "select.json",
+         "arrays.json"
+       ],
+       formValid: false,
+       options: {
+         debug: true,
+         disableAll: false,
+         autoFoldObjects: true,
+         httpLib: HTTP
        }
      };
    },
+   
   methods:{
     onResize(){
       var el=this.$refs["page"]
@@ -3333,8 +3321,24 @@ const Brutusin=Vue.extend({template:`
       var h=Math.max(1,window.innerHeight - el.offsetTop)-60
        console.log("h",h)
       el.style.height=h +"px"
+    },
+    applyExample(uri){
+      console.log(uri);
+      this.model={}
+      this.schema=null
+      HTTP.get("form/schema",{params: {uri: uri}})
+      .then(r=>{
+        this.schema=r.data;
+      })
+    },
+    submit(){
+      alert("todo")
+    },
+    showschema(){
+      alert("as")
     }
   },
+  
   filters: {
     pretty: function(value) {
       return JSON.stringify(value, null, 2);
@@ -3342,114 +3346,11 @@ const Brutusin=Vue.extend({template:`
   },
   created:function(){
     console.log("form")
-  }
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/form-json-schema.vue
-const Formsschema=Vue.extend({template:` 
- <v-container fluid>
-     <v-card>
-        <v-card-title><qd-link href="https://github.com/jarvelov/vue-form-json-schema">vue-form-json-schema@1.15.3</qd-link> </v-card-title>
-        
-     <vue-form-json-schema :model="model" :schema="schema" :ui-schema="uiSchema" :on-change="onChange">
-	  </vue-form-json-schema>
-	  </v-card>
-  </v-container>
- `,
-      
-  
-  data: () => ({
-    model: {},
-    
-    // A valid JSON Schema object
-    schema: {
-      type: 'object',
-      properties: {
-        firstName: {
-          type: 'string',
-        },
-      },
-    },
-    
-    // Array of HTML elements or Vue components
-    uiSchema: [{
-      component: 'input',
-      model: 'firstName',
-      // Same API as [Vue's render functions](https://vuejs.org/v2/guide/render-function.html#The-Data-Object-In-Depth)
-      fieldOptions: {
-        class: ['form-control'],
-        on: ['input'],
-        attrs: {
-          placeholder: 'Please enter your first name',
-        },
-      },
-    }]
-  }),
-  methods: {
-    onChange(value) {
-      this.model = value;
-    }
-  }
-  
-}
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/form/formschema.vue
-const Formsjson=Vue.extend({template:` 
- <v-container fluid>
-     <v-card>
-     <v-toolbar dense>
-        <v-card-title><qd-link href="https://gitlab.com/formschema/native">vue-json-schema@1.1.1</qd-link> </v-card-title>
-      </v-toolbar> 
-     <v-card-text>
-        <v-container grid-list-md text-xs-center>
-				    <v-layout row wrap>
-				      <v-flex xs8>
-				     
-				          <form-schema v-if="schema2" ref="formSchema" :schema="schema2" v-model="model" @submit.stop="submit" input-wrapping-class="text-xs-left">
-				             <v-btn color="success" type="submit">Send</v-btn>
-				          </form-schema>
-				    
-				       </v-flex>
-				       
-				       <v-flex xs4>
-				        <pre style="text-align:left">{{ model | pretty }}</pre>
-				       </v-flex>
-				       </v-layout>
-       </v-container> 
-       </v-card-text>
-  
-  
-    </v-card>
- </v-container>
- `,
-      
-
-  components: { 
-    "form-schema": window["vue-json-schema"].default
-    },
- 
-  data: () => ({
-    schema2: null,
-    model: {}
-  }),
-  methods: {
-    submit (e) {
-      // this.model contains the valid data according your JSON Schema.
-      // You can submit your model to the server here
-      console.log(this.model);
-      alert("no submit yet")
-    }
-  },
-  created:function(){
     HTTP.get("form/schema",{})
     .then(r=>{
-      this.schema2=r.data;
+      this.schema=r.data;
     })
   }
-    
 }
 
       );
@@ -3581,25 +3482,6 @@ const Taskhistory=Vue.extend({template:`
 const Home=Vue.extend({template:` 
 
 <v-card hover raised> 
-<v-card-title class="pa-5 indigo">
-<div class="display-1 white--text text-xs-center">VUE-POC</div>
-<v-spacer></v-spacer>
-  <v-speed-dial v-model="fab" hover right direction="bottom" transition="slide-y-reverse-transition">
-      <v-btn slot="activator" class="blue darken-2" dark fab hover v-model="fab">
-        <v-icon>account_circle</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
-      <v-btn fab dark small class="green">
-        <v-icon>edit</v-icon>
-      </v-btn>
-      <v-btn fab dark small class="indigo">
-        <v-icon>add</v-icon>
-      </v-btn>
-      <v-btn fab dark small class="red">
-        <v-icon>delete</v-icon>
-      </v-btn>
-    </v-speed-dial>
- </v-card-title> 
 
  <v-card-text>
  
@@ -4199,14 +4081,22 @@ const Report=Vue.extend({template:`
     <v-toolbar class="orange darken-1">
      <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
      <v-card-title>
-     <v-chip>todo</v-chip>   
+     <v-chip>Settings</v-chip>   
     </v-card-title>
    
     <v-spacer></v-spacer> 
   
     </v-toolbar>
      <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-    <v-card-text v-if="!busy" v-html="report" @click.capture="onClick($event)"></v-card-text>
+    <v-card-text>
+    <ul>
+    <li></li>
+    <li></li>
+    <li></li>
+    </ul>
+    <pre>    {{ report | pretty }}
+    </pre>
+    </v-card-text>
  </v-card>
  </v-container>
  `,
@@ -4227,19 +4117,6 @@ const Report=Vue.extend({template:`
         var t1 = performance.now();
         this.elapsed= 0.001 *(t1 - t0) 
         }) 
-    },
-    onClick(event){
-      console.log("event",event);
-      var isA= "a"== event.originalTarget.localName
-     
-      if(isA) {
-       // alert("stop this"+ event.originalTarget.hash);
-        console.log("tar",event.originalTarget.hash,document.querySelector(event.originalTarget.hash));
-        event.preventDefault();
-          this.$router.push({"hash":event.originalTarget.hash});
-        //  this.$vuetify.goTo(event.originalTarget.hash, { duration: 600,   offset: -200, easing: 'easeInOutCubic'});
-
-      }
     }
   },
   created:function(){
@@ -4626,6 +4503,13 @@ const Leaflet=Vue.extend({template:`
  </v-container>
  `,
       
+//leaflet
+ components: {
+    "l-map": Vue2Leaflet.LMap,
+    "l-tilelayer": Vue2Leaflet.LTileLayer,
+    "l-marker": Vue2Leaflet.LMarker
+   },
+  
   data:  function(){
     return {
       zoom: 13,
@@ -4648,7 +4532,7 @@ const Documentation=Vue.extend({template:`
     <v-toolbar dense>
         <v-toolbar-title>documentation</v-toolbar-title>
         <v-spacer></v-spacer>
-        <a href="/vue-poc/api/xqdocjob" target="doc">list</a>
+        <a href="/vue-poc/api/xqdocjob" target="doc">json</a>
     </v-toolbar>
 
      <v-container fluid grid-list-md>
@@ -4896,6 +4780,7 @@ const Entity1=Vue.extend({template:`
 const Namespace=Vue.extend({template:` 
  <v-container fluid>
  <v-card>
+ 
    <v-toolbar>
    <v-toolbar-title>
     <v-breadcrumbs :items="crumbs">
@@ -4906,8 +4791,6 @@ const Namespace=Vue.extend({template:`
           </template>
      </v-breadcrumbs>
    </v-toolbar-title>
-
-   
      <v-btn @click="load" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
    
    <v-spacer></v-spacer>
@@ -4915,9 +4798,9 @@ const Namespace=Vue.extend({template:`
    <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
    
    <v-spacer></v-spacer>
-   <vp-entitylink entity="namespace"></vp-entitylink>
-  
+   <vp-entitylink entity="namespace"></vp-entitylink> 
    </v-toolbar>
+   
    <v-card-text>
     <v-data-table :headers="headers" :items="items" :loading="loading" hide-actions :search="q" class="elevation-1">
     <template slot="items" slot-scope="props">
@@ -4929,14 +4812,12 @@ const Namespace=Vue.extend({template:`
      
     </template>
     
-    <template slot="no-data">
-        No result available.
+    <template slot="no-results">
+        No matching results.
     </template>
     
     <template slot="no-data">
-      <v-alert :value="true" icon="warning">
         No matching items.
-      </v-alert>
     </template>
   </v-data-table>
    </v-card-text>
@@ -4974,11 +4855,6 @@ const Namespace=Vue.extend({template:`
         this.items= r.data.items
         this.loading= false
         })
-        .catch(error=> {
-          console.log(error);
-          this.loading= false
-          alert("Get query error"+url)
-        });
       
     },
     setfilter(){
@@ -5188,9 +5064,10 @@ const Scratch=Vue.extend({template:`
 
    <v-btn @click="add">Add</v-btn>
     <v-btn @click="curIndex=2">set</v-btn>
-
-    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
-    <v-tabs v-model="curIndex" slot="extension">
+  
+    <v-layout slot="extension">
+    <v-flex xs11>
+    <v-tabs v-model="curIndex">
           <v-tab v-for="(item,index) in EditTabs.items" :key="item.id" ripple style="text-transform: none;text-align:left">
              <v-avatar>
                 <v-icon size="16px">insert_drive_file</v-icon>
@@ -5203,8 +5080,13 @@ const Scratch=Vue.extend({template:`
               </v-btn>
           </v-tab>
      </v-tabs>
+     </v-flex>
+     <v-flex xs1>
+    <qd-tablist v-if="EditTabs" :edittabs="EditTabs" :current="curIndex" @selected="setItem">tab list</qd-tablist>
+
+    </v-flex>
+     </v-layout>
   </v-toolbar>
-  
    
       <v-tabs-items v-model="curIndex">
        <v-tab-item v-for="item in EditTabs.items" :key="item.id">
@@ -5566,17 +5448,70 @@ const Select=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/basexsettings.vue
 const Basexsettings=Vue.extend({template:` 
   <v-card>
-  <v-card-title>BaseX settings</v-card-title>
-  <v-card-actions>
-    todo
-    </v-card-actions>
+  <v-toolbar>
+  <v-toolbar-title>BaseX settings</v-toolbar-title>
+  <v-spacer></v-spacer>
+  <v-toolbar-items>
+   <v-checkbox v-model="changed" label="Changed only"></v-checkbox>
+    </v-toolbar-items>
+  </v-toolbar>
+  
+  <v-card-text>
+     <v-data-table :headers="headers" :items="filtered" class="elevation-1" :pagination.sync="pagination">
+    <template slot="items" slot-scope="props">
+      <td>{{ props.item.name }}</td>
+      <td>{{ props.item.current }}</td>
+      <td>{{ props.item.changed }}</td>
+      <td class="text-xs-right">{{ props.item.default }}</td>
+      <td><qd-link href="http://docs.basex.org/wiki/Options#">description</qd-link></td>
+    </template>
+  </v-data-table>
+   </v-card-text>
+ 
     </v-card> 
 	 `,
       
-  data:  function(){
-    return { 
-      fab: false
-  }
+  data: ()=>({
+    busy: false,
+    items: [],
+    changed: true,
+    
+    headers: [
+      { text: 'Name', value: 'name'},
+      {text: "current", value: "current"},
+      {text: "changed", value: "changed"},
+      {text: "default", value: "default"},
+      {text: "description"}
+      ],
+      pagination: {
+        descending: false,
+        page: 1,
+        rowsPerPage: 100 ,// -1 for All
+        sortBy: 'name'
+      }
+  }),
+  
+  methods:{
+    get(){
+      this.busy=true
+
+      HTTP.get("server/basexsettings")
+      .then(r=>{
+        this.busy=false
+        this.items=r.data
+      
+        }) 
+    }
+  },
+  computed: {
+    // a computed getter
+    filtered: function () {
+       return this.items.filter(item=> item.changed == this.changed)
+    }
+  },
+  created:function(){
+    console.log("reports")
+    this.get()
   }
 }
       );
@@ -6662,6 +6597,64 @@ const Xqdoc=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/test-html.vue
+const Testhtml=Vue.extend({template:` 
+  <v-container fluid>
+  <v-card>
+    <v-toolbar class="orange darken-1">
+     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
+     <v-card-title>
+     <v-chip>todo</v-chip>   
+    </v-card-title>
+   
+    <v-spacer></v-spacer> 
+  
+    </v-toolbar>
+     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
+    <v-card-text v-if="!busy" v-html="report" @click.capture="onClick($event)"></v-card-text>
+ </v-card>
+ </v-container>
+ `,
+      
+  data: ()=>({
+    busy: false,
+    report: null,
+    elapsed: null
+  }),
+  methods:{
+    get(){
+      this.busy=true
+      var t0 = performance.now();
+      HTTP.get("test/html")
+      .then(r=>{
+        this.busy=false
+        this.report=r.data
+        var t1 = performance.now();
+        this.elapsed= 0.001 *(t1 - t0) 
+        }) 
+    },
+    onClick(event){
+      console.log("event",event);
+      var isA= "a"== event.originalTarget.localName
+     
+      if(isA) {
+       // alert("stop this"+ event.originalTarget.hash);
+        console.log("tar",event.originalTarget.hash,document.querySelector(event.originalTarget.hash));
+        event.preventDefault();
+          this.$router.push({"hash":event.originalTarget.hash});
+        //  this.$vuetify.goTo(event.originalTarget.hash, { duration: 600,   offset: -200, easing: 'easeInOutCubic'});
+
+      }
+    }
+  },
+  created:function(){
+    console.log("reports")
+    this.get()
+  }
+    }
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/thumbnail/thumbnail.vue
 const Thumbnail=Vue.extend({template:` 
  <v-container fluid>
@@ -7209,11 +7202,12 @@ const router = new VueRouter({
       
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+      { path: 'upload', component: Upload,meta:{title:"Upload"} },
+     
+      { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} },
       { path: 'dicetest', component: Dicetest,meta:{title:"Dice test"} },
-      { path: 'upload', component: Upload,meta:{title:"Upload"} },
-      { path: 'websocket', component: Websocket,meta:{title:"Web socket"} },
-      { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} }
+
      ]
     },
     { path: '/history', component: { template: '<router-view/>' }
@@ -7230,11 +7224,14 @@ const router = new VueRouter({
       { path: 'timeline', component: Timeline,meta:{title:"timeline"} },
       { path: 'tree', component: Tree, meta:{title:"tree"} },
       { path: 'tree2', component: Tree2, meta:{title:"tree2"} },
+      { path: 'form', component: Brutusin, meta:{title:"Form demo"} },
+      { path: 'websocket', component: Websocket,meta:{title:"Web socket"} },
       ]
     },
     
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
-   
+    { path: '/html', component: Testhtml, meta:{title:"HTML test"} },
+    
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     
@@ -7253,10 +7250,8 @@ const router = new VueRouter({
    
     { path: '/map', component: Leaflet,meta:{title:"map"} },
     
-    { path: '/form', component: Brutusin, meta:{title:"Form demo"} },
-    { path: '/form2', component: Formsjson, meta:{title:"Form schema"} },
-    { path: '/form3', component: Formsschema, meta:{title:"vue-form-json-schema"} },
-    
+ 
+     
     
     { path: '/about', component: About, meta:{title:"About Vue-poc"} },
     { path: '*', component: Notfound, meta:{title:"Page not found"} }
@@ -7317,7 +7312,7 @@ const Vuepoc=Vue.extend({template:`
     <qd-navlist :items="items" :mini="mini"></qd-navlist>
  </v-navigation-drawer>
   
- <v-toolbar class="indigo" app dark>
+ <v-toolbar class="indigo" app dark dense>
   <v-toolbar-side-icon @click.stop="drawer = !drawer"></v-toolbar-side-icon>  
   <v-toolbar-title class="hidden-sm-and-down">{{$route.meta.title}}</v-toolbar-title>
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
@@ -7386,6 +7381,7 @@ const Vuepoc=Vue.extend({template:`
  `,
       
   router,
+  store,
   data:function(){return {
 
     searchItems:[],
@@ -7400,7 +7396,7 @@ const Vuepoc=Vue.extend({template:`
     frmfav: false,
   
     items: [
-      {href: '/',text: 'Home', icon: 'home'    },
+      {href: '/',text: 'Dashboard', icon: 'dashboard'    },
       {
         icon: 'input',
         text: 'Actions' ,
@@ -7443,7 +7439,7 @@ const Vuepoc=Vue.extend({template:`
           {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
-          {href: '/server/websocket',text: 'Web socket',icon: 'swap_calls'},
+        
           {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
           {href: '/server/ping',text: 'Ping',icon: 'update'},
           {href: '/server/dicetest',text: 'Dice performance',icon: 'update'},
@@ -7464,40 +7460,28 @@ const Vuepoc=Vue.extend({template:`
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
           
-          {
-            icon: 'format_list_bulleted',
-            text: 'Forms' ,
-            model: false,
-            children: [
-         
-          {href: '/form',text: 'vue-form-generator',icon: 'format_list_bulleted'  },
-          {href: '/form2',text: 'vue-json-schema',icon: 'format_list_bulleted'  },
-          {href: '/form3',text: 'vue-form-json-schema',icon: 'format_list_bulleted'  }
-          ]},   
       {
         icon: 'more_horiz',
         text: 'More' ,
         model: false,
         children: [
-      {href: '/timeline',text: 'Time line',icon: 'timelapse'},
+      {href: '/html',text: 'HTML test',icon: 'receipt'},
       {href: '/select',text: 'Select',icon: 'extension'},
-      {href: '/puzzle',text: 'Puzzle',icon: 'extension'},
-      {href: '/svg',text: 'SVG',icon: 'extension'},
-      {href: '/svg2',text: 'SVG2',icon: 'extension'},
-      {href: '/tree',text: 'Tree',icon: 'nature'},
-      {href: '/tree2',text: 'Tree 2',icon: 'nature'}
+      {href: '/puzzle',text: 'Puzzle',icon: 'extension'}
       ]},
       {
         icon: 'toys',
         text: 'Labs' ,
         model: false,
         children: [
-      {href: '/labs/scratch',text: 'Scratch pad',icon: 'filter_frames'},    
+      {href: '/labs/scratch',text: 'Scratch pad',icon: 'filter_frames'},
+      {href: '/labs/form',text: 'Forms',icon: 'subtitles'  },
       {href: '/labs/timeline',text: 'Time line',icon: 'timelapse'},
       {href: '/labs/svg',text: 'SVG',icon: 'extension'},
       {href: '/labs/svg2',text: 'SVG2',icon: 'extension'},
       {href: '/labs/tree',text: 'Tree',icon: 'nature'},
-      {href: '/labs/tree2',text: 'Tree 2',icon: 'nature'}
+      {href: '/labs/tree2',text: 'Tree 2',icon: 'nature'},
+      {href: '/labs/websocket',text: 'Web socket',icon: 'swap_calls'},
       ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
       {href: '/about',text: 'About (v0.3.2)' , icon: 'help'    }, 
@@ -7564,7 +7548,10 @@ const Vuepoc=Vue.extend({template:`
    (error) =>{
      // interupt restxq single
      console.log("HTTP.interceptors.response.use ",error)
-     if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
+     if (!error.response) {
+    // network error
+       this.showAlert("network error\n"+"server down")
+  }else if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
      return Promise.reject(error);
    });
    
@@ -7620,7 +7607,7 @@ HTTP.interceptors.request.use((config) => {
 
 HTTP.interceptors.response.use((response) => {
   // Do something with response data
-  if(response.config && response.config.qdStartTime){
+  if( response && response.config && response.config.qdStartTime){
     var s=Math.floor(performance.now() - response.config.qdStartTime);
     var c=response.config;
     var url=response.config.url + "?" + c.paramsSerializer(c.params);
@@ -7770,19 +7757,11 @@ function debounce(func, wait, immediate) {
 
 Vue.component('treeselect', VueTreeselect.Treeselect);
 
-//Vue.use( VueFormJsonSchema);
-function install (Vue) {
- Vue.component('vue-form-json-schema', VueFormJsonSchema);
-};
-Vue.use({ install: install });
 var sockhost=('https:'==window.location.protocol?'wss:':'ws:')+'//'+ window.location.host +'/ws';
 //Vue.use(VueNativeSock.default, sockhost);
 //console.log("SOCK UP",VueNativeSock,sockhost);
 
-//leaflet
-Vue.component('l-map', Vue2Leaflet.LMap);
-Vue.component('l-tilelayer', Vue2Leaflet.LTileLayer);
-Vue.component('l-marker', Vue2Leaflet.LMarker);
+
 
 
 //function install (Vue) {
@@ -7791,5 +7770,6 @@ Vue.component('l-marker', Vue2Leaflet.LMarker);
 //Vue.use({ install: install });
 var EditTabs=new Vue(GEditTabs)
 Vue.use(Vuetify);
+
 new Vuepoc().$mount('#app')
 

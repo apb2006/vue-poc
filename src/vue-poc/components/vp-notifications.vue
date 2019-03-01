@@ -23,9 +23,11 @@
               <v-list-tile-title>{{  msg.created | fromNow("from") }}</v-list-tile-title>
               <v-list-tile-sub-title v-html="msg.html">msg</v-list-tile-sub-title>
             </v-list-tile-content>
+            <v-list-tile-action-text>
+              <v-chip>#{{ msg.index }}</v-chip>
+           </v-list-tile-action-text>
+            <v-list-tile-action-text v-if="msg.elapsed"> ({{ msg.elapsed }} ms) </v-list-tile-action-text>
             
-            <v-list-tile-action-text v-if="msg.elapsed">{{ msg.elapsed }} ms </v-list-tile-action-text>
-            <v-list-tile-action-text>#{{ msg.index }}</v-list-tile-action-text>
            
             </v-list-tile>
            </template>

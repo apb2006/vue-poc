@@ -55,5 +55,5 @@
 	<views iconclass="redeem">
 		<view name="filter">name description</view>
 	</views>
-	<data type="element(ent:entity)">collection("vue-poc")//ent:entity</data>
+	<data type="element(ent:entity)">collection("vue-poc")/ent:entity</data>
 </entity>

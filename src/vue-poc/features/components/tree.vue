@@ -2,32 +2,79 @@
 <template id="tree">
  <v-container fluid>
  <v-card>
- <v-toolbar class="lime darken-1">
-   <v-card-title ><qd-link href="https://github.com/zdy1988/vue-jstree">vue-jstree@2.1.16</qd-link> </v-card-title>
-   <v-spacer></v-spacer>
-   <v-btn>todo</v-btn>
+   <v-toolbar  card color="grey lighten-3"> 
+		   <v-card-title >Taxonomy test</v-card-title>
+		   <v-spacer></v-spacer>
+		   <v-btn>todo</v-btn>
    </v-toolbar>
-   
-    <v-card-text>
-     {{ selected }}
-    </v-card-text>
-    
-   <v-card-text>
-   <v-layout>
-  
-   <v-flex xs6>
-    <v-jstree :data="data" text-field-name="label" ref="tree" :async="loadData"
-    show-checkbox multiple allow-batch whole-row @item-click="itemClick"></v-jstree>
-    </v-flex>
-    <v-flex xs6>
-    <pre>
-    {{ JSON.stringify(data, null, '\t') }}
-    </pre>
-    </v-flex>
-   </v-layout>
+
+     <v-card-text>
+       <v-layout >
+      
+       <v-flex xs6 >
+       <v-sheet class="pa-3 primary lighten-2">
+      <v-text-field
+        v-model="search"
+        label="Filter tag"
+        flat
+        solo-inverted
+        hide-details
+        clearable
+      ></v-text-field>
+      <v-checkbox
+        v-model="caseSensitive"
+        dark
+        hide-details
+        label="Case sensitive search"
+      ></v-checkbox>
+    </v-sheet>
+        <v-treeview :items="items" item-text="label"
+            v-model="tree"  :search="search"
+            :open.sync="open" activatable
+            active-class="grey lighten-4 indigo--text"
+            selected-color="indigo"
+            open-on-click
+            selectable>
+           <template slot="prepend" slot-scope="{ item, open }">
+				      <v-icon v-if="item.children">
+				        {{ open ? 'folder_open' : 'folder' }}
+				      </v-icon>
+				      <v-icon v-else>
+				        {{ 'label' }}
+				      </v-icon>
+				    </template>
+         </v-treeview>
+        </v-flex>
+        <v-divider vertical></v-divider>
+        <v-flex xs6>
+          <div
+            v-if="tree.length === 0"
+            key="title"
+            class="title font-weight-light grey--text pa-3 text-xs-center"
+          >
+            Select some tags
+          </div>
+
+          <v-scroll-x-transition
+            group
+            hide-on-leave
+          >
+            <v-chip
+              v-for="leaf, i) in tree"
+              :key="i"
+              color="grey"
+              dark
+              small
+            >
+              <v-icon left small>label</v-icon>
+              {{ leaf }}
+            </v-chip>
+          </v-scroll-x-transition>
+        </v-flex>
+       </v-layout>
+   </v-card-text>
    
 
-   </v-card-text>
  </v-card>
  </v-container>
 </template>
@@ -36,54 +83,28 @@
   data:function(){
     return {
 		  data: [],
-		   
-		  loadData: function (oriNode, resolve) {
-		    var id = oriNode.data.id ? oriNode.data.id : 0
-		    console.log("LOAD DATA",id);
-		    HTTP.get("components/tree")
-		    .then(r=>{
-		      console.log(r);
-		      resolve(r.data)
-		      })
-		      .catch(error=> {
-		        console.log(error);
-		       
-		        alert("Get query error"+url)
-		      });
-		  }
+		  items: [],
+		  tree: [],
+	    search: null,
+	    open: [1, 2],
+	    caseSensitive: false
 	  }
   },
   
 methods: {
 
-  itemClick (node) {
-    node.model.selected= !node.model.selected;
-    console.log(' clicked !',node.model)
-  },
-  
-  load(){
-    this.asyncData = [this.$refs.tree.initializeLoading()];
-    this.$refs.tree.handleAsyncLoad(this.asyncData, this.$refs.tree)
-  },
-  
-  sel1(item){
-    if(item.children){
-      var res=[];
-      for (const node of item.children) {res.push(this.sel1(node))}
-      return res;
-    }else{
-      return item.selected?item.label:[]
-    }
-  }
 },
 
 computed:{
-  selected(){
-    return this.sel1(this.data);
-  },
+
 },
-mounted: function(){
-  this.load()
+
+created:function(){
+  HTTP.get("components/tree")
+  .then(r=>{
+    console.log("loaded tree:",r);
+    this.items= r.data;
+    })
 }
 
 }

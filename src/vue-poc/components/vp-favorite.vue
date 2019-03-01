@@ -59,6 +59,8 @@ display button that invokes a  save favorite form
     },
     
     favorite(){
+      this.$store.commit('increment')
+      console.log(this.$store.state.count)
       alert("save");
     }
   }
