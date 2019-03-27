@@ -12,7 +12,7 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
 declare variable $efolder as xs:anyURI  external :=
 xs:anyURI("C:/Users/andy/git/vue-poc/src/vue-poc");
 
-(:~ URL of the schema to use 
+(:~ file URL root folder for saving results
  : @default C:/tmp/xqdoc/
  :)
 declare variable $target as xs:anyURI external :=

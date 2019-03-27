@@ -2,6 +2,7 @@
  : XQDoc: generate restxq.html from resources located at $target 
  :)
 import module namespace xqd = 'quodatum:build.xqdoc' at "../../../lib/xqdoc/xqdoc-proj.xqm";
+import module namespace xqhtml = 'quodatum:build.xqdoc-html' at "../../../lib/xqdoc/xqdoc-html.xqm";
 import module namespace store = 'quodatum.store' at "../../../lib/store.xqm";
 import module namespace tree = 'quodatum.data.tree' at "../../../lib/tree.xqm";
 
@@ -15,9 +16,8 @@ declare namespace xqdoc="http://www.xqdoc.org/1.0";
 declare variable $target as xs:anyURI external :=
 "file:///C:/tmp/xqdoc/" cast as xs:anyURI;
 
-declare variable $nsRESTXQ:= 'http://exquery.org/ns/restxq';
 
-(:~   map for each restxq:path 
+(:~   sequence of maps for each restxq:path 
  : @param 
 :)
 declare function local:import($path,
@@ -27,7 +27,7 @@ as map(*)*
 {
   let $uri:=``[modules/F`{ string($id) }`/]``
   let $doc:=doc(resolve-uri($uri || "xqdoc.xml",$folder))
-  let $annots:=xqd:annotations($doc/*, $nsRESTXQ,"path")
+  let $annots:=xqd:annotations($doc/*, $xqd:nsRESTXQ,"path")
   return $annots!map{
                 "id": $id,
                 "uri": $uri,
@@ -82,7 +82,7 @@ let $op:= <div>
           
            <ul>{$reps!local:path-to-html(.)}</ul>
            </div>
-return  xqd:page($op,map{"resources": "resources/"})
+return  xqhtml:page($op,map{"resources": "resources/"})
 };
 
 (:~ tree to list :)
@@ -143,7 +143,7 @@ let $data:=map:merge(for $report in $reports
           let $methods:= map:merge(
                          for $annot in $report
                          let $hits:=for $method in $xqd:methods
-                                     let $hit:=  xqd:methods($annot?annot/.., $nsRESTXQ, $method)
+                                     let $hit:=  xqd:methods($annot?annot/.., $xqd:nsRESTXQ, $method)
                                      return if(empty($hit)) then () else map{$method: $annot}
                          return if(exists($hits))then $hits else map{"ALL":$annot}
                          

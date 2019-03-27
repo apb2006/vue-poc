@@ -7,7 +7,7 @@
 module namespace xqd = 'quodatum:build.xqdoc';
 import module namespace xp="expkg-zone58:text.parse";
 import module namespace store = 'quodatum.store' at '../store.xqm';
-
+import module namespace xqhtml = 'quodatum:build.xqdoc-html' at "xqdoc-html.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 declare namespace xqdoc="http://www.xqdoc.org/1.0";
 
@@ -15,7 +15,7 @@ declare variable $xqd:HTML5:=map{"method": "html","version":"5.0"};
 declare variable $xqd:XML:=map{"indent": "no"};
 declare variable $xqd:mod-xslt external :="html-module.xsl";
 declare variable $xqd:index-xslt external :="html-index.xsl";
-
+declare variable $xqd:nsRESTXQ:= 'http://exquery.org/ns/restxq';
 declare variable $xqd:cache external :=false();
 
 (:~  @see https://en.wikipedia.org/wiki/Hypertext_Transfer_Protocol#Request_methods :)
@@ -34,7 +34,7 @@ let $f:=  document{$files} transform with { delete  node //c:directory[not(.//c:
 return (
     $files//c:file!xqd:gendoc(.,"modules/F" || position(),$target,$params),
     $f=>xqd:store($target || "/files.xml",$xqd:XML),
-    $f=>xqd:index-html($params)=>xqd:store($target || "/index.html",$xqd:HTML5),
+    $f=>xqhtml:index-html($params)=>xqd:store($target || "/index.html",$xqd:HTML5),
     xqd:export-resources($target)
     )
 };   
@@ -74,6 +74,39 @@ declare  function xqd:gendoc(
         )
  };
  
+ (:~
+  : create documentation folder map
+  : map{"base-uri":.., "files":map(*)*}
+  :)
+ declare function xqd:read($efolder as xs:string)
+{
+let $files:= file:list($efolder,true(),"*.xqm")
+let $full:= $files!concat($efolder || "\",.)                                
+return map{ 
+             "base-uri": $efolder,
+             "files": for $file in $files
+                      let $full:=concat($efolder || "\", $file)
+                      return map{
+                        "full":$full,
+                        "xqdoc": xqd:xqdoc($full,map{"_source": $full}),
+                        "xqparse": xqd:parse($full)
+                      }
+          
+           }
+
+};
+
+declare function xqd:imports($doc)
+{
+  let $keys:=$doc?files?xqdoc!map:entry(generate-id(.),position())=>map:merge()
+let $ns:=for $in in $doc?files?xqdoc//xqdoc:import[@type="library"]
+         group by $ns:=$in/xqdoc:uri
+         let $id:=$keys?($in/root()/generate-id())
+         return map:entry($ns,$id)
+  return map:merge(($doc,map{"keys": $keys, 
+                             "imports": $ns}))
+};
+
  (:~
  : save xqdoc and html for source file $f
  : @param $f <c:file/>
@@ -143,7 +176,7 @@ as element(xqdoc:xqdoc)
   inspect:xqdoc($url)
   transform with {
           for $tag in map:keys($opts)
-          return insert node <xqdoc:custom tag="_{ $tag }">{ $opts[$tag] }</xqdoc:custom> 
+          return insert node <xqdoc:custom tag="_{ $tag }">{ $opts?($tag) }</xqdoc:custom> 
           into xqdoc:module[@type="library"]/xqdoc:comment
   }
 };
@@ -167,8 +200,16 @@ xslt:transform($files,$xqd:index-xslt,$params)
 };
 
 (:~ save runtime support files to $target :)
-declare function xqd:export-resources($target as xs:string)                       
-{  
+declare
+function xqd:export-resources($target as xs:string)                       
+as empty-sequence(){  
+archive:extract-to($target, file:read-binary(resolve-uri('resources.zip')))
+}; 
+
+(:~ save runtime support files to $target :)
+declare %updating
+function xqd:export-resources2($target as xs:string)                       
+as empty-sequence(){  
 archive:extract-to($target, file:read-binary(resolve-uri('resources.zip')))
 }; 
 (:~ 
@@ -198,35 +239,49 @@ as element(xqdoc:annotation)*
 
 };
 
-(:~ 
- : generate standard page wrapper
-  :)
-declare function xqd:page($body,$opts as map(*)) 
-as element(html)
+
+
+(: @return map of functions and variables having annotations :)
+declare function xqd:annotation-map($xqdoc){
+  let $ns:=map:merge((
+           map:entry("", "http://www.w3.org/2012/xquery"),
+           $xqdoc//xqdoc:namespace!map:entry(string(@prefix),string(@uri))
+           ))
+  let $f:=$xqdoc//xqdoc:function[xqdoc:annotations]!
+                  map:entry(
+                        xqdoc:name || "#" || @arity,
+                        xqd:annots(xqdoc:annotations/xqdoc:annotation,$ns)
+                   )
+   let $v:=$xqdoc//xqdoc:variable[xqdoc:annotations]!
+                 map:entry(
+                   xqdoc:name ,
+                   xqd:annots(xqdoc:annotations/xqdoc:annotation,$ns)
+                 )
+  return map:merge(($f,$v))
+         
+};
+
+(: return annotation map for a name 
+ :  map{ $ns: map{
+ :        $aname: $values
+ :      }
+ : }
+ :)
+declare function xqd:annots(
+ $annots as element(xqdoc:annotation)*,
+ $ns as map(*)
+) as map(*)
 {
-    <html>
-      <head>
-        <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />
-        <meta http-equiv="Generator" content="xqdoc-r - https://github.com/quodatum/xqdoc-r" />
-
-        <title>
-          RestXQ - xqDoc
-        </title>
-        <link rel="shortcut icon" type="image/x-icon" href="{$opts?resources}xqdoc.png" />
-        <link rel="stylesheet" type="text/css" href="{$opts?resources}page.css" />
-        <link rel="stylesheet" type="text/css" href="{$opts?resources}query.css" />
-        <link rel="stylesheet" type="text/css" href="{$opts?resources}base.css" />
-
-      </head>
-
-      <body class="home" id="top">
-        <div id="main">
-        {$body}
-        </div>
-        <div class="footer">
-            <p style="text-align:right">generated at {current-dateTime()}</p>
-          </div>
-      </body>
-    </html>
-
-};          
+ map:merge( 
+ for $a in $annots
+ group by $prefix:=substring-before($a/@name,":")
+ return for $p in $prefix
+                  return map:entry(
+                     $ns?($p),
+                     map:merge((
+                     for $x in $a
+                     group by $aname:=if(contains($x/@name,":")) then substring-after($x/@name,":") else $x/@name
+                     return map:entry($aname,$x/*/string())
+                  ))
+                )
+)};        

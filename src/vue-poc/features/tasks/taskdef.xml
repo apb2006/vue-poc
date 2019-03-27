@@ -23,6 +23,12 @@
 		<description>XQdoc.2..</description>
 	</task>
 
+<task name="xqdoc3" url="xqdoc/tx-xqdoc3.xq">
+    <title>XQdoc to static</title>
+    <description>Generate xquery documentation for folder to static folder
+      </description>
+  </task>
+  
 	<task name="vuecompile">
 		<title>vue compile</title>
 		<description>compile</description>

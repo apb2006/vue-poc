@@ -1,4 +1,4 @@
-// generated 2019-03-01T23:13:01.734Z
+// generated 2019-03-16T22:59:26.228Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -3258,7 +3258,7 @@ const Brutusin=Vue.extend({template:`
 	        <v-chip v-else color="danger">invalid</v-chip>
 	        <v-btn color="primary" @click="$refs.myForm.validate()">validate</v-btn>
 	      <v-spacer></v-spacer>
-	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@0.21.0</qd-link>
+	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@0.24.1</qd-link>
      </v-toolbar>
      <v-card-actions>
      <v-layout row wrap>
@@ -3481,28 +3481,37 @@ const Taskhistory=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/home.vue
 const Home=Vue.extend({template:` 
 
-<v-card hover raised> 
-
+<v-card raised> 
+<v-card-title>links</v-card-title>
  <v-card-text>
- 
-<p>
-	links
-</p>
-<ul>
-
-<li><router-link :to="{path:'files', query:{url:'/vue-poc/'}}"> <v-icon>developer_mode</v-icon>vue-poc files</router-link></li>
-<li><router-link :to="{path:'database', query:{url:'/vue-poc/'}}"> <v-icon>folder</v-icon>vue-poc db</router-link></li>
-	<li><a href="/doc/#/data/app/vue-poc" target="new">doc</a></li>
-	<li><a href="/dba" target="new">DBA app</a></li>
-	<li><a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a></li>
-<li><router-link :to="{path:'files', query:{url:'/vue-poc/features/images/'}}">vue-poc image tasks</router-link></li>
-</ul>
-
-<v-btn floating="floating"> <v-icon>add</v-icon> 
-</v-btn> <qd-link href="/dba">REPLACED</qd-link> 
-  
-    </v-card-text> 
-</v-card> 
+<v-card-text>
+<v-list dense>
+		<v-list-tile @click>
+		<router-link :to="{path:'files', query:{url:'/vue-poc/'}}"> <v-icon>developer_mode</v-icon>vue-poc files</router-link>
+		</v-list-tile>
+		<v-list-tile @click>
+		<router-link :to="{path:'database', query:{url:'/vue-poc/'}}"> <v-icon>folder</v-icon>vue-poc db</router-link>
+		</v-list-tile>
+			<v-list-tile @click>
+			<a href="/doc/#/data/app/vue-poc" target="new">doc</a>
+			</v-list-tile>
+			<v-list-tile @click>
+			<a href="/dba" target="new">DBA app</a>
+			</v-list-tile>
+			<v-list-tile @click>
+			<a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a>
+			</v-list-tile>
+		<v-list-tile @click>
+		<router-link :to="{path:'files', query:{url:'/vue-poc/features/images/'}}">vue-poc image tasks</router-link>
+		</v-list-tile>
+</v-list>
+ </v-card-text> 
+ <v-card-actions>
+		<v-btn floating="floating"> <v-icon>add</v-icon> 
+		</v-btn> <qd-link href="/dba">REPLACED</qd-link> 
+  </v-card-actions>
+   
+</v-card-text></v-card> 
 	 `,
       
     data:  function(){

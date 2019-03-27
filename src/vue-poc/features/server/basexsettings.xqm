@@ -1,8 +1,10 @@
+xquery version "3.1";
+(:~
+ :  get basex settings default and current
+ :)
 module namespace set = 'quodatum.test.basexsettings';
 
-(:~
- :  basex settings default and current
- :)
+
 declare   
 %rest:GET %rest:path("/vue-poc/api/server/basexsettings")
 %rest:produces("application/json")

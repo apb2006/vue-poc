@@ -10,18 +10,12 @@ module namespace store = 'quodatum.store';
 declare %updating 
 function store:store($docs as map(*)*,$base as xs:string)
 {
-let $base:=if(contains($base,"\"))then file:path-to-uri($base) else $base
-return $docs!store:store1(.,trace($base,">>>>>"))
-};
-
-declare %updating 
-function store:store1($doc as map(*),$base as xs:string)
-{
-  let $uri:=resolve-uri($doc?uri,$base)
-  let $opts:=if($doc?uri instance of map(*)) then $doc?uri else map{}
-  return switch (substring-before($uri,":"))
-          case "file" return store:file($doc?document,$uri,$opts)
-          case "xmldb" return store:xmldb($doc?document,$uri,$opts)
+for $doc in $docs
+let $uri:=resolve-uri($doc?uri,$base)
+let $opts:=if(map:contains($doc,"opts")) then $doc?opts else map{}
+return switch (substring-before($uri,":"))
+          case "file" return store:file($doc?document,substring-after($uri,"file:///"),$opts)
+          case "xmldb" return store:xmldb($doc?document,uri,$opts)
           default return error("unknown protocol:" || $uri)
 };
 
@@ -31,10 +25,10 @@ function store:store1($doc as map(*),$base as xs:string)
 declare %updating 
 function store:file($data,$uri as xs:string,$params as map(*))
 {  
-   let $p:=file:parent($uri)
+   let $p:=file:parent($uri=>trace("****"))
    return (
            if(file:is-dir($p)) then () else file:create-dir($p),
-           file:write($uri,$data,$params)
+           file:write($uri,$data=>trace("**ddd**"),$params)
            )
 };
 

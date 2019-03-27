@@ -1,5 +1,5 @@
 <entity name="service" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>basex services </description>
+	<description>basex services a list of all jobs that have been persistently registered as Services.</description>
 	<fields>
 		<field name="id" type="xs:string">
 			<description>job id</description>

@@ -1,4 +1,4 @@
-// Mimetype info
+// Mimetype info as vue extension. defines $MimeTypes
 // 
 // 
 const MimeTypes=new function(){

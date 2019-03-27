@@ -1,8 +1,12 @@
-module namespace j = 'quodatum.test.xqdoc';
+xquery version "3.1";
+(:~
+ : job info
+ :)
+ module namespace j = 'quodatum.test.xqdoc';
 
 
 (:~
- :  job list
+ :  job list (currently dummy list)
  :)
 declare  
 %rest:GET %rest:path("/vue-poc/api/xqdocjob")
@@ -21,7 +25,7 @@ as element(json)
 };
 
 (:~
- :  job info
+ :  job info (currently dummy item)
  :)
 declare  
 %rest:GET %rest:path("/vue-poc/api/xqdocjob/{$job}")

@@ -9,7 +9,7 @@
 	        <v-chip v-else color="danger">invalid</v-chip>
 	        <v-btn color="primary" @click="$refs.myForm.validate()">validate</v-btn>
 	      <v-spacer></v-spacer>
-	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@0.21.0</qd-link>
+	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@0.24.1</qd-link>
      </v-toolbar>
      <v-card-actions>
      <v-layout row wrap>

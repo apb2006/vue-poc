@@ -1,3 +1,4 @@
+xquery version "3.1";
 (:~ 
 : entity rest interface 
 : defines urls below vue-poc/data/entity/

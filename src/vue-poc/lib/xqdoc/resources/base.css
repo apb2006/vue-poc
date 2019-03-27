@@ -988,6 +988,7 @@ Possible extra rowspan handling
 	.toc > li li li .secno       { margin-left: -7rem; }
 	.toc > li li li li .secno    { margin-left: -9rem; }
 	.toc > li li li li li .secno { margin-left: -11rem; }
+	.toc > li li li li li .secno { margin-left: -13rem; }
 
 	/* Tighten up indentation in narrow ToCs */
 	@media (max-width: 30em) {
@@ -997,6 +998,7 @@ Possible extra rowspan handling
 		.toc > li li li .secno       { margin-left: -5rem; }
 		.toc > li li li li .secno    { margin-left: -6rem; }
 		.toc > li li li li li .secno { margin-left: -7rem; }
+		.toc > li li li li li li .secno { margin-left: -8rem; }
 	}
 	@media screen and (min-width: 78em) {
 		body:not(.toc-inline) :not(li) > .toc              { margin-left:  4rem; }
@@ -1005,6 +1007,7 @@ Possible extra rowspan handling
 		body:not(.toc-inline) .toc > li li li .secno       { margin-left: -5rem; }
 		body:not(.toc-inline) .toc > li li li li .secno    { margin-left: -6rem; }
 		body:not(.toc-inline) .toc > li li li li li .secno { margin-left: -7rem; }
+		body:not(.toc-inline) .toc > li li li li li li .secno { margin-left: -8rem; }
 	}
 	body.toc-sidebar #toc :not(li) > .toc              { margin-left:  4rem; }
 	body.toc-sidebar #toc .toc .secno                  { margin-left: -4rem; }
@@ -1012,7 +1015,7 @@ Possible extra rowspan handling
 	body.toc-sidebar #toc .toc > li li li .secno       { margin-left: -5rem; }
 	body.toc-sidebar #toc .toc > li li li li .secno    { margin-left: -6rem; }
 	body.toc-sidebar #toc .toc > li li li li li .secno { margin-left: -7rem; }
-
+  body.toc-sidebar #toc .toc > li li li li li li .secno { margin-left: -8rem; }
 	.toc li {
 		clear: both;
 	}

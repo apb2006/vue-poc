@@ -1,9 +1,13 @@
+xquery version "3.1";
+(:~
+ : Simple server performance test
+ :)
 module namespace ping = 'quodatum.test.ping';
 declare variable $ping:db as xs:string:="vue-poc";
 declare %basex:lazy variable $ping:state as element(state):=db:open($ping:db,"/state.xml")/state;
 
 (:~
- :  ping incr counter
+ :  incr counter
  :)
 declare %updating  
 %rest:POST %rest:path("/vue-poc/api/ping")
@@ -15,7 +19,7 @@ function ping:dopost()
 };
 
 (:~
- :  ping incr counter
+ :  read counter
  :)
 declare 
 %output:method("text")  
@@ -26,7 +30,7 @@ function ping:dostate()
 };
 
 (:~
- :  ping fastest no work
+ :  return simple constant
  :)
 declare 
 %output:method("text")  
