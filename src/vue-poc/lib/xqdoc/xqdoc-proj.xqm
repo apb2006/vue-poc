@@ -74,37 +74,41 @@ declare  function xqd:gendoc(
         )
  };
  
- (:~
-  : create documentation folder map
-  : map{"base-uri":.., "files":map(*)*}
-  :)
- declare function xqd:read($efolder as xs:string)
+(:~
+: create documentation folder map
+: map{"base-uri":.., "files":map(*)*}
+:)
+declare function xqd:read($efolder as xs:string)
+as map(*)
 {
 let $files:= file:list($efolder,true(),"*.xqm")
 let $full:= $files!concat($efolder || "\",.)                                
 return map{ 
              "base-uri": $efolder,
-             "files": for $file in $files
+             "project": tokenize($efolder,"[/\\]")[last()],
+             "files": for $file at $pos in $files
                       let $full:=concat($efolder || "\", $file)
+                      let $spath:=translate($file,"\","/")
                       return map{
-                        "full":$full,
-                        "xqdoc": xqd:xqdoc($full,map{"_source": $full}),
-                        "xqparse": xqd:parse($full)
+                        "path":$file,
+                        "href": ``[modules/F`{ $pos }`/]``,
+                        "xqdoc": xqd:xqdoc($full,map{"_source": $spath}),
+                        "xqparse": fetch:text($full)=>xqd:parse()
                       }
           
            }
 
 };
 
+(: return sequence of maps  are imported ns values are where imported:)
 declare function xqd:imports($doc)
+as map(*)*
 {
-  let $keys:=$doc?files?xqdoc!map:entry(generate-id(.),position())=>map:merge()
-let $ns:=for $in in $doc?files?xqdoc//xqdoc:import[@type="library"]
-         group by $ns:=$in/xqdoc:uri
-         let $id:=$keys?($in/root()/generate-id())
-         return map:entry($ns,$id)
-  return map:merge(($doc,map{"keys": $keys, 
-                             "imports": $ns}))
+for $f in $doc?files
+for $in in $f?xqdoc//xqdoc:import[@type="library"]
+group by $ns:=$in/xqdoc:uri
+return map{ "uri": $ns, "where": $f?href}
+
 };
 
  (:~
@@ -164,7 +168,7 @@ declare function xqd:store2($data,$url as xs:string,$params as map(*))
 declare function xqd:parse($xq as xs:string)
 as element(*)
 {  
-  xp:parse($xq || "",map{"lang":"xquery","version":"3.1 basex-20161204"}) 
+  xp:parse($xq || "",map{"lang":"xquery","version":"3.1 basex"}) 
 };
 
 (:~ 
@@ -211,17 +215,57 @@ declare %updating
 function xqd:export-resources2($target as xs:string)                       
 as empty-sequence(){  
 archive:extract-to($target, file:read-binary(resolve-uri('resources.zip')))
-}; 
+};
+
+(:~ return sequence of maps with maps uri and methods :)
+declare function xqd:rxq-paths($state)
+as map(*)* 
+{
+let $reports:= xqd:annots-rxq($state)  
+(: map keyed on uris :)
+let $data:=map:merge(for $report in $reports
+          group by $uri:=$report?annot/xqdoc:literal/string()
+          let $methods:= map:merge(
+                         for $annot in $report
+                         let $hits:=for $method in $xqd:methods
+                                     let $hit:=  xqd:methods($annot?annot/.., $xqd:nsRESTXQ, $method)
+                                     where $hit
+                                     return map{$method: $annot}
+                         return if(exists($hits))then $hits else map{"ALL":$annot}
+                       )
+          return map:entry($uri,map{ "uri": $uri, "methods": $methods})
+        ) 
+let $uris:=sort(map:keys($data))        
+return $data?($uris)        
+};
+(:~ 
+ : map for each restxq:path annotation
+  :)
+declare function xqd:annots-rxq($state as map(*))
+as map(*)*
+{
+  for $f at $index in $state?files
+  for $annot in xqd:annotations($f?xqdoc, $xqd:nsRESTXQ,"path")
+  return map{
+                "id": $index,
+                "uri": $f?href,
+                "path": $f?path,
+                "annot": $annot,
+                "function": $annot/../../(xqdoc:name/string(),@arity/string()),
+                "description": $annot/../../xqdoc:comment/xqdoc:description/node() 
+                 }
+};
+
 (:~ 
  : return all matching annotations in xqdoc
-  :)
+ :)
 declare function xqd:annotations($xqdoc  as element(xqdoc:xqdoc),
                                  $annotns as xs:string,
                                  $aname as xs:string) 
 as element(xqdoc:annotation)*
 {
-   let $prefixes:=$xqdoc//xqdoc:namespace[@uri=$annotns]/@prefix/string()
-  return $xqdoc//xqdoc:annotations/xqdoc:annotation[@name=(for $p in $prefixes return concat($p,':',$aname))]
+ let $prefixes:=$xqdoc//xqdoc:namespace[@uri=$annotns]/@prefix/string()
+ return $xqdoc//xqdoc:annotations/xqdoc:annotation[@name=(for $p in $prefixes return concat($p,':',$aname))]
 
 };
 
@@ -242,7 +286,8 @@ as element(xqdoc:annotation)*
 
 
 (: @return map of functions and variables having annotations :)
-declare function xqd:annotation-map($xqdoc){
+declare function xqd:annotation-map($xqdoc)
+{
   let $ns:=map:merge((
            map:entry("", "http://www.w3.org/2012/xquery"),
            $xqdoc//xqdoc:namespace!map:entry(string(@prefix),string(@uri))

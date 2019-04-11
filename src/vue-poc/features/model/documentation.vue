@@ -4,6 +4,14 @@
     <v-toolbar dense >
         <v-toolbar-title>documentation</v-toolbar-title>
         <v-spacer></v-spacer>
+          <v-btn
+       icon
+      :loading="loading"
+      @click="get()"
+      :disabled="loading"
+    >  
+    <v-icon>refresh</v-icon>
+    </v-btn>
         <a href="/vue-poc/api/xqdocjob" target="doc">json</a>
     </v-toolbar>
 
@@ -15,8 +23,11 @@
            :key="item.id"
          >
            <v-card    :hover="true"  >
-           <v-card-title>{{ item.id }}</v-card-title>
+           <v-card-title color="#26c6da">{{ item.id }}</v-card-title>
            <v-card-text>{{ item.name }}</v-card-text>
+           <v-card-actions>
+           <a :href="item.href" target="_new">go</a>
+           </v-card-actions>
            </v-card>
            </v-flex>
         </v-layout>
@@ -29,7 +40,8 @@
   data:  function(){
     return {
       message: 'Hello Vue.js!',
-      items:[]
+      items:[],
+      loading: false
       }
   },
   methods:{
@@ -37,7 +49,6 @@
       HTTP.get('xqdocjob')
       .then((res) => {
         this.items = res.data;
-        console.log("items",this.items)
       });
     },
     doEdit(item){

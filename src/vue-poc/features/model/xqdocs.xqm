@@ -14,12 +14,13 @@ declare
 function j:list()
 as element(json)
 {
- let $jlist:=(279,280)
+ let $jlist:=file:list(db:option("webpath") || "/static/xqdoc/")
  return <json type="array">
- {for $j in $jlist
+ {for $j in reverse($jlist)
  return <_ type="object">
   <id>{ $j }</id>
   <name>todo</name>
+  <href>/static/xqdoc/{ $j }index.html</href>
  </_>
  }</json>
 };

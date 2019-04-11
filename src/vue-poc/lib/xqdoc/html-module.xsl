@@ -11,7 +11,7 @@
 		Source not available
 	</xsl:param>
 	<xsl:param name="filename" as="xs:string" select="'?file'" />
-	<xsl:param name="ext-id" as="xs:string"></xsl:param>
+
 	<xsl:param name="show-private" as="xs:boolean" select="false()" />
 	<xsl:param name="resources" as="xs:string" select="'resources/'" />
 	<xsl:param name="root" as="xs:string" select="'../../'" />
@@ -36,7 +36,6 @@
 				<title>
 					<xsl:value-of select="$docuri" />
 					- xqDoc
-					<xsl:value-of select="$ext-id" />
 				</title>
 				<xsl:call-template name="resources">
 					<xsl:with-param name="path" select="concat($root,$resources)" />
@@ -56,11 +55,7 @@
 						mode="restxq" />
 					<div>
 						<h3 id="source">Original Source Code</h3>
-						<pre>
-							<code class="language-xquery">
-								<xsl:value-of select="$source" />
-							</code>
-						</pre>
+						<pre><code class="language-xquery"><xsl:value-of select="$source" /></code></pre>
 					</div>
 					<br />
 
@@ -71,7 +66,7 @@
 								<a href="xqdoc.xml" target="xqdoc">
 									xqdoc
 								</a>
-								<a href="xparse.xml" target="xparse">
+								<a href="xqparse.xml" target="xqparse">
 									xparse
 								</a>
 							</i>
@@ -96,26 +91,29 @@
 				<xsl:value-of select="@type" />
 				module
 			</small>
-
+     <xsl:if test="count($restxq)">
+          <span  title="RestXQ" class="tag tag-success" style="float:right">R</span>
+        </xsl:if>
+        <xsl:if test=".//doc:annotations/doc:annotation[@name='updating']">
+              <div class="tag tag-danger" title="Updating" style="float:right">U
+              </div>
+         </xsl:if>
 		</h1>
 		<dl>
 			<xsl:apply-templates select="doc:comment/doc:description" />
 			<dt>Tags</dt>
 			<dd>
-				<xsl:if test="count($restxq)">
-					<span class="tag tag-success">RESTXQ</span>
-				</xsl:if>
 				<xsl:apply-templates
 					select="doc:comment/* except doc:comment/doc:description" />
 			</dd>
 		</dl>
+		<div> Imported by <a href="{ $root }imports.html#{ doc:uri }">*</a></div>
 	</xsl:template>
 
   <xsl:template match="doc:imports[doc:import]">
     <div id="imports">
-      <h3>
-        <a href="#imports">Imports</a>
-      </h3>
+    <details>
+    <summary><a href="#imports">Imports</a></summary>
       <table class="data" style="float:none">
         <thead>
           <tr>
@@ -137,6 +135,7 @@
           </xsl:for-each>
         </tbody>
       </table>
+      </details>
     </div>
    </xsl:template>
     
@@ -238,9 +237,10 @@
 
 		<div id="{$id}">
 			<h4>
-				<a href="#{$id}">
-					<xsl:value-of select="$id" />
-				</a>
+			   <xsl:value-of select="$id" />
+			  <div style="float:right">
+				<a href="#{$id}" >#</a>
+				</div>
 			</h4>
 
 			<xsl:apply-templates select="$fun/doc:comment/doc:description[1]" />
@@ -251,7 +251,15 @@
 			<xsl:apply-templates select="$fun[1]/doc:parameters" />
 			<xsl:apply-templates select="$fun[1]/doc:return" />
 			<xsl:apply-templates select="$fun[1]/doc:comment/doc:error" />
-
+      <xsl:apply-templates select="doc:annotations" />
+      <details>
+      <summary>External functions that invoke this function</summary>
+      todo
+      </details>
+      <details>
+      <summary>Internal functions used by this function</summary>
+      todo
+      </details>
 		</div>
 	</xsl:template>
 
@@ -281,7 +289,7 @@
 				<xsl:value-of select="doc:return/doc:type/@occurrence/string()" />
 			</code>
 		</div>
-		<xsl:apply-templates select="doc:annotations" />
+	
 	</xsl:template>
 
 	<xsl:template match="doc:functions[doc:function]" mode="restxq">
@@ -458,20 +466,18 @@
 
 	<xsl:template name="toc">
 		<nav id="toc">
-			<div>
-				<a href="{$index}">
-					&#8624;
-					<xsl:value-of select="$project" />
-					:id=
-					<xsl:value-of select="$ext-id" />
-				</a>
-			</div>
 			<h2>
+			    <a href="{ $index }" class="tag tag-success">
+                   <xsl:value-of select="$project" />
+                </a>
+                / Module
+       </h2>
+			<h3>
 				<a id="contents"></a>
 				<span class="">
 					<xsl:value-of select="$docuri" />
 				</span>
-			</h2>
+			</h3>
 			<ol class="toc">
 				<li>
 					<a href="#main">
@@ -480,10 +486,16 @@
 					</a>
 				</li>
 				<li>
+          <a href="#imports">
+            <span class="secno">2 </span>
+            <span class="content">Imports</span>
+          </a>
+        </li>
+				<li>
 					<ol class="toc">
 						<li>
 							<a href="#variables">
-								<span class="secno">2 </span>
+								<span class="secno">3 </span>
 								<span class="content">Variables</span>
 							</a>
 							<ol class="toc">
@@ -509,7 +521,7 @@
 					<ol class="toc">
 						<li>
 							<a href="#functions">
-								<span class="secno">3 </span>
+								<span class="secno">4 </span>
 								<span class="content">Functions</span>
 							</a>
 							<ol class="toc">
@@ -517,7 +529,7 @@
 									<xsl:sort select="lower-case(doc:name)" />
 									<xsl:variable name="id" select="current-grouping-key()" />
 									<li>
-										<a href="#{$id}#0">
+										<a href="#{$id}">
 											<span class="secno">
 												<xsl:value-of select="concat('3.',position())" />
 											</span>
@@ -544,7 +556,7 @@
 				</li>
 				<li>
 					<a href="#namespaces">
-						<span class="secno">4 </span>
+						<span class="secno">5 </span>
 						<span class="content">Namespaces</span>
 					</a>
 				</li>
@@ -552,7 +564,7 @@
 					<ol class="toc">
 						<li>
 							<a href="#restxq">
-								<span class="secno">5 </span>
+								<span class="secno">6 </span>
 								<span class="content">Restxq</span>
 							</a>
 							<ol class="toc">
@@ -576,6 +588,12 @@
 					</ol>
 
 				</li>
+       	<li>
+					<a href="#source">
+						<span class="secno">7 </span>
+						<span class="content">Source</span>
+					</a>
+				</li> 
 			</ol>
 		</nav>
 	</xsl:template>

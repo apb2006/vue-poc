@@ -4,9 +4,11 @@
  :)
 
 import module namespace xqd = 'quodatum:build.xqdoc' at "../../../lib/xqdoc/xqdoc-proj.xqm";
+import module namespace xqhtml = 'quodatum:build.xqdoc-html' at "../../../lib/xqdoc/xqdoc-html.xqm";
 import module namespace store = 'quodatum.store' at "../../../lib/store.xqm";
-declare namespace c="http://www.w3.org/ns/xproc-step";
-declare namespace xqdoc="http://www.xqdoc.org/1.0";
+
+
+
 (:~ URL of the root folder to document
  : @default C:/Users/andy/git/vue-poc/src/vue-poc
  :)
@@ -15,51 +17,55 @@ declare variable $efolder as xs:anyURI  external := xs:anyURI("C:/Users/andy/git
 declare variable $id as element(last-id):=db:open("vue-poc","/state.xml")/state/last-id;
 
 let $target:="file:///" || db:option("webpath") || "/static/xqdoc/" || $id || "/"
-let $project:=tokenize($efolder,"[/\\]")[last()]
 
+let $state:=xqd:read($efolder)=>trace("READ: ")
 let $opts:=map{
                "src-folder": $efolder, 
-               "project": $project, 
-               "ext-id": $id/string()
+               "project": $state?project, 
+               "ext-id": $id/string(),
+               "resources": "resources/"
                }
-let $state:=xqd:read($efolder)=>trace("READ: ")
-let $imports:= xqd:imports($state)?xqdoc=>head()
 
+(: generate o/ps per source file  :)
 let $modmap:=for $file at $pos in $state?files
                let $params:=map:merge((map{
-                              "source": "** source**",
-                              "filename": "**FILE**",
+                              "source":  $file?xqparse/string(),
+                              "filename": $file?path,
                               "cache": $xqd:cache,
                               "show-private": true(),
-                              "root": "../",
+                              "root": "../../",
                               "resources": "resources/"},
                               $opts))
                return (
                  map{
-                   "uri": ``[f`{ $pos}`/xqdoc.xml]``,
                    "document": $file?xqdoc,
-                   "opts":  $xqd:XML
+                    "uri":  $file?href || "/xqdoc.xml", "opts":  $xqd:XML
                  },
                   map{
-                   "uri": ``[f`{ $pos}`/xqparse.xml]``,
                    "document": $file?xqparse,
-                   "opts":  $xqd:XML
+                    "uri":  $file?href || "xqparse.xml", "opts":  $xqd:XML
                  },
                   map{
-                   "uri": ``[f`{ $pos}`/index.html]``,
                    "document": xqd:xqdoc-html($file?xqdoc,$params),
-                   "opts":  $xqd:HTML5
+                   "uri":  $file?href || "index.html", "opts":  $xqd:HTML5
                  }
                )
- let $indexmap:=              
-                  map{
-                   "uri": ``[index.html]``,
-                   "document": <html><title>todo</title></html>,
-                   "opts":  $xqd:HTML5
+               
+ let $index:= map{ 
+                   "document": xqhtml:index-html2($state,$opts),
+                   "uri": ``[index.html]``, "opts":  $xqd:HTML5
                  }
-
+                 
+ let $restxq:= map{
+                   "document": xqhtml:restxq($state, xqd:rxq-paths($state),$opts),
+                     "uri": ``[restxq.html]``, "opts":  $xqd:HTML5
+                 }
+let $imports:=map{
+                   "document": xqhtml:imports($state,xqd:imports($state),$opts),
+                     "uri": ``[imports.html]``, "opts":  $xqd:HTML5
+                 }
 return (
-       store:store(($indexmap,$modmap),$target),
+       store:store(($index,$restxq,$imports,$modmap),$target),
        xqd:export-resources2($target),
        replace value of node $id with 1+$id,
        update:output(

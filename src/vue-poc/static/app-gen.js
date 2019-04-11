@@ -1,4 +1,4 @@
-// generated 2019-03-16T22:59:26.228Z
+// generated 2019-04-04T23:01:43.478+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -1395,7 +1395,7 @@ Vue.use(Fullscreen);
 
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/mimetypes.js
-// Mimetype info
+// Mimetype info as vue extension. defines $MimeTypes
 // 
 // 
 const MimeTypes=new function(){
@@ -4541,6 +4541,9 @@ const Documentation=Vue.extend({template:`
     <v-toolbar dense>
         <v-toolbar-title>documentation</v-toolbar-title>
         <v-spacer></v-spacer>
+          <v-btn icon :loading="loading" @click="get()" :disabled="loading">  
+    <v-icon>refresh</v-icon>
+    </v-btn>
         <a href="/vue-poc/api/xqdocjob" target="doc">json</a>
     </v-toolbar>
 
@@ -4548,8 +4551,11 @@ const Documentation=Vue.extend({template:`
        <v-layout row wrap>
          <v-flex height="80px" xs2 v-for="item in items" :key="item.id">
            <v-card :hover="true">
-           <v-card-title>{{ item.id }}</v-card-title>
+           <v-card-title color="#26c6da">{{ item.id }}</v-card-title>
            <v-card-text>{{ item.name }}</v-card-text>
+           <v-card-actions>
+           <a :href="item.href" target="_new">go</a>
+           </v-card-actions>
            </v-card>
            </v-flex>
         </v-layout>
@@ -4561,7 +4567,8 @@ const Documentation=Vue.extend({template:`
   data:  function(){
     return {
       message: 'Hello Vue.js!',
-      items:[]
+      items:[],
+      loading: false
       }
   },
   methods:{
@@ -4569,7 +4576,6 @@ const Documentation=Vue.extend({template:`
       HTTP.get('xqdocjob')
       .then((res) => {
         this.items = res.data;
-        console.log("items",this.items)
       });
     },
     doEdit(item){
@@ -5538,13 +5544,14 @@ const Dicetest=Vue.extend({template:`
  <v-card-text>
   <p>Read json data for 1st page for entity.</p>
    <v-flex xs12 sm6>
-     <v-combobox v-model="url" :items="urls" label="Select target"></v-combobox>
+     <v-combobox v-model="url" :items="entities" item-text="name" label="Select target" clearable open-on-clear></v-combobox>
       
     </v-flex>
  
   <table class="v-table">
       <thead> 
         <tr>
+         <th xs1>url</th>
          <th xs1>Action</th>
           <th xs1>Repeat</th>
           <th xs1>Last</th>
@@ -5559,11 +5566,13 @@ const Dicetest=Vue.extend({template:`
 
       
           <tr>
+          <td>
+              {{ url &amp;&amp; url.name  }}
+               </td>
               <td>
-               <v-btn @click="get()">
+               <v-btn @click="get()" :disabled="!url">
                    Read <v-icon right>compare_arrows</v-icon> 
                 </v-btn>
-             
                </td>
                <td>
                 <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
@@ -5606,17 +5615,18 @@ const Dicetest=Vue.extend({template:`
     return {
       getValues: new perfStat(),
       repeat: {get:false},
-      url: "data/entity",
-      urls: ["data/entity","data/taskhistory"],
+      url: null,
       counter: 0,
-      result: null
+      result: null,
+      entities: null
       }
   },
   methods:{
 
     get(){
      var _start = performance.now();
-     HTTP.get(this.url,axios_json)
+     console.log("FFFFF"," "+ this.url.parentlink)
+     HTTP.get(this.url.parentlink,axios_json)
      .then(r=>{
        var elapsed=Math.floor(performance.now() - _start);
        this.counter++;
@@ -5635,7 +5645,18 @@ const Dicetest=Vue.extend({template:`
     reset(){
       Object.assign(this.getValues,this.getValues.clear());
       this.$forceUpdate()
+    },
+    getentities(){
+      HTTP.get("data/entity",axios_json)
+      .then(r=>{
+        console.log("entities: ",r.data);
+        this.entities=r.data.items
+      })
     }
+  },
+  created(){
+    console.log("GET entities: ");
+    this.getentities()
   },
   beforeRouteLeave(to, from, next){
     var on=this.repeat.get 
@@ -6303,7 +6324,7 @@ const Runtask=Vue.extend({template:`
     <v-card-text>
       <v-container fluid>
         <v-layout row wrap>   
-          <v-flex xs12>
+          <v-flex xs12 v-if="!loading">
                  <vp-paramform ref="params" :endpoint="'tasks/'+task"></vp-paramform>
           </v-flex>
         </v-layout>

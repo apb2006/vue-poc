@@ -29,7 +29,7 @@
     <v-card-text>
       <v-container fluid>
         <v-layout row wrap>   
-          <v-flex xs12>
+          <v-flex xs12 v-if="!loading">
                  <vp-paramform ref="params" :endpoint="'tasks/'+task"></vp-paramform>
           </v-flex>
         </v-layout>

@@ -13,8 +13,8 @@
    <v-flex xs12 sm6>
      <v-combobox
           v-model="url"
-          :items="urls"
-          label="Select target"
+          :items="entities" item-text="name" 
+          label="Select target" clearable open-on-clear
         ></v-combobox>
       
     </v-flex>
@@ -22,6 +22,7 @@
   <table class="v-table">
       <thead> 
         <tr>
+         <th xs1>url</th>
          <th xs1>Action</th>
           <th xs1>Repeat</th>
           <th xs1>Last</th>
@@ -36,11 +37,13 @@
 
       
           <tr>
+          <td>
+              {{ url && url.name  }}
+               </td>
               <td>
-               <v-btn @click="get()"  >
+               <v-btn @click="get()" :disabled="!url" >
                    Read <v-icon right>compare_arrows</v-icon> 
                 </v-btn>
-             
                </td>
                <td>
                 <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
@@ -84,17 +87,18 @@
     return {
       getValues: new perfStat(),
       repeat: {get:false},
-      url: "data/entity",
-      urls: ["data/entity","data/taskhistory"],
+      url: null,
       counter: 0,
-      result: null
+      result: null,
+      entities: null
       }
   },
   methods:{
 
     get(){
      var _start = performance.now();
-     HTTP.get(this.url,axios_json)
+     console.log("FFFFF"," "+ this.url.parentlink)
+     HTTP.get(this.url.parentlink,axios_json)
      .then(r=>{
        var elapsed=Math.floor(performance.now() - _start);
        this.counter++;
@@ -113,7 +117,18 @@
     reset(){
       Object.assign(this.getValues,this.getValues.clear());
       this.$forceUpdate()
+    },
+    getentities(){
+      HTTP.get("data/entity",axios_json)
+      .then(r=>{
+        console.log("entities: ",r.data);
+        this.entities=r.data.items
+      })
     }
+  },
+  created(){
+    console.log("GET entities: ");
+    this.getentities()
   },
   beforeRouteLeave(to, from, next){
     var on=this.repeat.get 

@@ -5,6 +5,7 @@
  : $target:="file:///C:/Users/andy/workspace/app-doc/src/doc/generated/models.xqm"
  :)
 module namespace xqhtml = 'quodatum:build.xqdoc-html';
+import module namespace tree = 'quodatum.data.tree' at "../tree.xqm";
 
 declare namespace c="http://www.w3.org/ns/xproc-step";
 declare namespace xqdoc="http://www.xqdoc.org/1.0";
@@ -14,6 +15,81 @@ declare namespace xqdoc="http://www.xqdoc.org/1.0";
  : "ext-id": "299",
  : "src-folder": "C:/Users/andy/git/vue-poc/src/vue-poc",
  : "project": "vue-poc"
+ :)
+declare function xqhtml:index-html2($state as map(*),
+                            $params as map(*)
+                            )
+as document-node()                            
+{
+let $d:=<div>
+             <h1>
+                  <span class="tag tag-success">
+                      { $params?project }
+                  </span>
+                  XQuery module Documentation 
+              </h1>
+              { xqhtml:toc($params) }
+              <dl>
+              <dt><a href="restxq.html">RestXQ</a></dt>
+              <dd>Summary of RESTXQ usage</dd>
+              <dt> <a href="imports.html">Imports</a></dt>
+              <dd>Summary of all imports</dd>
+               </dl>
+              <div>src: { $params?src-folder }</div>
+             
+              <div id="ns">
+                  <h1>Module Uris</h1>
+                  <table>
+                  <thead>
+                  <tr>
+                  <th>Uri</th>
+                  <th>parsed</th>
+                  </tr>
+                  </thead>
+                  <tbody>
+                 
+                     { for $file  at $pos in $state?files
+                       let $ns:=$file?xqdoc/xqdoc:module/xqdoc:uri/string()
+                       order by $ns
+                      return  <tr>
+                               <td>
+                                <a href="{ $file?href }index.html" title="{ $file?path }">
+                                  {$ns}
+                                </a>
+                                </td>
+                                <td>
+                                { $file?xqparse/name() }
+                                </td>      
+                            </tr>
+                      }
+                  </tbody>
+                  </table>
+              </div>
+               <div id="file">
+                  <h1>Files</h1>
+                  <ul>
+                      { for $file  at $pos in $state?files
+                   
+                      return  <li>
+                                <a href="{ $file?href }index.html">
+                                   { $file?path }
+                                </a>      
+                                { $pos }
+                            </li>
+                      }
+                  </ul>
+              </div>
+
+           </div>
+return document{ xqhtml:page($d, $params ) }
+};
+
+(:~ transform files to html using c:files
+ : @param $params  keys: resources 
+ : "ext-id": "299",
+ : "src-folder": "C:/Users/andy/git/vue-poc/src/vue-poc",
+ : "project": "vue-poc",
+ : "resources"
  :)
 declare function xqhtml:index-html($files,
                             $params as map(*)
@@ -62,10 +138,13 @@ let $d:=<div>
                   </ul>
               </div>
            </div>
-let $params:= map:merge(($params,map:entry("resources","resources/")))
 return document{ xqhtml:page($d, $params ) }
 };
 
+(:~ 
+ : build toc 
+ : params: map{"project":..}
+ :)
 declare function xqhtml:toc($params)
 as element()
 {
@@ -86,7 +165,7 @@ as element()
                 <li>
                     <a href="#ns">
                         <span class="secno">2 </span>
-                        <span class="content">Namespaces</span>
+                        <span class="content">Module uris</span>
                     </a>
                 </li>
                 <li>
@@ -99,8 +178,141 @@ as element()
         </nav>
 };
 
+(:~ tree to list :)
+declare function xqhtml:tree-list($tree as element(*),$seq as xs:integer*){
+  typeswitch ($tree )
+  case element(directory) 
+      return <li>
+                 <span class="secno">{string-join($seq,'.')}</span>
+                 <span class="content">{$tree/@name/string()}/</span>
+                 <ol class="toc">{$tree/*!xqhtml:tree-list(.,($seq,position()))}</ol>
+             </li>
+   case element(file) 
+      return <li>{if($tree/@target) then
+                   <a href="#{$tree/@target}">
+                     <span class="secno">{string-join($seq,'.')}</span>
+                     
+                      <span class="content" title="{$tree/@target}">{  $tree/@name/string() }</span>
+                      <div class="tag tag-success" 
+                            title="RESTXQ: {$tree/@target}">GET
+                      </div>
+                      <div class="tag tag-danger"  style="float:right"
+                            title="RESTXQ: {$tree/@target}">X
+                      </div>
+                   </a>
+               else 
+                <span class="content">{$tree/@name/string()}</span>
+             }</li>   
+  default 
+     return <li>unknown</li>
+};
+
+(:~
+ : html for page. 
+ :)
+declare function xqhtml:restxq($state,$annots,$opts)
+{
+let $tree:=trace($annots?uri)
+let $tree:=tree:build($tree)=>trace("TRRES")
+let $body:= <div>
+          <nav id="toc">
+            <h2>
+                 <a href="index.html" class="tag tag-success">
+                    { $state?project }
+                </a>
+                / RestXQ
+            </h2>
+           <h3>
+               Contents
+            </h3>
+            <ol class="toc">
+                <li>
+                    <a href="#main">
+                        <span class="secno">1 </span>
+                        <span class="content">Introduction</span>
+                    </a>
+                </li>
+                 <li  href="#main">
+                    <a >
+                        <span class="secno">2 </span>
+                        <span class="content">Paths.</span>
+                    </a>
+                </li>
+                <li>
+      
+                 <ol  class="toc"> { $tree/*/*!xqhtml:tree-list(.,2) } </ol>
+                </li>
+             </ol>
+           </nav>
+           <a href="index.html">index: </a>
+          
+           <ul>{$annots!xqhtml:path-to-html(.)}</ul>
+           </div>
+return  xqhtml:page($body,$opts)
+};
+
+declare function xqhtml:imports($state,$imports,$opts)
+{
+  let $body:=<div>
+   <nav id="toc">
+            <h2>
+                <a href="index.html" class="tag tag-success">
+                    { $state?project }
+                </a>
+                / Imports
+            </h2>
+           
+            <h3>
+               Contents
+            </h3>
+            <ol class="toc">
+                <li>
+                    <a href="#main">
+                        <span class="secno">1 </span>
+                        <span class="content">Introduction</span>
+                    </a>
+                </li>
+                
+             </ol>
+           </nav>
+           <a href="index.html">index</a>
+           <p>Lists all modules imported.</p>
+           {for $import in $imports
+           order by $import?uri
+           return <div  id="{ $import?uri }">
+           <h4>{ $import?uri }
+           <div  style="float:right"><a href="#{ $import?uri }">#</a></div>
+           </h4>
+           <ul>
+           {for $f in  $import?where
+           return <li><a href="{$f}index.html">mod</a></li>
+         }
+           </ul>
+           </div>
+           }
+  </div>
+  return  xqhtml:page($body,$opts)
+};
+(:~  html for a path :)          
+declare function xqhtml:path-to-html($rep as map(*))
+as element(li){
+   <li id="{ $rep?uri }">
+       <h4>{ $rep?uri }</h4>
+       <ul>{
+       let $methods as map(*) :=$rep?methods
+       for $method in map:keys($methods)
+       let $d:=$methods?($method)
+       let $id:=head($d?function)
+       return <li>
+                    <a href="{$d?uri}index.html#{$id }">{ $method }</a>
+                    <div>{$d?description}</div>
+              </li>
+       }</ul>
+   </li>
+};
 (:~ 
  : generate standard page wrapper
+ : uses $opts?resources
   :)
 declare function xqhtml:page($body,$opts as map(*)) 
 as element(html)
