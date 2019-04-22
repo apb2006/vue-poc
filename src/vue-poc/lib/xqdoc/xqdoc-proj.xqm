@@ -89,10 +89,12 @@ return map{
              "files": for $file at $pos in $files
                       let $full:=concat($efolder || "\", $file)
                       let $spath:=translate($file,"\","/")
+                      let $xqdoc:=xqd:xqdoc($full,map{"_source": $spath})
                       return map{
                         "path":$file,
                         "href": ``[modules/F`{ $pos }`/]``,
-                        "xqdoc": xqd:xqdoc($full,map{"_source": $spath}),
+                        "namespace": $xqdoc/xqdoc:module/xqdoc:uri/string(),
+                        "xqdoc": $xqdoc,
                         "xqparse": fetch:text($full)=>xqd:parse()
                       }
           
@@ -107,7 +109,7 @@ as map(*)*
 for $f in $doc?files
 for $in in $f?xqdoc//xqdoc:import[@type="library"]
 group by $ns:=$in/xqdoc:uri
-return map{ "uri": $ns, "where": $f?href}
+return map{ "uri": $ns, "where": $f}
 
 };
 

@@ -1,4 +1,4 @@
-// generated 2019-04-04T23:01:43.478+01:00
+// generated 2019-04-13T21:49:49.993+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -5478,7 +5478,9 @@ const Basexsettings=Vue.extend({template:`
       <td>{{ props.item.current }}</td>
       <td>{{ props.item.changed }}</td>
       <td class="text-xs-right">{{ props.item.default }}</td>
-      <td><qd-link href="http://docs.basex.org/wiki/Options#">description</qd-link></td>
+      <td>
+        <qd-link :href="'http://docs.basex.org/wiki/Options#' + props.item.name.toUpperCase()">description</qd-link>
+      </td>
     </template>
   </v-data-table>
    </v-card-text>

@@ -24,7 +24,9 @@
       <td >{{ props.item.current }}</td>
       <td >{{ props.item.changed }}</td>
       <td class="text-xs-right">{{ props.item.default }}</td>
-      <td><qd-link href="http://docs.basex.org/wiki/Options#">description</qd-link></td>
+      <td>
+        <qd-link :href="'http://docs.basex.org/wiki/Options#' + props.item.name.toUpperCase()">description</qd-link>
+      </td>
     </template>
   </v-data-table>
    </v-card-text>

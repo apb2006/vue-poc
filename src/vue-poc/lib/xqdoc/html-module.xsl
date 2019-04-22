@@ -65,9 +65,9 @@
 								<xsl:value-of select="$filename" />
 								<a href="xqdoc.xml" target="xqdoc">
 									xqdoc
-								</a>
+								</a>,
 								<a href="xqparse.xml" target="xqparse">
-									xparse
+									xqparse
 								</a>
 							</i>
 							|
@@ -130,6 +130,7 @@
               </td>
               <td>
                 <xsl:value-of select="string(doc:uri)" />
+                <xsl:sequence select="qd:nslink(doc:uri)"/>
               </td>
             </tr>
           </xsl:for-each>

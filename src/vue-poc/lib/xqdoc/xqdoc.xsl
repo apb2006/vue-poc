@@ -24,4 +24,9 @@
     <xsl:sequence select="concat('*',$file)" />
   </xsl:function>
   
+  <!-- link to namespace -->
+  <xsl:function name="qd:nslink" as="element(a)">
+    <xsl:param name="ns" as="xs:string"/>
+    <a href="imports.html#{ $ns }"><xsl:value-of select="$ns"/></a>
+  </xsl:function>  
 </xsl:stylesheet>

@@ -44,22 +44,30 @@ let $d:=<div>
                   <tr>
                   <th>Uri</th>
                   <th>parsed</th>
+                  <th>Restxq</th>
+                  <th>Update</th>
                   </tr>
                   </thead>
                   <tbody>
                  
                      { for $file  at $pos in $state?files
-                       let $ns:=$file?xqdoc/xqdoc:module/xqdoc:uri/string()
-                       order by $ns
+                     
+                       order by $file?namespace
                       return  <tr>
                                <td>
                                 <a href="{ $file?href }index.html" title="{ $file?path }">
-                                  {$ns}
+                                  { $file?namespace }
                                 </a>
                                 </td>
                                 <td>
                                 { $file?xqparse/name() }
-                                </td>      
+                                </td>
+                                   <td>
+                                { "R" }
+                                </td>
+                                  <td>
+                                { "U" }
+                                </td>       
                             </tr>
                       }
                   </tbody>
@@ -285,7 +293,7 @@ declare function xqhtml:imports($state,$imports,$opts)
            </h4>
            <ul>
            {for $f in  $import?where
-           return <li><a href="{$f}index.html">mod</a></li>
+           return <li><a href="{$f?href}index.html">{ $f?namespace }</a></li>
          }
            </ul>
            </div>

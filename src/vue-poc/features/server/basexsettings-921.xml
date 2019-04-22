@@ -47,7 +47,7 @@
     <autooptimize>false</autooptimize>
     <bindings/>
     <casesens>false</casesens>
-    <catfile>C:/Users/andy/Desktop/basex.versions/etc/mycatalog.xml</catfile>
+    <catfile> </catfile>
     <checkstrings>true</checkstrings>
     <chop>false</chop>
     <compplan>true</compplan>
