@@ -16,4 +16,9 @@ declare %updating function local:put($data,$path)
 
 let $opt:=map{"include-info":true()}
 let $files:=fw:directory-list($cfg:IMAGEDIR,$opt)
-return $files=>local:put('/pics.xml')
+let $meta:=<meta created="{ current-dateTime() }">
+            <imagedir>{ $cfg:IMAGEDIR }></imagedir>
+          </meta>
+return ($files=>local:put('/pics.xml'),
+        $meta=>local:put('pics-meta.xml')
+      )

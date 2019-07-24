@@ -3,32 +3,19 @@
  image  report
  
  -->
-<template id="report">
- <v-container fluid>
-  <v-card >
-    <v-toolbar class="orange darken-1">
-     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title >
-     <v-chip >Settings</v-chip>   
-    </v-card-title>
-   
-    <v-spacer></v-spacer> 
-  
-    </v-toolbar>
-     <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
-    <v-card-text >
-    <ul>
-    <li></li>
-    <li></li>
-    <li></li>
-    </ul>
-    <pre>
+<template id="report"> <v-container fluid> <v-card>
+<v-toolbar class="orange darken-1"> <v-btn icon to="./">
+<v-icon>arrow_back</v-icon></v-btn> <v-card-title> <v-chip>Settings</v-chip>
+</v-card-title> <v-spacer></v-spacer> </v-toolbar> <v-progress-linear v-if="busy"
+	v-bind:indeterminate="true"></v-progress-linear> <v-card-text>
+<ul v-if="report">
+	<li>DB: {{ report.imagedb }}</li>
+	<li><a :href="'/vue-poc/ui/database?url=/' + report.imagedb + '/'" target="new">db</a></li>
+	<li></li>
+</ul>
+<pre>
     {{ report | pretty }}
-    </pre>
-    </v-card-text>
- </v-card>
- </v-container>
-</template>
+    </pre> </v-card-text> </v-card> </v-container> </template>
 
 <script>{
   data: ()=>({

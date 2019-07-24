@@ -1,4 +1,4 @@
-// generated 2019-04-13T21:49:49.993+01:00
+// generated 2019-07-24T10:31:16.914+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -3603,6 +3603,7 @@ const Image=Vue.extend({template:`
       <span class="white--text">Image: {{ id }}</span>      
     <a :href="path" :download="id +'.jpg'"><v-icon>file_download</v-icon></a>
     </v-toolbar>
+    
     <v-card-text>
  <v-layout>
 		 <v-flex xs5>
@@ -3611,8 +3612,9 @@ const Image=Vue.extend({template:`
 		 </v-flex>
 		 
 		 <v-flex xs7>
-		 <iframe :src="path" style="border:0;width:100%;height:100%;min-height:400px;">image</iframe>
-		 </v-flex>
+		 
+      <v-img v-if="loaded" src="/vue-poc/api/images/list/17236456/image" min-height="400px" height="100%" width="100%">
+		 </v-img></v-flex>
  </v-layout>
  </v-card-text>
  </v-card>
@@ -3626,18 +3628,22 @@ const Image=Vue.extend({template:`
   }),
   computed: {
     path(){
-    return this.loaded?'/vue-poc/api/images/list/'+ this.id+ '/image':null
+    	var a=this.loaded?'/vue-poc/api/images/list/'+ this.id+ '/image':null
+    	console.log("path",a)
+    return a
     },
     meta(){
       return this.loaded?'/vue-poc/api/images/list/'+ this.id+ '/meta':null
       }
 },
   created:function(){
-   var id=this._props.id
+   var id=this.id
+   
    HTTP.get("images/list/"+id)
    .then(r=>{
      this.image=r.data
      this.loaded=true
+
      })
   }
     }
@@ -3680,33 +3686,47 @@ const Images=Vue.extend({template:`
           </v-toolbar-items>
           </span>
            <v-spacer></v-spacer>
+           
           <v-toolbar-items>
-          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon>
-           <v-avatar>
-           <v-icon>arrow_back</v-icon>
-           </v-avatar>
-           </v-btn>
-           <v-btn @click.stop="pageNext()" icon>
-            <v-avatar>
-            <v-icon>arrow_forward</v-icon>
-            </v-avatar>
-           </v-btn>
+	          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon>
+	           <v-avatar>
+	           <v-icon>arrow_back</v-icon>
+	           </v-avatar>
+	           </v-btn>
+	           
+	           <v-btn @click.stop="pageNext()" icon>
+	            <v-avatar>
+	            <v-icon>arrow_forward</v-icon>
+	            </v-avatar>
+	           </v-btn>
          </v-toolbar-items>
         
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
         <v-container v-if="!busy" fluid grid-list-md>
           <v-layout row wrap v-touch="{ left: () => pageNext(), right: () => pageBack()}">
-            <v-flex height="80px" xs2 v-for="image in images" :key="image.name">
+            <v-flex xs12 sm6 md4 lg3 xl2 v-for="image in images" :key="image.name">
               <v-card tile :elevation="2" :hover="true" color="grey lighten-3">
-                <div :style="style(image)" v-bind:class="{ selcard: image.selected}" @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected ">
+                 <v-toolbar height="16px">
+                 <v-toolbar-title :title="image.path">{{image.name}}</v-toolbar-title>
                  <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
-                 <v-avatar icon small v-if="image.geo">
-                  <v-icon>place</v-icon>
-                </v-avatar>
+	                 <v-avatar icon small v-if="image.geo">
+	                  <v-icon>place</v-icon>
+	                </v-avatar>
+                  <v-spacer></v-spacer>
+                 <a :href="src(image)" target="thumb" :title="image.id">
+	                  <v-avatar icon small>
+	                     <v-icon>search</v-icon>
+                     </v-avatar>
+                 </a>
+                	
+                </v-toolbar>
+             
+                <div :style="style(image)" v-bind:class="{ selcard: image.selected}" @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected ">
+                 
                 </div>
                
-                <a :href="src(image)" target="thumb">{{image.id}}</a>
+                
                 <div v-if="image.selected" style="position:absolute;right:0;top:0">
                  <v-icon class="white primary--text">check_circle</v-icon>
                  </div>
@@ -4084,31 +4104,17 @@ const Imagesfilter=Vue.extend({template:`
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/ireport.vue
-const Report=Vue.extend({template:` 
- <v-container fluid>
-  <v-card>
-    <v-toolbar class="orange darken-1">
-     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title>
-     <v-chip>Settings</v-chip>   
-    </v-card-title>
-   
-    <v-spacer></v-spacer> 
-  
-    </v-toolbar>
-     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
-    <v-card-text>
-    <ul>
-    <li></li>
-    <li></li>
-    <li></li>
-    </ul>
-    <pre>    {{ report | pretty }}
-    </pre>
-    </v-card-text>
- </v-card>
- </v-container>
- `,
+const Report=Vue.extend({template:`  <v-container fluid> <v-card>
+<v-toolbar class="orange darken-1"> <v-btn icon to="./">
+<v-icon>arrow_back</v-icon></v-btn> <v-card-title> <v-chip>Settings</v-chip>
+</v-card-title> <v-spacer></v-spacer> </v-toolbar> <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear> <v-card-text>
+<ul v-if="report">
+	<li>DB: {{ report.imagedb }}</li>
+	<li><a :href="'/vue-poc/ui/database?url=/' + report.imagedb + '/'" target="new">db</a></li>
+	<li></li>
+</ul>
+<pre>    {{ report | pretty }}
+    </pre> </v-card-text> </v-card> </v-container>  `,
       
   data: ()=>({
     busy: false,
@@ -4138,17 +4144,14 @@ const Report=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/images/keywords.vue
 const Keywords=Vue.extend({template:` 
- <v-container fluid>
-  <v-card>
-    <v-toolbar class="orange darken-1">
-     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title>
-     <v-chip>click to show</v-chip>   
-    </v-card-title>
-   
+  <v-card> 
+    <v-toolbar dense class="orange darken-1"> 
+    <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn> 
+    <v-card-title> 
+    <v-chip>click to show</v-chip> 
+    </v-card-title> 
     <v-spacer></v-spacer> 
-  <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
-    </v-toolbar>
+    <v-text-field prepend-icon="search" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field> </v-toolbar>
     <v-card-text>
     <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
         <v-container v-if="!busy" fluid grid-list-md>
@@ -4166,7 +4169,6 @@ const Keywords=Vue.extend({template:`
         </v-container>
  </v-card-text>
  </v-card>
- </v-container>
  `,
       
   data: ()=>({
@@ -4243,14 +4245,17 @@ const Job=Vue.extend({template:`
         <v-chip label class="grey white--text"><v-icon class="red">lock</v-icon>{{  jobstate.writes }}</v-chip>
        <v-chip label class="grey white--text"><v-icon class="amber">lock</v-icon>{{  jobstate.reads }}</v-chip>
       <v-spacer></v-spacer>
+      
        <v-chip class="primary white--text">
       <v-avatar>
         <v-icon>account_circle</v-icon>
       </v-avatar>
      {{  jobstate.user }}</v-chip>
+     
        <v-chip class="green white--text">
         <v-avatar><v-icon>timer</v-icon></v-avatar>
        {{  jobstate.duration }}</v-chip>
+       
       <v-btn icon :loading="loading" @click="getJob()" :disabled="loading || finished">
          <v-icon>refresh</v-icon>
     </v-btn>     
@@ -4405,6 +4410,93 @@ const Jobs=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/job/services.vue
+const Services=Vue.extend({template:` 
+  <v-card>
+   <v-toolbar>
+     <v-text-field prepend-icon="filter_list" label="Filter jobs" single-line hide-details clearable v-model="search"></v-text-field> 
+      <v-spacer></v-spacer>
+     <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
+   
+      <v-btn icon><v-icon>add</v-icon></v-btn>   
+      <v-spacer></v-spacer>
+      
+       <v-btn icon :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
+    <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
+    </v-btn>
+    </v-toolbar>
+  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all class="elevation-1" no-data-text="No Jobs currently running">
+    <template slot="items" slot-scope="props">
+    <td class="vtop">
+        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
+      </td>
+      <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
+      <td class="vtop "><div>{{ props.item.running }}</div>
+      </td><td class="vtop " :title="props.item.interval">{{ props.item.interval }}</td>
+      <td class="vtop " :title="props.item.base-uri">{{ props.item['base-uri'] }}</td>
+       <td class="vtop ">{{ props.item.query }}</td>    
+    </template>
+  </v-data-table>
+ </v-card>
+ `,
+      
+  data:  function(){
+    return {
+      headers: [
+        {
+          text: 'Job id',
+          left: true,
+          value: 'id'
+        },
+        { text: 'Running', value: 'running' },
+        { text: 'Interval', value: 'interval' },
+        { text: 'Base-uri', value: 'base-uri' },
+        { text: 'Query', value: 'query' },
+
+      ],
+      items:[        
+      ],
+      selected: [],
+      search: "",
+      loading: false,
+      autorefresh: true,
+      timer:null
+      }
+  },
+  methods:{
+    load(){    
+        this.loading= true
+        HTTP.get("data/service",{params:{q:this.q}})
+        .then(r=>{
+          this.items= r.data.items
+          this.loading= false
+          if(this.autorefresh) this.timer=setTimeout(()=>{ this.load() }, 10000);
+          })
+        
+      },
+    stop(){
+      var s=this.selected.map((j)=>{return j.id}).join(",")
+      console.log("AAA",this.selected)
+      alert(s)
+    }
+  },
+  computed: {
+    // a computed getter
+    noSelection: function () {
+      // `this` points to the vm instance
+      return this.selected.length==0
+    },
+  },
+  created(){
+    this.load()
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
+  }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/login/login.vue
 const Login=Vue.extend({template:` 
  <v-layout>
@@ -4551,8 +4643,11 @@ const Documentation=Vue.extend({template:`
        <v-layout row wrap>
          <v-flex height="80px" xs2 v-for="item in items" :key="item.id">
            <v-card :hover="true">
-           <v-card-title color="#26c6da">{{ item.id }}</v-card-title>
-           <v-card-text>{{ item.name }}</v-card-text>
+           <v-toolbar color="blue lighten-3" dense>
+           <v-card-title>{{ item.name }}</v-card-title>
+           </v-toolbar>
+           <v-card-text>{{ item.id }}</v-card-text>
+            <v-card-text>{{ item.created | formatDate }}</v-card-text>
            <v-card-actions>
            <a :href="item.href" target="_new">go</a>
            </v-card-actions>
@@ -4573,9 +4668,11 @@ const Documentation=Vue.extend({template:`
   },
   methods:{
     get() {
+      this.loading=true;
       HTTP.get('xqdocjob')
       .then((res) => {
         this.items = res.data;
+        this.loading=false;
       });
     },
     doEdit(item){
@@ -4615,7 +4712,7 @@ const Entity=Vue.extend({template:`
   
     <v-data-iterator content-tag="v-layout" row wrap :loading="loading" :items="items" :search="q" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all :value="selected">
       <v-flex slot="item" slot-scope="props" xs12 sm6 md4 lg3>
-        <v-card :hover="true" active-class="default-class qd-active" max-height="200px">
+        <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
         
           <v-toolbar color="blue lighten-3" dense>
 		          <v-toolbar-title>
@@ -4627,12 +4724,13 @@ const Entity=Vue.extend({template:`
 		         
           </v-toolbar>
           <v-card-text>{{ props.item.description }}<!--<v-card-text-->
-          <v-card-text>
+          <v-card-actions green>
+           Fields
            <v-badge>
 			      <span slot="badge">{{ props.item.nfields }}</span>
 			      Fields
 			    </v-badge>
-          </v-card-text>
+          </v-card-actions>
         </v-card-text></v-card>
       </v-flex>
     </v-data-iterator>
@@ -5546,7 +5644,7 @@ const Dicetest=Vue.extend({template:`
  <v-card-text>
   <p>Read json data for 1st page for entity.</p>
    <v-flex xs12 sm6>
-     <v-combobox v-model="url" :items="entities" item-text="name" label="Select target" clearable open-on-clear></v-combobox>
+     <v-combobox v-model="entity" :items="entities" item-text="name" label="Select target" clearable open-on-clear></v-combobox>
       
     </v-flex>
  
@@ -5569,10 +5667,10 @@ const Dicetest=Vue.extend({template:`
       
           <tr>
           <td>
-              {{ url &amp;&amp; url.name  }}
+              {{ entity &amp;&amp; entity.name  }}
                </td>
               <td>
-               <v-btn @click="get()" :disabled="!url">
+               <v-btn @click="get()" :disabled="!entity">
                    Read <v-icon right>compare_arrows</v-icon> 
                 </v-btn>
                </td>
@@ -5617,7 +5715,7 @@ const Dicetest=Vue.extend({template:`
     return {
       getValues: new perfStat(),
       repeat: {get:false},
-      url: null,
+      entity: null,
       counter: 0,
       result: null,
       entities: null
@@ -5627,8 +5725,8 @@ const Dicetest=Vue.extend({template:`
 
     get(){
      var _start = performance.now();
-     console.log("FFFFF"," "+ this.url.parentlink)
-     HTTP.get(this.url.parentlink,axios_json)
+     console.log("entity:", this.entity)
+     HTTP.get(this.entity.datalink,axios_json)
      .then(r=>{
        var elapsed=Math.floor(performance.now() - _start);
        this.counter++;
@@ -7234,6 +7332,7 @@ const router = new VueRouter({
       
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+      { path: 'services',  component: Services, meta:{title:"Services"} },
       { path: 'upload', component: Upload,meta:{title:"Upload"} },
      
       { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} },
@@ -7467,7 +7566,8 @@ const Vuepoc=Vue.extend({template:`
         text: 'Server' ,
         model: false,
         children: [
-          {href: '/server/jobs',text: 'Running jobs',icon: 'dashboard'},   
+          {href: '/server/jobs',text: 'Running jobs',icon: 'dashboard'},
+          {href: '/server/services',text: 'Services',icon: 'dashboard'},   
           {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},

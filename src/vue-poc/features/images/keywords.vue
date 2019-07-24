@@ -4,19 +4,17 @@
  
  -->
 <template id="keywords">
- <v-container fluid>
-  <v-card >
-    <v-toolbar class="orange darken-1">
-     <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn>
-     <v-card-title >
-     <v-chip >click to show</v-chip>   
-    </v-card-title>
-   
+  <v-card > 
+    <v-toolbar dense class="orange darken-1"> 
+    <v-btn icon to="./"><v-icon>arrow_back</v-icon></v-btn> 
+    <v-card-title> 
+    <v-chip>click to show</v-chip> 
+    </v-card-title> 
     <v-spacer></v-spacer> 
-  <v-text-field   prepend-icon="search" label="Filter..." v-model="q" type="search"
-   hide-details single-line  @keyup.enter="setfilter"
-   :append-icon="this.q?'clear':''" @click:append="e=>this.q=''"></v-text-field>
-    </v-toolbar>
+    <v-text-field prepend-icon="search"
+	label="Filter..." v-model="q" type="search" hide-details
+	single-line  @keyup.enter="setfilter" :append-icon="this.q?'clear':''"
+	@click:append="e=>this.q=''"></v-text-field> </v-toolbar>
     <v-card-text>
     <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
         <v-container v-if="!busy" fluid grid-list-md>
@@ -38,7 +36,6 @@
         </v-container>
  </v-card-text>
  </v-card>
- </v-container>
 </template>
 
 <script>{

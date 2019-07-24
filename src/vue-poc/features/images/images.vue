@@ -38,39 +38,52 @@
           </v-toolbar-items>
           </span>
            <v-spacer></v-spacer>
+           
           <v-toolbar-items>
-          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon >
-           <v-avatar>
-           <v-icon>arrow_back</v-icon>
-           </v-avatar>
-           </v-btn>
-           <v-btn @click.stop="pageNext()" icon >
-            <v-avatar>
-            <v-icon>arrow_forward</v-icon>
-            </v-avatar>
-           </v-btn>
+	          <v-btn @click.stop="pageBack()" :disabled="query.page==0" icon >
+	           <v-avatar>
+	           <v-icon>arrow_back</v-icon>
+	           </v-avatar>
+	           </v-btn>
+	           
+	           <v-btn @click.stop="pageNext()" icon >
+	            <v-avatar>
+	            <v-icon>arrow_forward</v-icon>
+	            </v-avatar>
+	           </v-btn>
          </v-toolbar-items>
         
         </v-toolbar>
         <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
         <v-container v-if="!busy" fluid grid-list-md>
           <v-layout row wrap v-touch="{ left: () => pageNext(), right: () => pageBack()}">
-            <v-flex height="80px"
-              xs2
+            <v-flex   xs12 sm6  md4  lg3 xl2
               v-for="image in images"
               :key="image.name"
             >
               <v-card   tile :elevation="2"  :hover="true" color="grey lighten-3" >
+                 <v-toolbar height="16px" >
+                 <v-toolbar-title :title="image.path">{{image.name}}</v-toolbar-title>
+                 <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
+	                 <v-avatar icon small v-if="image.geo">
+	                  <v-icon>place</v-icon>
+	                </v-avatar>
+                  <v-spacer></v-spacer>
+                 <a :href="src(image)" target="thumb" :title="image.id">
+	                  <v-avatar icon small >
+	                     <v-icon>search</v-icon>
+                     </v-avatar>
+                 </a>
+                	
+                </v-toolbar>
+             
                 <div :style="style(image)"  v-bind:class="{ selcard: image.selected}" 
                
                 @dblclick="go(image)" @click.prevent.stop="image.selected =! image.selected ">
-                 <span v-if="image.keywords >0 ">#{{image.keywords}}</span>
-                 <v-avatar icon small v-if="image.geo">
-                  <v-icon>place</v-icon>
-                </v-avatar>
+                 
                 </div>
                
-                <a :href="src(image)" target="thumb">{{image.id}}</a>
+                
                 <div v-if="image.selected" style="position:absolute;right:0;top:0" >
                  <v-icon class="white primary--text">check_circle</v-icon>
                  </div>

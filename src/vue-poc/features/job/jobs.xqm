@@ -19,6 +19,8 @@ as element(json)
  }</json>
 };
 
+
+
 (:~
  :  job info
  :)
@@ -42,7 +44,7 @@ as element(*)*
      ,<state>{$j/@state/string()}</state>
      ,<user>{$j/@user/string()}</user>
       ,<registered>{$j/@time/string()}</registered>
-      ,<start>{$j/@start/string()}</start>
+      ,if($j/@start) then <start>{$j/@start/string()}</start> else ()
      ,<duration>{$j/@duration/string()}</duration>
      ,<text>{$j/string()}</text>
       ,<reads>{$j/@reads/string()}</reads>

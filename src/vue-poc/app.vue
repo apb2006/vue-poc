@@ -164,7 +164,8 @@
         text: 'Server' ,
         model: false,
         children: [
-          {href: '/server/jobs',text: 'Running jobs',icon: 'dashboard'},   
+          {href: '/server/jobs',text: 'Running jobs',icon: 'dashboard'},
+          {href: '/server/services',text: 'Services',icon: 'dashboard'},   
           {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},

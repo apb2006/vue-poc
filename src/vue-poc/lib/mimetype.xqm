@@ -1,4 +1,5 @@
 xquery version "3.1";
+
 module namespace mt = 'quodatum.data.mimetype';
 declare namespace MediaType='java:org.basex.util.http.MediaType';
 declare %basex:lazy variable $mt:lines:="media-types.properties"=>fn:unparsed-text-lines();

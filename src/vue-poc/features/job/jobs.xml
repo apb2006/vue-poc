@@ -1,3 +1,17 @@
 <jobs>
   <job base-uri="file:///C:/Users/andy/git/vue-poc/src/vue-poc/tasks/file2" id="cleanup" interval="PT1M">admin:write-log("cleanup","QDS")</job>
+  <job base-uri="file:///C:/Users/andy/basex.home/webapp/" id="thumbs" interval="PT5M">
+    let $showtime:=function($a, $start){
+    out:format(" (time %d ms)",prof:current-ms()-$start)
+    }(?,prof:current-ms())
+    let $xq:= 'file:///C:/Users/andy/basex.home/webapp/vue-poc/features/images/tasks/pics-04-store-thumbs.xq'
+    
+    return try {
+    admin:write-log("start","THUMB"),
+    xquery:eval-update(xs:anyURI($xq),map{"CHUNK": 20}),
+    admin:write-log("state20: " || update:cache() || $showtime(""),"THUMB")
+    }catch * {
+    admin:write-log("err: " || $err:description,"THUMB")
+    }
+  </job>	
 </jobs>

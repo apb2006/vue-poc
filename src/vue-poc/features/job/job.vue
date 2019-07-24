@@ -1,4 +1,6 @@
 <!DOCTYPE html>
+<!-- 
+ -->
 <template id="job">
   <v-card >
    <v-toolbar >
@@ -12,14 +14,17 @@
         <v-chip label class="grey white--text"><v-icon class="red">lock</v-icon>{{  jobstate.writes }}</v-chip>
        <v-chip label class="grey white--text"><v-icon class="amber">lock</v-icon>{{  jobstate.reads }}</v-chip>
       <v-spacer></v-spacer>
+      
        <v-chip class="primary white--text">
       <v-avatar>
         <v-icon>account_circle</v-icon>
       </v-avatar>
      {{  jobstate.user }}</v-chip>
+     
        <v-chip class="green white--text">
         <v-avatar ><v-icon>timer</v-icon></v-avatar>
        {{  jobstate.duration }}</v-chip>
+       
       <v-btn  icon  :loading="loading"   @click="getJob()"  :disabled="loading || finished">
          <v-icon>refresh</v-icon>
     </v-btn>     

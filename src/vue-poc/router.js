@@ -82,6 +82,7 @@ const router = new VueRouter({
       
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
       { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+      { path: 'services',  component: Services, meta:{title:"Services"} },
       { path: 'upload', component: Upload,meta:{title:"Upload"} },
      
       { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} },

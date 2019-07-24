@@ -45,7 +45,7 @@
         md4
         lg3
       >
-        <v-card :hover="true" active-class="default-class qd-active"  max-height="200px">
+        <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
         
           <v-toolbar  color="blue lighten-3"  dense>
 		          <v-toolbar-title>
@@ -56,13 +56,14 @@
 		            </v-toolbar-title>
 		         </v-card-title>
           </v-toolbar>
-          <v-card-text>{{ props.item.description }}</<v-card-text>
-          <v-card-text>
+          <v-card-text >{{ props.item.description }}</<v-card-text>
+          <v-card-actions green>
+           Fields
            <v-badge >
 			      <span slot="badge">{{ props.item.nfields }}</span>
 			      Fields
 			    </v-badge>
-          </v-card-text>
+          </v-card-actions>
         </v-card>
       </v-flex>
     </v-data-iterator>

@@ -40,6 +40,10 @@
 			<description>Links for fields description</description>
 			<xpath>fn:concat("/data/entity/",@name,"/field")</xpath>
 		</field>
+		<field name="datalink" type="xs:string">
+			<description>Link to read data</description>
+			<xpath>fn:concat("/data/",@name,"")</xpath>
+		</field>
 		<field name="parent" type="xs:string?">
 			<description>parent entity, if any</description>
 			<xpath>ent:parent/@name</xpath>

@@ -15,8 +15,10 @@ import module namespace store = 'quodatum.store' at "../../../lib/store.xqm";
 declare variable $efolder as xs:anyURI  external := xs:anyURI("C:/Users/andy/git/vue-poc/src/vue-poc");
 
 declare variable $id as element(last-id):=db:open("vue-poc","/state.xml")/state/last-id;
+let $path:="static/xqdoc/" || "33" || "/"
+let $root:=db:option("webpath")=>file:path-to-uri()
+let $target:=resolve-uri($path,$root)
 
-let $target:="file:///" || db:option("webpath") || "/static/xqdoc/" || $id || "/"
 
 let $state:=xqd:read($efolder)=>trace("READ: ")
 let $opts:=map{

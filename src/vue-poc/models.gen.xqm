@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2019-02-23T22:59:34.827Z 
+ : auto generated from xml files in entities folder at: 2019-07-04T23:21:15.539+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -188,6 +188,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
 	",
      "access": map{ 
        "code": function($_ as element()) as xs:string? {$_/ent:data },
+       "datalink": function($_ as element()) as xs:string {$_/fn:concat("/data/",@name,"") },
        "description": function($_ as element()) as xs:string {$_/ent:description },
        "fieldslink": function($_ as element()) as xs:string {$_/fn:concat("/data/entity/",@name,"/field") },
        "iconclass": function($_ as element()) as xs:string {$_/ent:views/@iconclass },
@@ -209,6 +210,10 @@ hof:top-k-by(admin:logs(), string#1, 2)
            "code": function($_ as element()) as element(code)? {
             (: xs:string? :)
                         fn:data($_/ent:data)!element code {  .} 
+                 },
+           "datalink": function($_ as element()) as element(datalink)? {
+            (: xs:string :)
+                        fn:data($_/fn:concat("/data/",@name,""))!element datalink {  .} 
                  },
            "description": function($_ as element()) as element(description)? {
             (: xs:string :)
@@ -503,13 +508,13 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "service": map{
      "name": "service",
-     "description": "basex services ",
+     "description": "basex services a list of all jobs that have been persistently registered as Services.",
      "access": map{ 
        "base-uri": function($_ as element()) as xs:string {$_/@base-uri },
        "id": function($_ as element()) as xs:string {$_/@id },
        "interval": function($_ as element()) as xs:string {$_/@interval },
        "query": function($_ as element()) as xs:string {$_/. },
-       "running": function($_ as element()) as xs:boolean {$_/jobs:list()=@id } },
+       "running": function($_ as element()) as xs:boolean {$_/(@id = jobs:list-details()/@id) } },
     
      "filter": function($item,$q) as xs:boolean{ 
          some $e in ( ) satisfies
@@ -534,7 +539,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  },
            "running": function($_ as element()) as element(running)? {
             (: xs:boolean :)
-                        fn:data($_/jobs:list()=@id)!element running { attribute type {'boolean'}, .} 
+                        fn:data($_/(@id = jobs:list-details()/@id))!element running { attribute type {'boolean'}, .} 
                  } },
        
       "data": function() as element(job)*

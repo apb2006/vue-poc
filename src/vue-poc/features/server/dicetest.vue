@@ -12,7 +12,7 @@
   <p>Read json data for 1st page for entity.</p>
    <v-flex xs12 sm6>
      <v-combobox
-          v-model="url"
+          v-model="entity"
           :items="entities" item-text="name" 
           label="Select target" clearable open-on-clear
         ></v-combobox>
@@ -38,10 +38,10 @@
       
           <tr>
           <td>
-              {{ url && url.name  }}
+              {{ entity && entity.name  }}
                </td>
               <td>
-               <v-btn @click="get()" :disabled="!url" >
+               <v-btn @click="get()" :disabled="!entity" >
                    Read <v-icon right>compare_arrows</v-icon> 
                 </v-btn>
                </td>
@@ -87,7 +87,7 @@
     return {
       getValues: new perfStat(),
       repeat: {get:false},
-      url: null,
+      entity: null,
       counter: 0,
       result: null,
       entities: null
@@ -97,8 +97,8 @@
 
     get(){
      var _start = performance.now();
-     console.log("FFFFF"," "+ this.url.parentlink)
-     HTTP.get(this.url.parentlink,axios_json)
+     console.log("entity:", this.entity)
+     HTTP.get(this.entity.datalink,axios_json)
      .then(r=>{
        var elapsed=Math.floor(performance.now() - _start);
        this.counter++;

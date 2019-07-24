@@ -7,11 +7,12 @@ import module namespace cfg = "quodatum:media.image.configure" at "../config.xqm
 import module namespace imgmeta = "expkg-zone58:image.metadata" ;
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
+declare variable $CHUNK as xs:integer external := 100;
+
 declare variable $dir-uri:=``[`{ $cfg:DB-IMAGE }`/pics.xml]``;
 declare variable $doc:=doc( $dir-uri);
-declare variable $CHUNK:=15000;
 declare variable $meta:="/meta/";
-let $done:=uri-collection($cfg:DB-IMAGE ||$meta)
+let $done:=uri-collection($cfg:DB-IMAGE ||$meta) 
 let $files:= $doc//c:file[ends-with(lower-case(@name),".jpg")] 
 
 let $relpath:= $files!( ancestor-or-self::*/@name=>string-join("/"))
@@ -22,4 +23,7 @@ return (for $f in subsequence($todo,1, $CHUNK)
         let $dbpath:=$meta || $f || "/meta.xml"
         let $meta:=imgmeta:read(trace($spath))
         return  db:replace($cfg:DB-IMAGE,$dbpath,$meta),
-        update:output($todo=>count()))
+        
+        let $msg:=out:format("%d / %d (%f)",count($todo),count($relpath),1 - count($todo) div count($relpath))
+        return update:output($msg)
+      )

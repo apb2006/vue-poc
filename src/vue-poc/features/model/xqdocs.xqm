@@ -14,13 +14,17 @@ declare
 function j:list()
 as element(json)
 {
- let $jlist:=file:list(db:option("webpath") || "/static/xqdoc/")
+ let $xqdoc-folder:=db:option("webpath") || "/static/xqdoc/"
  return <json type="array">
- {for $j in reverse($jlist)
+ {for $di in file:list($xqdoc-folder)
+ let $meta:= $xqdoc-folder || $di || "xqdoca.xml"
+ where fn:doc-available($meta)
+let $doc:=doc($meta)/xqdoca
  return <_ type="object">
-  <id>{ $j }</id>
-  <name>todo</name>
-  <href>/static/xqdoc/{ $j }index.html</href>
+  <id>{ $di}</id>
+  <created>{ $doc/@created/string() }</created>
+  <name>{ $doc/project/string() }</name>
+  <href>/static/xqdoc/{ $di }index.html</href>
  </_>
  }</json>
 };

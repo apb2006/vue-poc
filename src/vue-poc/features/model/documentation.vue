@@ -23,8 +23,11 @@
            :key="item.id"
          >
            <v-card    :hover="true"  >
-           <v-card-title color="#26c6da">{{ item.id }}</v-card-title>
-           <v-card-text>{{ item.name }}</v-card-text>
+           <v-toolbar  color="blue lighten-3"  dense>
+           <v-card-title >{{ item.name }}</v-card-title>
+           </v-toolbar>
+           <v-card-text>{{ item.id }}</v-card-text>
+            <v-card-text>{{ item.created | formatDate }}</v-card-text>
            <v-card-actions>
            <a :href="item.href" target="_new">go</a>
            </v-card-actions>
@@ -46,9 +49,11 @@
   },
   methods:{
     get() {
+      this.loading=true;
       HTTP.get('xqdocjob')
       .then((res) => {
         this.items = res.data;
+        this.loading=false;
       });
     },
     doEdit(item){
