@@ -14,7 +14,7 @@
               
               <v-text-field  v-if="field.type === 'xs:anyURI'" :full-width="true" 
                 v-model="params[field.model]" :label="field.label" 
-                clearable  :rules="fieldrules(field)" box
+                clearable  :rules="fieldrules(field)" filled
                 append-outer-icon="send" @click:append-outer="source(field)"
               ></v-text-field>
               
@@ -25,7 +25,7 @@
               
               <v-text-field  v-else :full-width="true" amber
                 v-model="params[field.model]" :label="field.type" 
-                clearable   box ></v-text-field>
+                clearable   filled ></v-text-field>
                 
               </v-flex>
               <v-flex>

@@ -11,18 +11,20 @@
             <v-spacer></v-spacer>
            <v-btn-toggle v-model="showOptions" multiple>
            <v-icon>visibility</v-icon>
-              <v-btn flat value="result" >
+              <v-btn text value="result" >
                 <span :class="resultValid?'':'red'">Result</span>
               </v-btn>
-              <v-btn flat value="xml">
+              <v-btn text value="xml">
                <span :class="xmlValid?'':'red'">XML</span>
               </v-btn>
-              <v-btn flat value="xslt">
+              <v-btn text value="xslt">
                  <span :class="xslValid?'':'red'">XSLT</span>
               </v-btn>
             </v-btn-toggle>
               <v-menu offset-y left>
-             <v-btn icon dark slot="activator"><v-icon>settings</v-icon></v-btn>
+               <template v-slot:activator="{ on }">
+                  <v-btn icon dark v-on="on"><v-icon>settings</v-icon></v-btn>
+               </template>
               <v-card >
               <v-toolbar class="green">
 				          <v-card-title >Settings................</v-card-title>

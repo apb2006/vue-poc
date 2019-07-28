@@ -9,9 +9,11 @@ display button that invokes a  save favorite form
       :nudge-width="200"
       v-model="frmfav"
     >
-      <v-btn slot="activator" @click.stop="set(!frmfav)" icon flat title="Bookmark this page">
-       <v-icon>star_border</v-icon>
+    <template v-slot:activator="{ on }">
+       <v-btn v-on="on" text @click.stop="set(!frmfav)" icon  title="Bookmark this page">
+          <v-icon>star_border</v-icon>
        </v-btn>
+     </template>
        <v-card style="width:400px;">
             <v-toolbar class="green"> 
         <v-card-title>
@@ -32,8 +34,8 @@ display button that invokes a  save favorite form
          
          <v-card-actions>
             <v-spacer></v-spacer>
-            <v-btn color="primary" flat @click.stop="set(false)">Cancel</v-btn>
-            <v-btn color="primary" flat @click.stop="favorite(); set(false)">Save</v-btn>
+            <v-btn color="primary" text @click.stop="set(false)">Cancel</v-btn>
+            <v-btn color="primary" text @click.stop="favorite(); set(false)">Save</v-btn>
           </v-card-actions>
         </v-card>
    </v-menu></template>

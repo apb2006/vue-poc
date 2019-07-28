@@ -3,23 +3,26 @@
 <v-container fluid>
       <v-snackbar top color="error"  v-model="snackbar">
       {{ message }}
-      <v-btn flat  @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
+      <v-btn text  @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-snackbar>
     
 <v-card>
 <v-toolbar dense>
 <v-tooltip top >
-<v-menu slot="activator">
-
-  <v-btn color="primary" icon  slot="activator"><v-icon >{{icon}}</v-icon></v-btn>
+ <template v-slot:activator="{ on }">
+  <v-menu v-on="on">
+  <template v-slot:activator="{ on }">
+      <v-btn color="primary" icon  v-on="on"><v-icon >{{icon}}</v-icon></v-btn>
+  </template>
   <v-list>
-      <v-list-tile  v-for="(item,index) in path" :key="index">
-        <v-list-tile-content @click="showfiles()">
-        <v-list-tile-title >{{ item }}</v-list-tile-title>
-        </v-list-tile-content>
-      </v-list-tile>
+      <v-list-item  v-for="(item,index) in path" :key="index">
+        <v-list-item-content @click="showfiles()">
+        <v-list-item-title >{{ item }}</v-list-item-title>
+        </v-list-item-content>
+      </v-list-item>
   </v-list>
-</v-menu>
+  </v-menu>
+  </template>
 <span>{{ path.join('/') }}</span>
 </v-tooltip>
   
@@ -33,16 +36,19 @@
     <v-spacer></v-spacer>
 
   <v-menu left  transition="v-fade-transition" >
-      <v-chip label small slot="activator" >{{ mode }}</v-chip>
+	   <template v-slot:activator="{ on }">
+	      <v-chip label small v-on="on" >{{ mode }}</v-chip>  
+	    </template>
           <v-list dense>
-              <v-list-tile v-for="type in $MimeTypes.list()"  :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
-              </v-list-tile>           
+              <v-list-item v-for="type in $MimeTypes.list()"  :key="type.name">
+                <v-list-item-title v-text="type.name" @click="setMode(type)"></v-list-item-title>
+              </v-list-item>           
           </v-list>         
    </v-menu>
    
   <v-tooltip top>
-     <v-chip   @click="acecmd('goToNextError')" slot="activator" >
+   <template v-slot:activator="{ on }">
+     <v-chip   @click="acecmd('goToNextError')" v-on="on" >
             <span   class="red " >{{annotations && annotations.error}}</span>
             <span  class="yellow ">{{annotations && annotations.warning}}</span>   
             <span  class="green ">{{annotations && annotations.info}}</span>
@@ -51,6 +57,7 @@
               <v-icon black >navigate_next</v-icon>
            </v-avatar>
       </v-chip>
+      </template>
       <span>Annotations: Errors,Warning and Info</span>
    </v-tooltip>
 <v-spacer></v-spacer>
@@ -59,41 +66,42 @@
     </v-btn>
 
   <v-menu left  transition="v-fade-transition">
-      <v-btn  icon slot="activator" title="display settings">
+    <template v-slot:activator="{ on }">
+      <v-btn  icon v-on="on" title="display settings">
         <v-icon>playlist_play</v-icon>
       </v-btn>
-     
+     </template>
       <v-list dense>
            <v-subheader>Display settings</v-subheader>
          
-           <v-list-tile @click="togglefold"  avatar >
-             <v-list-tile-avatar>
+           <v-list-item @click="togglefold"  avatar >
+             <v-list-item-avatar>
                    <v-icon >vertical_align_center</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-title  >Toggle folds</v-list-tile-title>
-           </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-title  >Toggle folds</v-list-item-title>
+           </v-list-item>
            
-           <v-list-tile @click="wrap=!wrap"  avatar >
-             <v-list-tile-avatar>
+           <v-list-item @click="wrap=!wrap"  avatar >
+             <v-list-item-avatar>
                    <v-icon >wrap_text</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-title  >Soft wrap</v-list-tile-title>
-           </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-title  >Soft wrap</v-list-item-title>
+           </v-list-item>
              <v-divider></v-divider>
               <v-subheader>Help</v-subheader>
-             <v-list-tile @click="acecmd('showSettingsMenu')" avatar >
-               <v-list-tile-avatar>
+             <v-list-item @click="acecmd('showSettingsMenu')" avatar >
+               <v-list-item-avatar>
               <v-icon >settings</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-tile-title>
-            </v-list-tile>
+            </v-list-item-avatar>
+              <v-list-item-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-item-title>
+            </v-list-item>
                       
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
-              <v-list-tile-avatar>
+            <v-list-item @click="acecmd('showKeyboardShortcuts')" avatar>
+              <v-list-item-avatar>
               <v-icon >keyboard</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-tile-title>
-            </v-list-tile>          
+            </v-list-item-avatar>
+              <v-list-item-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-item-title>
+            </v-list-item>          
       </v-list>
     </v-menu>
     
@@ -105,24 +113,25 @@
     </v-btn>
       
     <v-menu left  transition="v-fade-transition">
-      <v-btn  icon slot="activator">
+      <template v-slot:activator="{ on }">
+      <v-btn  icon v-on="on">
         <v-icon>more_vert</v-icon>
       </v-btn>
-     
+     </template>
           <v-list dense>
-               <v-list-tile @click="acecmd('showSettingsMenu')" avatar >
-               <v-list-tile-avatar>
+               <v-list-item @click="acecmd('showSettingsMenu')" avatar >
+               <v-list-item-avatar>
               <v-icon >settings</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-tile-title>
-            </v-list-tile>
+            </v-list-item-avatar>
+              <v-list-item-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-item-title>
+            </v-list-item>
                       
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
-              <v-list-tile-avatar>
+            <v-list-item @click="acecmd('showKeyboardShortcuts')" avatar>
+              <v-list-item-avatar>
               <v-icon >keyboard</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-tile-title>
-            </v-list-tile>          
+            </v-list-item-avatar>
+              <v-list-item-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-item-title>
+            </v-list-item>          
           </v-list>
           
       </v-menu>

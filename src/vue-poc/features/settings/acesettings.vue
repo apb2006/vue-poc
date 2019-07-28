@@ -56,36 +56,36 @@
         <v-list two-line subheader>
           <v-subheader>Ace editor settings</v-subheader>
    
-            <v-list-tile avatar>
-              <v-list-tile-action>
+            <v-list-item avatar>
+              <v-list-item-action>
                 <v-checkbox v-model="ace.enableSnippets"></v-checkbox>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>enableSnippets</v-list-tile-title>
-                <v-list-tile-sub-title>Allow 
-                <a href="https://cloud9-sdk.readme.io/docs/snippets" target="docs">snippets</a></v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>enableSnippets</v-list-item-title>
+                <v-list-item-subtitle>Allow 
+                <a href="https://cloud9-sdk.readme.io/docs/snippets" target="docs">snippets</a></v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
     
-            <v-list-tile avatar>
-              <v-list-tile-action>
+            <v-list-item avatar>
+              <v-list-item-action>
                 <v-checkbox v-model="ace.enableBasicAutocompletion"></v-checkbox>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>enableBasicAutocompletion</v-list-tile-title>
-                <v-list-tile-sub-title>Autocompletion via control-space</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>enableBasicAutocompletion</v-list-item-title>
+                <v-list-item-subtitle>Autocompletion via control-space</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
          
-            <v-list-tile avatar>
-              <v-list-tile-action>
+            <v-list-item avatar>
+              <v-list-item-action>
                 <v-checkbox v-model="ace.enableLiveAutocompletion"></v-checkbox>
-              </v-list-tile-action>
-              <v-list-tile-content>
-                <v-list-tile-title>enableLiveAutocompletion</v-list-tile-title>
-                <v-list-tile-sub-title>Autocompletion while typing</v-list-tile-sub-title>
-              </v-list-tile-content>
-            </v-list-tile>
+              </v-list-item-action>
+              <v-list-item-content>
+                <v-list-item-title>enableLiveAutocompletion</v-list-item-title>
+                <v-list-item-subtitle>Autocompletion while typing</v-list-item-subtitle>
+              </v-list-item-content>
+            </v-list-item>
             
         </v-list>
         

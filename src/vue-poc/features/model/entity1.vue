@@ -7,15 +7,18 @@
          :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]"
          >crumbs</qd-breadcrumbs> 
          </v-toolbar-title>   
-          <v-menu offset-y v-model="showmenu" activator=".todo">
+          <v-menu offset-y v-model="showmenu" >
+	          <template v-slot:activator="{ on }">
+	                <v-btn v-on="on">M</v-btn>
+	           </template>
             <v-list dense>
                 <v-subheader >Actions</v-subheader>
-                      <v-list-tile @click="getxml" >
-                      <v-list-tile-title  >View XML</v-list-tile-title>
-                    </v-list-tile>
-                     <v-list-tile  >
-                      <v-list-tile-title ><a :href="dataurl" target="data">Json</a></v-list-tile-title>
-                </v-list-tile>             
+                      <v-list-item @click="getxml" >
+                      <v-list-item-title  >View XML</v-list-item-title>
+                    </v-list-item>
+                     <v-list-item  >
+                      <v-list-item-title ><a :href="dataurl" target="data">Json</a></v-list-item-title>
+                </v-list-item>             
             </v-list>         
            </v-menu> 
 

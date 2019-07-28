@@ -19,10 +19,10 @@
                clearable
             >
              <template slot="item" slot-scope="data">
-                  <v-list-tile-content>
-                    <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
-                    <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
-                  </v-list-tile-content>
+                  <v-list-item-content>
+                    <v-list-item-title v-html="data.item.text"></v-list-item-title>
+                    <v-list-item-subtitle v-html="data.item.count"></v-list-item-subtitle>
+                  </v-list-item-content>
               </template>
             </v-autocomplete>
             
@@ -36,20 +36,22 @@
           :nudge-left="40"
           max-width="290px"
         >
-             <v-text-field
-            slot="activator"
+         <template v-slot:activator="{ on }">
+           <v-text-field
+            v-on="on"
             label="Earliest date"
             v-model="query.from"
             prepend-icon="event"
             readonly
             clearable
           ></v-text-field>
-         
+           </template>
+           
           <v-date-picker v-model="query.from" scrollable actions>
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat color="primary" @click="cancel()">Cancel</v-btn>
-                <v-btn flat  color="primary"  @click="save()">Save</v-btn>
+                <v-btn text color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn text  color="primary"  @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
           </v-menu>
@@ -65,15 +67,16 @@
           max-width="290px"
         >
            </v-date-picker>
-            <v-text-field
-            slot="activator"
-            label="Latest date"
-            v-model="query.until"
-            prepend-icon="event"
-            readonly
-            clearable
-          ></v-text-field>
-         
+            <template v-slot:activator="{ on }">
+		            <v-text-field
+		           v-on="on"
+		            label="Latest date"
+		            v-model="query.until"
+		            prepend-icon="event"
+		            readonly
+		            clearable
+		          ></v-text-field>
+          </template>        
           <v-date-picker v-model="query.until" scrollable actions>
             <template slot-scope="{ save, cancel }">
               <v-card-actions>

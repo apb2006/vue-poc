@@ -10,33 +10,35 @@ for nav drawer
             :prepend-icon="item.icon"
             no-action
           >
-            <v-list-tile slot="activator" >
-              <v-list-tile-content>
-                <v-list-tile-title>{{ item.text }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
-            
-            <v-list-tile v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text"
+         <template v-slot:activator="{ on }">
+            <v-list-item v-on="on" >
+              <v-list-item-content>
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
+         </template>
+             
+            <v-list-item v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text"
              :prepend-icon="subItem.icon" 
              :to="subItem.href"  avatar ripple >
-              <v-list-tile-avatar>
+              <v-list-item-avatar>
 		             <v-icon>{{ subItem.icon }}</v-icon>
-		          </v-list-tile-avatar>
-            <v-list-tile-content>
-                <v-list-tile-title>{{ subItem.text }}</v-list-tile-title>
-              </v-list-tile-content>
-            </v-list-tile>
+		          </v-list-item-avatar>
+            <v-list-item-content>
+                <v-list-item-title>{{ subItem.text }}</v-list-item-title>
+              </v-list-item-content>
+            </v-list-item>
           </v-list-group>
           
-          <v-list-tile v-else  v-bind:key="item.text"  :to="item.href"  ripple>
-              <v-list-tile-avatar>
+          <v-list-item v-else  v-bind:key="item.text"  :to="item.href"  ripple>
+              <v-list-item-avatar>
                  <v-icon>{{ item.icon }}</v-icon>
-              </v-list-tile-avatar>
-          <v-list-tile-content>
-                <v-list-tile-title>{{ item.text }}</v-list-tile-title>
-              </v-list-tile-content>
+              </v-list-item-avatar>
+          <v-list-item-content>
+                <v-list-item-title>{{ item.text }}</v-list-item-title>
+              </v-list-item-content>
      
-          </v-list-tile>
+          </v-list-item>
           </template>
         </v-list>
 </template>

@@ -7,10 +7,14 @@
 <div class="display-1 white--text text-xs-center">VUE-POC</div>
 <v-spacer></v-spacer>
   <v-speed-dial  v-model="fab"  hover right direction="bottom" transition="slide-y-reverse-transition">
-      <v-btn  slot="activator" class="blue darken-2"  dark  fab  hover  v-model="fab">
-        <v-icon>account_circle</v-icon>
-        <v-icon>close</v-icon>
-      </v-btn>
+  
+     <template v-slot:activator="{ on }">
+	      <v-btn  v-on="on" class="blue darken-2"  dark  fab  hover  v-model="fab">
+	        <v-icon>account_circle</v-icon>
+	        <v-icon>close</v-icon>
+	      </v-btn>
+      </template>
+       
       <v-btn   fab  dark  small    class="green"    >
         <v-icon>edit</v-icon>
       </v-btn>

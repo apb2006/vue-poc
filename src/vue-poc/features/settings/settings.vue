@@ -2,19 +2,19 @@
 <template id="showsettings">
  <v-container fluid>
  <p>Settings are currently only stored locally in the browser, using <code>localstorage</code></p>
-<v-switch label="Dark theme" v-model="dark" @change="theme"></v-switch>
+<v-switch label="Dark theme" v-model="$vuetify.theme.dark" ></v-switch>
 <v-switch label="Use service worker" v-model="serviceworker" @change="worker"></v-switch>
 	 <v-card>
 	   <v-card-title class="lime darken-1">Available settings</v-card-title>
 	  
 	 <v-card-text>
 	   <v-list dense>
-		   <v-list-tile>
+		   <v-list-item>
 		      <router-link to="settings/ace">Editor</router-link>
-		   </v-list-tile>
-		    <v-list-tile>
+		   </v-list-item>
+		    <v-list-item>
 		      <router-link to="settings/keys">Keys</router-link>
-		   </v-list-tile>
+		   </v-list-item>
 	   </v-list>
    </v-card-text>
    </v-card>
@@ -26,18 +26,10 @@
   data(){return {
     keys: ["?"],
     showDev: false,
-    dark:false,
     serviceworker: true
   }
   },
   methods:{
-    theme(){
-      Settings.setItem('settings/dark',this.dark)
-      .then(v=>{
-        this.$root.$emit("theme",this.dark)
-      })
-      
-    },
     worker(){
       Settings.setItem('features/serviceworker',this.serviceworker)
       .then(v=>{

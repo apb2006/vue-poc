@@ -2,53 +2,58 @@
 <template id="eval">
  <v-container fluid>
   <v-card  @keyup.ctrl.enter="submit">
-     <v-toolbar dense>
-     
-     <v-menu offset-x>
-       <v-btn slot="activator" flat icon color="pink">
-              <v-icon>label_outline</v-icon>
-        </v-btn>
-        <v-card>
-       <v-card-title>Outline here</v-card-title>
-       </v-card>
-    </v-menu>
+     <v-toolbar dense> 
+     <v-menu offset-x> 
+     <template v-slot:activator="{ on }"> 
+	<v-btn v-on="on" text icon
+	color="pink"> 
+	<v-icon>label_outline</v-icon> 
+	</v-btn> 
+	</template> 
+  <v-card>
+<v-card-title>Outline here</v-card-title> </v-card> </v-menu>
     
       <v-menu offset-x>
-       <v-btn slot="activator" flat icon color="pink">
+       <template v-slot:activator="{ on }">
+           <v-btn  v-on="on" text icon color="pink">
               <v-icon>add_circle</v-icon>
             </v-btn>
-            <v-card>
-       <v-btn @click="imports">
-    <v-icon>library_books</v-icon>
-    Imports</v-btn>
-     <v-btn @click="namespaces">
-    <v-icon>label</v-icon>
-    Namespaces</v-btn>
-    </v-card>
+        </template>    
+        <v-card>
+	       <v-btn @click="imports">
+	    <v-icon>library_books</v-icon>
+	    Imports</v-btn>
+	     <v-btn @click="namespaces">
+	    <v-icon>label</v-icon>
+	    Namespaces</v-btn>
+	    </v-card>
     </v-menu>
       <v-spacer></v-spacer>
     <v-btn  @click="submit" >
       <v-icon>play_circle_outline</v-icon>jobs:run
       </v-btn>
     <v-menu offset-y left>
-      <v-btn  slot="activator" flat icon>
-         <v-icon>more_vert</v-icon>
-      </v-btn>
+      <template v-slot:activator="{ on }">
+           <v-btn  v-on="on" text icon >
+              <v-icon>more_vert</v-icon>
+            </v-btn>
+      </template>    
+    
       <v-list  dense>
          <v-subheader>More actions...</v-subheader>
         <v-divider></v-divider>
         
-        <v-list-tile  @click="run">
-          <v-list-tile-title>xquery:eval</v-list-tile-title>
-        </v-list-tile>
+        <v-list-item  @click="run">
+          <v-list-item-title>xquery:eval</v-list-item-title>
+        </v-list-item>
         
-         <v-list-tile  @click="plan">
-          <v-list-tile-title>Show query plan</v-list-tile-title>
-        </v-list-tile>
+         <v-list-item  @click="plan">
+          <v-list-item-title>Show query plan</v-list-item-title>
+        </v-list-item>
         
-        <v-list-tile @click="hitme">
-         <v-list-tile-title>Test large result.</v-list-tile-title>
-         </v-list-tile>
+        <v-list-item @click="hitme">
+         <v-list-item-title>Test large result.</v-list-item-title>
+         </v-list-item>
      </v-list>
     </v-menu>
    

@@ -4,32 +4,32 @@
  -->
 <template id="vp-notifications">
    <v-card>
-         <v-toolbar class="amber white--text" scroll-off-screen>
+         <v-app-bar class="amber white--text" >
                 <v-toolbar-title >Notifications </v-toolbar-title>
                 {{ $notification.nextId }}
                  <v-btn  @click="refresh" icon><v-icon>refresh</v-icon></v-btn>
           <v-spacer></v-spacer>
           <v-btn  @click="set(false)" icon><v-icon>close</v-icon></v-btn>
-          </v-toolbar>
+          </v-app-bar>
           <v-card-text>
         <v-list three-line>
           <template v-for="msg in $notification.messages" >
-           <v-list-tile avatar  v-bind:key="msg.index" @click="">
-              <v-list-tile-avatar>
+           <v-list-item  v-bind:key="msg.index" @click="">
+              <v-list-item-avatar>
                    <v-icon color="red">swap_horiz</v-icon>
-              </v-list-tile-avatar>
+              </v-list-item-avatar>
               
-             <v-list-tile-content>
-              <v-list-tile-title>{{  msg.created | fromNow("from") }}</v-list-tile-title>
-              <v-list-tile-sub-title v-html="msg.html">msg</v-list-tile-sub-title>
-            </v-list-tile-content>
-            <v-list-tile-action-text>
+             <v-list-item-content>
+              <v-list-item-title>{{  msg.created | fromNow("from") }}</v-list-item-title>
+              <v-list-item-subtitle v-html="msg.html">msg</v-list-item-subtitle>
+            </v-list-item-content>
+            <v-list-item-action-text>
               <v-chip>#{{ msg.index }}</v-chip>
-           </v-list-tile-action-text>
-            <v-list-tile-action-text v-if="msg.elapsed"> ({{ msg.elapsed }} ms) </v-list-tile-action-text>
+           </v-list-item-action-text>
+            <v-list-item-action-text v-if="msg.elapsed"> ({{ msg.elapsed }} ms) </v-list-item-action-text>
             
            
-            </v-list-tile>
+            </v-list-item>
            </template>
          </v-list>
       </v-card-text>

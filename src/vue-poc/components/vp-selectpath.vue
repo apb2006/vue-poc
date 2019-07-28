@@ -9,7 +9,10 @@ display button that invokes a  select path form
  -->
 <template id="vp-selectpath">
    <v-dialog v-model="frmfav" persistent max-width="800">
-      <v-btn slot="activator" @click.stop="set(!frmfav)" icon flat title="Add ">
+   <template v-slot:activator="{ on }">
+      <v-btn v-on="on" @click.stop="set(!frmfav)" icon  title="Add ">
+   </template>
+   
       <slot>
       <v-icon>add_circle</v-icon>
        </slot>
@@ -44,8 +47,8 @@ display button that invokes a  select path form
          </v-card-text>
         <v-card-actions>
                <v-spacer></v-spacer>
-               <v-btn color="primary" flat @click.stop="set(false)">Cancel</v-btn>
-               <v-btn color="primary" flat @click.stop="favorite(); set(false)">Add tab</v-btn>
+               <v-btn color="primary"  text @click.stop="set(false)">Cancel</v-btn>
+               <v-btn color="primary"  text @click.stop="favorite(); set(false)">Add tab</v-btn>
          </v-card-actions>
         </v-card>
    </v-dialog>

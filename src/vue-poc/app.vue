@@ -2,7 +2,7 @@
 <!-- main ui
  -->
 <template id="vuepoc">
- <v-app id="app" :dark="dark" >
+ <v-app app id="app"  >
   <v-navigation-drawer
      stateless 
       v-model="showNotifications"
@@ -18,31 +18,35 @@
     :enable-resize-watcher="true">
   <v-list class="pa-0">
 
-          <v-list-tile avatar tag="div">
-            <v-list-tile-avatar >
+          <v-list-item avatar tag="div">
+            <v-list-item-avatar >
               <v-btn icon @click="session">
               <v-avatar size="36">
               <img src="/vue-poc/ui/quodatum.gif" />
               </v-avatar>
               </v-btn>
-            </v-list-tile-avatar>
-            <v-list-tile-content>
-              <v-list-tile-title>Vue PoC</v-list-tile-title>
-            </v-list-tile-content>
-            <v-list-tile-action>
+            </v-list-item-avatar>
+            <v-list-item-content>
+              <v-list-item-title>Vue PoC</v-list-item-title>
+            </v-list-item-content>
+            <v-list-item-action>
               <v-btn icon @click.stop="mini = !mini">
                 <v-icon>chevron_left</v-icon>
               </v-btn>
-            </v-list-tile-action>
-          </v-list-tile>
+            </v-list-item-action>
+          </v-list-item>
 
       </v-list>
     <qd-navlist  :items="items" :mini="mini"></qd-navlist>
  </v-navigation-drawer>
   
- <v-toolbar class="indigo" app dark dense >
-  <v-toolbar-side-icon @click.stop="drawer = !drawer"  ></v-toolbar-side-icon>  
-  <v-toolbar-title class="hidden-sm-and-down" >{{$route.meta.title}}</v-toolbar-title>
+ <v-app-bar  app
+      color="blue darken-3"
+      dark >
+  <v-toolbar-title class="hidden-sm-and-down" >
+    <v-app-bar-nav-icon @click.stop="drawer = !drawer"  ></v-app-bar-nav-icon>
+  {{$route.meta.title}}</v-toolbar-title>
+   
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
  
   <v-spacer></v-spacer>
@@ -52,49 +56,55 @@
   <v-spacer></v-spacer>
   
    <v-menu left  transition="v-fade-transition">
-      <v-btn dark icon slot="activator">
+   <template v-slot:activator="{ on }">
+      <v-btn dark icon v-on="on">
         {{$auth.user}}
       </v-btn>
-     
+    </template >   
           <v-list>
-              <v-list-tile to="/session"  avatar ripple>
-                <v-list-tile-title >Session</v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile @click="logout()">
-                <v-list-tile-title >logout</v-list-tile-title>
-              </v-list-tile>
-               <v-list-tile>
-                <v-list-tile-title >permission: {{$auth.permission}}</v-list-tile-title>
-              </v-list-tile>
+              <v-list-item to="/session"  avatar ripple>
+                <v-list-item-title >Session</v-list-item-title>
+              </v-list-item>
+              <v-list-item @click="logout()">
+                <v-list-item-title >logout</v-list-item-title>
+              </v-list-item>
+               <v-list-item>
+                <v-list-item-title >permission: {{$auth.permission}}</v-list-item-title>
+              </v-list-item>
             
           </v-list>
       </v-menu>
-       <v-btn  @click.stop="showNotifications = ! showNotifications" icon flat title="Notifications">
+      
+       <v-btn  @click.stop="showNotifications = ! showNotifications" icon text title="Notifications">
        <v-badge  overlap color="orange">
       <span slot="badge" v-if=" $notification.unseen" >{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
+   
     <v-menu bottom  left min-width="300px">
-            <v-btn icon slot="activator" >
+	       <template v-slot:activator="{ on }">
+	         <v-btn icon v-on="on" >
               <v-icon>more_vert</v-icon>
             </v-btn>
+           </template>
             <v-list>
-              <v-list-tile  >
-                <v-list-tile-title><qd-fullscreen> Full screen</qd-fullscreen></v-list-tile-title>
-              </v-list-tile>
-              <v-list-tile  >
-                <v-list-tile-title>Dark theme</v-list-tile-title>
-                 <v-list-tile-action ><v-switch  v-model="dark"></v-switch> </v-list-tile-action>
-              </v-list-tile>
+              <v-list-item  >
+                <v-list-item-title><qd-fullscreen> Full screen</qd-fullscreen></v-list-item-title>
+              </v-list-item>
+              <v-list-item  >
+                <v-list-item-title>Dark theme</v-list-item-title>
+                 <v-list-item-action ><v-switch  v-model="$vuetify.theme.dark"></v-switch> </v-list-item-action>
+              </v-list-item>
               <v-divider ></v-divider>
-               <v-list-tile  >
-               <v-list-tile-title>Server hot load:</v-list-tile-title> 
-                <v-list-tile-action ><v-btn @click="init">.init</v-btn></v-list-tile-action>
-              </v-list-tile>
+               <v-list-item  >
+               <v-list-item-title>Server hot load:</v-list-item-title> 
+                <v-list-item-action ><v-btn @click="init">.init</v-btn></v-list-item-action>
+              </v-list-item>
             </v-list>
-          </v-menu>
-</v-toolbar>
+        </v-menu>
+
+</v-app-bar>
  
  <v-content> 
  <v-alert color="error" value="true" dismissible v-model="alert.show">
@@ -111,6 +121,9 @@
 <script>{
   router,
   store,
+  vuetify: new Vuetify({ theme: {dark: false},
+	                     icons: {iconfont: 'md'}
+  					}),
   data:function(){return {
 
     searchItems:[],
@@ -120,7 +133,6 @@
     drawer: true,
     showNotifications: false,
     mini: false,
-    dark: false,
     alert: {show:false,msg:"Hello"},
     frmfav: false,
   
@@ -237,9 +249,6 @@
       showAlert(msg){
         this.alert.msg=moment().format()+" "+ msg
         this.alert.show=true
-      },
-      onDark(dark){
-        this.dark=dark
       }
   },
   watch: {
@@ -254,7 +263,6 @@
     console.log("create-----------");
 		
     var that=this
-    this.$on("theme",this.onDark);
     window.addEventListener('error', function (err) {
       var msg=JSON.stringify(err)
       that.showAlert("vue error:\n"+msg);

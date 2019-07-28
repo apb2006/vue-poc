@@ -9,10 +9,12 @@
       <v-toolbar dense >
       <v-btn  @click.stop="showFilter = true" icon><v-icon>filter_list</v-icon></v-btn>
         <v-toolbar-title>{{ qtext }}</v-toolbar-title>
-        <v-tooltip top  v-if="query.keyword || query.from || query.until">      
-        <v-btn @click="clear" icon slot="activator">
-            <v-icon>clear</v-icon>
-         </v-btn>
+        <v-tooltip top  v-if="query.keyword || query.from || query.until">
+         <template v-slot:activator="{ on }">  
+		        <v-btn @click="clear" icon v-on="on" >
+		            <v-icon>clear</v-icon>
+		         </v-btn>
+         </template>
          <span>Clear search</span>
          </v-tooltip>
            <v-btn icon @click="getImages">
@@ -108,10 +110,10 @@
                clearable
             >
              <template slot="item" slot-scope="data">
-                  <v-list-tile-content>
-                    <v-list-tile-title v-html="data.item.text"></v-list-tile-title>
-                    <v-list-tile-sub-title v-html="data.item.count"></v-list-tile-sub-title>
-                  </v-list-tile-content>
+                  <v-list-item-content>
+                    <v-list-item-title v-html="data.item.text"></v-list-item-title>
+                    <v-list-item-subtitle v-html="data.item.count"></v-list-item-subtitle>
+                  </v-list-item-content>
               </template>
             </v-autocomplete>
             
@@ -125,20 +127,21 @@
           :nudge-left="40"
           max-width="290px"
         >
+         <template v-slot:activator="{ on }">  
              <v-text-field
-            slot="activator"
+           v-on="on" 
             label="Earliest date"
             v-model="query.from"
             prepend-icon="event"
             readonly
             clearable
           ></v-text-field>
-         
+         </template>
           <v-date-picker v-model="query.from" scrollable actions>
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat color="primary" @click="cancel()">Cancel</v-btn>
-                <v-btn flat  color="primary"  @click="save()">Save</v-btn>
+                <v-btn text color="primary" @click="cancel()">Cancel</v-btn>
+                <v-btn text  color="primary"  @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
             
@@ -156,20 +159,21 @@
           max-width="290px"
         >
            </v-date-picker>
+            <template v-slot:activator="{ on }">  
             <v-text-field
-            slot="activator"
+            v-on="on"
             label="Latest date"
             v-model="query.until"
             prepend-icon="event"
             readonly
             clearable
           ></v-text-field>
-         
+         </template>
           <v-date-picker v-model="query.until" scrollable actions>
             <template slot-scope="{ save, cancel }">
               <v-card-actions>
-                <v-btn flat  color="primary"  @click="cancel()">Cancel</v-btn>
-                <v-btn flat  color="primary"  @click="save()">Save</v-btn>
+                <v-btn text  color="primary"  @click="cancel()">Cancel</v-btn>
+                <v-btn text  color="primary"  @click="save()">Save</v-btn>
               </v-card-actions>
             </template>
           </v-date-picker>
@@ -191,7 +195,7 @@
                  <v-toolbar class="green white--text">
                 <v-toolbar-title >{{selection.length}} selected</v-toolbar-title>
                 <v-spacer></v-spacer>    
-                 <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+                 <v-btn text icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
               </v-toolbar>
               <v-card-text> 
                <ul>

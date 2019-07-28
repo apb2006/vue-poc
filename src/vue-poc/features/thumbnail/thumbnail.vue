@@ -30,7 +30,7 @@
 		></vue-ace>
 		</v-card>
    
-    <v-btn flat @click="step -= 1">Back</v-btn>
+    <v-btn text @click="step -= 1">Back</v-btn>
     <v-btn  color="primary"  @click="validate()">Validate</v-btn>
      <v-btn  color="primary"  @click="step = 3">Next</v-btn>  
   </v-stepper-content>
@@ -38,7 +38,7 @@
   <v-stepper-content step="3" non-linear>
     <v-card class="grey lighten-1 z-depth-1 mb-5" >
      <v-card-actions>
-    <v-btn flat @click="step -= 1">Back</v-btn>
+    <v-btn text @click="step -= 1">Back</v-btn>
      <v-btn  color="primary"  @click="go()">go</v-btn>
      </v-card-actions>
     <v-card-text>

@@ -7,7 +7,7 @@
       <span class="white--text">Selection2</span>     
     </v-card-title>
     <v-spacer></v-spacer>    
-       <v-btn  flat icon @click="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
+       <v-btn  text icon @click="showInfo = !showInfo"><v-icon>info</v-icon></v-btn>
   </v-toolbar>
 
   <qd-panel :show="showInfo">
@@ -79,7 +79,7 @@
        <v-card-actions >
       <v-toolbar-title >test aside</v-toolbar-title>
       <v-spacer></v-spacer>    
-       <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+       <v-btn text icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-card-actions>
     <v-card-text> 
  todo

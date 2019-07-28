@@ -41,7 +41,7 @@
       :error="snackbar.context === 'error'"
     >
       {{ snackbar.msg }}
-      <v-btn dark flat @click="snackbar.show = false">Close</v-btn>
+      <v-btn dark text @click="snackbar.show = false">Close</v-btn>
     </v-snackbar>
   </v-card>
  </v-container>

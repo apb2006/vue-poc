@@ -5,13 +5,13 @@
  -->
 <template id="qd-mimelist">
   <v-menu v-model="show" left bottom  :close-on-content-click="false" >
-    <v-chip  slot="activator">
-    
+  <template v-slot:activator="{ on }">
+    <v-chip  v-on="on"> 
     {{ mimetype }}
-    <v-avatar>
       <v-icon right>arrow_drop_down</v-icon>
-      </v-avatar>
     </v-chip>
+   </template>
+   
    <v-card>
     <v-toolbar   >
       <v-text-field
@@ -27,25 +27,25 @@
 	<v-card-text>
 	  <v-list  style="height: 300px; overflow-y: auto;"> 
 	  
-	        <v-list-tile
+	        <v-list-item
 	          v-for="(mime,index) in items" :key="index"
 	            avatar dense ripple
             @click="setItem(mime,index)" 
 	         
 	        >
-	          <v-list-tile-avatar>
+	          <v-list-item-avatar>
 	            <v-icon v-if="false">check_circle</v-icon>
 	            <v-icon v-else>insert_drive_file</v-icon>
-	          </v-list-tile-avatar>
+	          </v-list-item-avatar>
 	
-	          <v-list-tile-content>
-	            <v-list-tile-title>{{ mime.name }}</v-list-tile-title>
-	          </v-list-tile-content>
+	          <v-list-item-content>
+	            <v-list-item-title>{{ mime.name }}</v-list-item-title>
+	          </v-list-item-content>
 	
-	          <v-list-tile-action  >
+	          <v-list-item-action  >
 	           {{ mime.mode }}
-	          </v-list-tile-action>
-	        </v-list-tile>
+	          </v-list-item-action>
+	        </v-list-item>
 	     
 	  </v-list>
   </v-card-text>

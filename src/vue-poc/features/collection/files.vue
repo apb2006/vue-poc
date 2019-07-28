@@ -49,20 +49,23 @@
  
     
  <v-menu offset-y v-if="selection.length">
-      <v-btn  icon slot="activator">
+   <template v-slot:activator="{ on }"> 
+      <v-btn  icon  v-on="on">
       <v-icon>more_vert</v-icon>
      </v-btn>
+    </template>
+      
       <v-list>
-        <v-list-tile  @click="invoke">
-          <v-list-tile-title>Invoke</v-list-tile-title>
-        </v-list-tile>
+        <v-list-item  @click="invoke">
+          <v-list-item-title>Invoke</v-list-item-title>
+        </v-list-item>
         <v-divider></v-divider>
-        <v-list-tile  @click="invoke">
-          <v-list-tile-title>todo</v-list-tile-title>
-        </v-list-tile>
-         <v-list-tile  @click="invoke">
-          <v-list-tile-title>todo</v-list-tile-title>
-        </v-list-tile>
+        <v-list-item  @click="invoke">
+          <v-list-item-title>todo</v-list-item-title>
+        </v-list-item>
+         <v-list-item  @click="invoke">
+          <v-list-item-title>todo</v-list-item-title>
+        </v-list-item>
       </v-list>
     </v-menu>
  
@@ -75,46 +78,46 @@
 	    <v-subheader inset >
 	         <span >Folders ({{ xfolders.length }})</span> 
 	     </v-subheader>
-	      <v-list-tile v-for="item in xfolders" v-bind:key="item.name" 
-	      v-model="item.selected" @click="folder(item)" avatar >
-	        <v-list-tile-avatar   @click.prevent.stop="item.selected =! item.selected ">
+	      <v-list-item v-for="item in xfolders" v-bind:key="item.name" 
+	      v-model="item.selected" @click="folder(item)"  >
+	        <v-list-item-avatar   @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
-	        </v-list-tile-avatar>
-	        <v-list-tile-content  >
-	          <v-list-tile-title>{{ item.name }}</v-list-tile-title>
-	          <v-list-tile-sub-title>modified: {{ item.modified | formatDate}}
+	        </v-list-item-avatar>
+	        <v-list-item-content  >
+	          <v-list-item-title>{{ item.name }}</v-list-item-title>
+	          <v-list-item-subtitle>modified: {{ item.modified | formatDate}}
 	                                 size: {{ item.size | readablizeBytes}}
 	                                  mimetype: {{ item.mime}}
-	                                 </v-list-tile-sub-title>
-	        </v-list-tile-content>
-	        <v-list-tile-action>
+	                                 </v-list-item-subtitle>
+	        </v-list-item-content>
+	        <v-list-item-action>
 	          <v-btn icon @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
-	        </v-list-tile-action>
-	      </v-list-tile>
+	        </v-list-item-action>
+	      </v-list-item>
 	    
 	    <v-divider inset></v-divider>
 	    <v-subheader inset>
 	       <span >Files ({{ xfiles.length }})</span> 
 	        </v-subheader> 
-	      <v-list-tile v-for="item in xfiles" v-bind:key="item.name" >
-	        <v-list-tile-avatar avatar  @click.prevent.stop="item.selected =! item.selected ">
+	      <v-list-item v-for="item in xfiles" v-bind:key="item.name" >
+	        <v-list-item-avatar avatar  @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
-	        </v-list-tile-avatar>
-	        <v-list-tile-content @click="file(item.name)">
-	          <v-list-tile-title >{{ item.name }}</v-list-tile-title>
-	           <v-list-tile-sub-title>modified:  {{item.modified | formatDate}},
+	        </v-list-item-avatar>
+	        <v-list-item-content @click="file(item.name)">
+	          <v-list-item-title >{{ item.name }}</v-list-item-title>
+	           <v-list-item-subtitle>modified:  {{item.modified | formatDate}},
 												            size:  {{item.size|readablizeBytes }},
 												            mimetype: {{ item.mime}}
-	            </v-list-tile-sub-title>
-	        </v-list-tile-content>
-	        <v-list-tile-action>
+	            </v-list-item-subtitle>
+	        </v-list-item-content>
+	        <v-list-item-action>
 	          <v-btn icon ripple @click.stop="info(item)">
 	            <v-icon class="grey--text text--lighten-1">info</v-icon>
 	          </v-btn>
-	        </v-list-tile-action>
-	      </v-list-tile>
+	        </v-list-item-action>
+	      </v-list-item>
 	  </v-list>
 	  </v-flex>
 	
@@ -130,11 +133,11 @@
        <v-toolbar >
       <v-card-title >{{ selection[0] && selection[0].name }}</v-card-title>
       <v-spacer></v-spacer>    
-       <v-btn flat icon @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
+       <v-btn  icon text @click="showInfo = false"><v-icon>highlight_off</v-icon></v-btn>
     </v-toolbar>
     <v-card-text> Things to do with  </v-card-text>
     <v-card-actions> 
-           <v-btn flat @click="invoke()"><v-icon>run</v-icon>run</v-btn>
+           <v-btn text @click="invoke()"><v-icon>run</v-icon>run</v-btn>
            </v-card-actions>
     </v-card>
    </v-navigation-drawer>

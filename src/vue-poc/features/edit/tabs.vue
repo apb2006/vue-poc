@@ -9,24 +9,28 @@
       <v-toolbar-title>i={{ curIndex   }} </v-toolbar-title>
       
        <v-menu v-if="active"  left  transition="v-fade-transition" >
-       <v-chip label small slot="activator" >{{ active.mode }}</v-chip>
+        <template v-slot:activator="{ on }">
+       <v-chip label small  v-on="on"  >{{ active.mode }}</v-chip>
+       </template>
           <v-list dense>
-                <v-list-tile v-for="type in $MimeTypes.list()"  :key="type.name">
-                <v-list-tile-title v-text="type.name" @click="setMode(type)"></v-list-tile-title>
-              </v-list-tile>         
+                <v-list-item v-for="type in $MimeTypes.list()"  :key="type.name">
+                <v-list-item-title v-text="type.name" @click="setMode(type)"></v-list-item-title>
+              </v-list-item>         
           </v-list>         
       </v-menu>
       
        <v-menu v-if="active" left  transition="v-fade-transition" >
-        <v-btn   slot="activator" >Action<v-icon>arrow_drop_down</v-icon></v-btn>
+         <template v-slot:activator="{ on }">
+        <v-btn   v-on="on"  >Action<v-icon>arrow_drop_down</v-icon></v-btn>
+        </template>
           <v-list dense>
           <v-subheader >Actions</v-subheader>
-                <v-list-tile @click="format()" >
-                <v-list-tile-title  >Format</v-list-tile-title>
-              </v-list-tile>
-               <v-list-tile  @click="validate()" >
-                <v-list-tile-title >Validate</v-list-tile-title>
-              </v-list-tile>             
+                <v-list-item @click="format()" >
+                <v-list-item-title  >Format</v-list-item-title>
+              </v-list-item>
+               <v-list-item  @click="validate()" >
+                <v-list-item-title >Validate</v-list-item-title>
+              </v-list-item>             
           </v-list>         
       </v-menu>
       <v-btn @click="add">*{{  EditTabs.nextId }}</v-btn>
@@ -34,7 +38,8 @@
        <v-spacer></v-spacer>
        
          <v-tooltip top>
-			     <v-chip   @click="acecmd('goToNextError')" slot="activator" >
+               <template v-slot:activator="{ on }">
+			     <v-chip   @click="acecmd('goToNextError')" v-on="on" >
 			            <span   class="red " >{{annotations && annotations.error}}</span>
 			            <span  class="yellow ">{{annotations && annotations.warning}}</span>   
 			            <span  class="green ">{{annotations && annotations.info}}</span>
@@ -43,70 +48,74 @@
 			              <v-icon black >navigate_next</v-icon>
 			           </v-avatar>
 			      </v-chip>
+			        </template>
 			      <span>Annotations: Errors,Warning and Info</span>
 			   </v-tooltip>
 			   
         <qd-mimelist  v-if="active" :mimetype="active.contentType" @selected="setmime">{{ active.mode }}</qd-mimelist>
         
         <v-menu  left  transition="v-fade-transition">
-      <v-btn  :disabled="!active" icon slot="activator" title="display settings">
-        <v-icon>playlist_play</v-icon>
-      </v-btn>
-     
+        <template v-slot:activator="{ on }">
+		      <v-btn  :disabled="!active" icon v-on="on"  title="display settings">
+		        <v-icon>playlist_play</v-icon>
+		      </v-btn>
+      </template>
       <v-list dense>
            <v-subheader>Display settings</v-subheader>
          
-           <v-list-tile @click="togglefold"  avatar >
-             <v-list-tile-avatar>
+           <v-list-item @click="togglefold"  avatar >
+             <v-list-item-avatar>
                    <v-icon >vertical_align_center</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-title  >Toggle folds</v-list-tile-title>
-           </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-title  >Toggle folds</v-list-item-title>
+           </v-list-item>
            
-           <v-list-tile @click="wrap=!wrap"  avatar >
-             <v-list-tile-avatar>
+           <v-list-item @click="wrap=!wrap"  avatar >
+             <v-list-item-avatar>
                    <v-icon >wrap_text</v-icon>
-              </v-list-tile-avatar>
-              <v-list-tile-title  >Soft wrap</v-list-tile-title>
-           </v-list-tile>
+              </v-list-item-avatar>
+              <v-list-item-title  >Soft wrap</v-list-item-title>
+           </v-list-item>
              <v-divider></v-divider>
               <v-subheader>Help</v-subheader>
-             <v-list-tile @click="acecmd('showSettingsMenu')" avatar >
-               <v-list-tile-avatar>
+             <v-list-item @click="acecmd('showSettingsMenu')" avatar >
+               <v-list-item-avatar>
               <v-icon >settings</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-tile-title>
-            </v-list-tile>
+            </v-list-item-avatar>
+              <v-list-item-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-item-title>
+            </v-list-item>
                       
-            <v-list-tile @click="acecmd('showKeyboardShortcuts')" avatar>
-              <v-list-tile-avatar>
+            <v-list-item @click="acecmd('showKeyboardShortcuts')" avatar>
+              <v-list-item-avatar>
               <v-icon >keyboard</v-icon>
-            </v-list-tile-avatar>
-              <v-list-tile-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-tile-title>
-            </v-list-tile>          
+            </v-list-item-avatar>
+              <v-list-item-title  @click="acecmd('showKeyboardShortcuts')" >Show ACE keyboard shortcuts</v-list-item-title>
+            </v-list-item>          
       </v-list>
     </v-menu>
     
     <v-menu>
-          <v-btn icon  slot="activator" ><v-icon>view_quilt</v-icon></v-btn>
+         <template v-slot:activator="{ on }">
+            <v-btn icon  v-on="on" ><v-icon>view_quilt</v-icon></v-btn>
+          </template>
           <v-list dense>
           <v-subheader >View</v-subheader>
-           <v-list-tile @click="showInfo = false" >
-		           <v-list-tile-action>
+           <v-list-item @click="showInfo = false" >
+		           <v-list-item-action>
 		              <v-icon >mode_edit</v-icon>
-		            </v-list-tile-action>
-                 <v-list-tile-content>
-                <v-list-tile-title  >Source</v-list-tile-title>
-                </v-list-tile-content>
-           </v-list-tile>
+		            </v-list-item-action>
+                 <v-list-item-content>
+                <v-list-item-title  >Source</v-list-item-title>
+                </v-list-item-content>
+           </v-list-item>
              
-           <v-list-tile  @click="showInfo = true" >
-              <v-list-tile-action>
+           <v-list-item  @click="showInfo = true" >
+              <v-list-item-action>
                   <v-icon >info</v-icon>
-                </v-list-tile-action>
-                 <v-list-tile-content>
-                <v-list-tile-title >Info</v-list-tile-title>
-              </v-list-tile>             
+                </v-list-item-action>
+                 <v-list-item-content>
+                <v-list-item-title >Info</v-list-item-title>
+              </v-list-item>             
           </v-list>         
     </v-menu>
     <v-layout slot="extension">

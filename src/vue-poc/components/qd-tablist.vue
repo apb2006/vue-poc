@@ -7,13 +7,13 @@
  -->
 <template id="qd-tablist">
   <v-menu left bottom  :close-on-content-click="false" >
-    <v-chip  slot="activator">
-    
+  <template v-slot:activator="{ on }">
+    <v-chip  v-on="on"> 
     {{ edittabs.length }}
-    <v-avatar>
       <v-icon right>arrow_drop_down</v-icon>
-      </v-avatar>
     </v-chip>
+   </template>
+      
    <v-card>
     <v-toolbar   >
       <v-text-field
@@ -28,24 +28,24 @@
   </v-toolbar>
 	<v-card-text>
 	  <v-list  style="height: 300px; overflow-y: auto;"> 
-	        <v-list-tile
+	        <v-list-item
 	          v-for="index in edittabs.sorted(q)" :key="index"
 	          avatar dense ripple
 	          @click="setItem(index)" :inactive="index == current"
 	        >
-	          <v-list-tile-avatar :title="edittabs.items[index].contentType">
+	          <v-list-item-avatar :title="edittabs.items[index].contentType">
 	            <v-icon v-if="index == current">check_circle</v-icon>
 	            <v-icon v-else>insert_drive_file</v-icon>
-	          </v-list-tile-avatar>
+	          </v-list-item-avatar>
 	
-	          <v-list-tile-content  :title="edittabs.items[index].url">
-	            <v-list-tile-title>{{ edittabs.items[index].name }}</v-list-tile-title>
-	          </v-list-tile-content>
+	          <v-list-item-content  :title="edittabs.items[index].url">
+	            <v-list-item-title>{{ edittabs.items[index].name }}</v-list-item-title>
+	          </v-list-item-content>
 	
-	          <v-list-tile-action  >
+	          <v-list-item-action  >
 	            {{ edittabs.items[index].id }} [{{ index }}]
-	          </v-list-tile-action>
-	        </v-list-tile>
+	          </v-list-item-action>
+	        </v-list-item>
 	  </v-list>
   </v-card-text>
   <v-card-actions>

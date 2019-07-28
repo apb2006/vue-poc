@@ -8,21 +8,21 @@
     <v-flex>
     <v-list v-if="!busy" two-line subheader>
       
-        <v-list-tile v-for="(item,index) in results" v-bind:key="item.uri" 
+        <v-list-item v-for="(item,index) in results" v-bind:key="item.uri" 
         :to="item.uri" v-model="selected[index]" avatar >
-          <v-list-tile-avatar  @click.prevent.stop="select(index)">
+          <v-list-item-avatar  @click.prevent.stop="select(index)">
             <v-icon v-text="icon(index)"></v-icon>
-          </v-list-tile-avatar>
-          <v-list-tile-content  >
-            <v-list-tile-title>{{ index }} {{ item.title }}</v-list-tile-title>
-            <v-list-tile-sub-title>{{ item.uri }}</v-list-tile-sub-title>
-          </v-list-tile-content>
-          <v-list-tile-action>
+          </v-list-item-avatar>
+          <v-list-item-content  >
+            <v-list-item-title>{{ index }} {{ item.title }}</v-list-item-title>
+            <v-list-item-subtitle>{{ item.uri }}</v-list-item-subtitle>
+          </v-list-item-content>
+          <v-list-item-action>
             <v-btn icon ripple >
               <v-icon class="grey--text text--lighten-1">info</v-icon>
             </v-btn>
-          </v-list-tile-action>
-        </v-list-tile>
+          </v-list-item-action>
+        </v-list-item>
      </v-list>
      </v-flex>
      </v-layout>

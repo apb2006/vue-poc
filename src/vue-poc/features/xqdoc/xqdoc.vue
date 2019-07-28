@@ -11,7 +11,9 @@
             <v-spacer></v-spacer>
          
               <v-menu offset-y left>
-             <v-btn icon dark slot="activator"><v-icon>settings</v-icon></v-btn>
+               <template v-slot:activator="{ on }">
+                <v-btn icon dark v-on="on"><v-icon>settings</v-icon></v-btn>
+               </template>
               <v-card >
               <v-toolbar class="green">
                   <v-card-title >Settings................</v-card-title>

@@ -15,9 +15,7 @@
 		                 {{ props.item.text }}
 		                 <v-btn  icon v-if="props.item.menu" @click="$emit(props.item.menu)"
 		                 :class="props.item.menu">
-		                 <v-avatar>
 				              <v-icon>arrow_drop_down</v-icon>
-				              </v-avatar>
 				            </v-btn>
 				         
 		         </v-breadcrumbs-item>

@@ -37,15 +37,19 @@
        </v-btn>
      <v-spacer></v-spacer>
       <v-menu bottom left min-width="300px">
-            <v-btn icon slot="activator" >
+      
+       <template v-slot:activator="{ on }">
+            <v-btn icon v-on="on" >
               <v-icon>settings</v-icon>
             </v-btn>
-            <v-list subheader>
+         </template>
+         
+         <v-list subheader>
           <v-subheader>Settings</v-subheader>
               
-              <v-list-tile  >
-                <v-list-tile-title><v-switch label="Auto Refresh" v-model="autorefresh"></v-switch></v-list-tile-title>
-              </v-list-tile>
+              <v-list-item  >
+                <v-list-item-title><v-switch label="Auto Refresh" v-model="autorefresh"></v-switch></v-list-item-title>
+              </v-list-item>
             </v-list>
           </v-menu>
     </v-toolbar>

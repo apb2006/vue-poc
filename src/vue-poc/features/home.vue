@@ -6,24 +6,24 @@
  <v-card-text>
 <v-card-text>
 <v-list dense >
-		<v-list-tile  @click="">
+		<v-list-item  @click="">
 		<router-link :to="{path:'files', query:{url:'/vue-poc/'}}"> <v-icon>developer_mode</v-icon>vue-poc files</router-link>
-		</v-list-tile  >
-		<v-list-tile @click="">
+		</v-list-item  >
+		<v-list-item @click="">
 		<router-link :to="{path:'database', query:{url:'/vue-poc/'}}"> <v-icon>folder</v-icon>vue-poc db</router-link>
-		</v-list-tile >
-			<v-list-tile @click="">
+		</v-list-item >
+			<v-list-item @click="">
 			<a href="/doc/#/data/app/vue-poc" target="new">doc</a>
-			</v-list-tile>
-			<v-list-tile @click="">
+			</v-list-item>
+			<v-list-item @click="">
 			<a href="/dba" target="new">DBA app</a>
-			</v-list-tile>
-			<v-list-tile @click="">
+			</v-list-item>
+			<v-list-item @click="">
 			<a href="/vue-poc/ui/database?url=%2Fvue-poc%2F" target="new">db</a>
-			</v-list-tile>
-		<v-list-tile @click="">
+			</v-list-item>
+		<v-list-item @click="">
 		<router-link :to="{path:'files', query:{url:'/vue-poc/features/images/'}}">vue-poc image tasks</router-link>
-		</v-list-tile>
+		</v-list-item>
 </v-list>
  </v-card-text> 
  <v-card-actions>
