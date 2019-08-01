@@ -18,7 +18,7 @@
     :enable-resize-watcher="true">
   <v-list class="pa-0">
 
-          <v-list-item avatar tag="div">
+          <v-list-item  tag="div">
             <v-list-item-avatar >
               <v-btn icon @click="session">
               <v-avatar size="36">
@@ -62,7 +62,7 @@
       </v-btn>
     </template >   
           <v-list>
-              <v-list-item to="/session"  avatar ripple>
+              <v-list-item to="/session"   ripple>
                 <v-list-item-title >Session</v-list-item-title>
               </v-list-item>
               <v-list-item @click="logout()">

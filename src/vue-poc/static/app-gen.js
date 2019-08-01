@@ -1,4 +1,4 @@
-// generated 2019-07-28T23:09:34.827+01:00
+// generated 2019-08-01T21:43:37.847+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -183,7 +183,7 @@ Vue.component('qd-mimelist',{template:`
 	<v-card-text>
 	  <v-list style="height: 300px; overflow-y: auto;"> 
 	  
-	        <v-list-item v-for="(mime,index) in items" :key="index" avatar dense ripple @click="setItem(mime,index)">
+	        <v-list-item v-for="(mime,index) in items" :key="index" dense ripple @click="setItem(mime,index)">
 	          <v-list-item-avatar>
 	            <v-icon v-if="false">check_circle</v-icon>
 	            <v-icon v-else>insert_drive_file</v-icon>
@@ -235,7 +235,7 @@ Vue.component('qd-mimelist',{template:`
   }, 
   
   created:function(){
-    console.log("qd-mimelist",this.$MimeTypes.list())
+    //console.log("qd-mimelist",this.$MimeTypes.list())
   }
 }
       );
@@ -253,7 +253,7 @@ Vue.component('qd-navlist',{template:`
             </v-list-item>
          </template>
              
-            <v-list-item v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text" :prepend-icon="subItem.icon" :to="subItem.href" avatar ripple>
+            <v-list-item v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text" :prepend-icon="subItem.icon" :to="subItem.href" ripple>
               <v-list-item-avatar>
 		             <v-icon>{{ subItem.icon }}</v-icon>
 		          </v-list-item-avatar>
@@ -393,7 +393,7 @@ Vue.component('qd-table',{template:`
     <span>{{ entity }}</span>
     </v-toolbar>
     
-   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all class="elevation-1" :no-data-text="noDataMsg">
+   <v-data-table :headers="headers" :item="items" :search="search" v-model="selected" show-select class="elevation-1" :no-data-text="noDataMsg">
     <template slot="items" slot-scope="props">
      <td>
         <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
@@ -474,7 +474,7 @@ Vue.component('qd-tablist',{template:`
   </v-toolbar>
 	<v-card-text>
 	  <v-list style="height: 300px; overflow-y: auto;"> 
-	        <v-list-item v-for="index in edittabs.sorted(q)" :key="index" avatar dense ripple @click="setItem(index)" :inactive="index == current">
+	        <v-list-item v-for="index in edittabs.sorted(q)" :key="index" dense ripple @click="setItem(index)" :inactive="index == current">
 	          <v-list-item-avatar :title="edittabs.items[index].contentType">
 	            <v-icon v-if="index == current">check_circle</v-icon>
 	            <v-icon v-else>insert_drive_file</v-icon>
@@ -789,7 +789,7 @@ Vue.component('vp-paramform',{template:`
               </v-layout>
               
               <v-layout align-center justify-center column fill-height xs1 amber lighten-5>
-               <v-btn @click="clear()">Clear</v-btn>
+               <v-btn @click="clear()" id="btn-clear">Clear</v-btn>
 					     <v-btn @click="reset()">Reset</v-btn>
               </v-layout>
               </v-layout>
@@ -3146,7 +3146,7 @@ const Eval=Vue.extend({template:`
     },
     // execute imediatly
     run(){
-
+    	  console.log("run:",this.xq);
       this.showResult= true;
       this.start = performance.now();
       HTTPNE.post("eval/execute",Qs.stringify({xq:this.xq}))
@@ -4378,7 +4378,7 @@ const Jobs=Vue.extend({template:`
     <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
     </v-btn>
     </v-toolbar>
-  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all class="elevation-1" no-data-text="No Jobs currently running">
+  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" show-select class="elevation-1" no-data-text="No Jobs currently running">
     <template slot="items" slot-scope="props">
     <td class="vtop">
         <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
@@ -4470,7 +4470,7 @@ const Services=Vue.extend({template:`
     <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
     </v-btn>
     </v-toolbar>
-  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" select-all class="elevation-1" no-data-text="No Jobs currently running">
+  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" show-select class="elevation-1" no-data-text="No Jobs currently running">
     <template slot="items" slot-scope="props">
     <td class="vtop">
         <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
@@ -4674,40 +4674,48 @@ const Leaflet=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/documentation.vue
 const Documentation=Vue.extend({template:` 
- <v-container fluid>
-    <v-toolbar dense>
-        <v-toolbar-title>documentation</v-toolbar-title>
-        <v-spacer></v-spacer>
-          <v-btn icon :loading="loading" @click="get()" :disabled="loading">  
-    <v-icon>refresh</v-icon>
-    </v-btn>
-        <a href="/vue-poc/api/xqdocjob" target="doc">json</a>
-    </v-toolbar>
+ <v-container fluid grid-list-md>
+    <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="search" hide-default-footer>
 
-     <v-container fluid grid-list-md>
-       <v-layout row wrap>
-         <v-flex height="80px" xs2 v-for="item in items" :key="item.id">
-           <v-card :hover="true">
-           <v-toolbar color="blue lighten-3" dense>
-           <v-card-title>{{ item.name }}</v-card-title>
-           </v-toolbar>
-           <v-card-text>{{ item.id }}</v-card-text>
-            <v-card-text>{{ item.created | formatDate }}</v-card-text>
-           <v-card-actions>
-           <a :href="item.href" target="_new">go</a>
-           </v-card-actions>
+   <template v-slot:header>
+        <v-toolbar dark color="blue darken-3" class="mb-1">
+       <v-toolbar-title>XQDocs</v-toolbar-title>
+        <v-spacer></v-spacer>
+          <v-text-field v-model="search" clearable flat solo-inverted hide-details prepend-inner-icon="search" label="Search"></v-text-field>
+           <v-spacer></v-spacer>
+           <v-btn @click="get" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+          </v-toolbar>
+      </template>
+          
+      <template v-slot:default="props">
+        <v-layout wrap>
+          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
+            <v-card :hover="true">
+		           <v-toolbar color="blue lighten-3" dense>
+		           <v-card-title>{{ item.name }}</v-card-title>
+		           </v-toolbar>
+		           <v-card-text>{{ item.id }}</v-card-text>
+		            <v-card-text>{{ item.created | formatDate }}</v-card-text>
+		           <v-card-actions>
+		           <a :href="item.href" target="_new">go</a>
+		           </v-card-actions>
            </v-card>
-           </v-flex>
+            
+          </v-flex>
         </v-layout>
-      </v-container>
-              
- </v-container>
+      </template>
+
+    </v-data-iterator>
+  </v-container>
  `,
       
   data:  function(){
     return {
-      message: 'Hello Vue.js!',
+      itemsPerPage: 100,
+      page: 1,
       items:[],
+      search: '',
+      filter: {},
       loading: false
       }
   },
@@ -4735,63 +4743,69 @@ const Documentation=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/entity.vue
 const Entity=Vue.extend({template:` 
-<v-card>
-	<v-toolbar>
-	 <v-toolbar-title> 
-	    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]">
-				     <template slot="item" slot-scope="props">
-			           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
-			                {{ props.item.text }}
-			           </v-breadcrumbs-item>
-			       </template>
-     </v-breadcrumbs>
-   </v-toolbar-title>
-	 
-	 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
-   <v-spacer></v-spacer>
-	 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
-   <vp-entitylink entity="entity"></vp-entitylink>
-	 </v-toolbar>
-
-  <v-container fluid grid-list-md>
+<v-container fluid grid-list-md>
   
-    <v-data-iterator content-tag="v-layout" row wrap :loading="loading" :items="items" :search="q" :rows-per-page-items="rowsPerPageItems" :pagination.sync="pagination" select-all :value="selected">
-      <v-flex slot="item" slot-scope="props" xs12 sm6 md4 lg3>
+    <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="q" hide-default-footer select-all :value="selected">
+    
+     <template v-slot:header>
+       <v-toolbar>
+			 <v-toolbar-title> 
+			    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]">
+						     <template slot="item" slot-scope="props">
+					           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+					                {{ props.item.text }}
+					           </v-breadcrumbs-item>
+					       </template>
+		     </v-breadcrumbs>
+		   </v-toolbar-title>
+			 
+			 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
+		   <v-spacer></v-spacer>
+			 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+		   <vp-entitylink entity="entity"></vp-entitylink>
+	 </v-toolbar>
+	 </template>
+	 
+     <template v-slot:default="props">
+        <v-layout wrap>
+          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
+     
         <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
         
           <v-toolbar color="blue lighten-3" dense>
 		          <v-toolbar-title>
-		           <router-link :to="{path:'entity/'+ props.item.name}">
+		           <router-link :to="{path:'entity/'+ item.name}">
 		            
-		            <v-icon>{{ props.item.iconclass }}</v-icon> {{ props.item.name }}
+		            <v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}
 		            
 		            </router-link></v-toolbar-title>
 		         
           </v-toolbar>
-          <v-card-text>{{ props.item.description }}<!--<v-card-text-->
+          <v-card-text>{{ item.description }}<!--<v-card-text-->
           <v-card-actions green>
            Fields
            <v-badge>
-			      <span slot="badge">{{ props.item.nfields }}</span>
+			      <span slot="badge">{{ item.nfields }}</span>
 			      Fields
 			    </v-badge>
           </v-card-actions>
         </v-card-text></v-card>
       </v-flex>
+      </v-layout>
+      </template>
     </v-data-iterator>
   </v-container>
-   </v-card>
  `,
       
   data:  function(){
     return {
-      q: '',
-      items: [],
+   	  itemsPerPage: 100,
+      page: 1,
+      items:[],
+      search: '',
+      filter: {},
       loading: false,
-      rowsPerPageItems: [4, 8, 20],
-      pagination: {
-        rowsPerPage: 20
-      },
+      q: '',   
       selected:[]
       }
   },
@@ -7467,7 +7481,7 @@ const Vuepoc=Vue.extend({template:`
  <v-navigation-drawer app :mini-variant.sync="mini" v-model="drawer" :enable-resize-watcher="true">
   <v-list class="pa-0">
 
-          <v-list-item avatar tag="div">
+          <v-list-item tag="div">
             <v-list-item-avatar>
               <v-btn icon @click="session">
               <v-avatar size="36">
@@ -7509,7 +7523,7 @@ const Vuepoc=Vue.extend({template:`
       </v-btn>
     </template>   
           <v-list>
-              <v-list-item to="/session" avatar ripple>
+              <v-list-item to="/session" ripple>
                 <v-list-item-title>Session</v-list-item-title>
               </v-list-item>
               <v-list-item @click="logout()">

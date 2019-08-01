@@ -26,10 +26,10 @@
     
    <v-data-table
       :headers="headers"
-      :items="items"
+      :item="items"
       :search="search"
        v-model="selected"
-       select-all
+       show-select
       class="elevation-1"
       :no-data-text="noDataMsg"
     >

@@ -30,7 +30,7 @@
 	  <v-list  style="height: 300px; overflow-y: auto;"> 
 	        <v-list-item
 	          v-for="index in edittabs.sorted(q)" :key="index"
-	          avatar dense ripple
+	           dense ripple
 	          @click="setItem(index)" :inactive="index == current"
 	        >
 	          <v-list-item-avatar :title="edittabs.items[index].contentType">

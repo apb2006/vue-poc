@@ -15,6 +15,6 @@
 		"qs": "6.4.0",
 		"localforage": "1.7.1",
 		"momentjs": "2.18.1",
-		"vuetify-jsonschema-form": "0.24.1"
+		"vuetify-jsonschema-form": "0.27.1"
 	}
 }

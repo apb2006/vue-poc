@@ -1,5 +1,6 @@
 (:~
- : vue-poc thumbnail api.
+ : vue-poc XQuery evalution api.
+ : eval/execute: evaluate form  arg return as json
  :
  : @author Andy Bunce may-2017
  :)
@@ -21,6 +22,7 @@ declare
 %output:method("json")   
 function vue-api:eval($xq )   
 {
+ let $a:=trace($xq,"EXEC")
  let $r:=util:query($xq,())
  return vue-api:response($r,$xq)
 };

@@ -1,49 +1,74 @@
 <!DOCTYPE html>
 <template id="documentation">
- <v-container fluid>
-    <v-toolbar dense >
-        <v-toolbar-title>documentation</v-toolbar-title>
-        <v-spacer></v-spacer>
-          <v-btn
-       icon
-      :loading="loading"
-      @click="get()"
-      :disabled="loading"
-    >  
-    <v-icon>refresh</v-icon>
-    </v-btn>
-        <a href="/vue-poc/api/xqdocjob" target="doc">json</a>
-    </v-toolbar>
+ <v-container fluid grid-list-md>
+    <v-data-iterator
+      :items="items"
+      :items-per-page.sync="itemsPerPage"
+      :search="search"
+      hide-default-footer
+    >
 
-     <v-container fluid grid-list-md>
-       <v-layout row wrap >
-         <v-flex height="80px"
-           xs2
-           v-for="item in items"
-           :key="item.id"
-         >
-           <v-card    :hover="true"  >
-           <v-toolbar  color="blue lighten-3"  dense>
-           <v-card-title >{{ item.name }}</v-card-title>
-           </v-toolbar>
-           <v-card-text>{{ item.id }}</v-card-text>
-            <v-card-text>{{ item.created | formatDate }}</v-card-text>
-           <v-card-actions>
-           <a :href="item.href" target="_new">go</a>
-           </v-card-actions>
+   <template v-slot:header>
+        <v-toolbar
+          dark
+          color="blue darken-3"
+          class="mb-1"
+        >
+       <v-toolbar-title>XQDocs</v-toolbar-title>
+        <v-spacer></v-spacer>
+          <v-text-field
+            v-model="search"
+            clearable
+            flat
+            solo-inverted
+            hide-details
+            prepend-inner-icon="search"
+            label="Search"
+          ></v-text-field>
+           <v-spacer></v-spacer>
+           <v-btn @click="get" icon :loading="loading"
+	      :disabled="loading"
+	   ><v-icon>refresh</v-icon></v-btn>
+          </v-toolbar>
+      </template>
+          
+      <template v-slot:default="props">
+        <v-layout wrap>
+          <v-flex
+            v-for="item in props.items"
+            :key="item.name"
+            xs12
+            sm6
+            md4
+            lg3
+          >
+            <v-card    :hover="true"  >
+		           <v-toolbar  color="blue lighten-3"  dense>
+		           <v-card-title >{{ item.name }}</v-card-title>
+		           </v-toolbar>
+		           <v-card-text>{{ item.id }}</v-card-text>
+		            <v-card-text>{{ item.created | formatDate }}</v-card-text>
+		           <v-card-actions>
+		           <a :href="item.href" target="_new">go</a>
+		           </v-card-actions>
            </v-card>
-           </v-flex>
+            
+          </v-flex>
         </v-layout>
-      </v-container>
-              
- </v-container>
+      </template>
+
+    </v-data-iterator>
+  </v-container>
 </template>
 
 <script>{
   data:  function(){
     return {
-      message: 'Hello Vue.js!',
+      itemsPerPage: 100,
+      page: 1,
       items:[],
+      search: '',
+      filter: {},
       loading: false
       }
   },

@@ -20,7 +20,7 @@ for nav drawer
              
             <v-list-item v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text"
              :prepend-icon="subItem.icon" 
-             :to="subItem.href"  avatar ripple >
+             :to="subItem.href"  ripple >
               <v-list-item-avatar>
 		             <v-icon>{{ subItem.icon }}</v-icon>
 		          </v-list-item-avatar>

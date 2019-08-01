@@ -34,7 +34,7 @@
       :items="items"
       :search="search"
        v-model="selected"
-       select-all
+       show-select
       class="elevation-1"
       no-data-text="No Jobs currently running"
     >

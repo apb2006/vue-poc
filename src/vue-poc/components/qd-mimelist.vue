@@ -29,7 +29,7 @@
 	  
 	        <v-list-item
 	          v-for="(mime,index) in items" :key="index"
-	            avatar dense ripple
+	             dense ripple
             @click="setItem(mime,index)" 
 	         
 	        >
@@ -85,6 +85,6 @@
   }, 
   
   created:function(){
-    console.log("qd-mimelist",this.$MimeTypes.list())
+    //console.log("qd-mimelist",this.$MimeTypes.list())
   }
 }</script>

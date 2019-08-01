@@ -34,7 +34,7 @@
               </v-layout>
               
               <v-layout align-center justify-center column fill-height xs1 amber lighten-5>
-               <v-btn  @click="clear()" 
+               <v-btn  @click="clear()" id="btn-clear"
 					          >Clear</v-btn>
 					     <v-btn  @click="reset()"
 					          >Reset</v-btn>

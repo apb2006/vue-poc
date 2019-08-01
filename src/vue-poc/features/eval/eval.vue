@@ -137,7 +137,7 @@
     },
     // execute imediatly
     run(){
-
+    	  console.log("run:",this.xq);
       this.showResult= true;
       this.start = performance.now();
       HTTPNE.post("eval/execute",Qs.stringify({xq:this.xq}))
