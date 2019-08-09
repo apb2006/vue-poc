@@ -1,52 +1,51 @@
 <!DOCTYPE html>
 <template id="login">
- <v-layout>
-    <v-flex >
-					<v-card >
-					
-					      <v-card-title class="red">
-					        <span class="white--text">The current credentials do the give access this page, please login.</span>
-					      </v-card-title>
-					   
-					     <v-card-actions>
-					    <v-form v-model="valid" ref="form">
-                        <v-text-field
-                          label="Enter your user id "
-                          v-model="name"
-                          :rules="nameRules"
-                          required
-                        ></v-text-field>
-                        <v-text-field
-                          label="Enter your password"
-                          v-model="password"
-                          min="8"
-                          :append-icon="hidepass ? 'visibility' : 'visibility_off'"
-                          @click:append="() => hidepass = !hidepass"
-                          :type="hidepass ? 'password' : 'text'"
-                          :rules="passwordRules"
-                          counter
-                          required
-                        ></v-text-field>
-                        <v-switch 
-                label="Remember me"  v-model="remember">
-              </v-switch> 
-                        <v-layout justify-space-between>
-                           <v-spacer></v-spacer>
-                            <v-btn @click="submit" :class=" { 'blue darken-4 white--text' : valid, disabled: !valid }">Login</v-btn>
-                           
-                        </v-layout>
-              </v-form>
-              </v-card-actions>
-              <v-card-actions>
-					     <a href="">Forgot Password</a>
-					     <v-alert color="error" v-bind:value="showMessage">
-                {{message}}
-              </v-alert>
-              </v-card-actions>
-					   
-					</v-card>
-    </v-flex>
-</v-layout>
+ <v-container fluid>
+	<v-card >
+	      <v-card-title class="red">
+	        <span class="white--text">The current credentials do the give access this page, please login.</span>
+	      </v-card-title>
+	   
+	     <v-card-actions>
+	    <v-form v-model="valid" ref="form">
+                    <v-text-field
+                      label="Enter your user id "
+                      v-model="name"
+                      :rules="nameRules"
+                      required
+                    ></v-text-field>
+                    
+                    <v-text-field
+                      label="Enter your password"
+                      v-model="password"
+                      min="8"
+                      :append-icon="hidepass ? 'visibility' : 'visibility_off'"
+                      @click:append="() => hidepass = !hidepass"
+                      :type="hidepass ? 'password' : 'text'"
+                      :rules="passwordRules"
+                      counter
+                      required
+                    ></v-text-field>
+                    
+                    <v-switch 
+            label="Remember me"  v-model="remember">
+          </v-switch> 
+                    <v-layout justify-space-between>
+                       <v-spacer></v-spacer>
+                        <v-btn @click="submit" :class=" { 'blue darken-4 white--text' : valid, disabled: !valid }">Login</v-btn>
+                       
+                    </v-layout>
+          </v-form>
+          </v-card-actions>
+          <v-card-actions>
+	     <a href="">Forgot Password</a>
+	     <v-alert color="error" v-bind:value="showMessage">
+            {{message}}
+          </v-alert>
+          </v-card-actions>
+	   
+	</v-card>
+</v-container>
 </template>
 
 <script>{

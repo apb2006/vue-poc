@@ -25,12 +25,12 @@
     <v-data-table
     :headers="headers"
     :items="items"
-    hide-actions
+    hide-default-footer
      :search="q"
     class="elevation-1"
   >
     <template slot="items" slot-scope="props">
-      <td ><router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
+      <td >AA: <router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
       <td >{{ props.item.description }}</td>
     </template>
     <template slot="no-data">

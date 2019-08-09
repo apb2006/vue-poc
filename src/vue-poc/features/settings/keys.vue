@@ -16,6 +16,7 @@
 	   </v-toolbar>
 
    <v-card-text>
+   <v-expansion-panels>
     <v-expansion-panel v-model="openIndex">
     <v-expansion-panel-content popout 
      v-for="key in keys"
@@ -28,7 +29,8 @@
         ullamco laboris nisi ut aliquip ex ea commodo consequat.</v-card-text>
       </v-card>
      </v-expansion-panel-content>
-     </v-expansion-panel> 
+     </v-expansion-panel>
+     </v-expansion-panels> 
    </v-card-text>
    </v-card>
    <v-snackbar :value="true" >Settings are currently only stored locally in the browser, using <code>localstorage</code></v-snackbar>

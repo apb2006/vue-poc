@@ -27,7 +27,7 @@
 					          {{ item.text }}
 					      </v-list-item-title>
 					      <v-spacer></v-spacer>
-					      <v-list-item-action @click.stop>
+					      <v-list-item-action>
 					        <v-btn
 					          icon
 					          :to="item.value"

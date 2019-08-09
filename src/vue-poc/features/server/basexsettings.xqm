@@ -17,11 +17,13 @@ function set:values()
   let $sm:=map:merge($settings!map:entry(name(.),string(.)))
   let $names:=distinct-values((map:keys( $dm),map:keys($sm)))=>sort()
  return <json type="array">
-{for $name in $names return <_ type="object">
+{for $name in $names 
+let $change:=$dm($name) ne $sm($name)
+return <_ type="object">
                                 <name>{$name}</name>
                                 <default>{$dm($name)}</default>
                                 <current>{$sm($name)}</current>
-                                <changed type="boolean">{$dm($name) ne $sm($name)}</changed>
+                                <changed type="boolean">{ if ($change) then $change else false() }</changed>
                             </_>}
  </json>
 };

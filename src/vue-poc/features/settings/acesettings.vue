@@ -56,7 +56,7 @@
         <v-list two-line subheader>
           <v-subheader>Ace editor settings</v-subheader>
    
-            <v-list-item avatar>
+            <v-list-item >
               <v-list-item-action>
                 <v-checkbox v-model="ace.enableSnippets"></v-checkbox>
               </v-list-item-action>
@@ -67,7 +67,7 @@
               </v-list-item-content>
             </v-list-item>
     
-            <v-list-item avatar>
+            <v-list-item >
               <v-list-item-action>
                 <v-checkbox v-model="ace.enableBasicAutocompletion"></v-checkbox>
               </v-list-item-action>
@@ -77,7 +77,7 @@
               </v-list-item-content>
             </v-list-item>
          
-            <v-list-item avatar>
+            <v-list-item >
               <v-list-item-action>
                 <v-checkbox v-model="ace.enableLiveAutocompletion"></v-checkbox>
               </v-list-item-action>

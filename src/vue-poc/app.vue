@@ -14,8 +14,8 @@
     <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
   </v-navigation-drawer>
   
- <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   
-    :enable-resize-watcher="true">
+ <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   :clipped="$vuetify.breakpoint.lgAndUp"
+   >
   <v-list class="pa-0">
 
           <v-list-item  tag="div">
@@ -37,14 +37,15 @@
           </v-list-item>
 
       </v-list>
-    <qd-navlist  :items="items" :mini="mini"></qd-navlist>
+    <qd-navlist2  :items="items" :mini="mini"></qd-navlist2>
  </v-navigation-drawer>
   
- <v-app-bar  app
+ <v-app-bar  app  :clipped-left="$vuetify.breakpoint.lgAndUp"
       color="blue darken-3"
       dark >
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"  ></v-app-bar-nav-icon>
   <v-toolbar-title class="hidden-sm-and-down" >
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer"  ></v-app-bar-nav-icon>
+    
   {{$route.meta.title}}</v-toolbar-title>
    
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>

@@ -16,7 +16,7 @@
      <v-data-table
     :headers="headers"
     :items="filtered"
-    class="elevation-1" :pagination.sync="pagination"
+    class="elevation-1"  
     
   >
     <template slot="items" slot-scope="props">

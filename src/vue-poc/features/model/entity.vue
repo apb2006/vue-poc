@@ -51,15 +51,15 @@
           <v-toolbar  color="blue lighten-3"  dense>
 		          <v-toolbar-title>
 		           <router-link :to="{path:'entity/'+ item.name}">
-		            
-		            <v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}
-		            
+		            <v-avatar>
+		             <v-icon>{{ item.iconclass }}</v-icon> 
+		            </v-avatar> {{ item.name }}
 		            </v-toolbar-title>
 		         </v-card-title>
           </v-toolbar>
           <v-card-text >{{ item.description }}</<v-card-text>
           <v-card-actions green>
-           Fields
+ 
            <v-badge >
 			      <span slot="badge">{{ item.nfields }}</span>
 			      Fields

@@ -8,9 +8,6 @@
          >crumbs</qd-breadcrumbs> 
          </v-toolbar-title>   
           <v-menu offset-y v-model="showmenu" >
-	          <template v-slot:activator="{ on }">
-	                <v-btn v-on="on">M</v-btn>
-	           </template>
             <v-list dense>
                 <v-subheader >Actions</v-subheader>
                       <v-list-item @click="getxml" >
@@ -31,31 +28,46 @@
 	
 	 </v-toolbar>
 
-  <v-container fluid grid-list-md>
-  
-    <v-expansion-panel v-model="panel" expand >
-    <v-expansion-panel-content>
-          <div slot="header" class="title"><v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}</div>
-         {{item.description}}
-          <pre v-if="xml"><code>{{ xml }}</code></pre> 
-      </v-expansion-panel-content>
-      <v-expansion-panel-content>
-		      <div slot="header" class="title">Type: <code>{{ item.type }}</code></div>
-		       <prism language="xquery">{{ code(item) }}</prism>
-      </v-expansion-panel-content>
-      
-      <v-expansion-panel-content>
-          <div slot="header" class="title">
-          <v-badge >
-               <span slot="badge">{{ item.nfields }}</span>Fields
-          </v-badge>
-           </div>
-           <qd-table :headers="headers" :data-uri='"data/entity/"+entity +"/field"' entity="entity.field" no-data-msg="Nothing found">
-
-       </qd-table>
-      </v-expansion-panel-content>
-     </v-expansion-panel>
-   
+  <v-container fluid >
+	  <v-expansion-panels>
+	    <v-expansion-panel  expand >
+			     <v-expansion-panel-header><v-layout>
+          <v-flex xs12>
+			     <v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}</div>
+			         {{item.description}}
+			 </v-flex>
+			 </v-layout>        
+			     </v-expansion-panel-header>
+			     <v-expansion-panel-content>
+			          <pre v-if="xml"><code>{{ xml }}</code></pre> 
+			      </v-expansion-panel-content>
+			      <v-expansion-panel>
+	      </v-expansion-panel>
+	       
+	      <v-expansion-panel> 
+           <v-expansion-panel-header><v-layout>
+	          <v-flex xs12>Type: <code>{{ item.type }}</code></v-flex>
+	          </v-layout>
+          </v-expansion-panel-header>
+		      <v-expansion-panel-content>
+				  <prism language="xquery">{{ code(item) }}</prism>
+		      </v-expansion-panel-content>
+		</v-expansion-panel>
+		
+		<v-expansion-panel>
+		<v-expansion-panel-header><v-layout>
+          <v-flex xs12><v-badge >
+	               <span slot="badge">{{ item.nfields }}</span>Fields
+	          </v-badge>
+	          </v-flex>
+	          </v-layout>
+	      </v-expansion-panel-header> 
+	      <v-expansion-panel-content>
+	           <qd-table :headers="headers" :data-uri='"data/entity/"+entity +"/field"' entity="entity.field" no-data-msg="Nothing found">
+	          </qd-table>
+	      </v-expansion-panel-content>
+	     </v-expansion-panel>
+	   </v-expansion-panels>
   </v-container>
    </v-card>
 </template>

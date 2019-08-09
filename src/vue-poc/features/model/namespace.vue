@@ -32,19 +32,17 @@
     :headers="headers"
     :items="items"
     :loading="loading"
-    hide-actions
+    hide-default-footer
      :search="q"
     class="elevation-1"
   >
-    <template slot="items" slot-scope="props">
-      <td ><router-link :to="{path:'namespace/item?xmlns='+ props.item.xmlns}">
-                 {{ props.item.xmlns }}
+  
+  <template v-slot:item.xmlns="{ item }" > 
+	      <td ><router-link :to="{path:'namespace/item?xmlns='+ item.xmlns}">
+                 {{ item.xmlns }}
                 </router-link></td>
-      <td >{{ props.item.description }}</td>
-      <td >{{ props.item.prefix }}</td>
-     
     </template>
-    
+      
     <template slot="no-results">
         No matching results.
     </template>
@@ -65,10 +63,7 @@
       loading: false,
       q: "",
       message: 'bad route!',
-      rowsPerPageItems: [4, 8, 20],
-      pagination: {
-        rowsPerPage: 20
-      },
+     
       selected:[],
       headers: [
         

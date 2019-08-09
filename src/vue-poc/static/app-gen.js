@@ -1,4 +1,4 @@
-// generated 2019-08-01T21:43:37.847+01:00
+// generated 2019-08-08T22:52:09.345+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -240,37 +240,45 @@ Vue.component('qd-mimelist',{template:`
 }
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-navlist.vue
-Vue.component('qd-navlist',{template:` 
- <v-list dense>
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-navlist2.vue
+Vue.component('qd-navlist2',{template:` 
+ <v-list dense nav>
     <template v-for="(item, i) in items">
-          <v-list-group v-if="item.children" v-bind:key="item.text" :prepend-icon="item.icon" no-action>
-         <template v-slot:activator="{ on }">
-            <v-list-item v-on="on">
+      <v-list-group v-if="item.children" :key="item.text" v-model="item.model" :prepend-icon="item.icon" :title="item.text">
+            <template v-slot:activator>
+              <v-list-item>
+                <v-list-item-content>
+                  <v-list-item-title>
+                    {{ item.text }}
+                  </v-list-item-title>
+                </v-list-item-content>
+              </v-list-item>
+            </template>
+            <v-list-item :to="child.href" v-for="(child, i) in item.children" :key="i" :title="child.text">
+	          <v-list-item-icon>
+	            <v-icon v-if="mini" v-text="child.icon"></v-icon>
+	          </v-list-item-icon>
               <v-list-item-content>
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
+                <v-list-item-title>
+                  {{ child.text }}
+                </v-list-item-title>
               </v-list-item-content>
-            </v-list-item>
-         </template>
-             
-            <v-list-item v-if="!mini" v-for="subItem in item.children" v-bind:key="subItem.text" :prepend-icon="subItem.icon" :to="subItem.href" ripple>
-              <v-list-item-avatar>
-		             <v-icon>{{ subItem.icon }}</v-icon>
-		          </v-list-item-avatar>
-            <v-list-item-content>
-                <v-list-item-title>{{ subItem.text }}</v-list-item-title>
-              </v-list-item-content>
+               <v-list-item-action>
+              <v-icon v-text="child.icon"></v-icon>
+            </v-list-item-action>
             </v-list-item>
           </v-list-group>
+
           
-          <v-list-item v-else v-bind:key="item.text" :to="item.href" ripple>
-              <v-list-item-avatar>
-                 <v-icon>{{ item.icon }}</v-icon>
-              </v-list-item-avatar>
-          <v-list-item-content>
-                <v-list-item-title>{{ item.text }}</v-list-item-title>
-              </v-list-item-content>
-     
+            <v-list-item v-else :key="item.text" :to="item.href">
+            <v-list-item-action>
+              <v-icon>{{ item.icon }}</v-icon>
+            </v-list-item-action>
+            <v-list-item-content>
+              <v-list-item-title>
+                {{ item.text }}
+              </v-list-item-title>
+            </v-list-item-content>
           </v-list-item>
           </template>
         </v-list>
@@ -317,7 +325,7 @@ Vue.component('qd-search',{template:`
 					          {{ item.text }}
 					      </v-list-item-title>
 					      <v-spacer></v-spacer>
-					      <v-list-item-action @click.stop>
+					      <v-list-item-action>
 					        <v-btn icon :to="item.value">
                         <v-icon>arrow_forward</v-icon>					         
 					        </v-btn>
@@ -3470,9 +3478,9 @@ const Taskhistory=Vue.extend({template:`
    </v-toolbar>
    
    <v-card-text>
-    <v-data-table :headers="headers" :items="items" hide-actions :search="q" class="elevation-1">
+    <v-data-table :headers="headers" :items="items" hide-default-footer :search="q" class="elevation-1">
     <template slot="items" slot-scope="props">
-      <td><router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
+      <td>AA: <router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
       <td>{{ props.item.description }}</td>
     </template>
     <template slot="no-data">
@@ -4544,37 +4552,36 @@ const Services=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/login/login.vue
 const Login=Vue.extend({template:` 
- <v-layout>
-    <v-flex>
-					<v-card>
-					
-					      <v-card-title class="red">
-					        <span class="white--text">The current credentials do the give access this page, please login.</span>
-					      </v-card-title>
-					   
-					     <v-card-actions>
-					    <v-form v-model="valid" ref="form">
-                        <v-text-field label="Enter your user id " v-model="name" :rules="nameRules" required></v-text-field>
-                        <v-text-field label="Enter your password" v-model="password" min="8" :append-icon="hidepass ? 'visibility' : 'visibility_off'" @click:append="() => hidepass = !hidepass" :type="hidepass ? 'password' : 'text'" :rules="passwordRules" counter required></v-text-field>
-                        <v-switch label="Remember me" v-model="remember">
-              </v-switch> 
-                        <v-layout justify-space-between>
-                           <v-spacer></v-spacer>
-                            <v-btn @click="submit" :class=" { 'blue darken-4 white--text' : valid, disabled: !valid }">Login</v-btn>
-                           
-                        </v-layout>
-              </v-form>
-              </v-card-actions>
-              <v-card-actions>
-					     <a href>Forgot Password</a>
-					     <v-alert color="error" v-bind:value="showMessage">
-                {{message}}
-              </v-alert>
-              </v-card-actions>
-					   
-					</v-card>
-    </v-flex>
-</v-layout>
+ <v-container fluid>
+	<v-card>
+	      <v-card-title class="red">
+	        <span class="white--text">The current credentials do the give access this page, please login.</span>
+	      </v-card-title>
+	   
+	     <v-card-actions>
+	    <v-form v-model="valid" ref="form">
+                    <v-text-field label="Enter your user id " v-model="name" :rules="nameRules" required></v-text-field>
+                    
+                    <v-text-field label="Enter your password" v-model="password" min="8" :append-icon="hidepass ? 'visibility' : 'visibility_off'" @click:append="() => hidepass = !hidepass" :type="hidepass ? 'password' : 'text'" :rules="passwordRules" counter required></v-text-field>
+                    
+                    <v-switch label="Remember me" v-model="remember">
+          </v-switch> 
+                    <v-layout justify-space-between>
+                       <v-spacer></v-spacer>
+                        <v-btn @click="submit" :class=" { 'blue darken-4 white--text' : valid, disabled: !valid }">Login</v-btn>
+                       
+                    </v-layout>
+          </v-form>
+          </v-card-actions>
+          <v-card-actions>
+	     <a href>Forgot Password</a>
+	     <v-alert color="error" v-bind:value="showMessage">
+            {{message}}
+          </v-alert>
+          </v-card-actions>
+	   
+	</v-card>
+</v-container>
  `,
       
     data () {
@@ -4775,15 +4782,15 @@ const Entity=Vue.extend({template:`
           <v-toolbar color="blue lighten-3" dense>
 		          <v-toolbar-title>
 		           <router-link :to="{path:'entity/'+ item.name}">
-		            
-		            <v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}
-		            
+		            <v-avatar>
+		             <v-icon>{{ item.iconclass }}</v-icon> 
+		            </v-avatar> {{ item.name }}
 		            </router-link></v-toolbar-title>
 		         
           </v-toolbar>
           <v-card-text>{{ item.description }}<!--<v-card-text-->
           <v-card-actions green>
-           Fields
+ 
            <v-badge>
 			      <span slot="badge">{{ item.nfields }}</span>
 			      Fields
@@ -4842,9 +4849,6 @@ const Entity1=Vue.extend({template:`
          <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
          </v-toolbar-title>   
           <v-menu offset-y v-model="showmenu">
-	          <template v-slot:activator="{ on }">
-	                <v-btn v-on="on">M</v-btn>
-	           </template>
             <v-list dense>
                 <v-subheader>Actions</v-subheader>
                       <v-list-item @click="getxml">
@@ -4862,31 +4866,46 @@ const Entity1=Vue.extend({template:`
 	
 	 </v-toolbar>
 
-  <v-container fluid grid-list-md>
-  
-    <v-expansion-panel v-model="panel" expand>
-    <v-expansion-panel-content>
-          <div slot="header" class="title"><v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}</div>
-         {{item.description}}
-          <pre v-if="xml"><code>{{ xml }}</code></pre> 
-      </v-expansion-panel-content>
-      <v-expansion-panel-content>
-		      <div slot="header" class="title">Type: <code>{{ item.type }}</code></div>
-		       <prism language="xquery">{{ code(item) }}</prism>
-      </v-expansion-panel-content>
-      
-      <v-expansion-panel-content>
-          <div slot="header" class="title">
-          <v-badge>
-               <span slot="badge">{{ item.nfields }}</span>Fields
-          </v-badge>
-           </div>
-           <qd-table :headers="headers" :data-uri="&quot;data/entity/&quot;+entity +&quot;/field&quot;" entity="entity.field" no-data-msg="Nothing found">
-
-       </qd-table>
-      </v-expansion-panel-content>
-     </v-expansion-panel>
-   
+  <v-container fluid>
+	  <v-expansion-panels>
+	    <v-expansion-panel expand>
+			     <v-expansion-panel-header><v-layout>
+          <v-flex xs12>
+			     <v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}
+			         {{item.description}}
+			 </v-flex>
+			 </v-layout>        
+			     </v-expansion-panel-header>
+			     <v-expansion-panel-content>
+			          <pre v-if="xml"><code>{{ xml }}</code></pre> 
+			      </v-expansion-panel-content>
+			      <v-expansion-panel>
+	      </v-expansion-panel>
+	       
+	      <v-expansion-panel> 
+           <v-expansion-panel-header><v-layout>
+	          <v-flex xs12>Type: <code>{{ item.type }}</code></v-flex>
+	          </v-layout>
+          </v-expansion-panel-header>
+		      <v-expansion-panel-content>
+				  <prism language="xquery">{{ code(item) }}</prism>
+		      </v-expansion-panel-content>
+		</v-expansion-panel>
+		
+		<v-expansion-panel>
+		<v-expansion-panel-header><v-layout>
+          <v-flex xs12><v-badge>
+	               <span slot="badge">{{ item.nfields }}</span>Fields
+	          </v-badge>
+	          </v-flex>
+	          </v-layout>
+	      </v-expansion-panel-header> 
+	      <v-expansion-panel-content>
+	           <qd-table :headers="headers" :data-uri="&quot;data/entity/&quot;+entity +&quot;/field&quot;" entity="entity.field" no-data-msg="Nothing found">
+	          </qd-table>
+	      </v-expansion-panel-content>
+	     </v-expansion-panel>
+	   </v-expansion-panel></v-expansion-panels>
   </v-container>
    </v-card>
  `,
@@ -4977,16 +4996,14 @@ const Namespace=Vue.extend({template:`
    </v-toolbar>
    
    <v-card-text>
-    <v-data-table :headers="headers" :items="items" :loading="loading" hide-actions :search="q" class="elevation-1">
-    <template slot="items" slot-scope="props">
-      <td><router-link :to="{path:'namespace/item?xmlns='+ props.item.xmlns}">
-                 {{ props.item.xmlns }}
+    <v-data-table :headers="headers" :items="items" :loading="loading" hide-default-footer :search="q" class="elevation-1">
+  
+  <template v-slot:item.xmlns="{ item }"> 
+	      <td><router-link :to="{path:'namespace/item?xmlns='+ item.xmlns}">
+                 {{ item.xmlns }}
                 </router-link></td>
-      <td>{{ props.item.description }}</td>
-      <td>{{ props.item.prefix }}</td>
-     
     </template>
-    
+      
     <template slot="no-results">
         No matching results.
     </template>
@@ -5006,10 +5023,7 @@ const Namespace=Vue.extend({template:`
       loading: false,
       q: "",
       message: 'bad route!',
-      rowsPerPageItems: [4, 8, 20],
-      pagination: {
-        rowsPerPage: 20
-      },
+     
       selected:[],
       headers: [
         
@@ -5632,7 +5646,7 @@ const Basexsettings=Vue.extend({template:`
   </v-toolbar>
   
   <v-card-text>
-     <v-data-table :headers="headers" :items="filtered" class="elevation-1" :pagination.sync="pagination">
+     <v-data-table :headers="headers" :items="filtered" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td>{{ props.item.name }}</td>
       <td>{{ props.item.current }}</td>
@@ -5710,7 +5724,7 @@ const Dicetest=Vue.extend({template:`
       
     </v-flex>
  
-  <table class="v-table">
+  <table class="v-data-table">
       <thead> 
         <tr>
          <th xs1>url</th>
@@ -5728,7 +5742,7 @@ const Dicetest=Vue.extend({template:`
 
       
           <tr>
-          <td>
+              <td>
               {{ entity &amp;&amp; entity.name  }}
                </td>
               <td>
@@ -5765,6 +5779,7 @@ const Dicetest=Vue.extend({template:`
           
       </tbody>
     </table>
+    
      <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
      <pre>{{ result | pretty}}</pre>
     </v-card-text>
@@ -6149,7 +6164,7 @@ const Acesettings=Vue.extend({template:`
         <v-list two-line subheader>
           <v-subheader>Ace editor settings</v-subheader>
    
-            <v-list-item avatar>
+            <v-list-item>
               <v-list-item-action>
                 <v-checkbox v-model="ace.enableSnippets"></v-checkbox>
               </v-list-item-action>
@@ -6160,7 +6175,7 @@ const Acesettings=Vue.extend({template:`
               </v-list-item-content>
             </v-list-item>
     
-            <v-list-item avatar>
+            <v-list-item>
               <v-list-item-action>
                 <v-checkbox v-model="ace.enableBasicAutocompletion"></v-checkbox>
               </v-list-item-action>
@@ -6170,7 +6185,7 @@ const Acesettings=Vue.extend({template:`
               </v-list-item-content>
             </v-list-item>
          
-            <v-list-item avatar>
+            <v-list-item>
               <v-list-item-action>
                 <v-checkbox v-model="ace.enableLiveAutocompletion"></v-checkbox>
               </v-list-item-action>
@@ -6248,6 +6263,7 @@ const Keys=Vue.extend({template:`
 	   </v-toolbar>
 
    <v-card-text>
+   <v-expansion-panels>
     <v-expansion-panel v-model="openIndex">
     <v-expansion-panel-content popout v-for="key in keys" :key="key">
      <div slot="header">{{key}}</div>
@@ -6257,7 +6273,8 @@ const Keys=Vue.extend({template:`
         ullamco laboris nisi ut aliquip ex ea commodo consequat.</v-card-text>
       </v-card>
      </v-expansion-panel-content>
-     </v-expansion-panel> 
+     </v-expansion-panel>
+     </v-expansion-panels> 
    </v-card-text>
    </v-card>
    <v-snackbar :value="true">Settings are currently only stored locally in the browser, using <code>localstorage</code></v-snackbar>
@@ -6448,7 +6465,7 @@ const Model=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/task/task.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/task/runtask.vue
 const Runtask=Vue.extend({template:` 
  <v-container fluid>
     <v-card>
@@ -6567,11 +6584,11 @@ const Tasks=Vue.extend({template:`
    </v-toolbar>
    
    <v-card-text>
-    <v-data-table :headers="headers" :items="items" hide-actions :search="q" class="elevation-1">
-    <template slot="items" slot-scope="props">
-      <td><router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
-      <td>{{ props.item.description }}</td>
+    <v-data-table :headers="headers" :items="items" hide-default-footer :search="q" class="elevation-1">
+    <template v-slot:item.title="{ item }"> 
+	      <td><router-link :to="'tasks/' + item.to" v-text="item.title"></router-link></td>
     </template>
+    
     <template slot="no-data">
       <v-alert :value="true" icon="warning">
         No matching items.
@@ -7478,7 +7495,7 @@ const Vuepoc=Vue.extend({template:`
     <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
   </v-navigation-drawer>
   
- <v-navigation-drawer app :mini-variant.sync="mini" v-model="drawer" :enable-resize-watcher="true">
+ <v-navigation-drawer app :mini-variant.sync="mini" v-model="drawer" :clipped="$vuetify.breakpoint.lgAndUp">
   <v-list class="pa-0">
 
           <v-list-item tag="div">
@@ -7500,12 +7517,13 @@ const Vuepoc=Vue.extend({template:`
           </v-list-item>
 
       </v-list>
-    <qd-navlist :items="items" :mini="mini"></qd-navlist>
+    <qd-navlist2 :items="items" :mini="mini"></qd-navlist2>
  </v-navigation-drawer>
   
- <v-app-bar app color="blue darken-3" dark>
+ <v-app-bar app :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dark>
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
   <v-toolbar-title class="hidden-sm-and-down">
-    <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+    
   {{$route.meta.title}}</v-toolbar-title>
    
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>

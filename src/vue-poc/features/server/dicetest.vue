@@ -19,7 +19,7 @@
       
     </v-flex>
  
-  <table class="v-table">
+  <table class="v-data-table">
       <thead> 
         <tr>
          <th xs1>url</th>
@@ -37,7 +37,7 @@
 
       
           <tr>
-          <td>
+              <td>
               {{ entity && entity.name  }}
                </td>
               <td>
@@ -74,6 +74,7 @@
           
       </tbody>
     </table>
+    
      <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
      <pre>{{ result | pretty}}</pre>
     </v-card-text>
