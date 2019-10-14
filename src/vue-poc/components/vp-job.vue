@@ -1,73 +1,40 @@
 <!DOCTYPE html>
 <!-- 
- job component
+ A toolbar that displays information about a job run
  job:{id:
-      job:
+      job:{id:,job:},
+      jobState: {reads: writes:}
  -->
 <template id="vp-job">
- <v-card  >
-
-     <v-toolbar  dense>
-     <v-card-title>Details:</v-card-title>
+  <v-toolbar dense>
        <v-chip class="primary white--text">{{job.id}}</v-chip>
-         <v-spacer></v-spacer>
            <v-chip class="primary white--text">{{job.job}}</v-chip>
       
            <v-chip label class="grey white--text"> 
-           <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
+           <v-avatar class="red">W</v-avatar><v-icon>lock</v-icon>
            {{ jobState.writes }}</v-chip>
            
             <v-chip label class="grey white--text"> 
-              <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
-              {{ jobState.reads }}</v-chip>
+	            <v-avatar class="amber">R</v-avatar><v-icon>lock</v-icon>
+	            {{ jobState.reads }}</v-chip>
  
-      
+        <v-spacer></v-spacer>
+          <v-progress-circular v-if="waiting" indeterminate class="primary--text"></v-progress-circular>
           <v-chip>{{ jobState.state }}</v-chip>
          <v-chip class="primary white--text">
           <v-avatar >  <v-icon>timer</v-icon></v-avatar>
          {{elapsed}}ms</v-chip>
-    </v-toolbar>
-    <v-card-text   >
-  <v-flex xs12 style="height:60px;"  fill-height>
-  <vue-ace  :content="query" mode="xquery" wrap="true" :read-only="true"
-     
-    ></vue-ace>
-    </v-flex>
-   </v-card-text>
-   <!-- result -->
-    <v-card-text  >
-  <v-flex  xs12  style="height:60px;" fill-height>
-  <vue-ace  :content="result" mode="xquery" min-lines="1" wrap="true" read-only="true" ></vue-ace>
-    </v-flex>
-   </v-card-text>
-   </v-card>
-   
+   </v-toolbar>
 </template>
 
 <script>{
   props: ['job',
-          'result',
           'jobState',
           'elapsed',
-          'query' 
+          'waiting' 
           ],
-  data:function(){
-    return {
-      error:    null,
-      res1: "??"
-    }
-  },
-  watch:{
-    result:function(a){
-      if(this.res1 === "???"){ this.res1=a};
-      console.log("vp-result:",a);
-    }
-  },
-  computed:{
-    aresult:function(){return this.res1 || "none"}
-  },
   created:function(){
-      console.log("vp-job: ", this.job,this.result);
+      console.log("vp-job: ", this.job);
     }
 }
 </script>

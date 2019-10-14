@@ -26,6 +26,9 @@
             label="Search"
           ></v-text-field>
            <v-spacer></v-spacer>
+           <router-link :to="{path:'/tasks/xqdoca'}">
+              <v-icon>add_circle</v-icon>
+           </router-link>
            <v-btn @click="get" icon :loading="loading"
 	      :disabled="loading"
 	   ><v-icon>refresh</v-icon></v-btn>
@@ -44,12 +47,17 @@
           >
             <v-card    :hover="true"  >
 		           <v-toolbar  color="blue lighten-3"  dense>
-		           <v-card-title >{{ item.name }}</v-card-title>
+			           <v-card-title >{{ item.name }}</v-card-title>
+			           <v-spacer></v-spacer>
+			           <a :href="item.href" target="_new">go</a>
 		           </v-toolbar>
 		           <v-card-text>{{ item.id }}</v-card-text>
-		            <v-card-text>{{ item.created | formatDate }}</v-card-text>
+		            <v-card-text>
+		              <span :title="item.created">{{ item.created | fromNow }}</span>
+		              
+		            </v-card-text>
 		           <v-card-actions>
-		           <a :href="item.href" target="_new">go</a>
+		           <v-btn>Run</v-btn>
 		           </v-card-actions>
            </v-card>
             

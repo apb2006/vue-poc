@@ -60,38 +60,14 @@
    
     
    </v-toolbar>
- <v-card-text v-if="done">
-    BEFORE<vp-job :job="job" :result:="result"  :query="xq"
-       :job-state="jobState" :elapsed="elapsed" >IN</vp-job>AFTER
-       </v-card-text>
-  <v-card-text   >
+ 
   <v-flex xs12 style="height:200px"  fill-height>
   <vue-ace  :content="xq" mode="xquery" wrap="true"
      :settings="aceSettings" v-on:change-content="onChange" 
     ></vue-ace>
     </v-flex>
    </v-card-text>
-   
-     <v-card-actions v-if="showJob" >
-       <v-chip class="primary white--text">{{job.id}}</v-chip>
-           <v-chip class="primary white--text">{{job.job}}</v-chip>
-      
-           <v-chip label class="grey white--text"> 
-           <v-avatar class="red">  <v-icon>lock</v-icon>W</v-avatar>
-           {{ jobState.writes }}</v-chip>
-           
-            <v-chip label class="grey white--text"> 
-	            <v-avatar class="amber"> <v-icon>lock</v-icon>R</v-avatar>
-	            {{ jobState.reads }}</v-chip>
- 
-        <v-spacer></v-spacer>
-          <v-progress-circular v-if="waiting" indeterminate class="primary--text"></v-progress-circular>
-          <v-chip>{{ jobState.state }}</v-chip>
-         <v-chip class="primary white--text">
-          <v-avatar >  <v-icon>timer</v-icon></v-avatar>
-         {{elapsed}}ms</v-chip>
-         
-    </v-card-actions>
+    <vp-job  v-if="showJob" :job="job" :waiting="waiting" :job-state="jobState" :elapsed="elapsed"></vp-job>
     <v-card-text v-if="showError">
      <v-alert color="error" v-model="showError">Error </v-alert>
     </v-card-text>

@@ -36,12 +36,16 @@ return $zip
 :)
 declare %updating function dbtools:sync-from-path(
                    $dbname as xs:string,
-                   $path as xs:string)
+                   $path as xs:string,
+                   $delete-missing as xs:boolean
+                 )
 {
    dbtools:sync-from-files($dbname,
                   $path,
                   file:list($path,fn:true()),
-                  hof:id#1)
+                  hof:id#1,
+                  $delete-missing
+                 )
 };
 
 (:~
@@ -53,18 +57,22 @@ declare %updating function dbtools:sync-from-path(
 : @param $ingest function to apply f(fullsrcpath)->anotherpath or xml nodes
 :)
 declare %updating 
-function dbtools:sync-from-files($dbname as xs:string,
+function dbtools:sync-from-files($dbpath as xs:string,
                                  $path as xs:string,
                                  $files as xs:string*,
-                                 $ingest as function(*))
+                                 $ingest as function(*),
+                                 $delete-missing as xs:boolean
+                               )
 {
 let $path:=$path ||"/"
 let $files:=$files!fn:translate(.,"\","/")
 let $files:=fn:filter($files,function($f){file:is-file(fn:concat($path,$f))})
+let $dbpath:=tokenize($dbpath,"/")[.]
+let $dbname:= head($dbpath)
 return if(db:exists($dbname)) then
            (
            for $d in db:list($dbname) 
-           where fn:not($d=$files) 
+           where  $delete-missing  and fn:not($d=$files) 
            return db:delete($dbname,$d),
            
            for $f in $files

@@ -7,14 +7,23 @@
          :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]"
          >crumbs</qd-breadcrumbs> 
          </v-toolbar-title>   
-          <v-menu offset-y v-model="showmenu" >
+          <v-menu  v-model="showmenu" >
+            <template v-slot:activator="{ on }">
+              <v-btn
+                dark
+                icon
+                v-on="on"
+              >
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
             <v-list dense>
                 <v-subheader >Actions</v-subheader>
-                      <v-list-item @click="getxml" >
-                      <v-list-item-title  >View XML</v-list-item-title>
-                    </v-list-item>
-                     <v-list-item  >
-                      <v-list-item-title ><a :href="dataurl" target="data">Json</a></v-list-item-title>
+                <v-list-item @click="getxml" >
+                  <v-list-item-title  >View XML</v-list-item-title>
+                </v-list-item>
+                <v-list-item  >
+                  <v-list-item-title ><a :href="dataurl" target="data">Json</a></v-list-item-title>
                 </v-list-item>             
             </v-list>         
            </v-menu> 
@@ -56,9 +65,8 @@
 		
 		<v-expansion-panel>
 		<v-expansion-panel-header><v-layout>
-          <v-flex xs12><v-badge >
-	               <span slot="badge">{{ item.nfields }}</span>Fields
-	          </v-badge>
+          <v-flex xs12>
+	               <span >Fields ({{ item.nfields }})</span>
 	          </v-flex>
 	          </v-layout>
 	      </v-expansion-panel-header> 

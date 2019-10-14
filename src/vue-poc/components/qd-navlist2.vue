@@ -21,6 +21,7 @@ for nav drawer
                 </v-list-item-content>
               </v-list-item>
             </template>
+             <v-divider :inset="true"></v-divider>
             <v-list-item :to="child.href"
               v-for="(child, i) in item.children"
               :key="i" :title="child.text"
@@ -37,6 +38,7 @@ for nav drawer
               <v-icon v-text="child.icon"></v-icon>
             </v-list-item-action>
             </v-list-item>
+            <v-divider :inset="true"></v-divider>
           </v-list-group>
 
           

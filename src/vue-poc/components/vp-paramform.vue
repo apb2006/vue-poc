@@ -4,43 +4,51 @@
  including  submit form function 
  -->
 <template id="vp-paramform">
+  <v-card >
+     <v-toolbar  color="blue lighten-3"  dense>
+       <v-card-title >{{ description }}</v-card-title>
+    </v-toolbar>
+    <v-card-text>
        <v-form ref="form"  lazy-validation>
-              <div class="title">{{ description }}</div>
-              <div :title="url">{{ updating }}</div>
+
               <v-layout row>
               
-              <v-layout column xs11> 
-              <v-flex v-for="field in fields" :key="field.model" >
-              
-              <v-text-field  v-if="field.type === 'xs:anyURI'" :full-width="true" 
-                v-model="params[field.model]" :label="field.label" 
-                clearable  :rules="fieldrules(field)" filled
-                append-outer-icon="send" @click:append-outer="source(field)"
-              ></v-text-field>
-              
-              <v-switch  v-else-if="field.type === 'xs:boolean'" :full-width="true" 
-                :label="field.label"  v-model="params[field.model]">
-              </v-switch>
-              
-              
-              <v-text-field  v-else :full-width="true" amber
-                v-model="params[field.model]" :label="field.type" 
-                clearable   filled ></v-text-field>
-                
-              </v-flex>
-              <v-flex>
-             
-              </v-flex>
-              </v-layout>
-              
-              <v-layout align-center justify-center column fill-height xs1 amber lighten-5>
-               <v-btn  @click="clear()" id="btn-clear"
-					          >Clear</v-btn>
-					     <v-btn  @click="reset()"
-					          >Reset</v-btn>
-              </v-layout>
+	              <v-layout column xs8> 
+	              <v-flex v-for="field in fields" :key="field.model" >
+	              
+	              <v-text-field  v-if="field.type === 'xs:anyURI'" 
+	                v-model="params[field.model]" :label="field.label" 
+	                clearable  :rules="fieldrules(field)" filled
+	                append-outer-icon="send" @click:append-outer="source(field)"
+	              ></v-text-field>
+	              
+	              <v-switch  v-else-if="field.type === 'xs:boolean'"  
+	                :label="field.label"  v-model="params[field.model]">
+	              </v-switch>
+	              
+	              <v-text-field  v-else filled
+	                v-model="params[field.model]" :label="field.label" 
+	                clearable    ></v-text-field>
+	                
+	              </v-flex>
+	             
+	              </v-layout>
+               <v-layout column >TODO
+               </v-layout> 
               </v-layout>
             </v-form>
+             <div :title="url">{{ url }} {{ updating }}</div>
+       </v-card-text>
+           <v-card-actions>
+              <v-btn  @click="clear()" id="btn-clear"
+				 >Clear</v-btn>
+		     <v-btn  @click="reset()"
+		         >Reset</v-btn>
+           </v-card-actions>
+           <v-btn  @click="zlog()"
+		         >console</v-btn>
+           </v-card-actions>
+    </v-card>
 </template>
 
 <script>{
@@ -71,6 +79,9 @@
      source(field){
        router.push({ path: 'tabs', query: { url:this.params[field.model]}})
      },
+     zlog(){
+    	 console.log(JSON.stringify(this.params)) 
+     },
      clear () {
        this.$refs.form.reset()
      },
@@ -83,6 +94,11 @@
      valid(){
        return this.$refs.form.validate()
      }
+  },
+  watch:{
+	 params(vold,vnew) {
+		 console.log("params: ",vnew)
+	 }
   },
   created:function(){
     this.reset();

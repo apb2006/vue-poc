@@ -9,10 +9,14 @@ declare default function namespace 'quodatum.web.utils4';
 import module namespace request = "http://exquery.org/ns/request";
 declare namespace rest = 'http://exquery.org/ns/restxq';
 
-(:~ map of available dice parameters :)
-declare function dice(){
+(:~ map of dice parameters taken from current http request
+ : "start","limit","sort","fields"
+ :)
+declare function dice()
+as map(xs:string,item()*)
+{
     let $fld:=function($n){
-                        request:parameter($n)!map:entry($n,request:parameter($n))
+                        request:parameter($n)!map:entry($n,.)
                            }
     return map:merge(("start","limit","sort","fields")!$fld(.))
 };

@@ -1,0 +1,41 @@
+<entity name="basexlog" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>BaseX log entries for today and yesterday from the running server</description>
+
+	<fields>
+		<field name="time" type="xs:string">
+			<description>time of event with date if available</description>
+			<xpath>concat(@date,@date!'T',@time)</xpath>
+		</field>
+		<field name="address" type="xs:string">
+			<description>IP address</description>
+			<xpath>@address</xpath>
+		</field>
+		<field name="user" type="xs:string">
+			<description>user name</description>
+			<xpath>@user</xpath>
+		</field>
+		<field name="type" type="xs:string">
+			<description>type of log msg</description>
+			<xpath>@type</xpath>
+		</field>
+		<field name="ms" type="xs:integer">
+			<description>time (ms)</description>
+			<xpath>@ms</xpath>
+		</field>
+		<field name="text" type="xs:string">
+			<description>log message</description>
+			<xpath>.</xpath>
+		</field>
+	</fields>
+	<views iconclass="calendar_today"/>
+
+	<data type="element(entry)">
+let $add-date:=function($logs as element(*)*,$d as xs:string){
+    $logs!(. transform with { insert node attribute date {$d} into .})
+}
+
+return 
+hof:top-k-by(admin:logs(), string#1, 2)  
+!(reverse(admin:logs(.,true()))=>$add-date(.))
+	</data>
+</entity>

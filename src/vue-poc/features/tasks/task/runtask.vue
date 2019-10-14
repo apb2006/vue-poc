@@ -28,11 +28,7 @@
      
     <v-card-text>
       <v-container fluid>
-        <v-layout row wrap>   
-          <v-flex xs12 v-if="!loading">
-                 <vp-paramform ref="params" :endpoint="'tasks/'+task"></vp-paramform>
-          </v-flex>
-        </v-layout>
+          <vp-paramform  v-if="!loading" ref="params" :endpoint="'tasks/'+task"></vp-paramform>
       </v-container>
     </v-card-text>
       <v-snackbar    v-model="snackbar.show"
@@ -93,7 +89,7 @@
   },
   
   created:function(){
-    this.id=this.$route.query.id
+    if(this.$route.query.id) this.id=this.$route.query.id
   }
 }
 </script>

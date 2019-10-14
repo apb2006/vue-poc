@@ -1,9 +1,0 @@
-<pipeline name='XQDoc generator' xmlns='http://quodatum.com/ns/pipeline'>>
-	<xquery href="tx-xqdoc2.xq">
-		<with-param name="efolder">C:/Users/andy/git/vue-poc/src/vue-poc</with-param>
-		<with-param name="target">C:/tmp/xqdoc/pipe/</with-param>
-	</xquery>
-	 <xquery href="tx-xqrest2.xq">
-    <with-param name="target">file:///C:/tmp/xqdoc/pipe/</with-param>
-  </xquery>
-</pipeline>

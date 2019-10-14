@@ -1,0 +1,16 @@
+<entity name="basexlogfile" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>saved BaseX log entries in the vue-poc database</description>
+
+	<fields>
+		<field name="name" type="xs:string">
+			<description>file name</description>
+			<xpath>.</xpath>
+		</field>
+		
+	</fields>
+	<views iconclass="calendar_today"/>
+
+	<data type="element(resource)">
+		db:dir("vue-poc","logs")
+	</data>
+</entity>

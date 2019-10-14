@@ -26,7 +26,7 @@
     
    <v-data-table
       :headers="headers"
-      :item="items"
+      :items="items"
       :search="search"
        v-model="selected"
        show-select

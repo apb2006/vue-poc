@@ -27,7 +27,7 @@ const router = new VueRouter({
     { path: '/images/people', component: People, meta:{title:"Image people"} },
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
-    
+    { path: '/logdate', component: Logdate, meta:{title:"log files"} },
     { path: '/entity', component: Entity, meta:{title:"Entities"} },
     { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
     
@@ -39,8 +39,7 @@ const router = new VueRouter({
     { path: '/tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },
   
     { path: '/edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
-    { path: '/server/users', component: Users,meta:{title:"Users"} },
-    { path: '/server/repo', component: Repo,meta:{title:"Repository"} },
+ 
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/login', component: Login,meta:{title:"login"} },
@@ -88,7 +87,8 @@ const router = new VueRouter({
       { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} },
       { path: 'ping', component: Ping,meta:{title:"Ping"} },
       { path: 'dicetest', component: Dicetest,meta:{title:"Dice test"} },
-
+      { path: 'users', component: Users,meta:{title:"Users"} },
+      { path: 'repo', component: Repo,meta:{title:"Repository"} },
      ]
     },
     { path: '/history', component: { template: '<router-view/>' }
@@ -123,7 +123,6 @@ const router = new VueRouter({
     
     { path: '/tasks', component: Tasks, meta:{title:"Runnable tasks"} },
     { path: '/tasks/model', component: Model, meta:{title:"build model"} },
-    { path: '/tasks/xqdoc', component: Xqdoc, meta:{title:"build xqdoc"} },
     { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
     { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
         

@@ -74,14 +74,14 @@
       <v-list dense>
            <v-subheader>Display settings</v-subheader>
          
-           <v-list-item @click="togglefold"  avatar >
+           <v-list-item @click="togglefold"  >
              <v-list-item-avatar>
                    <v-icon >vertical_align_center</v-icon>
               </v-list-item-avatar>
               <v-list-item-title  >Toggle folds</v-list-item-title>
            </v-list-item>
            
-           <v-list-item @click="wrap=!wrap"  avatar >
+           <v-list-item @click="wrap=!wrap"   >
              <v-list-item-avatar>
                    <v-icon >wrap_text</v-icon>
               </v-list-item-avatar>
@@ -89,14 +89,14 @@
            </v-list-item>
              <v-divider></v-divider>
               <v-subheader>Help</v-subheader>
-             <v-list-item @click="acecmd('showSettingsMenu')" avatar >
+             <v-list-item @click="acecmd('showSettingsMenu')"  >
                <v-list-item-avatar>
               <v-icon >settings</v-icon>
             </v-list-item-avatar>
               <v-list-item-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-item-title>
             </v-list-item>
                       
-            <v-list-item @click="acecmd('showKeyboardShortcuts')" avatar>
+            <v-list-item @click="acecmd('showKeyboardShortcuts')">
               <v-list-item-avatar>
               <v-icon >keyboard</v-icon>
             </v-list-item-avatar>

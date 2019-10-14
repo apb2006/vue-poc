@@ -1,10 +1,14 @@
 <!DOCTYPE html>
+<!-- 
+ log as data table
+ -->
 <template id="log">
  <v-container fluid>
   <v-card >
    <v-toolbar >
-   
-    
+    <v-toolbar-title>Logs
+    </v-toolbar-title>
+    <v-spacer></v-spacer>
       <v-text-field
         prepend-icon="filter_list"
         label="Filter logs"

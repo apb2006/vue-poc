@@ -1,5 +1,8 @@
 (:~
- : evaluTE query library
+ : XQuery evalution helpers library
+ :    query-a:inspect($mod as xs:anyURI) return {description:.., updating:.., url:.., fields:[{model:..,label:..,type:..}]}
+ :    query-a:params($mod as xs:anyURI)
+ :    query-a:run($query as xs:anyURI,$params as map(*))
  :
  : @author Andy Bunce, 2018
  :)
@@ -12,9 +15,10 @@ import module namespace request = "http://exquery.org/ns/request";
  : attributes of a stored query including parameters and updating status.
  : @return json format
  :)
-declare function query-a:inspect($mod as xs:anyURI)
+declare function query-a:inspect($mod as xs:string)
 as element(json)
 {
+let $mod:= xs:anyURI($mod)
 let $updating:=xquery:parse-uri($mod)/@updating/string()
 let $d:=inspect:module($mod)
 let $vars:=$d/variable[@external="true"]
@@ -63,16 +67,23 @@ as map(*)
            )
 };
 
+(:~ 
+ :
+ :)
 declare
 %updating  
-function query-a:run($query as xs:anyURI,$params as map(*))
-{ 
+function query-a:run($query as xs:string, 
+                     $bindings as map(*),
+                     $options as map(*)
+                   )
+{
+let $query := xs:anyURI($query)  
 let $updating:=xquery:parse-uri($query)/@updating/boolean(.)
 return if($updating) then
-       xquery:invoke-update($query,$params)
+       xquery:eval-update($query, $bindings, $options)
      else 
        <json type="object">
-               <res>{ xquery:invoke($query,$params)}</res>
+               <res>{ xquery:invoke($query, $bindings, $options)}</res>
                <params>todo</params>
        </json>=>update:output()
 };

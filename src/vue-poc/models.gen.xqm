@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2019-08-06T22:46:17.734+01:00 
+ : auto generated from xml files in entities folder at: 2019-10-13T21:47:03.427+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -9,62 +9,6 @@ declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
 declare variable $entity:list:=map { 
-  "basexlog": map{
-     "name": "basexlog",
-     "description": "BaseX log entries ",
-     "access": map{ 
-       "address": function($_ as element()) as xs:string {$_/@address },
-       "ms": function($_ as element()) as xs:integer {$_/@ms },
-       "text": function($_ as element()) as xs:string {$_/. },
-       "time": function($_ as element()) as xs:string {$_/concat(@date,'T',@time) },
-       "type": function($_ as element()) as xs:string {$_/@type },
-       "user": function($_ as element()) as xs:string {$_/@user } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( ) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "address": function($_ as element()) as element(address)? {
-            (: xs:string :)
-                        fn:data($_/@address)!element address {  .} 
-                 },
-           "ms": function($_ as element()) as element(ms)? {
-            (: xs:integer :)
-                        fn:data($_/@ms)!element ms { attribute type {'number'}, .} 
-                 },
-           "text": function($_ as element()) as element(text)? {
-            (: xs:string :)
-                        fn:data($_/.)!element text {  .} 
-                 },
-           "time": function($_ as element()) as element(time)? {
-            (: xs:string :)
-                        fn:data($_/concat(@date,'T',@time))!element time {  .} 
-                 },
-           "type": function($_ as element()) as element(type)? {
-            (: xs:string :)
-                        fn:data($_/@type)!element type {  .} 
-                 },
-           "user": function($_ as element()) as element(user)? {
-            (: xs:string :)
-                        fn:data($_/@user)!element user {  .} 
-                 } },
-       
-      "data": function() as element(entry)*
-       { 
-let $add-date:=function($logs as element(*)*,$d as xs:string){
-    $logs!(. transform with { insert node attribute date {$d} into .})
-}
-
-return 
-hof:top-k-by(admin:logs(), string#1, 2)  
-!(reverse(admin:logs(.,true()))=>$add-date(.))
-	 },
-       
-       "views": map{ 
-       
-       }
-   },
   "basexjob": map{
      "name": "basexjob",
      "description": "A BaseX job",
@@ -137,6 +81,87 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        "views": map{ 
        'filter': 'name description'
+       }
+   },
+  "basexlog": map{
+     "name": "basexlog",
+     "description": "BaseX log entries for today and yesterday from the running server",
+     "access": map{ 
+       "address": function($_ as element()) as xs:string {$_/@address },
+       "ms": function($_ as element()) as xs:integer {$_/@ms },
+       "text": function($_ as element()) as xs:string {$_/. },
+       "time": function($_ as element()) as xs:string {$_/concat(@date,@date!'T',@time) },
+       "type": function($_ as element()) as xs:string {$_/@type },
+       "user": function($_ as element()) as xs:string {$_/@user } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "address": function($_ as element()) as element(address)? {
+            (: xs:string :)
+                        fn:data($_/@address)!element address {  .} 
+                 },
+           "ms": function($_ as element()) as element(ms)? {
+            (: xs:integer :)
+                        fn:data($_/@ms)!element ms { attribute type {'number'}, .} 
+                 },
+           "text": function($_ as element()) as element(text)? {
+            (: xs:string :)
+                        fn:data($_/.)!element text {  .} 
+                 },
+           "time": function($_ as element()) as element(time)? {
+            (: xs:string :)
+                        fn:data($_/concat(@date,@date!'T',@time))!element time {  .} 
+                 },
+           "type": function($_ as element()) as element(type)? {
+            (: xs:string :)
+                        fn:data($_/@type)!element type {  .} 
+                 },
+           "user": function($_ as element()) as element(user)? {
+            (: xs:string :)
+                        fn:data($_/@user)!element user {  .} 
+                 } },
+       
+      "data": function() as element(entry)*
+       { 
+let $add-date:=function($logs as element(*)*,$d as xs:string){
+    $logs!(. transform with { insert node attribute date {$d} into .})
+}
+
+return 
+hof:top-k-by(admin:logs(), string#1, 2)  
+!(reverse(admin:logs(.,true()))=>$add-date(.))
+	 },
+       
+       "views": map{ 
+       
+       }
+   },
+  "basexlogfile": map{
+     "name": "basexlogfile",
+     "description": "saved BaseX log entries in the vue-poc database",
+     "access": map{ 
+       "name": function($_ as element()) as xs:string {$_/. } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/.)!element name {  .} 
+                 } },
+       
+      "data": function() as element(resource)*
+       { 
+		db:dir("vue-poc","logs")
+	 },
+       
+       "views": map{ 
+       
        }
    },
   "entity.field": map{
@@ -355,6 +380,61 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        "views": map{ 
        'filter': 'name description'
+       }
+   },
+  "logxml": map{
+     "name": "logxml",
+     "description": " log entries in XML format",
+     "access": map{ 
+       "address": function($_ as element()) as xs:string {$_/@address },
+       "end": function($_ as element()) as xs:string? {$_/self::*[@ms]!(xs:dateTime(concat("2019-01-01",'T',@time))+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S")) },
+       "ms": function($_ as element()) as xs:integer {$_/@ms },
+       "status": function($_ as element()) as xs:string {$_/@type },
+       "text": function($_ as element()) as xs:string {$_/. },
+       "time": function($_ as element()) as xs:string {$_/concat("2019-01-01",'T',@time) },
+       "user": function($_ as element()) as xs:string {$_/@user } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "address": function($_ as element()) as element(address)? {
+            (: xs:string :)
+                        fn:data($_/@address)!element address {  .} 
+                 },
+           "end": function($_ as element()) as element(end)? {
+            (: xs:string? :)
+                        fn:data($_/self::*[@ms]!(xs:dateTime(concat("2019-01-01",'T',@time))+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S")))!element end {  .} 
+                 },
+           "ms": function($_ as element()) as element(ms)? {
+            (: xs:integer :)
+                        fn:data($_/@ms)!element ms { attribute type {'number'}, .} 
+                 },
+           "status": function($_ as element()) as element(status)? {
+            (: xs:string :)
+                        fn:data($_/@type)!element status {  .} 
+                 },
+           "text": function($_ as element()) as element(text)? {
+            (: xs:string :)
+                        fn:data($_/.)!element text {  .} 
+                 },
+           "time": function($_ as element()) as element(time)? {
+            (: xs:string :)
+                        fn:data($_/concat("2019-01-01",'T',@time))!element time {  .} 
+                 },
+           "user": function($_ as element()) as element(user)? {
+            (: xs:string :)
+                        fn:data($_/@user)!element user {  .} 
+                 } },
+       
+      "data": function() as element(entry)*
+       { 
+		db:open("vue-poc","/logs/")[1]/entries/entry
+	 },
+       
+       "views": map{ 
+       
        }
    },
   "namespace": map{

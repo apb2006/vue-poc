@@ -56,8 +56,9 @@
       items: [],
       loading: false,
       q: null,
-      headers: [   
-        { text: 'Task', value: 'title' },
+      headers: [
+    	{ text: 'Task', value: 'to' }, 
+        { text: 'Title', value: 'title' },
         { text: 'Description', value: 'description' },
         ]
       }

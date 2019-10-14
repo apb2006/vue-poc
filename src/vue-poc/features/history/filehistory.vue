@@ -5,7 +5,7 @@
   <v-card-title>File History</v-card-title>
  <v-card-text>
     <v-list>
-            <v-list-item  v-for="item in items" v-bind:key="item.title" avatar>
+            <v-list-item  v-for="item in items" v-bind:key="item.title" >
               <v-list-item-action>
                <v-chip v-text="item.protocol">Example Chip</v-chip>
               </v-list-item-action>

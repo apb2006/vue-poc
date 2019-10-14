@@ -6,7 +6,7 @@
 module namespace j = 'quodatum.test.components';
 
 (:~
- : @return sequence of json arrary items for each item 
+ : @return sequence of json arary items for each item 
  :)
 declare function j:tax($items)
 as element(_)*
@@ -27,7 +27,8 @@ return <_ type="object">
 
 
 (:~
- :  tree
+ :  sample tree data as json
+ : source balisage-taxonomy.xml
  :)
 declare  
 %rest:GET %rest:path("/vue-poc/api/components/tree")

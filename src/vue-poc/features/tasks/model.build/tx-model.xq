@@ -9,7 +9,7 @@ import module namespace bf = 'quodatum.tools.buildfields' at "./../../../lib/ent
  : @default C:/Users/andy/git/vue-poc/src/vue-poc/models/entities
  :)
 declare variable $efolder as xs:anyURI  external 
-:=xs:anyURI("C:/Users/andy/git/vue-poc/src/vue-poc/models/entities");
+:=xs:anyURI("C:\Users\andy\git\vue-poc\src\vue-poc\data\vue-poc\entities");
 
 (:~ 
  : Path to xqm file to generate

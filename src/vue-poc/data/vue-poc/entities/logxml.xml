@@ -1,10 +1,14 @@
-<entity name="basexlog" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>BaseX log entries </description>
+<entity name="logxml" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description> log entries in XML format</description>
 
 	<fields>
 		<field name="time" type="xs:string">
 			<description>time of event</description>
-			<xpath>concat(@date,'T',@time)</xpath>
+			<xpath>concat("2019-01-01",'T',@time)</xpath>
+		</field>
+		<field name="end" type="xs:string?">
+			<description>end time of event</description>
+			<xpath>self::*[@ms]!(xs:dateTime(concat("2019-01-01",'T',@time))+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S"))</xpath>
 		</field>
 		<field name="address" type="xs:string">
 			<description>IP address</description>
@@ -14,7 +18,7 @@
 			<description>user name</description>
 			<xpath>@user</xpath>
 		</field>
-		<field name="type" type="xs:string">
+		<field name="status" type="xs:string">
 			<description>type of log msg</description>
 			<xpath>@type</xpath>
 		</field>
@@ -30,12 +34,6 @@
 	<views iconclass="calendar_today"/>
 
 	<data type="element(entry)">
-let $add-date:=function($logs as element(*)*,$d as xs:string){
-    $logs!(. transform with { insert node attribute date {$d} into .})
-}
-
-return 
-hof:top-k-by(admin:logs(), string#1, 2)  
-!(reverse(admin:logs(.,true()))=>$add-date(.))
+		db:open("vue-poc","/logs/")[1]/entries/entry
 	</data>
 </entity>

@@ -16,6 +16,7 @@
   
  <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   :clipped="$vuetify.breakpoint.lgAndUp"
    >
+    
   <v-list class="pa-0">
 
           <v-list-item  tag="div">
@@ -38,10 +39,11 @@
 
       </v-list>
     <qd-navlist2  :items="items" :mini="mini"></qd-navlist2>
+    <router-view name="helper" class="view ma-3"></router-view>
  </v-navigation-drawer>
   
  <v-app-bar  app  :clipped-left="$vuetify.breakpoint.lgAndUp"
-      color="blue darken-3"
+      color="blue darken-3" dense  
       dark >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"  ></v-app-bar-nav-icon>
   <v-toolbar-title class="hidden-sm-and-down" >
@@ -51,9 +53,9 @@
   <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
  
   <v-spacer></v-spacer>
-
+  <v-toolbar-items>
     <qd-search></qd-search>
-     
+  </v-toolbar-items>
   <v-spacer></v-spacer>
   
    <v-menu left  transition="v-fade-transition">
@@ -150,6 +152,7 @@
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
       {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
       {href: '/tasks',text: 'Tasks',icon: 'update'},
+      {href: '/logdate',text: 'XML logs',icon: 'dns'},
       {href: '/history/tasks',text: 'history',icon: 'history'}
       ]},
       {
@@ -159,15 +162,15 @@
         children: [
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
-    
-      {href: '/history/files',text: 'history',icon: 'history'}
+       {href: '/documentation', text: 'Documentation',icon: 'library_books' },
+       {href: '/history/files',text: 'history',icon: 'history'}
       ]},
       {
         icon: 'memory',
         text: 'Models' ,
         model: false,
         children: [
-          {href: '/documentation', text: 'Documentation',icon: 'library_books' },
+         
           {href: '/namespace', text: 'Namespaces',icon: 'label' },
           {href: '/entity', text: 'Entities',icon: 'redeem' },
       ]},

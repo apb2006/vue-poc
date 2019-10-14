@@ -1,9 +1,7 @@
 <tasks>
 	<task name="model" url="model.build/tx-model.xq">
 		<title>Generate model.gen.xqm</title>
-		<description>
-			Generate
-			<code>model.gen.xqm</code>
+		<description> Generate <code>model.gen.xqm</code>
 		</description>
 	</task>
 
@@ -11,11 +9,13 @@
 		<title>Load files into database</title>
 		<description>Load files into database</description>
 	</task>
-
+	<task name="import2" url="task/tx-dbimport2.xq">
+		<title>Import files into a database</title>
+		<description>Load files into database</description>
+	</task>
 	<task name="xqdoc2" url="xqdoc/tx-xqdoc2.xq">
 		<title>XQdoc 2</title>
-		<description>Generate xquery documentation for folder. Using standard
-			task.</description>
+		<description>Generate xquery documentation for folder. Using standard task.</description>
 	</task>
 
 	<task name="xqdoc-rest2" url="xqdoc/tx-xqrest2.xq">
@@ -23,12 +23,11 @@
 		<description>XQdoc.2..</description>
 	</task>
 
-<task name="xqdoc3" url="xqdoc/tx-xqdoc3.xq">
-    <title>XQdoc to static</title>
-    <description>Generate xquery documentation for folder to static folder
-      </description>
-  </task>
-  
+	<task name="xqdoc3" url="xqdoc/tx-xqdoc3.xq">
+		<title>XQdoc to static</title>
+		<description>Generate xquery documentation for folder to static folder </description>
+	</task>
+
 	<task name="vuecompile">
 		<title>vue compile</title>
 		<description>compile</description>
@@ -41,4 +40,10 @@
 			<param name="appname">Name for new application</param>
 		</params>
 	</task>
+	
+	<task name="xqdoca" url="file:///C:/Users/andy/git/xqdoca/src/main/xqdoca.xq">
+		<title>Create xqDoc</title>
+		<description>xquery documentation</description>
+	</task>
+	
 </tasks>

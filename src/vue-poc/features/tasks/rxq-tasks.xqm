@@ -57,7 +57,7 @@ function vue-rest:runtask($task)
                { map:keys($params)!<param name="{.}">{map:get($params,.)}</param> }
             </task>
   return (
-    query-a:run($url,$params),
+    query-a:run($url, $params, map{}),
     hlog:save($log)
   )
 };

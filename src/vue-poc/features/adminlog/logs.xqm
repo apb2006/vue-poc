@@ -2,8 +2,9 @@ module namespace j = 'quodatum.test.logs';
 import module namespace entity = 'quodatum.models.generated' at "../../models.gen.xqm";
 import module namespace dice = 'quodatum.web.dice/v4' at "../../lib/dice.xqm";
 import module namespace web = 'quodatum.web.utils4' at "../../lib/webutils.xqm";
+
 (:~
- :  job list
+ :  show active log
  :)
 declare  
 %rest:GET %rest:path("/vue-poc/api/log")
@@ -17,6 +18,26 @@ as element(json)
  (: let $_:=admin:write-log("hello admin:write-log") :)
  return dice:response($items,$entity,web:dice())
 };
+
+(:~
+ :  show archive log
+ :)
+declare  
+%rest:GET %rest:path("/vue-poc/api/logxml")
+%rest:query-param("from", "{ $from }")
+%rest:query-param("name", "{ $name }")
+%rest:query-param("mins", "{ $mins }")
+%output:method("json")   
+function j:archive( $name,$from,$mins)
+as element(json)
+{
+ let $_:=trace($from,"from: ")
+ let $entity:=$entity:list("logxml")
+ let $items:=db:open("vue-poc","/logs/")/entries[contains(db:path(.),$name)]/entry
+ (: let $items:= if ($from) then $items[true()] else $items :)
+ return dice:response($items,$entity,web:dice())
+};
+
 
 (:~ 
  : create a log entry
