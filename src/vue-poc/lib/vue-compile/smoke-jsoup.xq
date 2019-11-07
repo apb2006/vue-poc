@@ -5,7 +5,9 @@ let $text:=``[
 <!DOCTYPE html>
 <template id="dicetest">
   <v-abc >
+ <template v-slot:default> 
  <thead>xxx</thead>
+ </template >
   </v-abc>
   </template>
 ]``

@@ -118,12 +118,10 @@
             </v-autocomplete>
             
           <v-menu
-          lazy
           :close-on-content-click="false"
           v-model="menu2"
           transition="scale-transition"
           offset-y
-          full-width
           :nudge-left="40"
           max-width="290px"
         >
@@ -149,12 +147,10 @@
           </v-menu>
           
            <v-menu
-          lazy
           :close-on-content-click="false"
           v-model="showUntil"
           transition="scale-transition"
           offset-y
-          full-width
           :nudge-left="40"
           max-width="290px"
         >

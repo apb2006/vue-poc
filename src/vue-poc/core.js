@@ -59,6 +59,7 @@ var Settings = {
       
       "settings/ace": {
                       theme: "github",
+                      themeDark: "chaos",
                       keybinding: "ace",
                       fontsize: 16,
                       enableSnippets:true,
@@ -86,12 +87,12 @@ return $a   `},
        "edit/currentId": "?",
        "images/thumbtask":`
 <thumbnail>
-    <size width="100" height="100"/>
+    <size width="200" height="200"/>
     <filters>             
         <colorize color="green" alpha=".5"/>      
         <caption position="CENTER">Some Text here</caption>
         <rotate angle="15"/>
-        <canvas height="500" width="500" position="TOP_LEFT" color="black"/> 
+        <canvas height="300" width="300" position="TOP_LEFT" color="yellow"/> 
     </filters>
     <output format="gif"/>         
 </thumbnail>

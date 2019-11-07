@@ -21,8 +21,10 @@ function vue-api:thumbnail($url,$task )
 {
  let $x:=fn:parse-xml($task)=>fn:trace("task: ")
  let $thumb:=fetch:binary($url)=>t:task($x/thumbnail)
- 
- return (qweb:download-response("basex","xx.gif"), $thumb)
+ return (
+		 web:response-header(map { 'media-type': "image/gif" }), 
+		 $thumb
+		 )
 };
 
 (:~
@@ -42,6 +44,7 @@ function vue-api:thumbnail-validate($task )
             </items>
   </json>
 };
+
 (:~
  : return set of images as base64
  :)
@@ -77,6 +80,7 @@ return map{
            "mime":fetch:content-type($f)
            }
 };
+
 (:~
  : resolve path relative to basex webpath
  : file("/fred")=>C:\Program Files (x86)\BaseX\webapp\fred

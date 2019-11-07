@@ -26,6 +26,9 @@
   
   
       hello
+      <div>{{ item.prefix }}</div>
+      <div>{{ item.xmlns }}</div>
+      <div>{{ item.description }}</div>
   </v-container>
    </v-card>
 </template>
@@ -45,7 +48,7 @@
       .then(r=>{
         this.loading=false;
         console.log(r.data)
-       
+        this.item= r.data
         }) 
     }
   },

@@ -23,6 +23,13 @@
               label="Theme"
             ></v-select>
           </v-flex>
+          <v-flex >
+            <v-select
+              v-bind:items="themesDark"
+              v-model="ace.themeDark"
+              label="Dark Theme"
+            ></v-select>
+          </v-flex>
         </v-layout>
        
         <v-layout row>
@@ -105,11 +112,13 @@
 			        enableBasicAutocompletion: true,
 			        enableLiveAutocompletion: true,
 			        theme: "github",
+			        themeDark: "twilight",
 			        keybinding: "ace",
 			        fontsize: "14"
 			    },
 			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ],
-			    themes: [ "github","chrome" ,"tomorrow","-dark-","chaos","twilight"]
+			    themes: [ "github","chrome" ,"tomorrow"],
+			    themesDark: ["chaos","twilight"]
 			    }
   },
   methods:{

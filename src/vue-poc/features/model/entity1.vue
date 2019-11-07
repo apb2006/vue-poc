@@ -40,12 +40,14 @@
   <v-container fluid >
 	  <v-expansion-panels>
 	    <v-expansion-panel  expand >
-			     <v-expansion-panel-header><v-layout>
-          <v-flex xs12>
-			     <v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}</div>
-			         {{item.description}}
-			 </v-flex>
-			 </v-layout>        
+			     <v-expansion-panel-header>
+			     <v-layout>
+		          <v-flex xs12>
+						     <v-avatar><v-icon>{{ item.iconclass }}</v-icon></v-avatar>
+						     <span class="font-weight-black">{{ item.name }}</span> 
+					         {{item.description}}
+					 </v-flex>
+			     </v-layout>        
 			     </v-expansion-panel-header>
 			     <v-expansion-panel-content>
 			          <pre v-if="xml"><code>{{ xml }}</code></pre> 

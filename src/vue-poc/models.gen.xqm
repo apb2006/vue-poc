@@ -1,11 +1,12 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2019-10-13T21:47:03.427+01:00 
+ : auto generated from xml files in entities folder at: 2019-11-07T11:13:26.624Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
 import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace ent='https://github.com/Quodatum/app-doc/entity';
 declare namespace h='urn:quodatum:vue-poc.history';
+declare namespace qns='https://github.com/Quodatum/namespaces';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
 declare variable $entity:list:=map { 
@@ -143,6 +144,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
      "name": "basexlogfile",
      "description": "saved BaseX log entries in the vue-poc database",
      "access": map{ 
+       "date": function($_ as element()) as xs:string {$_/text()!fn:replace(.,".*(\d{4}-\d{2}-\d{2}).*","$1") },
        "name": function($_ as element()) as xs:string {$_/. } },
     
      "filter": function($item,$q) as xs:boolean{ 
@@ -150,6 +152,10 @@ hof:top-k-by(admin:logs(), string#1, 2)
          fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
       },
        "json":   map{ 
+           "date": function($_ as element()) as element(date)? {
+            (: xs:string :)
+                        fn:data($_/text()!fn:replace(.,".*(\d{4}-\d{2}-\d{2}).*","$1"))!element date {  .} 
+                 },
            "name": function($_ as element()) as element(name)? {
             (: xs:string :)
                         fn:data($_/.)!element name {  .} 
@@ -441,18 +447,18 @@ hof:top-k-by(admin:logs(), string#1, 2)
      "name": "namespace",
      "description": "An XML namespace",
      "access": map{ 
-       "description": function($_ as element()) as xs:string {$_/description },
+       "description": function($_ as element()) as xs:string {$_/qns:description },
        "prefix": function($_ as element()) as xs:string {$_/@prefix },
        "xmlns": function($_ as element()) as xs:string {$_/@uri } },
     
      "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( $item/@uri, $item/description) satisfies
+         some $e in ( $item/@uri, $item/qns:description) satisfies
          fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
       },
        "json":   map{ 
            "description": function($_ as element()) as element(description)? {
             (: xs:string :)
-                        fn:data($_/description)!element description {  .} 
+                        fn:data($_/qns:description)!element description {  .} 
                  },
            "prefix": function($_ as element()) as element(prefix)? {
             (: xs:string :)
@@ -463,8 +469,8 @@ hof:top-k-by(admin:logs(), string#1, 2)
                         fn:data($_/@uri)!element xmlns {  .} 
                  } },
        
-      "data": function() as element(namespace)*
-       { collection("vue-poc")/namespaces/namespace
+      "data": function() as element(qns:namespace)*
+       { db:open("vue-poc","namespaces.xml")/qns:namespaces/qns:namespace
 	 },
        
        "views": map{ 

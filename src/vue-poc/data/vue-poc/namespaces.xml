@@ -1,5 +1,5 @@
 <!-- common namespaces -->
-<namespaces>
+<namespaces  xmlns="https://github.com/Quodatum/namespaces">
 	<namespace uri="http://www.w3.org/XML/1998/namespace" prefix="xml">
 		<description>XML core features</description>
 	</namespace>

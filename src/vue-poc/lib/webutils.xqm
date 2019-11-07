@@ -92,9 +92,9 @@ declare function method($method as xs:string){
 declare function download-response($method,$filename){
 
 <rest:response>
-    <output:serialization-parameters>
+   <output:serialization-parameters>
         <output:method value="{$method}"/>
-    </output:serialization-parameters>
+   </output:serialization-parameters>
    <http:response>
        <http:header name="Content-Disposition" value='attachment;filename="{$filename}"'/> 
     </http:response>

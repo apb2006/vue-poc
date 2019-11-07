@@ -1,5 +1,6 @@
 <entity name="namespace" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>An XML namespace</description>
+	<namespace prefix="qns" uri="https://github.com/Quodatum/namespaces" />
 	<fields>
 		<field name="xmlns" type="xs:string">
 			<description>namespace</description>
@@ -11,13 +12,13 @@
 		</field>
 		<field name="description" type="xs:string">
 			<description>about the namespace</description>
-			<xpath>description</xpath>
+			<xpath>qns:description</xpath>
 		</field>
 
 	</fields>
 	<views iconclass="label">
 		<view name="filter">xmlns description</view>
 	</views>
-	<data type="element(namespace)">collection("vue-poc")/namespaces/namespace
+	<data type="element(qns:namespace)">db:open("vue-poc","namespaces.xml")/qns:namespaces/qns:namespace
 	</data>
 </entity>

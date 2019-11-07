@@ -10,6 +10,7 @@ import module namespace entity = 'quodatum.models.generated' at "../../models.ge
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
 declare variable $vue-api:entity:=$entity:list("thumbnail");
+
 (:~
  : do a thumbnail
  :)
@@ -17,7 +18,7 @@ declare
 %rest:GET %rest:path("/vue-poc/api/images/list/{$id}")
 %rest:produces("application/json")
 %output:method("json")   
-function vue-api:id( $id as xs:integer)   
+function vue-api:id( $id )   
 {
  let $image:=db:open-id($cfg:DB-IMAGE,$id)
  return <json type="object" >

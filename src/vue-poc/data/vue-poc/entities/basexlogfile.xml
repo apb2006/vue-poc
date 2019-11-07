@@ -2,6 +2,10 @@
 	<description>saved BaseX log entries in the vue-poc database</description>
 
 	<fields>
+		<field name="date" type="xs:string">
+			<description>log date</description>
+			<xpath>text()!fn:replace(.,".*(\d{4}-\d{2}-\d{2}).*","$1")</xpath>
+		</field>
 		<field name="name" type="xs:string">
 			<description>file name</description>
 			<xpath>.</xpath>

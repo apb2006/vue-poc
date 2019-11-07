@@ -25,6 +25,7 @@ event fired cmd outline
       beforeContent: '',
       aceSettings:{
           theme: "github",
+          themeDark: "chaos",
           keybinding: "ace",
           fontsize: 16,
           enableSnippets:true,
@@ -88,8 +89,14 @@ event fired cmd outline
     }]);
     },
     
+    setTheme(){
+    	 var theme=this.$vuetify.theme.dark ? this.aceSettings.themeDark : this.aceSettings.theme;
+         this.editor.setTheme(`ace/theme/${theme}`)
+    },
+    
     applySettings(aceSettings){
-      this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
+      var theme=this.$vuetify.theme.dark?aceSettings.themeDark:aceSettings.theme;
+      this.editor.setTheme(`ace/theme/${theme}`)
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
       this.editor.setOptions({ 
@@ -102,6 +109,11 @@ event fired cmd outline
     }
   },
   
+  watch: {
+	    // whenever theme changes, this function will run
+	    "$vuetify.theme.dark": function (newState) {this.setTheme()}
+  },
+	  
   mounted () {
     const mode = this.mode || 'text'
     const wrap = this.wrap || false

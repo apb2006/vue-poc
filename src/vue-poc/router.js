@@ -27,7 +27,10 @@ const router = new VueRouter({
     { path: '/images/people', component: People, meta:{title:"Image people"} },
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
-    { path: '/logdate', component: Logdate, meta:{title:"log files"} },
+    
+    { path: '/logdate', component: Basexlogdate, meta:{title:"log files"} },
+    { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
+    
     { path: '/entity', component: Entity, meta:{title:"Entities"} },
     { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
     

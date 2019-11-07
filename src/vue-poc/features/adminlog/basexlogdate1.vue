@@ -2,11 +2,15 @@
 <!-- 
  show log file data in vis-time-line 
  -->
-<template id="logdate">
+<template id="basexlogdate1">
  <v-container fluid>
  <v-card>
  <v-toolbar class="lime darken-1">
-	 <v-card-title >XML Log {{ query.name }}</v-card-title>
+	 <v-card-title >
+	 <qd-breadcrumbs @todo="showmenu= ! showmenu" 
+         :crumbs="[{to: '/logdate', text:'log files'}, {text: date, disabled: false, menu: 'todo'}]"
+         >crumbs</qd-breadcrumbs> 
+	 </v-card-title>
 	
 	  <v-menu
         ref="menu"
@@ -79,11 +83,13 @@
       },
       data:[],
     query:{name: "2019-09-23", start: 1, limit:30, from:"00:00:00", mins:10},
+    showmenu: false,
     Events: new Vue({}),
     msg:"Select an entry",
     showFrom: false
     }
 },
+props: ['date'],
 methods:{
   fit(){
     this.Events.$emit('fit');

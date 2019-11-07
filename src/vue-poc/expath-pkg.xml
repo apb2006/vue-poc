@@ -2,5 +2,5 @@
 	abbrev="vue-poc" version="0.0.4" spec="1.0">
 	<title>vue-poc test of vue.js.</title>
 	<dependency name="file-walker" version="0.5.2" />
-	<dependency name="ex-thumbnailator" version="5.0.11" />
+	<dependency name="ex-thumbnailator" version="6.0.2" />
 </package>

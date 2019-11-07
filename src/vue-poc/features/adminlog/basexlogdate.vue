@@ -1,8 +1,5 @@
 <!DOCTYPE html>
-<!-- 
- cards for log sources
- -->
-<template id="logarchive">
+<template id="basexlogdate">
  <v-container fluid>
  <v-card>
  
@@ -40,19 +37,16 @@
     class="elevation-1"
   >
   
-  <template v-slot:item.xmlns="{ item }" > 
-	      <td ><router-link :to="{path:'namespace/item?xmlns='+ item.xmlns}">
-                 {{ item.xmlns }}
+  <template v-slot:item.date="{ item }" > 
+	      <td ><router-link :to="{path:'logdate/'+ item.date}">
+                 {{ item.date }}
                 </router-link></td>
     </template>
       
     <template slot="no-results">
         No matching results.
     </template>
-    
-    <template slot="no-data">
-        No matching items.
-    </template>
+
   </v-data-table>
    </v-card-text>
    </v-card>
@@ -69,13 +63,10 @@
      
       selected:[],
       headers: [
-        
-        { text: 'xmlns', value: 'xmlns' },
-        
-        { text: 'Description', value: 'description' },
-        { text: 'Prefix', value: 'prefix' }
+        { text: 'Date', value: 'date' },
+        { text: 'File name', value: 'name' }
         ],
-        crumbs:[{to:"/namespace", text:"namespaces"}]
+        crumbs:[{to:"/logdate", text:"Log files"}]
       }
   },
   methods: {
@@ -106,7 +97,7 @@
   created:function(){
     this.q=this.$route.query.q || this.q;
     this.load();
-    console.log("logarchive")
+    console.log("logfiles")
   }
 }
 </script>

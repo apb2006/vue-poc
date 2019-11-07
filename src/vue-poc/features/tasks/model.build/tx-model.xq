@@ -6,7 +6,7 @@ import module namespace bf = 'quodatum.tools.buildfields' at "./../../../lib/ent
 
 (:~ 
  : Folder containing model definitions as xml
- : @default C:/Users/andy/git/vue-poc/src/vue-poc/models/entities
+ : @default C:/Users/andy/git/vue-poc/src/vue-poc/data/vue-poc/entities
  :)
 declare variable $efolder as xs:anyURI  external 
 :=xs:anyURI("C:\Users\andy\git\vue-poc\src\vue-poc\data\vue-poc\entities");

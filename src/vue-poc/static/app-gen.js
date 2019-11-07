@@ -1,4 +1,4 @@
-// generated 2019-10-14T11:47:08.629+01:00
+// generated 2019-11-07T12:55:30.849Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -970,6 +970,7 @@ Vue.component('vue-ace',{template:`
       beforeContent: '',
       aceSettings:{
           theme: "github",
+          themeDark: "chaos",
           keybinding: "ace",
           fontsize: 16,
           enableSnippets:true,
@@ -1033,8 +1034,14 @@ Vue.component('vue-ace',{template:`
     }]);
     },
     
+    setTheme(){
+    	 var theme=this.$vuetify.theme.dark ? this.aceSettings.themeDark : this.aceSettings.theme;
+         this.editor.setTheme(`ace/theme/${theme}`)
+    },
+    
     applySettings(aceSettings){
-      this.editor.setTheme(`ace/theme/${aceSettings.theme}`)
+      var theme=this.$vuetify.theme.dark?aceSettings.themeDark:aceSettings.theme;
+      this.editor.setTheme(`ace/theme/${theme}`)
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
       this.editor.setOptions({ 
@@ -1047,6 +1054,11 @@ Vue.component('vue-ace',{template:`
     }
   },
   
+  watch: {
+	    // whenever theme changes, this function will run
+	    "$vuetify.theme.dark": function (newState) {this.setTheme()}
+  },
+	  
   mounted () {
     const mode = this.mode || 'text'
     const wrap = this.wrap || false
@@ -1594,6 +1606,226 @@ const About=Vue.extend({template:`
 }
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/basexlogdate.vue
+const Basexlogdate=Vue.extend({template:` 
+ <v-container fluid>
+ <v-card>
+ 
+   <v-toolbar>
+   <v-toolbar-title>
+    <v-breadcrumbs :items="crumbs">
+         <template slot="item" slot-scope="props">
+             <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+                  {{ props.item.text }}
+              </v-breadcrumbs-item>
+          </template>
+     </v-breadcrumbs>
+   </v-toolbar-title>
+     <v-btn @click="load" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+   
+   <v-spacer></v-spacer>
+   
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
+   
+   <v-spacer></v-spacer>
+   <vp-entitylink entity="basexlogfile"></vp-entitylink> 
+   </v-toolbar>
+   
+   <v-card-text>
+    <v-data-table :headers="headers" :items="items" :loading="loading" hide-default-footer :search="q" class="elevation-1">
+  
+  <template v-slot:item.date="{ item }"> 
+	      <td><router-link :to="{path:'logdate/'+ item.date}">
+                 {{ item.date }}
+                </router-link></td>
+    </template>
+      
+    <template slot="no-results">
+        No matching results.
+    </template>
+
+  </v-data-table>
+   </v-card-text>
+   </v-card>
+   </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      items: [],
+      loading: false,
+      q: "",
+      message: 'bad route!',
+     
+      selected:[],
+      headers: [
+        { text: 'Date', value: 'date' },
+        { text: 'File name', value: 'name' }
+        ],
+        crumbs:[{to:"/logdate", text:"Log files"}]
+      }
+  },
+  methods: {
+    load(){
+    
+      this.loading= true
+      HTTP.get("data/basexlogfile",{params:{q:this.q}})
+      .then(r=>{
+        this.items= r.data.items
+        this.loading= false
+        })
+      
+    },
+    setfilter(){
+      console.log("TODO",this.q)
+      this.$router.push({  query: {url:this.url,q:this.q }})
+    },
+  },
+  watch:{
+    $route(vnew,vold){
+      console.log("ROUTE",vnew,vold)    
+      var url=this.$route.query.url
+      this.url=url?url:"/";
+      if(vnew.query.url != vold.query.url) this.load() 
+    }
+  },
+
+  created:function(){
+    this.q=this.$route.query.q || this.q;
+    this.load();
+    console.log("logfiles")
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/basexlogdate1.vue
+const Basexlogdate1=Vue.extend({template:` 
+ <v-container fluid>
+ <v-card>
+ <v-toolbar class="lime darken-1">
+	 <v-card-title>
+	 <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/logdate', text:'log files'}, {text: date, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
+	 </v-card-title>
+	
+	  <v-menu ref="menu" v-model="showFrom" :close-on-content-click="false" :nudge-right="40" :return-value.sync="query.from" transition="scale-transition" offset-y max-width="290px" min-width="100px">
+        <template v-slot:activator="{ on }">
+          <v-text-field v-model="query.from" label="Start time" prepend-icon="access_time" readonly v-on="on"></v-text-field>
+        </template>
+        <v-time-picker v-if="showFrom" v-model="query.from" full-width use-seconds @click:second="$refs.menu.save(query.from)"></v-time-picker>
+      </v-menu>
+	  <v-toolbar-items>
+		  <v-text-field type="number" v-model.number="query.start" label="start"> </v-text-field>
+		   <v-text-field type="number" v-model.number="query.limit" label="limit"> </v-text-field> 
+      </v-toolbar-items>
+     
+	 <v-spacer></v-spacer> 
+	 <v-toolbar-items> 
+	 <v-btn @click="fit">fit</v-btn> 
+	<v-btn @click="getItems">
+	     <v-avatar><v-icon>refresh</v-icon></v-avatar>
+	     </v-btn> 
+	<v-btn @click="pageBack()" :disabled="query.start==1" icon> 
+		<v-avatar><v-icon>arrow_back</v-icon> </v-avatar> 
+	</v-btn> 
+   <v-btn @click="pageNext()" icon>
+	  <v-avatar> <v-icon>arrow_forward</v-icon> </v-avatar> 
+	</v-btn> 
+   </v-toolbar-items>
+	 </v-toolbar>
+	 
+	 <v-card-text>
+	   <vis-time-line :items="data" :events="Events" :options="options" @select="select"></vis-time-line>
+	 </v-card-text>
+ </v-card>
+ 
+ <v-card>
+ <v-card-text>
+ <pre>{{msg}}</pre>
+ </v-card-text>
+</v-card>
+ </v-container>
+ `,
+      
+  data:function(){
+    return {
+
+      loading: false,
+      options: {editable: false, clickToUse: false,
+    	  timeAxis: {scale: 'minute', step: 1}
+      },
+      data:[],
+    query:{name: "2019-09-23", start: 1, limit:30, from:"00:00:00", mins:10},
+    showmenu: false,
+    Events: new Vue({}),
+    msg:"Select an entry",
+    showFrom: false
+    }
+},
+props: ['date'],
+methods:{
+  fit(){
+    this.Events.$emit('fit');
+  },
+  select(sel){
+   
+    var hit=this.data.find(item => item.id==sel )
+    var h=JSON.stringify(hit,null,2)
+    this.msg= h
+  },
+  pageNext(){
+	 this.query.start+= this.query.limit
+	 this.query.from= this.addtime(this.query.from,this.query.mins)
+	 this.getItems()
+  },
+  pageBack(){
+	  this.query.start-= this.query.limit
+	  this.query.from = this.addtime(this.query.from,-this.query.mins)
+	  this.getItems()
+  },
+  addtime(time,mins){
+	  return moment(time,moment.HTML5_FMT.TIME_SECONDS).add(mins,"m").format(moment.HTML5_FMT.TIME_SECONDS) 
+  },
+  getItems(){
+      this.loading=true
+      HTTP.get("logxml", {params:this.query})
+      .then(r=>{
+        this.loading=false
+       
+        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
+        var items=r.data.items
+        //console.log("logxml",items)
+        // {id: 4, content: 'item 4', start: '2014-04-16', end: '2014-04-19', type: 'point'}
+        this.data=items.map(x=>Object.assign({}, x, 
+        		{ start: x.time,
+        	      content: x.text.split(";",1)[0],
+        	      title: x.text,
+        	      style: x.text.startsWith("[POST] ")?"background-color: red;": "background-color: yellow;",
+        	      group: x.user}
+               ))
+        //console.log("data",this.data)
+        }) 
+    }
+},
+watch:{
+	"query":{
+	    handler:function(vnew,vold){
+	      console.log("watch",vnew,vold)
+	      this.$router.push({  query: this.query })
+	      },
+	    deep:true
+	  }
+},
+created(){
+  console.log("logxml: ",this.$route.query)
+  this.query=Object.assign(this.query,this.$route.query)
+  this.query.start=Number(this.query.start)
+  this.query.limit=Number(this.query.limit)
+  this.getItems();
+}
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logadd.vue
 const Logadd=Vue.extend({template:` 
 
@@ -1667,228 +1899,6 @@ const Logadd=Vue.extend({template:`
   }
 }
 
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logarchive.vue
-const Logarchive=Vue.extend({template:` 
- <v-container fluid>
- <v-card>
- 
-   <v-toolbar>
-   <v-toolbar-title>
-    <v-breadcrumbs :items="crumbs">
-         <template slot="item" slot-scope="props">
-             <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
-                  {{ props.item.text }}
-              </v-breadcrumbs-item>
-          </template>
-     </v-breadcrumbs>
-   </v-toolbar-title>
-     <v-btn @click="load" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
-   
-   <v-spacer></v-spacer>
-   
-   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
-   
-   <v-spacer></v-spacer>
-   <vp-entitylink entity="basexlogfile"></vp-entitylink> 
-   </v-toolbar>
-   
-   <v-card-text>
-    <v-data-table :headers="headers" :items="items" :loading="loading" hide-default-footer :search="q" class="elevation-1">
-  
-  <template v-slot:item.xmlns="{ item }"> 
-	      <td><router-link :to="{path:'namespace/item?xmlns='+ item.xmlns}">
-                 {{ item.xmlns }}
-                </router-link></td>
-    </template>
-      
-    <template slot="no-results">
-        No matching results.
-    </template>
-    
-    <template slot="no-data">
-        No matching items.
-    </template>
-  </v-data-table>
-   </v-card-text>
-   </v-card>
-   </v-container>
- `,
-      
-  data:  function(){
-    return {
-      items: [],
-      loading: false,
-      q: "",
-      message: 'bad route!',
-     
-      selected:[],
-      headers: [
-        
-        { text: 'xmlns', value: 'xmlns' },
-        
-        { text: 'Description', value: 'description' },
-        { text: 'Prefix', value: 'prefix' }
-        ],
-        crumbs:[{to:"/namespace", text:"namespaces"}]
-      }
-  },
-  methods: {
-    load(){
-    
-      this.loading= true
-      HTTP.get("data/basexlogfile",{params:{q:this.q}})
-      .then(r=>{
-        this.items= r.data.items
-        this.loading= false
-        })
-      
-    },
-    setfilter(){
-      console.log("TODO",this.q)
-      this.$router.push({  query: {url:this.url,q:this.q }})
-    },
-  },
-  watch:{
-    $route(vnew,vold){
-      console.log("ROUTE",vnew,vold)    
-      var url=this.$route.query.url
-      this.url=url?url:"/";
-      if(vnew.query.url != vold.query.url) this.load() 
-    }
-  },
-
-  created:function(){
-    this.q=this.$route.query.q || this.q;
-    this.load();
-    console.log("logarchive")
-  }
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logdate.vue
-const Logdate=Vue.extend({template:` 
- <v-container fluid>
- <v-card>
- <v-toolbar class="lime darken-1">
-	 <v-card-title>XML Log {{ query.name }}</v-card-title>
-	
-	  <v-menu ref="menu" v-model="showFrom" :close-on-content-click="false" :nudge-right="40" :return-value.sync="query.from" transition="scale-transition" offset-y max-width="290px" min-width="100px">
-        <template v-slot:activator="{ on }">
-          <v-text-field v-model="query.from" label="Start time" prepend-icon="access_time" readonly v-on="on"></v-text-field>
-        </template>
-        <v-time-picker v-if="showFrom" v-model="query.from" full-width use-seconds @click:second="$refs.menu.save(query.from)"></v-time-picker>
-      </v-menu>
-	  <v-toolbar-items>
-		  <v-text-field type="number" v-model.number="query.start" label="start"> </v-text-field>
-		   <v-text-field type="number" v-model.number="query.limit" label="limit"> </v-text-field> 
-      </v-toolbar-items>
-     
-	 <v-spacer></v-spacer> 
-	 <v-toolbar-items> 
-	 <v-btn @click="fit">fit</v-btn> 
-	<v-btn @click="getItems">
-	     <v-avatar><v-icon>refresh</v-icon></v-avatar>
-	     </v-btn> 
-	<v-btn @click="pageBack()" :disabled="query.start==1" icon> 
-		<v-avatar><v-icon>arrow_back</v-icon> </v-avatar> 
-	</v-btn> 
-   <v-btn @click="pageNext()" icon>
-	  <v-avatar> <v-icon>arrow_forward</v-icon> </v-avatar> 
-	</v-btn> 
-   </v-toolbar-items>
-	 </v-toolbar>
-	 
-	 <v-card-text>
-	   <vis-time-line :items="data" :events="Events" :options="options" @select="select"></vis-time-line>
-	 </v-card-text>
- </v-card>
- 
- <v-card>
- <v-card-text>
- <pre>{{msg}}</pre>
- </v-card-text>
-</v-card>
- </v-container>
- `,
-      
-  data:function(){
-    return {
-
-      loading: false,
-      options: {editable: false, clickToUse: false,
-    	  timeAxis: {scale: 'minute', step: 1}
-      },
-      data:[],
-    query:{name: "2019-09-23", start: 1, limit:30, from:"00:00:00", mins:10},
-    Events: new Vue({}),
-    msg:"Select an entry",
-    showFrom: false
-    }
-},
-methods:{
-  fit(){
-    this.Events.$emit('fit');
-  },
-  select(sel){
-   
-    var hit=this.data.find(item => item.id==sel )
-    var h=JSON.stringify(hit,null,2)
-    this.msg= h
-  },
-  pageNext(){
-	 this.query.start+= this.query.limit
-	 this.query.from= this.addtime(this.query.from,this.query.mins)
-	 this.getItems()
-  },
-  pageBack(){
-	  this.query.start-= this.query.limit
-	  this.query.from = this.addtime(this.query.from,-this.query.mins)
-	  this.getItems()
-  },
-  addtime(time,mins){
-	  return moment(time,moment.HTML5_FMT.TIME_SECONDS).add(mins,"m").format(moment.HTML5_FMT.TIME_SECONDS) 
-  },
-  getItems(){
-      this.loading=true
-      HTTP.get("logxml", {params:this.query})
-      .then(r=>{
-        this.loading=false
-       
-        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
-        var items=r.data.items
-        //console.log("logxml",items)
-        // {id: 4, content: 'item 4', start: '2014-04-16', end: '2014-04-19', type: 'point'}
-        this.data=items.map(x=>Object.assign({}, x, 
-        		{ start: x.time,
-        	      content: x.text.split(";",1)[0],
-        	      title: x.text,
-        	      style: x.text.startsWith("[POST] ")?"background-color: red;": "background-color: yellow;",
-        	      group: x.user}
-               ))
-        //console.log("data",this.data)
-        }) 
-    }
-},
-watch:{
-	"query":{
-	    handler:function(vnew,vold){
-	      console.log("watch",vnew,vold)
-	      this.$router.push({  query: this.query })
-	      },
-	    deep:true
-	  }
-},
-created(){
-  console.log("logxml: ",this.$route.query)
-  this.query=Object.assign(this.query,this.$route.query)
-  this.query.start=Number(this.query.start)
-  this.query.limit=Number(this.query.limit)
-  this.getItems();
-}
-}
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/adminlog/logs.vue
@@ -4076,7 +4086,7 @@ const Images=Vue.extend({template:`
               </template>
             </v-autocomplete>
             
-          <v-menu lazy :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y full-width :nudge-left="40" max-width="290px">
+          <v-menu :close-on-content-click="false" v-model="menu2" transition="scale-transition" offset-y :nudge-left="40" max-width="290px">
          <template v-slot:activator="{ on }">  
              <v-text-field v-on="on" label="Earliest date" v-model="query.from" prepend-icon="event" readonly clearable></v-text-field>
          </template>
@@ -4091,7 +4101,7 @@ const Images=Vue.extend({template:`
          
           </v-date-picker></v-menu>
           
-           <v-menu lazy :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y full-width :nudge-left="40" max-width="290px">
+           <v-menu :close-on-content-click="false" v-model="showUntil" transition="scale-transition" offset-y :nudge-left="40" max-width="290px">
            
             <template v-slot:activator="{ on }">  
             <v-text-field v-on="on" label="Latest date" v-model="query.until" prepend-icon="event" readonly clearable></v-text-field>
@@ -5080,12 +5090,14 @@ const Entity1=Vue.extend({template:`
   <v-container fluid>
 	  <v-expansion-panels>
 	    <v-expansion-panel expand>
-			     <v-expansion-panel-header><v-layout>
-          <v-flex xs12>
-			     <v-icon>{{ item.iconclass }}</v-icon> {{ item.name }}
-			         {{item.description}}
-			 </v-flex>
-			 </v-layout>        
+			     <v-expansion-panel-header>
+			     <v-layout>
+		          <v-flex xs12>
+						     <v-avatar><v-icon>{{ item.iconclass }}</v-icon></v-avatar>
+						     <span class="font-weight-black">{{ item.name }}</span> 
+					         {{item.description}}
+					 </v-flex>
+			     </v-layout>        
 			     </v-expansion-panel-header>
 			     <v-expansion-panel-content>
 			          <pre v-if="xml"><code>{{ xml }}</code></pre> 
@@ -5180,7 +5192,7 @@ const Entity1=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespaces/namespace.vue
 const Namespace=Vue.extend({template:` 
  <v-container fluid>
  <v-card>
@@ -5279,7 +5291,7 @@ const Namespace=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/namespace1.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespaces/namespace1.vue
 const Namespace1=Vue.extend({template:` 
 <v-card>
 	<v-toolbar>
@@ -5304,6 +5316,9 @@ const Namespace1=Vue.extend({template:`
   
   
       hello
+      <div>{{ item.prefix }}</div>
+      <div>{{ item.xmlns }}</div>
+      <div>{{ item.description }}</div>
   </v-container>
    </v-card>
  `,
@@ -5322,7 +5337,7 @@ const Namespace1=Vue.extend({template:`
       .then(r=>{
         this.loading=false;
         console.log(r.data)
-       
+        this.item= r.data
         }) 
     }
   },
@@ -6367,6 +6382,9 @@ const Acesettings=Vue.extend({template:`
           <v-flex>
             <v-select v-bind:items="themes" v-model="ace.theme" label="Theme"></v-select>
           </v-flex>
+          <v-flex>
+            <v-select v-bind:items="themesDark" v-model="ace.themeDark" label="Dark Theme"></v-select>
+          </v-flex>
         </v-layout>
        
         <v-layout row>
@@ -6441,11 +6459,13 @@ const Acesettings=Vue.extend({template:`
 			        enableBasicAutocompletion: true,
 			        enableLiveAutocompletion: true,
 			        theme: "github",
+			        themeDark: "twilight",
 			        keybinding: "ace",
 			        fontsize: "14"
 			    },
 			    keybindings:[  'ace',  'vim', 'emacs', 'textarea', 'sublime' ],
-			    themes: [ "github","chrome" ,"tomorrow","-dark-","chaos","twilight"]
+			    themes: [ "github","chrome" ,"tomorrow"],
+			    themesDark: ["chaos","twilight"]
 			    }
   },
   methods:{
@@ -6687,7 +6707,8 @@ const Model=Vue.extend({template:`
     var task=this.task
     HTTP.get("tasks/model")
     .then(r=>{
-      console.log(r);
+      console.log(r.data.values);
+      this.params=r.data.values;
       })
    },
 }
@@ -6998,43 +7019,61 @@ const Thumbnail=Vue.extend({template:`
  <v-container fluid>
  <v-stepper v-model="step" non-linear>
   <v-stepper-header>
-      <v-stepper-step step="1" :complete="step > 1" editable>Select image location</v-stepper-step>
+      <v-stepper-step step="1" :complete="step > 1" editable>Image source</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="2" :complete="step > 2" editable>Set thumbnail details</v-stepper-step>
+      <v-stepper-step step="2" :complete="step > 2" editable>Thumbnail parameters</v-stepper-step>
       <v-divider></v-divider>
-      <v-stepper-step step="3" editable>Result</v-stepper-step>
+      <v-stepper-step step="3" editable>Thumbnail</v-stepper-step>
     </v-stepper-header>
   <v-stepper-items>
   <v-stepper-content step="1" non-linear>
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required></v-text-field>
-    </v-card>
+    <v-card class="lime lighten-1 z-depth-1 mb-5" height="200px">
+    <v-card-text>
+	    <v-text-field name="url" label="Image Url" hint="http:...??" v-model="image" required></v-text-field>
+     </v-card-text>
+    <v-card-actions>
+    <v-spacer></v-spacer>
         <v-btn color="primary" @click="step = 2">Next</v-btn>
+        </v-card-actions>
+          </v-card>
   </v-stepper-content>
   
   <v-stepper-content step="2" non-linear>
-    <v-card class="grey lighten-1 z-depth-1 mb-5" height="200px">
-    <vue-ace editor-id="editorA" :content="taskxml" mode="xml" wrap="true" v-on:change-content="onChange"></vue-ace>
+  
+    <v-card class="lime lighten-1 z-depth-1 mb-5">
+    <v-toolbar dense>
+		<v-btn text @click="step -= 1">Back</v-btn>
+		<v-spacer></v-spacer>
+	    <v-btn color="primary" @click="validate()">Validate</v-btn>
+	    <v-spacer></v-spacer>
+	     <v-btn color="primary" @click="step = 3">Next</v-btn>  
+		</v-toolbar>
+		<v-flex xs12 style="height:400px" fill-height>
+	    <vue-ace editor-id="editorA" :content="taskxml" mode="xml" wrap="true" v-on:change-content="onChange" min-lines="7"></vue-ace>
+        </v-flex>
 		</v-card>
-   
-    <v-btn text @click="step -= 1">Back</v-btn>
-    <v-btn color="primary" @click="validate()">Validate</v-btn>
-     <v-btn color="primary" @click="step = 3">Next</v-btn>  
+  
+    
   </v-stepper-content>
 
   <v-stepper-content step="3" non-linear>
-    <v-card class="grey lighten-1 z-depth-1 mb-5">
+    <v-card :loading="loading" class="lime lighten-1 z-depth-1 mb-5">
      <v-card-actions>
     <v-btn text @click="step -= 1">Back</v-btn>
-     <v-btn color="primary" @click="go()">go</v-btn>
+    <v-spacer></v-spacer>
+     <v-btn color="primary" @click="go()">refresh</v-btn>
+     <div v-if="elapsed"> (took {{ elapsed }}ms.)</div>
+     <v-spacer></v-spacer>
      </v-card-actions>
     <v-card-text>
-    <v-layout style="height:200px" fill-height>
+    <v-layout style="height:300px" fill-height>
     <v-flex xs6>
+    <div>Source</div>
     <img :src="image" class="contain" style="width:100%; height:100%;">
     </v-flex>
     <v-flex xs6>
-    <img :src="image" class="contain" style="width:50%; height:50%;object-position: 50% 50%;">
+    <div>Thumbnail</div>
+    <img ref="imgResult" class="contain" style="width:100%; height:100%;object-position: 50% 50%;">
     </v-flex>
     </v-layout>
     </v-card-text>
@@ -7050,15 +7089,18 @@ const Thumbnail=Vue.extend({template:`
       
   data(){
     return {
-      image:"https://upload.wikimedia.org/wikipedia/commons/c/c1/Lycidae-Kadavoor-2017-05-22-001.jpg",
-      step: 0,
+      image:"https://picsum.photos/id/123/500/700",
+      step: 1,
+      elapsed: null,
       taskxml:"<task></task>",
       items:[
-        {
-          src: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Lycidae-Kadavoor-2017-05-22-001.jpg'
-        }]
+        { src: 'https://upload.wikimedia.org/wikipedia/commons/c/c1/Lycidae-Kadavoor-2017-05-22-001.jpg'},
+        { src: 'https://picsum.photos/id/123/500/700' }
+        ],
+        loading: false
       }
   },
+  
   methods:{
     onChange (val) {
       if (this.taskxml !== val) this.taskxml = val;
@@ -7068,15 +7110,27 @@ const Thumbnail=Vue.extend({template:`
         HTTP.post("thumbnail/validate",Qs.stringify({task: this.taskxml}))
         .then(r=>{alert("gg")})
       },
+      
     go(){
-        alert("post")
-        HTTP.post("thumbnail",Qs.stringify({task: this.taskxml,url:this.image}))
-        .then(function(r){
-          console.log(r)
-       alert("not yet:"+r);
-     })
+    	  var target= this.$refs.imgResult;
+    	  var _start = performance.now();
+    	  this.loading = true
+    	  fetch("/vue-poc/api/thumbnail",
+        		  {
+    		      method: 'POST',
+    		      headers: {'Content-Type': 'application/x-www-form-urlencoded'},
+    		      body:  Qs.stringify({task: this.taskxml,url:this.image})
+        		  }
+        		  ).then(function(response) {
+    		  return response.blob();
+    		}).then(myBlob=> { 			
+    		      target.src = URL.createObjectURL(myBlob);
+    		      this.elapsed=Math.floor(performance.now() - _start);
+    		      this.loading = false
+    		});	  
       }
   },
+  
   beforeRouteEnter (to, from, next) {
     Promise.all([Settings.getItem('images/thumbtask')
                  ])
@@ -7417,7 +7471,10 @@ const router = new VueRouter({
     { path: '/images/people', component: People, meta:{title:"Image people"} },
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
-    { path: '/logdate', component: Logdate, meta:{title:"log files"} },
+    
+    { path: '/logdate', component: Basexlogdate, meta:{title:"log files"} },
+    { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
+    
     { path: '/entity', component: Entity, meta:{title:"Entities"} },
     { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
     
@@ -7916,6 +7973,7 @@ var Settings = {
       
       "settings/ace": {
                       theme: "github",
+                      themeDark: "chaos",
                       keybinding: "ace",
                       fontsize: 16,
                       enableSnippets:true,
@@ -7943,12 +8001,12 @@ return $a   `},
        "edit/currentId": "?",
        "images/thumbtask":`
 <thumbnail>
-    <size width="100" height="100"/>
+    <size width="200" height="200"/>
     <filters>             
         <colorize color="green" alpha=".5"/>      
         <caption position="CENTER">Some Text here</caption>
         <rotate angle="15"/>
-        <canvas height="500" width="500" position="TOP_LEFT" color="black"/> 
+        <canvas height="300" width="300" position="TOP_LEFT" color="yellow"/> 
     </filters>
     <output format="gif"/>         
 </thumbnail>

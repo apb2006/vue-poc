@@ -82,7 +82,8 @@
     var task=this.task
     HTTP.get("tasks/model")
     .then(r=>{
-      console.log(r);
+      console.log(r.data.values);
+      this.params=r.data.values;
       })
    },
 }

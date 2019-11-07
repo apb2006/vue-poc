@@ -126,7 +126,7 @@ declare function dice:one($item,$entity as map(*),$opts as map(*))
 as element(json)
 {
   let $jsonf:= map:get($entity,"json")
-  let $fields:=if ($opts?fields) then fn:tokenize($opts?fields) else map:keys($jsonf)=>fn:trace("FF")
+  let $fields:=if ($opts?fields) then fn:tokenize($opts?fields) else map:keys($jsonf)
   
   return  <json objects="json " >
   {$fields!$jsonf(.)($item)}
