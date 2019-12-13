@@ -83,7 +83,7 @@
   methods:{
     load(){    
         this.loading= true
-        HTTP.get("data/service",{params:{q:this.q}})
+        HTTP.get("data/basex.service",{params:{q:this.q}})
         .then(r=>{
           this.items= r.data.items
           this.loading= false

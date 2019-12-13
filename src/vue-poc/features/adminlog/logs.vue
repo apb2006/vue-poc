@@ -109,7 +109,7 @@
     },
     getItems(){
       this.loading=true
-      HTTP.get("log",{params:this.q})
+      HTTP.get("basex.log",{params:this.q})
       .then(r=>{
         this.loading=false
         //console.log(r.data)

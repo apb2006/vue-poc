@@ -16,12 +16,13 @@ declare variable $vue-login:SESSION-VALUE := session:get($vue-login:SESSION-KEY)
  : Checks if a session id exists for the current user; if not, redirects to the login page.
  :)
 declare 
-(: %perm:check('/vue-poc') :)
+%perm:check('/vue-poc') 
 function vue-login:check-app() {
   let $user := session:get('id')
-  where empty($user)
-  return web:redirect('/vue-poc/login')
+  let $_:=trace($user,"CHECK")
+  return ()
 };
+
 (:~
  : get status
  :)
@@ -98,15 +99,22 @@ declare %private function vue-login:accept(
   $pass  as xs:string,
   $path  as xs:string?
 ) {
-  
-  let $val:=vue-login:cookie("remember", random:uuid(),map{'expires': xs:dayTimeDuration('P7D')})
+  let $session:=random:uuid()
+  let $token:= random:uuid()
+ 
+  let $opts:=map{'expires': xs:dayTimeDuration('P7D')} 
+  let $cookies:= map{ "session": $session,
+                      "hash": crypto:hmac($token, 'quo1', 'md5', 'hex')
+                      }
+              
    return (
   session:set($vue-login:SESSION-KEY, $name),
   admin:write-log('VUEPOC user was logged in: ' || $name),
   
   <rest:response>
     <http:response>
-       <http:header name="Set-Cookie" value="{ $val }"/> 
+          <http:header name="Set-Cookie" value="{ vue-login:cookie("hash",$cookies?hash, $opts) }"/>  
+          <http:header name="Set-Cookie" value="{  vue-login:cookie("session",$cookies?session, $opts) }"/>      
     </http:response>   
    </rest:response>, 
     
@@ -128,7 +136,7 @@ declare %private function vue-login:reject(
   $message  as xs:string,
   $path     as xs:string?) 
  {
- let $cookie:=vue-login:cookie("remember", "", map{})
+ let $cookie:=vue-login:cookie("session", "", map{})
  return ( admin:write-log('VUE login was denied: ' || $name),
   <rest:response>
     <http:response>
@@ -144,11 +152,10 @@ declare %private function vue-login:reject(
 
 (:~ return cookie string
 :)
-declare function vue-login:cookie($name as xs:string,$val,$opts as map(*)?)
+declare function vue-login:cookie($name as xs:string, $val ,$opts as map(*)?)
 as xs:string
 {
   let $pic:="[FNn,3-3],[D01] [MNn,3-3] [Y4] [H01]:[m01]:[s01] [z]"
   let $expires:=if(map:contains($opts,"expires")) then  current-dateTime() + $opts?expires else ()
-  return``[`{ $name }`=`{ $val }`; path=/; expires=`{ format-dateTime($expires,$pic) }`;]``
+   return``[`{ $name }`=`{ $val }`; path=/; expires=`{ format-dateTime($expires,$pic) }`;]``
 };
-

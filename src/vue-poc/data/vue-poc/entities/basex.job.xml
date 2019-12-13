@@ -1,6 +1,5 @@
-<entity name="basexjob" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>A BaseX job</description>
-	<namespace prefix="xqdoc" uri="http://www.xqdoc.org/1.0"/>
+<entity name="basex.job" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>An active BaseX job</description>
 	<fields>
 		<field name="id" type="xs:string">
 			<description>unique id</description>
@@ -27,7 +26,7 @@
 			<xpath>@start</xpath>
 		</field>
 		<field name="duration" type="xs:string">
-			<description>start</description>
+			<description>duration</description>
 			<xpath>@duration</xpath>
 		</field>
 		<field name="interval" type="xs:string">

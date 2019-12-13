@@ -18,6 +18,6 @@
 		"vuetify-jsonschema-form": "0.27.1",
 		"prism": "1.15.0",
 		"vue-prism-component": "1.1.1",
-		"vis": "4.21.0"
+		"vis-timeline-graph2d": "4.21.0"
 	}
 }

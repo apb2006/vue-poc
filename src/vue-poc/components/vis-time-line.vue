@@ -25,6 +25,9 @@ for vis-time-line http://visjs.org/docs/graph2d/
 	  items(newItems){
 		  console.log("timeline new:" + newItems.length)
 		  this.rebuild(newItems)
+	  },
+	  options(newOpts){
+		  console.log("opts: ",newOpts)
 	  }
   },
   mounted: function () {

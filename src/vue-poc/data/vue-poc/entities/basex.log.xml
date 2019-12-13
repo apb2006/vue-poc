@@ -1,4 +1,4 @@
-<entity name="basexlog" xmlns="https://github.com/Quodatum/app-doc/entity">
+<entity name="basex.log" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>BaseX log entries for today and yesterday from the running server</description>
 
 	<fields>

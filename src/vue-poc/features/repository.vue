@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="repo">
  <v-container fluid>
-   <qd-table :headers="headers" data-uri="data/repo" entity="repo" no-data-msg="Nothing found">
+   <qd-table :headers="headers" data-uri="data/basex.repo" entity="repo" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
       <td >
         <v-checkbox

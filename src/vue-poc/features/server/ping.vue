@@ -13,14 +13,14 @@
   <table class="v-table">
       <thead> 
         <tr>
-         <th xs1>Action</th>
-          <th xs1>Repeat</th>
-          <th xs1>Last</th>
-          <th xs1>Count</th>
-          <th xs1>Avg</th>
-          <th xs1>min</th>
-          <th xs1>max</th>
-          <th xs1>Median</th>
+         <th class="col-md-1">Action</th>
+          <th class="col-md-1">Repeat</th>
+          <th class="col-md-1 text-right">Last</th>
+          <th class="col-md-1 text-right">Count</th>
+          <th class="col-md-1 text-right">Avg</th>
+          <th class="col-md-1 text-right">min</th>
+          <th class="col-md-1 text-right">max</th>
+          <th class="col-md-1 text-right">Median</th>
         </tr>
       </thead>
       <tbody>
@@ -38,24 +38,24 @@
 
              </td>    
               <td>
-                  <span >{{getValues.last}}</span>
+                  <p  class="text-right">{{getValues.last}}</p>
               </td>
               <td>
-                  <span >{{getValues.count}}</span>
+                  <p  class="text-right" >{{getValues.count}}</p>
               </td>   
             
               <td>
-                  <span >{{getValues.avg | round(2)}}</span>
+                  <p  class="text-right" >{{getValues.avg | round(2)}}</p>
               </td>
             
               <td>
-                  <span >{{getValues.min}}</span>
+                  <p  class="text-right" >{{getValues.min}}</p>
               </td>
               <td>
-                  <span >{{getValues.max}}</span>
+                  <p  class="text-right" >{{getValues.max}}</p>
               </td>
                 <td>
-                  <span >{{getValues.median}}</span>
+                  <p  class="text-right" >{{getValues.median}}</p>
               </td>
           </tr>
           
@@ -69,27 +69,25 @@
           <td>
            <v-switch  v-on:change="pchange"  v-model="repeat.post"></v-switch>
           </td>
-           <td class="col-md-1">
-                        <span >{{postValues.last}}</span>
-                    </td>
-          <td class="col-md-1">
+           <td  class="text-right">
+                <span >{{postValues.last}}</span>
+           </td>
+          <td  class="text-right">
             <span >{{postValues.count}}</span>
           </td >
-        
-           
-          <td class="col-md-1">
+                 
+          <td  class="text-right">
             <span >{{postValues.avg | round(2)}}</span>
           </td>
           
-         
-          <td class="col-md-1">
-                        <span >{{postValues.min}}</span>
+          <td  class="text-right">
+            <span >{{postValues.min}}</span>
           </td>
-          <td class="col-md-1">
+          <td  class="text-right">
               <span >{{postValues.max}}</span>
           </td>
-            <td class="col-md-1">
-                        <span >{{postValues.median}}</span>
+            <td  class="text-right">
+              <span >{{postValues.median}}</span>
            </td>
         </tr>
       </tbody>

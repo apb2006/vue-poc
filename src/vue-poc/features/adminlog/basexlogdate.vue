@@ -13,10 +13,6 @@
           </template>
      </v-breadcrumbs>
    </v-toolbar-title>
-     <v-btn @click="load" icon :loading="loading"
-      :disabled="loading"
-   ><v-icon>refresh</v-icon></v-btn>
-   
    <v-spacer></v-spacer>
    
    <v-text-field  prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
@@ -24,6 +20,9 @@
    clearable></v-text-field>
    
    <v-spacer></v-spacer>
+      <v-btn @click="load" icon :loading="loading"
+      :disabled="loading"
+   ><v-icon>refresh</v-icon></v-btn>
    <vp-entitylink entity="basexlogfile"></vp-entitylink> 
    </v-toolbar>
    
@@ -42,6 +41,16 @@
                  {{ item.date }}
                 </router-link></td>
     </template>
+    
+   <template v-slot:item.perhr="{ item }" > 
+	      <td >
+               <v-sparkline
+    :value="points(item.perhr)"  :labels="labels" :fill="true"  height="30px" type="bar"
+    :gradient="['red', 'orange', 'yellow','green','blue']"
+    
+  ></v-sparkline>  
+          </td>
+    </template> 
       
     <template slot="no-results">
         No matching results.
@@ -64,9 +73,22 @@
       selected:[],
       headers: [
         { text: 'Date', value: 'date' },
+        {text: 'Entries', value: 'entries', align:"end" },
+        {text: 'Max (secs)', value: 'max', align:"end" },
+        {text: 'Rate', value: 'perhr' },
         { text: 'File name', value: 'name' }
         ],
-        crumbs:[{to:"/logdate", text:"Log files"}]
+      crumbs:[{to:"/logdate", text:"Log files"}],
+      labels: [
+          '.','.','.',
+          '3am','.','.',
+          '6am','.','.',
+          '9am','.','.',
+          'noon','.','.',
+          '3pm','.','.',
+          '6pm','.','.',
+          '9pm','.','.'
+        ],
       }
   },
   methods: {
@@ -79,6 +101,9 @@
         this.loading= false
         })
       
+    },
+    points(perhr){
+      return perhr.split(' ').map(Number);
     },
     setfilter(){
       console.log("TODO",this.q)

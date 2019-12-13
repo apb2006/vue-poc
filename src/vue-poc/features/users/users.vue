@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="users">
  <v-container fluid>
-   <qd-table :headers="headers" data-uri="data/user" entity="user" no-data-msg="Nothing found">
+   <qd-table :headers="headers" data-uri="data/basex.user" entity="user" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
       <td >
         <v-checkbox

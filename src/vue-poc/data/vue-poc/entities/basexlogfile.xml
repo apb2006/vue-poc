@@ -1,20 +1,45 @@
 <entity name="basexlogfile" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>saved BaseX log entries in the vue-poc database</description>
+	<description>list of saved BaseX log files with entries in the vue-poc database</description>
 
 	<fields>
 		<field name="date" type="xs:string">
 			<description>log date</description>
-			<xpath>text()!fn:replace(.,".*(\d{4}-\d{2}-\d{2}).*","$1")</xpath>
+			<xpath>@date</xpath>
 		</field>
 		<field name="name" type="xs:string">
 			<description>file name</description>
-			<xpath>.</xpath>
+			<xpath>@file</xpath>
 		</field>
-		
+		<field name="entries" type="xs:integer">
+			<description>total entries</description>
+			<xpath>@entries</xpath>
+		</field>
+		<field name="max" type="xs:integer">
+			<description>longest response time (secs)</description>
+			<xpath>@max</xpath>
+		</field>
+		<field name="perhr" type="xs:string">
+			<description>entries by hour</description>
+			<xpath>@perhr</xpath>
+		</field>
 	</fields>
 	<views iconclass="calendar_today"/>
 
-	<data type="element(resource)">
-		db:dir("vue-poc","logs")
+	<data type="element(day)">
+		let $hrs:=(0 to 23)!format-number(., "00")
+		for $item in db:dir("vue-poc","logs")
+		let $es:=db:open("vue-poc","logs/" || $item)/entries/entry
+		let $max:=round(max($es/@ms) div 1000)
+		let $times:=(for $e in $es
+		group by $hr:=substring($e/@time,1,2)
+		return map:entry($hr, max($e/@ms)))=>map:merge()
+		let $c:=for $h in $hrs return if(map:contains($times,$h)) then map:get($times,$h) else 0
+		
+		return &lt;day  file="{ $item }"
+			date="{ fn:replace($item,".*(\d{4}-\d{2}-\d{2}).*","$1")}"
+			entries="{ count($es) }" 
+			max="{ $max }" 
+			perhr="{ string-join($c,' ') }" 
+		/&gt;
 	</data>
 </entity>

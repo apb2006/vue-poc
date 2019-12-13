@@ -1,4 +1,4 @@
-// generated 2019-11-07T12:55:30.849Z
+// generated 2019-12-13T23:01:01.285Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -312,6 +312,35 @@ Vue.component('qd-panel',{template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-range.vue
+Vue.component('qd-range',{template:` 
+  <v-menu left bottom :close-on-content-click="false">
+  <template v-slot:activator="{ on }">
+    <v-chip v-on="on"> 
+    Range
+      <v-icon right>arrow_drop_down</v-icon>
+    </v-chip>
+   </template>
+      
+   <v-card>
+    <v-card-title class="headline grey lighten-2" primary-title>Range</v-card-title>
+     
+	<v-card-text>
+	 <v-text-field type="number" v-model.number="query.window" label="window (secs)"> </v-text-field>
+	 <v-text-field type="number" v-model.number="query.start" label="start"> </v-text-field>
+    <v-text-field type="number" v-model.number="query.limit" label="limit"> </v-text-field> 
+  </v-card-text>
+  <v-card-actions>
+  <v-btn>Reset</v-btn>
+  </v-card-actions>
+</v-card>
+</v-menu>
+ `,
+      
+  props: ['query' ]
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-search.vue
 Vue.component('qd-search',{template:` 
   <v-combobox placeholder="Search..." prepend-icon="search" autocomplete :loading="loading" clearable :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q">
@@ -549,6 +578,9 @@ Vue.component('vis-time-line',{template:`
 	  items(newItems){
 		  console.log("timeline new:" + newItems.length)
 		  this.rebuild(newItems)
+	  },
+	  options(newOpts){
+		  console.log("opts: ",newOpts)
 	  }
   },
   mounted: function () {
@@ -1002,11 +1034,14 @@ Vue.component('vue-ace',{template:`
     },
     "settings":{
       handler:function(vnew,vold){
+        //console.log("aCe settings:",vnew,this)
         this.applySettings(vnew)
-       // alert("setting")
         },
       deep:true
-    }
+    },
+ 
+    // whenever theme changes, this function will run
+    "$vuetify.theme.dark": function (newState) {this.setTheme()}
   },
   methods:{
 
@@ -1054,10 +1089,7 @@ Vue.component('vue-ace',{template:`
     }
   },
   
-  watch: {
-	    // whenever theme changes, this function will run
-	    "$vuetify.theme.dark": function (newState) {this.setTheme()}
-  },
+ 
 	  
   mounted () {
     const mode = this.mode || 'text'
@@ -1621,13 +1653,12 @@ const Basexlogdate=Vue.extend({template:`
           </template>
      </v-breadcrumbs>
    </v-toolbar-title>
-     <v-btn @click="load" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
-   
    <v-spacer></v-spacer>
    
    <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
    
    <v-spacer></v-spacer>
+      <v-btn @click="load" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
    <vp-entitylink entity="basexlogfile"></vp-entitylink> 
    </v-toolbar>
    
@@ -1639,6 +1670,12 @@ const Basexlogdate=Vue.extend({template:`
                  {{ item.date }}
                 </router-link></td>
     </template>
+    
+   <template v-slot:item.perhr="{ item }"> 
+	      <td>
+               <v-sparkline :value="points(item.perhr)" :labels="labels" :fill="true" height="30px" type="bar" :gradient="['red', 'orange', 'yellow','green','blue']"></v-sparkline>  
+          </td>
+    </template> 
       
     <template slot="no-results">
         No matching results.
@@ -1660,9 +1697,22 @@ const Basexlogdate=Vue.extend({template:`
       selected:[],
       headers: [
         { text: 'Date', value: 'date' },
+        {text: 'Entries', value: 'entries', align:"end" },
+        {text: 'Max (secs)', value: 'max', align:"end" },
+        {text: 'Rate', value: 'perhr' },
         { text: 'File name', value: 'name' }
         ],
-        crumbs:[{to:"/logdate", text:"Log files"}]
+      crumbs:[{to:"/logdate", text:"Log files"}],
+      labels: [
+          '.','.','.',
+          '3am','.','.',
+          '6am','.','.',
+          '9am','.','.',
+          'noon','.','.',
+          '3pm','.','.',
+          '6pm','.','.',
+          '9pm','.','.'
+        ],
       }
   },
   methods: {
@@ -1675,6 +1725,9 @@ const Basexlogdate=Vue.extend({template:`
         this.loading= false
         })
       
+    },
+    points(perhr){
+      return perhr.split(' ').map(Number);
     },
     setfilter(){
       console.log("TODO",this.q)
@@ -1703,35 +1756,45 @@ const Basexlogdate=Vue.extend({template:`
 const Basexlogdate1=Vue.extend({template:` 
  <v-container fluid>
  <v-card>
- <v-toolbar class="lime darken-1">
+ <v-toolbar>
 	 <v-card-title>
 	 <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/logdate', text:'log files'}, {text: date, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
 	 </v-card-title>
-	
+	  <v-btn @click="pageBack()" icon> 
+		<v-avatar><v-icon>skip_previous</v-icon> </v-avatar> 
+	  </v-btn> 
+	   <v-btn @click="pageNext()" icon>
+		  <v-avatar> <v-icon>skip_next</v-icon> </v-avatar> 
+		</v-btn> 	 
 	  <v-menu ref="menu" v-model="showFrom" :close-on-content-click="false" :nudge-right="40" :return-value.sync="query.from" transition="scale-transition" offset-y max-width="290px" min-width="100px">
         <template v-slot:activator="{ on }">
           <v-text-field v-model="query.from" label="Start time" prepend-icon="access_time" readonly v-on="on"></v-text-field>
         </template>
         <v-time-picker v-if="showFrom" v-model="query.from" full-width use-seconds @click:second="$refs.menu.save(query.from)"></v-time-picker>
       </v-menu>
-	  <v-toolbar-items>
-		  <v-text-field type="number" v-model.number="query.start" label="start"> </v-text-field>
-		   <v-text-field type="number" v-model.number="query.limit" label="limit"> </v-text-field> 
-      </v-toolbar-items>
-     
+    
+		   <qd-range :query="query"></qd-range>     
 	 <v-spacer></v-spacer> 
 	 <v-toolbar-items> 
 	 <v-btn @click="fit">fit</v-btn> 
 	<v-btn @click="getItems">
 	     <v-avatar><v-icon>refresh</v-icon></v-avatar>
 	     </v-btn> 
-	<v-btn @click="pageBack()" :disabled="query.start==1" icon> 
-		<v-avatar><v-icon>arrow_back</v-icon> </v-avatar> 
-	</v-btn> 
-   <v-btn @click="pageNext()" icon>
-	  <v-avatar> <v-icon>arrow_forward</v-icon> </v-avatar> 
-	</v-btn> 
+	
    </v-toolbar-items>
+    <v-menu bottom left>
+	       <template v-slot:activator="{ on }">
+	         <v-btn icon v-on="on">
+              <v-icon>more_vert</v-icon>
+            </v-btn>
+           </template>
+             <v-list>
+              <v-list-item>
+                <v-list-item-title> <qd-range :query="query"></qd-range></v-list-item-title>
+              </v-list-item>
+            </v-list>
+      </v-menu>
+                
 	 </v-toolbar>
 	 
 	 <v-card-text>
@@ -1755,7 +1818,7 @@ const Basexlogdate1=Vue.extend({template:`
     	  timeAxis: {scale: 'minute', step: 1}
       },
       data:[],
-    query:{name: "2019-09-23", start: 1, limit:30, from:"00:00:00", mins:10},
+    query:{date: this.date, start: 1, limit:30, from:"00:00:00", window:600},
     showmenu: false,
     Events: new Vue({}),
     msg:"Select an entry",
@@ -1767,31 +1830,33 @@ methods:{
   fit(){
     this.Events.$emit('fit');
   },
-  select(sel){
-   
+  
+  select(sel){  
     var hit=this.data.find(item => item.id==sel )
     var h=JSON.stringify(hit,null,2)
     this.msg= h
   },
+  
   pageNext(){
-	 this.query.start+= this.query.limit
-	 this.query.from= this.addtime(this.query.from,this.query.mins)
+	 this.query.from= this.addtime(this.query.from,this.query.window)
 	 this.getItems()
   },
+  
   pageBack(){
-	  this.query.start-= this.query.limit
-	  this.query.from = this.addtime(this.query.from,-this.query.mins)
+	  this.query.from = this.addtime(this.query.from,-this.query.window)
 	  this.getItems()
   },
-  addtime(time,mins){
-	  return moment(time,moment.HTML5_FMT.TIME_SECONDS).add(mins,"m").format(moment.HTML5_FMT.TIME_SECONDS) 
+  
+  addtime(time,secs){
+	  var result= moment(time,moment.HTML5_FMT.TIME_SECONDS).add(secs,"s")
+	  var result= moment.max(result,moment("00:00:00",moment.HTML5_FMT.TIME_SECONDS))       
+	  return  result.format(moment.HTML5_FMT.TIME_SECONDS) 
   },
+  
   getItems(){
       this.loading=true
       HTTP.get("logxml", {params:this.query})
       .then(r=>{
-        this.loading=false
-       
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         var items=r.data.items
         //console.log("logxml",items)
@@ -1803,15 +1868,32 @@ methods:{
         	      style: x.text.startsWith("[POST] ")?"background-color: red;": "background-color: yellow;",
         	      group: x.user}
                ))
+        //https://stackoverflow.com/a/39637877/3210344 round(date, moment.duration(15, "minutes"), "ceil")
+        var roundDate= function (date, duration, method) {
+                  return moment(Math[method]((+date) / (+duration)) * (+duration)); 
+        }
+        var start=moment(this.date + "T" + this.query.from)
+        var first=this.data[0]  
+        if(first){     	
+        	first=moment(first.time)
+        	start=roundDate(first,moment.duration(this.query.window, "seconds"), "floor")
+        	//console.log(r.format(moment.HTML5_FMT.TIME_SECONDS))
+        	this.query.from=start.format(moment.HTML5_FMT.TIME_SECONDS)
+        }
+        this.options.start=start.toDate()
+        this.options.end=start.add(this.query.window,"s").toDate()
         //console.log("data",this.data)
+        this.loading=false
         }) 
     }
 },
 watch:{
 	"query":{
 	    handler:function(vnew,vold){
-	      console.log("watch",vnew,vold)
+	      //console.log("watch",this.query)
+	     
 	      this.$router.push({  query: this.query })
+	      if(!this.loading)  this.getItems()
 	      },
 	    deep:true
 	  }
@@ -1980,7 +2062,7 @@ const Log=Vue.extend({template:`
     },
     getItems(){
       this.loading=true
-      HTTP.get("log",{params:this.q})
+      HTTP.get("basex.log",{params:this.q})
       .then(r=>{
         this.loading=false
         //console.log(r.data)
@@ -2014,7 +2096,7 @@ const Documentation=Vue.extend({template:`
     <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="search" hide-default-footer>
 
    <template v-slot:header>
-        <v-toolbar dark color="blue darken-3" class="mb-1">
+        <v-toolbar>
        <v-toolbar-title>XQDocs</v-toolbar-title>
         <v-spacer></v-spacer>
           <v-text-field v-model="search" clearable flat solo-inverted hide-details prepend-inner-icon="search" label="Search"></v-text-field>
@@ -4804,7 +4886,7 @@ const Services=Vue.extend({template:`
   methods:{
     load(){    
         this.loading= true
-        HTTP.get("data/service",{params:{q:this.q}})
+        HTTP.get("data/basex.service",{params:{q:this.q}})
         .then(r=>{
           this.items= r.data.items
           this.loading= false
@@ -4838,7 +4920,7 @@ const Services=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/login/login.vue
 const Login=Vue.extend({template:` 
  <v-container fluid>
-	<v-card>
+	<v-card class="col-md-8 offset-md-2 ">
 	      <v-card-title class="red">
 	        <span class="white--text">The current credentials do the give access this page, please login.</span>
 	      </v-card-title>
@@ -5431,7 +5513,7 @@ const Puzzle=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/repository.vue
 const Repo=Vue.extend({template:` 
  <v-container fluid>
-   <qd-table :headers="headers" data-uri="data/repo" entity="repo" no-data-msg="Nothing found">
+   <qd-table :headers="headers" data-uri="data/basex.repo" entity="repo" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
       <td>
         <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
@@ -6089,14 +6171,14 @@ const Ping=Vue.extend({template:`
   <table class="v-table">
       <thead> 
         <tr>
-         <th xs1>Action</th>
-          <th xs1>Repeat</th>
-          <th xs1>Last</th>
-          <th xs1>Count</th>
-          <th xs1>Avg</th>
-          <th xs1>min</th>
-          <th xs1>max</th>
-          <th xs1>Median</th>
+         <th class="col-md-1">Action</th>
+          <th class="col-md-1">Repeat</th>
+          <th class="col-md-1 text-right">Last</th>
+          <th class="col-md-1 text-right">Count</th>
+          <th class="col-md-1 text-right">Avg</th>
+          <th class="col-md-1 text-right">min</th>
+          <th class="col-md-1 text-right">max</th>
+          <th class="col-md-1 text-right">Median</th>
         </tr>
       </thead>
       <tbody>
@@ -6114,24 +6196,24 @@ const Ping=Vue.extend({template:`
 
              </td>    
               <td>
-                  <span>{{getValues.last}}</span>
+                  <p class="text-right">{{getValues.last}}</p>
               </td>
               <td>
-                  <span>{{getValues.count}}</span>
+                  <p class="text-right">{{getValues.count}}</p>
               </td>   
             
               <td>
-                  <span>{{getValues.avg | round(2)}}</span>
+                  <p class="text-right">{{getValues.avg | round(2)}}</p>
               </td>
             
               <td>
-                  <span>{{getValues.min}}</span>
+                  <p class="text-right">{{getValues.min}}</p>
               </td>
               <td>
-                  <span>{{getValues.max}}</span>
+                  <p class="text-right">{{getValues.max}}</p>
               </td>
                 <td>
-                  <span>{{getValues.median}}</span>
+                  <p class="text-right">{{getValues.median}}</p>
               </td>
           </tr>
           
@@ -6145,27 +6227,25 @@ const Ping=Vue.extend({template:`
           <td>
            <v-switch v-on:change="pchange" v-model="repeat.post"></v-switch>
           </td>
-           <td class="col-md-1">
-                        <span>{{postValues.last}}</span>
-                    </td>
-          <td class="col-md-1">
+           <td class="text-right">
+                <span>{{postValues.last}}</span>
+           </td>
+          <td class="text-right">
             <span>{{postValues.count}}</span>
           </td>
-        
-           
-          <td class="col-md-1">
+                 
+          <td class="text-right">
             <span>{{postValues.avg | round(2)}}</span>
           </td>
           
-         
-          <td class="col-md-1">
-                        <span>{{postValues.min}}</span>
+          <td class="text-right">
+            <span>{{postValues.min}}</span>
           </td>
-          <td class="col-md-1">
+          <td class="text-right">
               <span>{{postValues.max}}</span>
           </td>
-            <td class="col-md-1">
-                        <span>{{postValues.median}}</span>
+            <td class="text-right">
+              <span>{{postValues.median}}</span>
            </td>
         </tr>
       </tbody>
@@ -6371,7 +6451,7 @@ const Acesettings=Vue.extend({template:`
     <v-flex xs12 sm8 offset-sm2>
       <v-card>
        <v-toolbar class="orange">
-        <v-card-title> <qd-breadcrumbs :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Common Ace editor settings', disabled: true }]">crumbs</qd-breadcrumbs></v-card-title>
+        <v-card-title> <qd-breadcrumbs :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Common Ace editor settings.', disabled: true }]">crumbs</qd-breadcrumbs></v-card-title>
         </v-toolbar>
       <v-card-text>
       <v-container fluid>
@@ -6380,10 +6460,10 @@ const Acesettings=Vue.extend({template:`
         <v-layout row>
           
           <v-flex>
-            <v-select v-bind:items="themes" v-model="ace.theme" label="Theme"></v-select>
+            <v-select :disabled="$vuetify.theme.dark" v-bind:items="themes" v-model="ace.theme" label="Theme"></v-select>
           </v-flex>
           <v-flex>
-            <v-select v-bind:items="themesDark" v-model="ace.themeDark" label="Dark Theme"></v-select>
+            <v-select :disabled="!$vuetify.theme.dark" v-bind:items="themesDark" v-model="ace.themeDark" label="Dark Theme"></v-select>
           </v-flex>
         </v-layout>
        
@@ -6409,7 +6489,7 @@ const Acesettings=Vue.extend({template:`
  
         
         <v-list two-line subheader>
-          <v-subheader>Ace editor settings</v-subheader>
+          <v-subheader>Ace editor behaviour</v-subheader>
    
             <v-list-item>
               <v-list-item-action>
@@ -6474,6 +6554,7 @@ const Acesettings=Vue.extend({template:`
       return obj;
     }
   },
+  
    beforeRouteLeave (to, from, next) {
      Settings.setItem('settings/ace',this.ace)
      .then(v=>{
@@ -7156,7 +7237,7 @@ const Thumbnail=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/users/users.vue
 const Users=Vue.extend({template:` 
  <v-container fluid>
-   <qd-table :headers="headers" data-uri="data/user" entity="user" no-data-msg="Nothing found">
+   <qd-table :headers="headers" data-uri="data/basex.user" entity="user" no-data-msg="Nothing found">
     <template slot="items" slot-scope="props">
       <td>
         <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
@@ -7747,8 +7828,7 @@ const Vuepoc=Vue.extend({template:`
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
       {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
-      {href: '/tasks',text: 'Tasks',icon: 'update'},
-      {href: '/logdate',text: 'XML logs',icon: 'dns'},
+      
       {href: '/history/tasks',text: 'history',icon: 'history'}
       ]},
       {
@@ -7759,6 +7839,8 @@ const Vuepoc=Vue.extend({template:`
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
        {href: '/documentation', text: 'Documentation',icon: 'library_books' },
+       {href: '/tasks',text: 'Tasks',icon: 'update'},
+       {href: '/logdate',text: 'XML logs',icon: 'dns'},
        {href: '/history/files',text: 'history',icon: 'history'}
       ]},
       {
@@ -8014,8 +8096,6 @@ return $a   `},
       "edit/query": "todo edit/query"
     },
     
-    
-    
     getItem (key) {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)
@@ -8029,6 +8109,7 @@ return $a   `},
 
       });
     },
+    
     setItem (key,value) {
       if (this.debug) console.log('setItem',key,value);
       return localforage.setItem(key, value) 
@@ -8050,11 +8131,12 @@ return $a   `},
      }).catch(err => {
        console.log('delete failed');
      });
-  },
+    },
+  
     keys(){
       return localforage.keys() // returns array of keys 
- 
   },
+  
   clear(){
     localforage.clear()
   }

@@ -1,18 +1,18 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2019-11-07T11:13:26.624Z 
+ : auto generated from xml files in entities folder at: 2019-12-13T21:11:55.13Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
-import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace xqdoc='http://www.xqdoc.org/1.0';
-declare namespace ent='https://github.com/Quodatum/app-doc/entity';
+import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace ent='https://github.com/Quodatum/app-doc/entity';
 declare namespace h='urn:quodatum:vue-poc.history';
+declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace qns='https://github.com/Quodatum/namespaces';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
 declare variable $entity:list:=map { 
-  "basexjob": map{
-     "name": "basexjob",
-     "description": "A BaseX job",
+  "basex.job": map{
+     "name": "basex.job",
+     "description": "An active BaseX job",
      "access": map{ 
        "duration": function($_ as element()) as xs:string {$_/@duration },
        "id": function($_ as element()) as xs:string {$_/@id },
@@ -84,8 +84,8 @@ declare variable $entity:list:=map {
        'filter': 'name description'
        }
    },
-  "basexlog": map{
-     "name": "basexlog",
+  "basex.log": map{
+     "name": "basex.log",
      "description": "BaseX log entries for today and yesterday from the running server",
      "access": map{ 
        "address": function($_ as element()) as xs:string {$_/@address },
@@ -140,12 +140,119 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        }
    },
+  "basex.repo": map{
+     "name": "basex.repo",
+     "description": "An entry in the basex repository",
+     "access": map{ 
+       "name": function($_ as element()) as xs:string {$_/@name },
+       "type": function($_ as element()) as xs:string {$_/@type },
+       "version": function($_ as element()) as xs:string {$_/@version } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element name {  .} 
+                 },
+           "type": function($_ as element()) as element(type)? {
+            (: xs:string :)
+                        fn:data($_/@type)!element type {  .} 
+                 },
+           "version": function($_ as element()) as element(version)? {
+            (: xs:string :)
+                        fn:data($_/@version)!element version {  .} 
+                 } },
+       
+      "data": function() as element(package)*
+       { repo:list() },
+       
+       "views": map{ 
+       
+       }
+   },
+  "basex.service": map{
+     "name": "basex.service",
+     "description": "basex services a list of all jobs that have been persistently registered as Services.",
+     "access": map{ 
+       "base-uri": function($_ as element()) as xs:string {$_/@base-uri },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "interval": function($_ as element()) as xs:string {$_/@interval },
+       "query": function($_ as element()) as xs:string {$_/. },
+       "running": function($_ as element()) as xs:boolean {$_/(@id = jobs:list-details()/@id) } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "base-uri": function($_ as element()) as element(base-uri)? {
+            (: xs:string :)
+                        fn:data($_/@base-uri)!element base-uri {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "interval": function($_ as element()) as element(interval)? {
+            (: xs:string :)
+                        fn:data($_/@interval)!element interval {  .} 
+                 },
+           "query": function($_ as element()) as element(query)? {
+            (: xs:string :)
+                        fn:data($_/.)!element query {  .} 
+                 },
+           "running": function($_ as element()) as element(running)? {
+            (: xs:boolean :)
+                        fn:data($_/(@id = jobs:list-details()/@id))!element running { attribute type {'boolean'}, .} 
+                 } },
+       
+      "data": function() as element(job)*
+       { jobs:services() },
+       
+       "views": map{ 
+       
+       }
+   },
+  "basex.user": map{
+     "name": "basex.user",
+     "description": "A BaseX user ",
+     "access": map{ 
+       "name": function($_ as element()) as xs:string {$_/@name },
+       "permission": function($_ as element()) as xs:string {$_/@permission } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element name {  .} 
+                 },
+           "permission": function($_ as element()) as element(permission)? {
+            (: xs:string :)
+                        fn:data($_/@permission)!element permission {  .} 
+                 } },
+       
+      "data": function() as element(user)*
+       { user:list-details() },
+       
+       "views": map{ 
+       
+       }
+   },
   "basexlogfile": map{
      "name": "basexlogfile",
-     "description": "saved BaseX log entries in the vue-poc database",
+     "description": "list of saved BaseX log files with entries in the vue-poc database",
      "access": map{ 
-       "date": function($_ as element()) as xs:string {$_/text()!fn:replace(.,".*(\d{4}-\d{2}-\d{2}).*","$1") },
-       "name": function($_ as element()) as xs:string {$_/. } },
+       "date": function($_ as element()) as xs:string {$_/@date },
+       "entries": function($_ as element()) as xs:integer {$_/@entries },
+       "max": function($_ as element()) as xs:integer {$_/@max },
+       "name": function($_ as element()) as xs:string {$_/@file },
+       "perhr": function($_ as element()) as xs:string {$_/@perhr } },
     
      "filter": function($item,$q) as xs:boolean{ 
          some $e in ( ) satisfies
@@ -154,16 +261,42 @@ hof:top-k-by(admin:logs(), string#1, 2)
        "json":   map{ 
            "date": function($_ as element()) as element(date)? {
             (: xs:string :)
-                        fn:data($_/text()!fn:replace(.,".*(\d{4}-\d{2}-\d{2}).*","$1"))!element date {  .} 
+                        fn:data($_/@date)!element date {  .} 
+                 },
+           "entries": function($_ as element()) as element(entries)? {
+            (: xs:integer :)
+                        fn:data($_/@entries)!element entries { attribute type {'number'}, .} 
+                 },
+           "max": function($_ as element()) as element(max)? {
+            (: xs:integer :)
+                        fn:data($_/@max)!element max { attribute type {'number'}, .} 
                  },
            "name": function($_ as element()) as element(name)? {
             (: xs:string :)
-                        fn:data($_/.)!element name {  .} 
+                        fn:data($_/@file)!element name {  .} 
+                 },
+           "perhr": function($_ as element()) as element(perhr)? {
+            (: xs:string :)
+                        fn:data($_/@perhr)!element perhr {  .} 
                  } },
        
-      "data": function() as element(resource)*
+      "data": function() as element(day)*
        { 
-		db:dir("vue-poc","logs")
+		let $hrs:=(0 to 23)!format-number(., "00")
+		for $item in db:dir("vue-poc","logs")
+		let $es:=db:open("vue-poc","logs/" || $item)/entries/entry
+		let $max:=round(max($es/@ms) div 1000)
+		let $times:=(for $e in $es
+		group by $hr:=substring($e/@time,1,2)
+		return map:entry($hr, max($e/@ms)))=>map:merge()
+		let $c:=for $h in $hrs return if(map:contains($times,$h)) then map:get($times,$h) else 0
+		
+		return <day  file="{ $item }"
+			date="{ fn:replace($item,".*(\d{4}-\d{2}-\d{2}).*","$1")}"
+			entries="{ count($es) }" 
+			max="{ $max }" 
+			perhr="{ string-join($c,' ') }" 
+		/>
 	 },
        
        "views": map{ 
@@ -393,11 +526,11 @@ hof:top-k-by(admin:logs(), string#1, 2)
      "description": " log entries in XML format",
      "access": map{ 
        "address": function($_ as element()) as xs:string {$_/@address },
-       "end": function($_ as element()) as xs:string? {$_/self::*[@ms]!(xs:dateTime(concat("2019-01-01",'T',@time))+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S")) },
+       "end": function($_ as element()) as xs:string? {$_/self::*[@ms]!(xs:dateTime(@date)+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S")) },
        "ms": function($_ as element()) as xs:integer {$_/@ms },
        "status": function($_ as element()) as xs:string {$_/@type },
        "text": function($_ as element()) as xs:string {$_/. },
-       "time": function($_ as element()) as xs:string {$_/concat("2019-01-01",'T',@time) },
+       "time": function($_ as element()) as xs:string {$_/@date },
        "user": function($_ as element()) as xs:string {$_/@user } },
     
      "filter": function($item,$q) as xs:boolean{ 
@@ -411,7 +544,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  },
            "end": function($_ as element()) as element(end)? {
             (: xs:string? :)
-                        fn:data($_/self::*[@ms]!(xs:dateTime(concat("2019-01-01",'T',@time))+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S")))!element end {  .} 
+                        fn:data($_/self::*[@ms]!(xs:dateTime(@date)+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S")))!element end {  .} 
                  },
            "ms": function($_ as element()) as element(ms)? {
             (: xs:integer :)
@@ -427,7 +560,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  },
            "time": function($_ as element()) as element(time)? {
             (: xs:string :)
-                        fn:data($_/concat("2019-01-01",'T',@time))!element time {  .} 
+                        fn:data($_/@date)!element time {  .} 
                  },
            "user": function($_ as element()) as element(user)? {
             (: xs:string :)
@@ -436,7 +569,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
       "data": function() as element(entry)*
        { 
-		db:open("vue-poc","/logs/")[1]/entries/entry
+		db:open("vue-poc","/logs/")[1]/entries/entry (: test data  1st doc :)
 	 },
        
        "views": map{ 
@@ -521,39 +654,6 @@ hof:top-k-by(admin:logs(), string#1, 2)
        'filter': 'name description'
        }
    },
-  "repo": map{
-     "name": "repo",
-     "description": "An entry in the basex repository",
-     "access": map{ 
-       "name": function($_ as element()) as xs:string {$_/@name },
-       "type": function($_ as element()) as xs:string {$_/@type },
-       "version": function($_ as element()) as xs:string {$_/@version } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( ) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "name": function($_ as element()) as element(name)? {
-            (: xs:string :)
-                        fn:data($_/@name)!element name {  .} 
-                 },
-           "type": function($_ as element()) as element(type)? {
-            (: xs:string :)
-                        fn:data($_/@type)!element type {  .} 
-                 },
-           "version": function($_ as element()) as element(version)? {
-            (: xs:string :)
-                        fn:data($_/@version)!element version {  .} 
-                 } },
-       
-      "data": function() as element(package)*
-       { repo:list() },
-       
-       "views": map{ 
-       
-       }
-   },
   "search-result": map{
      "name": "search-result",
      "description": "About a search result.",
@@ -587,49 +687,6 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
       "data": function() as element(search)*
        { () },
-       
-       "views": map{ 
-       
-       }
-   },
-  "service": map{
-     "name": "service",
-     "description": "basex services a list of all jobs that have been persistently registered as Services.",
-     "access": map{ 
-       "base-uri": function($_ as element()) as xs:string {$_/@base-uri },
-       "id": function($_ as element()) as xs:string {$_/@id },
-       "interval": function($_ as element()) as xs:string {$_/@interval },
-       "query": function($_ as element()) as xs:string {$_/. },
-       "running": function($_ as element()) as xs:boolean {$_/(@id = jobs:list-details()/@id) } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( ) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "base-uri": function($_ as element()) as element(base-uri)? {
-            (: xs:string :)
-                        fn:data($_/@base-uri)!element base-uri {  .} 
-                 },
-           "id": function($_ as element()) as element(id)? {
-            (: xs:string :)
-                        fn:data($_/@id)!element id {  .} 
-                 },
-           "interval": function($_ as element()) as element(interval)? {
-            (: xs:string :)
-                        fn:data($_/@interval)!element interval {  .} 
-                 },
-           "query": function($_ as element()) as element(query)? {
-            (: xs:string :)
-                        fn:data($_/.)!element query {  .} 
-                 },
-           "running": function($_ as element()) as element(running)? {
-            (: xs:boolean :)
-                        fn:data($_/(@id = jobs:list-details()/@id))!element running { attribute type {'boolean'}, .} 
-                 } },
-       
-      "data": function() as element(job)*
-       { jobs:services() },
        
        "views": map{ 
        
@@ -772,34 +829,6 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        "views": map{ 
        'filter': 'name'
-       }
-   },
-  "user": map{
-     "name": "user",
-     "description": "A BaseX user ",
-     "access": map{ 
-       "name": function($_ as element()) as xs:string {$_/@name },
-       "permission": function($_ as element()) as xs:string {$_/@permission } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( ) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "name": function($_ as element()) as element(name)? {
-            (: xs:string :)
-                        fn:data($_/@name)!element name {  .} 
-                 },
-           "permission": function($_ as element()) as element(permission)? {
-            (: xs:string :)
-                        fn:data($_/@permission)!element permission {  .} 
-                 } },
-       
-      "data": function() as element(user)*
-       { user:list-details() },
-       
-       "views": map{ 
-       
        }
    },
   "xqdoc": map{

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <template id="login">
  <v-container fluid>
-	<v-card >
+	<v-card class="col-md-8 offset-md-2 ">
 	      <v-card-title class="red">
 	        <span class="white--text">The current credentials do the give access this page, please login.</span>
 	      </v-card-title>

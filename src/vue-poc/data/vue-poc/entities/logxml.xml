@@ -4,11 +4,11 @@
 	<fields>
 		<field name="time" type="xs:string">
 			<description>time of event</description>
-			<xpath>concat("2019-01-01",'T',@time)</xpath>
+			<xpath>@date</xpath>
 		</field>
 		<field name="end" type="xs:string?">
 			<description>end time of event</description>
-			<xpath>self::*[@ms]!(xs:dateTime(concat("2019-01-01",'T',@time))+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S"))</xpath>
+			<xpath>self::*[@ms]!(xs:dateTime(@date)+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S"))</xpath>
 		</field>
 		<field name="address" type="xs:string">
 			<description>IP address</description>
@@ -34,6 +34,6 @@
 	<views iconclass="calendar_today"/>
 
 	<data type="element(entry)">
-		db:open("vue-poc","/logs/")[1]/entries/entry
+		db:open("vue-poc","/logs/")[1]/entries/entry (: test data  1st doc :)
 	</data>
 </entity>

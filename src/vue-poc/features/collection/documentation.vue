@@ -9,11 +9,7 @@
     >
 
    <template v-slot:header>
-        <v-toolbar
-          dark
-          color="blue darken-3"
-          class="mb-1"
-        >
+        <v-toolbar>
        <v-toolbar-title>XQDocs</v-toolbar-title>
         <v-spacer></v-spacer>
           <v-text-field

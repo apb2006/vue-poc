@@ -57,11 +57,14 @@ event fired cmd outline
     },
     "settings":{
       handler:function(vnew,vold){
+        //console.log("aCe settings:",vnew,this)
         this.applySettings(vnew)
-       // alert("setting")
         },
       deep:true
-    }
+    },
+ 
+    // whenever theme changes, this function will run
+    "$vuetify.theme.dark": function (newState) {this.setTheme()}
   },
   methods:{
 
@@ -109,10 +112,7 @@ event fired cmd outline
     }
   },
   
-  watch: {
-	    // whenever theme changes, this function will run
-	    "$vuetify.theme.dark": function (newState) {this.setTheme()}
-  },
+ 
 	  
   mounted () {
     const mode = this.mode || 'text'

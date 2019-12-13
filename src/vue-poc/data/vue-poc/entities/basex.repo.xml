@@ -1,4 +1,4 @@
-<entity name="repo" xmlns="https://github.com/Quodatum/app-doc/entity">
+<entity name="basex.repo" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>An entry in the basex repository</description>
 
 	<fields>

@@ -5,13 +5,18 @@
 <template id="basexlogdate1">
  <v-container fluid>
  <v-card>
- <v-toolbar class="lime darken-1">
+ <v-toolbar >
 	 <v-card-title >
 	 <qd-breadcrumbs @todo="showmenu= ! showmenu" 
          :crumbs="[{to: '/logdate', text:'log files'}, {text: date, disabled: false, menu: 'todo'}]"
          >crumbs</qd-breadcrumbs> 
 	 </v-card-title>
-	
+	  <v-btn @click="pageBack()"  icon> 
+		<v-avatar><v-icon>skip_previous</v-icon> </v-avatar> 
+	  </v-btn> 
+	   <v-btn @click="pageNext()" icon>
+		  <v-avatar> <v-icon>skip_next</v-icon> </v-avatar> 
+		</v-btn> 	 
 	  <v-menu
         ref="menu"
         v-model="showFrom"
@@ -39,24 +44,29 @@
           @click:second="$refs.menu.save(query.from)"
         ></v-time-picker>
       </v-menu>
-	  <v-toolbar-items>
-		  <v-text-field  type="number" v-model.number="query.start"  label="start" > </v-text-field>
-		   <v-text-field  type="number" v-model.number="query.limit"  label="limit" > </v-text-field> 
-      </v-toolbar-items>
-     
+    
+		   <qd-range :query="query"></qd-range>     
 	 <v-spacer></v-spacer> 
 	 <v-toolbar-items> 
 	 <v-btn @click="fit">fit</v-btn> 
 	<v-btn @click="getItems">
 	     <v-avatar><v-icon>refresh</v-icon></v-avatar>
 	     </v-btn> 
-	<v-btn @click="pageBack()" :disabled="query.start==1" icon> 
-		<v-avatar><v-icon>arrow_back</v-icon> </v-avatar> 
-	</v-btn> 
-   <v-btn @click="pageNext()" icon>
-	  <v-avatar> <v-icon>arrow_forward</v-icon> </v-avatar> 
-	</v-btn> 
+	
    </v-toolbar-items>
+    <v-menu bottom  left >
+	       <template v-slot:activator="{ on }">
+	         <v-btn icon v-on="on" >
+              <v-icon>more_vert</v-icon>
+            </v-btn>
+           </template>
+             <v-list>
+              <v-list-item  >
+                <v-list-item-title> <qd-range :query="query"></qd-range></v-list-item-title>
+              </v-list-item>
+            </v-list>
+      </v-menu>
+                
 	 </v-toolbar>
 	 
 	 <v-card-text>
@@ -82,7 +92,7 @@
     	  timeAxis: {scale: 'minute', step: 1}
       },
       data:[],
-    query:{name: "2019-09-23", start: 1, limit:30, from:"00:00:00", mins:10},
+    query:{date: this.date, start: 1, limit:30, from:"00:00:00", window:600},
     showmenu: false,
     Events: new Vue({}),
     msg:"Select an entry",
@@ -94,31 +104,33 @@ methods:{
   fit(){
     this.Events.$emit('fit');
   },
-  select(sel){
-   
+  
+  select(sel){  
     var hit=this.data.find(item => item.id==sel )
     var h=JSON.stringify(hit,null,2)
     this.msg= h
   },
+  
   pageNext(){
-	 this.query.start+= this.query.limit
-	 this.query.from= this.addtime(this.query.from,this.query.mins)
+	 this.query.from= this.addtime(this.query.from,this.query.window)
 	 this.getItems()
   },
+  
   pageBack(){
-	  this.query.start-= this.query.limit
-	  this.query.from = this.addtime(this.query.from,-this.query.mins)
+	  this.query.from = this.addtime(this.query.from,-this.query.window)
 	  this.getItems()
   },
-  addtime(time,mins){
-	  return moment(time,moment.HTML5_FMT.TIME_SECONDS).add(mins,"m").format(moment.HTML5_FMT.TIME_SECONDS) 
+  
+  addtime(time,secs){
+	  var result= moment(time,moment.HTML5_FMT.TIME_SECONDS).add(secs,"s")
+	  var result= moment.max(result,moment("00:00:00",moment.HTML5_FMT.TIME_SECONDS))       
+	  return  result.format(moment.HTML5_FMT.TIME_SECONDS) 
   },
+  
   getItems(){
       this.loading=true
       HTTP.get("logxml", {params:this.query})
       .then(r=>{
-        this.loading=false
-       
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         var items=r.data.items
         //console.log("logxml",items)
@@ -130,15 +142,32 @@ methods:{
         	      style: x.text.startsWith("[POST] ")?"background-color: red;": "background-color: yellow;",
         	      group: x.user}
                ))
+        //https://stackoverflow.com/a/39637877/3210344 round(date, moment.duration(15, "minutes"), "ceil")
+        var roundDate= function (date, duration, method) {
+                  return moment(Math[method]((+date) / (+duration)) * (+duration)); 
+        }
+        var start=moment(this.date + "T" + this.query.from)
+        var first=this.data[0]  
+        if(first){     	
+        	first=moment(first.time)
+        	start=roundDate(first,moment.duration(this.query.window, "seconds"), "floor")
+        	//console.log(r.format(moment.HTML5_FMT.TIME_SECONDS))
+        	this.query.from=start.format(moment.HTML5_FMT.TIME_SECONDS)
+        }
+        this.options.start=start.toDate()
+        this.options.end=start.add(this.query.window,"s").toDate()
         //console.log("data",this.data)
+        this.loading=false
         }) 
     }
 },
 watch:{
 	"query":{
 	    handler:function(vnew,vold){
-	      console.log("watch",vnew,vold)
+	      //console.log("watch",this.query)
+	     
 	      this.$router.push({  query: this.query })
+	      if(!this.loading)  this.getItems()
 	      },
 	    deep:true
 	  }

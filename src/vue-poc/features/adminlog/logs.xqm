@@ -24,17 +24,18 @@ as element(json)
  :)
 declare  
 %rest:GET %rest:path("/vue-poc/api/logxml")
-%rest:query-param("from", "{ $from }")
-%rest:query-param("name", "{ $name }")
-%rest:query-param("mins", "{ $mins }")
+%rest:query-param("from", "{ $time }")
+%rest:query-param("date", "{ $date }")
+%rest:query-param("window", "{ $window }")
 %output:method("json")   
-function j:archive( $name,$from,$mins)
+function j:archive( $date as xs:string,$time as xs:string,$window)
 as element(json)
 {
- let $_:=trace($from,"from: ")
- let $entity:=$entity:list("logxml")
- let $items:=db:open("vue-poc","/logs/")/entries[contains(db:path(.),$name)]/entry
- (: let $items:= if ($from) then $items[true()] else $items :)
+ let $start:=xs:dateTime(concat($date,"T",$time))
+ let $items:=db:open("vue-poc","/logs/")[contains(base-uri(),$date)]/entries/entry
+ let $items:=$items transform with { insert node attribute date { concat($date,'T',@time) } into .}
+ let $items:= if ($time) then $items[xs:dateTime(@date) ge $start] else $items
+  let $entity:=$entity:list("logxml")
  return dice:response($items,$entity,web:dice())
 };
 

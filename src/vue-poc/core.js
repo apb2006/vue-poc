@@ -100,8 +100,6 @@ return $a   `},
       "edit/query": "todo edit/query"
     },
     
-    
-    
     getItem (key) {
       if (this.debug) console.log('getItem',key);
       return localforage.getItem(key)
@@ -115,6 +113,7 @@ return $a   `},
 
       });
     },
+    
     setItem (key,value) {
       if (this.debug) console.log('setItem',key,value);
       return localforage.setItem(key, value) 
@@ -136,11 +135,12 @@ return $a   `},
      }).catch(err => {
        console.log('delete failed');
      });
-  },
+    },
+  
     keys(){
       return localforage.keys() // returns array of keys 
- 
   },
+  
   clear(){
     localforage.clear()
   }

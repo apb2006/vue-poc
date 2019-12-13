@@ -151,8 +151,7 @@
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
       {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
-      {href: '/tasks',text: 'Tasks',icon: 'update'},
-      {href: '/logdate',text: 'XML logs',icon: 'dns'},
+      
       {href: '/history/tasks',text: 'history',icon: 'history'}
       ]},
       {
@@ -163,6 +162,8 @@
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
        {href: '/documentation', text: 'Documentation',icon: 'library_books' },
+       {href: '/tasks',text: 'Tasks',icon: 'update'},
+       {href: '/logdate',text: 'XML logs',icon: 'dns'},
        {href: '/history/files',text: 'history',icon: 'history'}
       ]},
       {

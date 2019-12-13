@@ -7,7 +7,7 @@
       <v-card>
        <v-toolbar class="orange">
         <v-card-title  > <qd-breadcrumbs 
-         :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Common Ace editor settings', disabled: true }]"
+         :crumbs="[{to: '/settings', text:'Settings'}, {text: 'Common Ace editor settings.', disabled: true }]"
          >crumbs</qd-breadcrumbs></v-card-title>
         </v-toolbar>
       <v-card-text>
@@ -17,14 +17,15 @@
         <v-layout row >
           
           <v-flex >
-            <v-select
+            <v-select 
+             :disabled= "$vuetify.theme.dark"
               v-bind:items="themes"
               v-model="ace.theme"
               label="Theme"
             ></v-select>
           </v-flex>
           <v-flex >
-            <v-select
+            <v-select   :disabled= "!$vuetify.theme.dark"
               v-bind:items="themesDark"
               v-model="ace.themeDark"
               label="Dark Theme"
@@ -61,7 +62,7 @@
  
         
         <v-list two-line subheader>
-          <v-subheader>Ace editor settings</v-subheader>
+          <v-subheader>Ace editor behaviour</v-subheader>
    
             <v-list-item >
               <v-list-item-action>
@@ -127,6 +128,7 @@
       return obj;
     }
   },
+  
    beforeRouteLeave (to, from, next) {
      Settings.setItem('settings/ace',this.ace)
      .then(v=>{
