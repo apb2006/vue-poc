@@ -11,12 +11,7 @@
          :crumbs="[{to: '/logdate', text:'log files'}, {text: date, disabled: false, menu: 'todo'}]"
          >crumbs</qd-breadcrumbs> 
 	 </v-card-title>
-	  <v-btn @click="pageBack()"  icon> 
-		<v-avatar><v-icon>skip_previous</v-icon> </v-avatar> 
-	  </v-btn> 
-	   <v-btn @click="pageNext()" icon>
-		  <v-avatar> <v-icon>skip_next</v-icon> </v-avatar> 
-		</v-btn> 	 
+	
 	  <v-menu
         ref="menu"
         v-model="showFrom"
@@ -35,19 +30,27 @@
             prepend-icon="access_time"
             readonly
             v-on="on"
+            class="mt-3"
           ></v-text-field>
         </template>
         <v-time-picker
           v-if="showFrom"
           v-model="query.from"
-          full-width use-seconds 
-          @click:second="$refs.menu.save(query.from)"
+          use-seconds 
+          @click:second="$refs.menu.save(query.from)"       
         ></v-time-picker>
       </v-menu>
-    
-		   <qd-range :query="query"></qd-range>     
-	 <v-spacer></v-spacer> 
-	 <v-toolbar-items> 
+   <v-toolbar-items>
+	   <v-btn @click="pageBack()"  icon> 
+		<v-avatar><v-icon>skip_previous</v-icon> </v-avatar> 
+	  </v-btn> 
+	   <v-btn @click="pageNext()" icon title="increment From by window">
+		  <v-avatar> <v-icon>skip_next</v-icon> </v-avatar> 
+		</v-btn>
+		</v-toolbar-items>	 
+	 <v-spacer></v-spacer>
+	  <qd-range :query="query"></qd-range>     
+	 <v-toolbar-items>
 	 <v-btn @click="fit">fit</v-btn> 
 	<v-btn @click="getItems">
 	     <v-avatar><v-icon>refresh</v-icon></v-avatar>
@@ -136,12 +139,14 @@ methods:{
         //console.log("logxml",items)
         // {id: 4, content: 'item 4', start: '2014-04-16', end: '2014-04-19', type: 'point'}
         this.data=items.map(x=>Object.assign({}, x, 
-        		{ start: x.time,
+        		{
         	      content: x.text.split(";",1)[0],
         	      title: x.text,
         	      style: x.text.startsWith("[POST] ")?"background-color: red;": "background-color: yellow;",
         	      group: x.user}
                ))
+        this.loading=false
+        return;
         //https://stackoverflow.com/a/39637877/3210344 round(date, moment.duration(15, "minutes"), "ceil")
         var roundDate= function (date, duration, method) {
                   return moment(Math[method]((+date) / (+duration)) * (+duration)); 
@@ -157,7 +162,7 @@ methods:{
         this.options.start=start.toDate()
         this.options.end=start.add(this.query.window,"s").toDate()
         //console.log("data",this.data)
-        this.loading=false
+        
         }) 
     }
 },
@@ -173,10 +178,13 @@ watch:{
 	  }
 },
 created(){
-  console.log("logxml: ",this.$route.query)
+  
   this.query=Object.assign(this.query,this.$route.query)
   this.query.start=Number(this.query.start)
   this.query.limit=Number(this.query.limit)
+  console.log("basexlogdate1 query: ",this.$route.query)
+  var v= this.query.from.match(/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/)
+  this.query.from= v? this.query.from : "00:00:00"
   this.getItems();
 }
 }</script>

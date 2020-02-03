@@ -69,7 +69,8 @@ const router = new VueRouter({
     ,children: [
       {
         path: '',
-        component: Settings, meta:{title:"Settings ***", requiresAuth:true }
+        component: Settings, 
+        meta:{title:"Settings ***", requiresAuth:true }
       },
       { 
         path: 'logs', name:"logs",
@@ -110,6 +111,7 @@ const router = new VueRouter({
       { path: 'tree2', component: Tree2, meta:{title:"tree2"} },
       { path: 'form', component: Brutusin, meta:{title:"Form demo"} },
       { path: 'websocket', component: Websocket,meta:{title:"Web socket"} },
+      { path: 'markdown', component: Markdown,meta:{title:"Markdown"} },
       ]
     },
     

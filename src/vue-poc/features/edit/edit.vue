@@ -119,14 +119,14 @@
       </v-btn>
      </template>
           <v-list dense>
-               <v-list-item @click="acecmd('showSettingsMenu')" avatar >
+               <v-list-item @click="acecmd('showSettingsMenu')"  >
                <v-list-item-avatar>
               <v-icon >settings</v-icon>
             </v-list-item-avatar>
               <v-list-item-title @click="acecmd('showSettingsMenu')" >Show ACE settings</v-list-item-title>
             </v-list-item>
                       
-            <v-list-item @click="acecmd('showKeyboardShortcuts')" avatar>
+            <v-list-item @click="acecmd('showKeyboardShortcuts')">
               <v-list-item-avatar>
               <v-icon >keyboard</v-icon>
             </v-list-item-avatar>

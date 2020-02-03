@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2019-12-13T21:11:55.13Z 
+ : auto generated from xml files in entities folder at: 2020-01-29T22:51:17.628Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -526,11 +526,12 @@ hof:top-k-by(admin:logs(), string#1, 2)
      "description": " log entries in XML format",
      "access": map{ 
        "address": function($_ as element()) as xs:string {$_/@address },
-       "end": function($_ as element()) as xs:string? {$_/self::*[@ms]!(xs:dateTime(@date)+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S")) },
+       "end": function($_ as element()) as xs:string? {$_/@end },
        "ms": function($_ as element()) as xs:integer {$_/@ms },
+       "start": function($_ as element()) as xs:string {$_/@start },
        "status": function($_ as element()) as xs:string {$_/@type },
        "text": function($_ as element()) as xs:string {$_/. },
-       "time": function($_ as element()) as xs:string {$_/@date },
+       "time": function($_ as element()) as xs:string {$_/@time },
        "user": function($_ as element()) as xs:string {$_/@user } },
     
      "filter": function($item,$q) as xs:boolean{ 
@@ -544,11 +545,15 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  },
            "end": function($_ as element()) as element(end)? {
             (: xs:string? :)
-                        fn:data($_/self::*[@ms]!(xs:dateTime(@date)+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S")))!element end {  .} 
+                        fn:data($_/@end)!element end {  .} 
                  },
            "ms": function($_ as element()) as element(ms)? {
             (: xs:integer :)
                         fn:data($_/@ms)!element ms { attribute type {'number'}, .} 
+                 },
+           "start": function($_ as element()) as element(start)? {
+            (: xs:string :)
+                        fn:data($_/@start)!element start {  .} 
                  },
            "status": function($_ as element()) as element(status)? {
             (: xs:string :)
@@ -560,7 +565,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  },
            "time": function($_ as element()) as element(time)? {
             (: xs:string :)
-                        fn:data($_/@date)!element time {  .} 
+                        fn:data($_/@time)!element time {  .} 
                  },
            "user": function($_ as element()) as element(user)? {
             (: xs:string :)

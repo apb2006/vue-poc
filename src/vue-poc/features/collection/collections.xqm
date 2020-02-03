@@ -41,9 +41,11 @@ function vue-api:xqdoc( )
 };
 
 (:~
- : Returns folder info.
- : @param $url location 
- : @param $protocol 'file' or 'xmldb'
+ : Returns contents of a collection. example calls  
+ :   <code>/vue-poc/api/collection?url=/&protocol=xmldb</code>
+ :   <code>/vue-poc/api/collection?url=/</code>
+ : @param $url collection identifier, a path 
+ : @param $protocol 'webfile' or 'xmldb'
  :)
 declare
 %rest:GET %rest:path("/vue-poc/api/collection")

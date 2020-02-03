@@ -31,8 +31,8 @@
      :search="q"
     class="elevation-1"
   >
-    <template v-slot:item.title="{ item }" > 
-	      <td ><router-link :to="'tasks/' + item.to" v-text="item.title"></router-link></td>
+    <template v-slot:item.to="{ item }" > 
+	      <td ><router-link :to="'tasks/' + item.to" v-text="item.to"></router-link></td>
     </template>
     
     <template slot="no-data">

@@ -75,5 +75,15 @@
     return { 
       fab: false
   }
+  },
+  methods:{
+	  refresh(){
+	      HTTP.get("package.json")
+	      .then(r=>{
+	        console.log("status",r)
+	       
+	        //this.$forceUpdate()
+	      })  
+	    },
   }
 }</script>

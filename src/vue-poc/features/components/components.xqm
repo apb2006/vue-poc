@@ -43,3 +43,14 @@ return
 </json>
 };
 
+(:~
+ :  sample markdown
+ :)
+declare  
+%rest:GET %rest:path("/vue-poc/api/components/markdown")  
+function j:markdown()
+as xs:string
+{
+let $uri:=resolve-uri("md-sample.md",static-base-uri())
+return fn:unparsed-text($uri)
+};

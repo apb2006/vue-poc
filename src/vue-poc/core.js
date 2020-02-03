@@ -195,5 +195,5 @@ var sockhost=('https:'==window.location.protocol?'wss:':'ws:')+'//'+ window.loca
 //Vue.use({ install: install });
 var EditTabs=new Vue(GEditTabs)
 Vue.use(Vuetify);
-
+Vue.use(VueMarkdown);
 new Vuepoc().$mount('#app')

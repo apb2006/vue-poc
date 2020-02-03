@@ -229,6 +229,7 @@
       {href: '/labs/tree',text: 'Tree',icon: 'nature'},
       {href: '/labs/tree2',text: 'Tree 2',icon: 'nature'},
       {href: '/labs/websocket',text: 'Web socket',icon: 'swap_calls'},
+      {href: '/labs/markdown',text: 'Markdown',icon: 'receipt'},
       ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
       {href: '/about',text: 'About (v0.3.2)' , icon: 'help'    }, 

@@ -1,4 +1,4 @@
-// generated 2019-12-13T23:01:01.285Z
+// generated 2020-02-02T23:23:08.774Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -792,6 +792,10 @@ Vue.component('vp-paramform',{template:`
   <v-card>
      <v-toolbar color="blue lighten-3" dense>
        <v-card-title>{{ description }}</v-card-title>
+       <v-spacer></v-spacer>
+          <router-link :to="{name:'edit', query:{url: url}}">
+            <v-icon :title="url">history</v-icon>{{ name }}
+          </router-link>
     </v-toolbar>
     <v-card-text>
        <v-form ref="form" lazy-validation>
@@ -815,7 +819,7 @@ Vue.component('vp-paramform',{template:`
                </v-layout> 
               </v-layout>
             </v-form>
-             <div :title="url">{{ url }} {{ updating }}</div>
+           
        </v-card-text>
            <v-card-actions>
               <v-btn @click="clear()" id="btn-clear">Clear</v-btn>
@@ -868,6 +872,11 @@ Vue.component('vp-paramform',{template:`
      valid(){
        return this.$refs.form.validate()
      }
+  },
+  computed: {
+	  name(){
+	   return this.url && this.url.substring(this.url.lastIndexOf('/') + 1)
+	  }
   },
   watch:{
 	 params(vold,vnew) {
@@ -1634,6 +1643,16 @@ const About=Vue.extend({template:`
     return { 
       fab: false
   }
+  },
+  methods:{
+	  refresh(){
+	      HTTP.get("package.json")
+	      .then(r=>{
+	        console.log("status",r)
+	       
+	        //this.$forceUpdate()
+	      })  
+	    },
   }
 }
       );
@@ -1760,22 +1779,24 @@ const Basexlogdate1=Vue.extend({template:`
 	 <v-card-title>
 	 <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/logdate', text:'log files'}, {text: date, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
 	 </v-card-title>
-	  <v-btn @click="pageBack()" icon> 
-		<v-avatar><v-icon>skip_previous</v-icon> </v-avatar> 
-	  </v-btn> 
-	   <v-btn @click="pageNext()" icon>
-		  <v-avatar> <v-icon>skip_next</v-icon> </v-avatar> 
-		</v-btn> 	 
+	
 	  <v-menu ref="menu" v-model="showFrom" :close-on-content-click="false" :nudge-right="40" :return-value.sync="query.from" transition="scale-transition" offset-y max-width="290px" min-width="100px">
         <template v-slot:activator="{ on }">
-          <v-text-field v-model="query.from" label="Start time" prepend-icon="access_time" readonly v-on="on"></v-text-field>
+          <v-text-field v-model="query.from" label="Start time" prepend-icon="access_time" readonly v-on="on" class="mt-3"></v-text-field>
         </template>
-        <v-time-picker v-if="showFrom" v-model="query.from" full-width use-seconds @click:second="$refs.menu.save(query.from)"></v-time-picker>
+        <v-time-picker v-if="showFrom" v-model="query.from" use-seconds @click:second="$refs.menu.save(query.from)"></v-time-picker>
       </v-menu>
-    
-		   <qd-range :query="query"></qd-range>     
-	 <v-spacer></v-spacer> 
-	 <v-toolbar-items> 
+   <v-toolbar-items>
+	   <v-btn @click="pageBack()" icon> 
+		<v-avatar><v-icon>skip_previous</v-icon> </v-avatar> 
+	  </v-btn> 
+	   <v-btn @click="pageNext()" icon title="increment From by window">
+		  <v-avatar> <v-icon>skip_next</v-icon> </v-avatar> 
+		</v-btn>
+		</v-toolbar-items>	 
+	 <v-spacer></v-spacer>
+	  <qd-range :query="query"></qd-range>     
+	 <v-toolbar-items>
 	 <v-btn @click="fit">fit</v-btn> 
 	<v-btn @click="getItems">
 	     <v-avatar><v-icon>refresh</v-icon></v-avatar>
@@ -1862,12 +1883,14 @@ methods:{
         //console.log("logxml",items)
         // {id: 4, content: 'item 4', start: '2014-04-16', end: '2014-04-19', type: 'point'}
         this.data=items.map(x=>Object.assign({}, x, 
-        		{ start: x.time,
+        		{
         	      content: x.text.split(";",1)[0],
         	      title: x.text,
         	      style: x.text.startsWith("[POST] ")?"background-color: red;": "background-color: yellow;",
         	      group: x.user}
                ))
+        this.loading=false
+        return;
         //https://stackoverflow.com/a/39637877/3210344 round(date, moment.duration(15, "minutes"), "ceil")
         var roundDate= function (date, duration, method) {
                   return moment(Math[method]((+date) / (+duration)) * (+duration)); 
@@ -1883,7 +1906,7 @@ methods:{
         this.options.start=start.toDate()
         this.options.end=start.add(this.query.window,"s").toDate()
         //console.log("data",this.data)
-        this.loading=false
+        
         }) 
     }
 },
@@ -1899,10 +1922,13 @@ watch:{
 	  }
 },
 created(){
-  console.log("logxml: ",this.$route.query)
+  
   this.query=Object.assign(this.query,this.$route.query)
   this.query.start=Number(this.query.start)
   this.query.limit=Number(this.query.limit)
+  console.log("basexlogdate1 query: ",this.$route.query)
+  var v= this.query.from.match(/^(?:(?:([01]?\d|2[0-3]):)?([0-5]?\d):)?([0-5]?\d)$/)
+  this.query.from= v? this.query.from : "00:00:00"
   this.getItems();
 }
 }
@@ -2450,6 +2476,85 @@ const Files=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/markdown.vue
+const Markdown=Vue.extend({template:` 
+ <v-container fluid>
+ <v-card>
+ <v-toolbar class="lime darken-1">
+	 <v-card-title>Markdown</v-card-title>
+	 <v-checkbox v-model="show" label="show"></v-checkbox>
+	 <v-checkbox v-model="html" label="html"></v-checkbox>
+	 <v-checkbox v-model="breaks" label="breaks"></v-checkbox>
+	  <v-checkbox v-model="linkify" label="linkify"></v-checkbox>
+	  <v-checkbox v-model="emoji" label="emoji"></v-checkbox>
+	   <v-checkbox v-model="typographer" label="typographer"></v-checkbox>
+	   <v-checkbox v-model="toc" label="toc"></v-checkbox>
+	 <v-spacer></v-spacer>
+	    <qd-link href="https://github.com/miaolz123/vue-markdown">vue-markdown@2.2.4</qd-link>
+	 </v-toolbar>
+	 <v-card-text>
+	       <div id="toc"></div>
+<vue-markdown :watches="['show','html','breaks','linkify','emoji','typographer','toc']" :source="source" :show="show" :html="html" :breaks="breaks" :linkify="linkify" :emoji="emoji" :typographer="typographer" :toc="toc" v-on:rendered="allRight" v-on:toc-rendered="tocAllRight" toc-id="toc">&gt;# h1 Heading 8-)
+## level 2
+### h3 Heading
+
+## Horizontal Rules
+
+___
+
+---
+
+***
+
+## Typographic replacements
+
+Enable typographer option to see result.
+
+(c) (C) (r) (R) (tm) (TM) (p) (P) +-
+</vue-markdown>
+	 </v-card-text>
+ </v-card>
+  
+ </v-container>
+ `,
+      
+	data(){
+	    return { 
+	        source: "",
+	        show: true,
+	        html: false,
+	        breaks: true,
+	        linkify: false,
+	        emoji: true,
+	        typographer: true,
+	        toc: false
+	      }
+	    },
+	      methods: {
+	          allRight: function (htmlStr) {
+	            console.log("markdown is parsed !");
+	          },
+	          tocAllRight: function (tocHtmlStr) {
+	            console.log("toc is parsed :", tocHtmlStr);
+	          }
+	        },    
+	created:function(){	
+
+		    HTTP.get("components/markdown")
+		    .then(r=>{      
+		          console.log("data::::",r.data);
+		          this.source=r.data;
+		          })
+		    .catch(err=> {
+		            console.log(err);
+		            alert("Get query error")
+		          });
+		    
+		    console.log("loaded markdown:");
+		    } 
+}
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/svg.vue
 const Svg=Vue.extend({template:` 
  <v-container fluid>
@@ -2901,14 +3006,14 @@ const Edit=Vue.extend({template:`
       </v-btn>
      </template>
           <v-list dense>
-               <v-list-item @click="acecmd('showSettingsMenu')" avatar>
+               <v-list-item @click="acecmd('showSettingsMenu')">
                <v-list-item-avatar>
               <v-icon>settings</v-icon>
             </v-list-item-avatar>
               <v-list-item-title @click="acecmd('showSettingsMenu')">Show ACE settings</v-list-item-title>
             </v-list-item>
                       
-            <v-list-item @click="acecmd('showKeyboardShortcuts')" avatar>
+            <v-list-item @click="acecmd('showKeyboardShortcuts')">
               <v-list-item-avatar>
               <v-icon>keyboard</v-icon>
             </v-list-item-avatar>
@@ -6912,8 +7017,8 @@ const Tasks=Vue.extend({template:`
    
    <v-card-text>
     <v-data-table :headers="headers" :items="items" hide-default-footer :search="q" class="elevation-1">
-    <template v-slot:item.title="{ item }"> 
-	      <td><router-link :to="'tasks/' + item.to" v-text="item.title"></router-link></td>
+    <template v-slot:item.to="{ item }"> 
+	      <td><router-link :to="'tasks/' + item.to" v-text="item.to"></router-link></td>
     </template>
     
     <template slot="no-data">
@@ -7594,7 +7699,8 @@ const router = new VueRouter({
     ,children: [
       {
         path: '',
-        component: Settings, meta:{title:"Settings ***", requiresAuth:true }
+        component: Settings, 
+        meta:{title:"Settings ***", requiresAuth:true }
       },
       { 
         path: 'logs', name:"logs",
@@ -7635,6 +7741,7 @@ const router = new VueRouter({
       { path: 'tree2', component: Tree2, meta:{title:"tree2"} },
       { path: 'form', component: Brutusin, meta:{title:"Form demo"} },
       { path: 'websocket', component: Websocket,meta:{title:"Web socket"} },
+      { path: 'markdown', component: Markdown,meta:{title:"Markdown"} },
       ]
     },
     
@@ -7906,6 +8013,7 @@ const Vuepoc=Vue.extend({template:`
       {href: '/labs/tree',text: 'Tree',icon: 'nature'},
       {href: '/labs/tree2',text: 'Tree 2',icon: 'nature'},
       {href: '/labs/websocket',text: 'Web socket',icon: 'swap_calls'},
+      {href: '/labs/markdown',text: 'Markdown',icon: 'receipt'},
       ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
       {href: '/about',text: 'About (v0.3.2)' , icon: 'help'    }, 
@@ -8191,6 +8299,6 @@ var sockhost=('https:'==window.location.protocol?'wss:':'ws:')+'//'+ window.loca
 //Vue.use({ install: install });
 var EditTabs=new Vue(GEditTabs)
 Vue.use(Vuetify);
-
+Vue.use(VueMarkdown);
 new Vuepoc().$mount('#app')
 

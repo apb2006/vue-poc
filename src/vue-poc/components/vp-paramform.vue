@@ -7,6 +7,10 @@
   <v-card >
      <v-toolbar  color="blue lighten-3"  dense>
        <v-card-title >{{ description }}</v-card-title>
+       <v-spacer></v-spacer>
+          <router-link :to="{name:'edit', query:{url: url}}">
+            <v-icon :title="url">history</v-icon>{{ name }}
+          </router-link>
     </v-toolbar>
     <v-card-text>
        <v-form ref="form"  lazy-validation>
@@ -37,7 +41,7 @@
                </v-layout> 
               </v-layout>
             </v-form>
-             <div :title="url">{{ url }} {{ updating }}</div>
+           
        </v-card-text>
            <v-card-actions>
               <v-btn  @click="clear()" id="btn-clear"
@@ -94,6 +98,11 @@
      valid(){
        return this.$refs.form.validate()
      }
+  },
+  computed: {
+	  name(){
+	   return this.url && this.url.substring(this.url.lastIndexOf('/') + 1)
+	  }
   },
   watch:{
 	 params(vold,vnew) {

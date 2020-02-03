@@ -1,4 +1,7 @@
 <!DOCTYPE html>
+<!-- 
+ show list of available files
+ -->
 <template id="basexlogdate">
  <v-container fluid>
  <v-card>

@@ -3,12 +3,16 @@
 
 	<fields>
 		<field name="time" type="xs:string">
-			<description>time of event</description>
-			<xpath>@date</xpath>
+			<description>time of event e.g "09:44:15.186"</description>
+			<xpath>@time</xpath>
+		</field>
+		<field name="start" type="xs:string">
+			<description>datetime of event</description>
+			<xpath>@start</xpath>
 		</field>
 		<field name="end" type="xs:string?">
 			<description>end time of event</description>
-			<xpath>self::*[@ms]!(xs:dateTime(@date)+ xs:dayTimeDuration("PT" || (@ms div 1000) || "S"))</xpath>
+			<xpath>@end</xpath>
 		</field>
 		<field name="address" type="xs:string">
 			<description>IP address</description>
