@@ -1,4 +1,4 @@
-<package xmlns="http://cxan.org/ns/package" id="dotml">
+<package xmlns="http://cxan.org/ns/package" id="vue-poc">
     <abstract>vue-poc test of vue.js. </abstract>
     <author id="abunce">Andy Bunce</author>
     <maintainer id="abunce">Andy Bunce</maintainer>

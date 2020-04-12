@@ -23,7 +23,7 @@ for vis-time-line http://visjs.org/docs/graph2d/
   },
   watch:{
 	  items(newItems){
-		  console.log("timeline new:" + newItems.length)
+		  console.log("vis-time-line: new items:" + newItems.length)
 		  this.rebuild(newItems)
 	  },
 	  options(newOpts){

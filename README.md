@@ -1,16 +1,29 @@
 # vue-poc
 
-A test of using `vue.js` as UI
+A test of using https://vuetifyjs.com/en/ as UI
 Includes:
+
 * material design (using `vuetify`)
 * ace editor
 * localforage for persistence
 
-Edit via android 
-## Bugs
-* requests not stopped after unload 
+## Icons
+* https://vuetifyjs.com/en/customization/icons/
+## Tests
 
+### Cypress
+
+https://github.com/cypress-io/cypress
+```
+cd ~\git\vue-poc\tests>
+npx cypress open
+
+or...
+
+npx cypress run
+```
 ## Settings
+
 Global `settings` provides `getItem(name)` and `setItem(name.value)`
 Example usage
 ```

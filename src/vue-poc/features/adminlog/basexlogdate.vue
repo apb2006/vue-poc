@@ -98,7 +98,7 @@
     load(){
     
       this.loading= true
-      HTTP.get("data/basexlogfile",{params:{q:this.q}})
+      HTTP.get("data/quodatum.logfile",{params:{q:this.q}})
       .then(r=>{
         this.items= r.data.items
         this.loading= false

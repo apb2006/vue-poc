@@ -20,8 +20,6 @@
         :return-value.sync="query.from"
         transition="scale-transition"
         offset-y
-        max-width="290px"
-        min-width="100px"
       >
         <template v-slot:activator="{ on }">
           <v-text-field
@@ -33,11 +31,13 @@
             class="mt-3"
           ></v-text-field>
         </template>
+        
         <v-time-picker
           v-if="showFrom"
           v-model="query.from"
           use-seconds 
-          @click:second="$refs.menu.save(query.from)"       
+          @click:second="$refs.menu.save(query.from)"
+          format="24hr"       
         ></v-time-picker>
       </v-menu>
    <v-toolbar-items>
@@ -47,11 +47,22 @@
 	   <v-btn @click="pageNext()" icon title="increment From by window">
 		  <v-avatar> <v-icon>skip_next</v-icon> </v-avatar> 
 		</v-btn>
-		</v-toolbar-items>	 
+		</v-toolbar-items>
+			 
 	 <v-spacer></v-spacer>
-	  <qd-range :query="query"></qd-range>     
+	  <v-btn-toggle v-model="seek">
+          <v-btn small>
+            Seek
+          </v-btn>
+       </v-btn-toggle>
+        <v-btn-toggle v-model="fit">
+          <v-btn small>
+            Fit
+          </v-btn>
+       </v-btn-toggle>      
+	  <qd-range :query="query"></qd-range>
+	    
 	 <v-toolbar-items>
-	 <v-btn @click="fit">fit</v-btn> 
 	<v-btn @click="getItems">
 	     <v-avatar><v-icon>refresh</v-icon></v-avatar>
 	     </v-btn> 
@@ -97,6 +108,8 @@
       data:[],
     query:{date: this.date, start: 1, limit:30, from:"00:00:00", window:600},
     showmenu: false,
+    seek: false,
+    fit: false,
     Events: new Vue({}),
     msg:"Select an entry",
     showFrom: false
@@ -134,6 +147,7 @@ methods:{
       this.loading=true
       HTTP.get("logxml", {params:this.query})
       .then(r=>{
+       
         //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
         var items=r.data.items
         //console.log("logxml",items)
@@ -145,20 +159,27 @@ methods:{
         	      style: x.text.startsWith("[POST] ")?"background-color: red;": "background-color: yellow;",
         	      group: x.user}
                ))
-        this.loading=false
-        return;
-        //https://stackoverflow.com/a/39637877/3210344 round(date, moment.duration(15, "minutes"), "ceil")
+
+
+       
+        //https://stackoverflow.com/a/39637877/3210344 roundDate(date, moment.duration(15, "minutes"), "ceil")
         var roundDate= function (date, duration, method) {
                   return moment(Math[method]((+date) / (+duration)) * (+duration)); 
         }
         var start=moment(this.date + "T" + this.query.from)
-        var first=this.data[0]  
+        var first=moment(this.data[0].start);
+        var w=Number(this.query.window);
+        first1=roundDate(first,moment.duration(w, "seconds"), "floor");
+        console.log("Ab",first,this.query,first1,this.data);
+        return;
+        
         if(first){     	
-        	first=moment(first.time)
+        	first=moment(first.start)
         	start=roundDate(first,moment.duration(this.query.window, "seconds"), "floor")
-        	//console.log(r.format(moment.HTML5_FMT.TIME_SECONDS))
-        	this.query.from=start.format(moment.HTML5_FMT.TIME_SECONDS)
+        	console.log("rounded ",start)
+        	//this.query.from=start.format(moment.HTML5_FMT.TIME_SECONDS)
         }
+        this.loading=false 
         this.options.start=start.toDate()
         this.options.end=start.add(this.query.window,"s").toDate()
         //console.log("data",this.data)

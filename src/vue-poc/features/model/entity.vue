@@ -56,15 +56,12 @@
 		            </v-avatar> {{ item.name }}
 		            </v-toolbar-title>
 		         </v-card-title>
+		         <v-spacer></v-spacer>
+		         <v-badge >
+			      <span slot="badge">{{ item.nfields }}</span>
+			    </v-badge>
           </v-toolbar>
           <v-card-text >{{ item.description }}</<v-card-text>
-          <v-card-actions green>
- 
-           <v-badge >
-			      <span slot="badge">{{ item.nfields }}</span>
-			      Fields
-			    </v-badge>
-          </v-card-actions>
         </v-card>
       </v-flex>
       </v-layout>

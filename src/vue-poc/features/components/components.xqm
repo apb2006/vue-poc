@@ -6,7 +6,8 @@
 module namespace j = 'quodatum.test.components';
 
 (:~
- : @return sequence of json arary items for each item 
+ : id:, label:,children:
+ : @return sequence of json array items for each item 
  :)
 declare function j:tax($items)
 as element(_)*
@@ -44,10 +45,11 @@ return
 };
 
 (:~
- :  sample markdown
+ :  serve sample markdown from "md-sample.md"
  :)
 declare  
-%rest:GET %rest:path("/vue-poc/api/components/markdown")  
+%rest:GET %rest:path("/vue-poc/api/components/markdown")
+%output:method("text")  
 function j:markdown()
 as xs:string
 {

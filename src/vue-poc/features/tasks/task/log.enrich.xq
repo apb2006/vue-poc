@@ -1,16 +1,21 @@
 (:~ 
-: log enrich
+: Enrich log files in collection /logs database vue-poc
+: by adding @start and @end attributes where calculatable
 : @author andy bunce
-: @todo
 :)
-declare %updating function local:enrich($doc as document-node()){
+
+
+declare %updating function local:enrich($doc as document-node())
+{
   let $date:=fn:analyze-string(db:path($doc),"(\d{4}-\d{2}-\d{2})")/fn:match/fn:group/string()
   return 
   for $entry in $doc/entries/entry
   return  local:update-entry($entry,$date)
 };
 
-declare %updating function local:update-entry($entry,$date as xs:string){
+declare %updating function local:update-entry($entry as element(entry),
+                                              $date as xs:string)
+{
   let $start :=xs:dateTime(concat($date,"T",$entry/@time)) 
   return (
      local:set-start($entry,$start),
@@ -22,6 +27,8 @@ declare %updating function local:update-entry($entry,$date as xs:string){
    )
 };
 
+(:~ set @start attribute to $start
+ :)
 declare %updating function local:set-start($entry,$start as xs:dateTime)
 {
  if($entry/@start) then

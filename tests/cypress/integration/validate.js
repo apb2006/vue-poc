@@ -7,11 +7,6 @@
 
 describe('validate tests', function () {
 
-    //This function will execute before each test (i.e it())
-
-    beforeEach(function () {
-        cy.log('I run before every test in every spec file!!!!!!')
-    })
 
     //Here you actually writes your test (it() is similar to @Test annotaion of TestNG)
 

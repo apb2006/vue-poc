@@ -161,7 +161,7 @@
         children: [
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
-       {href: '/documentation', text: 'Documentation',icon: 'library_books' },
+   
        {href: '/tasks',text: 'Tasks',icon: 'update'},
        {href: '/logdate',text: 'XML logs',icon: 'dns'},
        {href: '/history/files',text: 'history',icon: 'history'}
@@ -170,10 +170,10 @@
         icon: 'memory',
         text: 'Models' ,
         model: false,
-        children: [
-         
-          {href: '/namespace', text: 'Namespaces',icon: 'label' },
+        children: [             
           {href: '/entity', text: 'Entities',icon: 'redeem' },
+          {href: '/documentation', text: 'Documentation',icon: 'library_books' },
+          {href: '/namespace', text: 'Namespaces',icon: 'label' },
       ]},
       
       {
@@ -232,7 +232,7 @@
       {href: '/labs/markdown',text: 'Markdown',icon: 'receipt'},
       ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About (v0.3.2)' , icon: 'help'    }, 
+      {href: '/about',text: 'About' , icon: 'help'    }, 
     ]
 
   }},

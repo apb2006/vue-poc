@@ -67,16 +67,10 @@
       },
       
     matchItems(typed){
-        var hits=this.$router.options.routes;
-        console.log(hits.length,hits);
-         hits=hits.filter(item=>{
-           if (!item.meta) return false;
-          var i=item.meta.title.toString().toLowerCase();
-          console.log(i);
-          return i.indexOf(typed) !== -1});
-         
-         console.log("pages",typed," r:",hits);
-        return hits.map(r=>{return {text:r.meta.title,
+        var hits=this.titles;
+        var typed=typed.toLowerCase();
+         hits=hits.filter(item=>item.title.indexOf(typed) !== -1)
+        return hits.map(r=>{return {text:r.title,
                                     value:r.path}
                       });
       },
@@ -90,5 +84,21 @@
       console.log("si: ",val);
       this.querySelections();
     }
+  },
+  created:function(){
+	  var hits=this.$router.options.routes;  
+	  var res=[];
+	  const extract = function(item,path) {if(item.hasOwnProperty("meta")) 
+		                                     return {title: item.meta.title.toLowerCase(), 
+		                                             path: path + item.path}
+	                                     else if(item.hasOwnProperty("children"))
+	                                    	 return item.children.map(item=>extract(item, path  +"/"))
+	                                     else
+	                                    	 return []
+	                                      };
+	  res=hits.map(item=>extract(item,item.path))
+	  res=res.flat(Infinity);
+	 //console.log("extract",res)
+	  this.titles=res;
   }
 }</script>

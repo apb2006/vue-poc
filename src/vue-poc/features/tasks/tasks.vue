@@ -20,7 +20,7 @@
    clearable></v-text-field>
    
    <v-spacer></v-spacer>
-   <vp-entitylink entity="task"></vp-entitylink>    
+   <vp-entitylink entity="quodatum.task"></vp-entitylink>    
    </v-toolbar>
    
    <v-card-text>

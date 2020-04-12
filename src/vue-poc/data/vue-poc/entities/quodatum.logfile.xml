@@ -1,4 +1,4 @@
-<entity name="basexlogfile" xmlns="https://github.com/Quodatum/app-doc/entity">
+<entity name="quodatum.logfile" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>list of saved BaseX log files with entries in the vue-poc database</description>
 
 	<fields>

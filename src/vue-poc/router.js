@@ -133,13 +133,17 @@ const router = new VueRouter({
         
    
    
-    { path: '/map', component: Leaflet,meta:{title:"map"} },
+    { path: '/map', component: Leaflet,meta:{title:"map"} },     
     
- 
-     
-    
-    { path: '/about', component: About, meta:{title:"About Vue-poc"} },
-    { path: '*', component: Notfound, meta:{title:"Page not found"} }
+    { path: '/about', component: { template: '<router-view/>' } 
+        ,children:[
+      {path: '', component: About, meta:{title:"About Vue-poc"} },
+      {path: 'package', component: Package, meta:{title:"Javascript components"} },
+      {path: 'routes', component: Routes, meta:{title:"Routes"} },
+      {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
+   ]},
+   
+   { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],
 });
 router.afterEach(function(route) {

@@ -16,7 +16,8 @@
 	
 	<task name="log.enrich" url="task/log.enrich.xq">
 		<title>log enrich</title>
-		<description>logs</description>
+		<description>Enrich log files in collection /logs database vue-poc
+ by adding @start and @end attributes where calculatable</description>
 	</task>
 	<task name="vuecompile">
 		<title>vue compile</title>

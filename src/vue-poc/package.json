@@ -1,23 +1,23 @@
 {
 	"name": "vue-poc",
-	"version": "0.2.0",
-	"description": "A vue test",
+	"version": "0.5.2",
+	"description": "Frontend vuetify, backend: basex",
 	"dependencies": {
-		"ace": "1.4.6",
-		"vuetify": "2.1.9",
-		"vue": "2.6.10",
-		"vuex": "3.0.1",
-		"vue-router": "3.0.3",
-		"vue-treeselect": "0.0.25",
+		"ace": "1.4.8",
+		"vuetify": "2.2.19",
+		"vue": "2.6.11",
+		"vuex": "3.1.0",
+		"vue-router": "3.1.6",
+		"vue-treeselect": "0.0.29",
 		"google-material": "0.0.0",
 		"js-beautify": "1.9.0",
-		"axios": "0.18.1",
+		"axios": "0.19.2",
 		"qs": "6.4.0",
 		"localforage": "1.7.1",
 		"momentjs": "2.24.0",
-		"vuetify-jsonschema-form": "0.27.1",
+		"vuetify-jsonschema-form": "0.35.0",
 		"prism": "1.15.0",
 		"vue-prism-component": "1.1.1",
-		"vis-timeline-graph2d": "4.21.0"
+		"vis-timeline-graph2d": "4.20.1"
 	}
 }

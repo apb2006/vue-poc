@@ -5,7 +5,7 @@
 
 //This is where your test suite starts
 
-describe('My First Test', function () {
+describe('Smoke', function () {
 
     //This function will execute before each test (i.e it())
 

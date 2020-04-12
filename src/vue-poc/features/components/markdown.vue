@@ -7,39 +7,56 @@ https://github.com/miaolz123/vue-markdown
  <v-card>
  <v-toolbar class="lime darken-1">
 	 <v-card-title >Markdown</v-card-title>
-	 <v-checkbox  v-model="show" label="show" ></v-checkbox>
-	 <v-checkbox  v-model="html" label="html" ></v-checkbox>
-	 <v-checkbox  v-model="breaks" label="breaks" ></v-checkbox>
-	  <v-checkbox  v-model="linkify" label="linkify" ></v-checkbox>
-	  <v-checkbox  v-model="emoji" label="emoji" ></v-checkbox>
-	   <v-checkbox  v-model="typographer" label="typographer" ></v-checkbox>
+	<v-btn-toggle v-model="toc">
+          <v-btn>
+            TOC
+          </v-btn>
+      </v-btn-toggle>
 	   <v-checkbox  v-model="toc" label="toc" ></v-checkbox>
 	 <v-spacer></v-spacer>
 	    <qd-link href="https://github.com/miaolz123/vue-markdown">vue-markdown@2.2.4</qd-link>
+	      <v-menu :close-on-content-click="false" offset-y left>
+               <template v-slot:activator="{ on }">
+                  <v-btn icon v-on="on"><v-icon>settings</v-icon></v-btn>
+               </template>
+              <v-card >
+                    <v-toolbar class="lime darken-1">
+				          <v-card-title >Markdown Settings</v-card-title>
+				          </v-toolbar>
+				        <v-card-text>
+				        <ul>
+					 <li><v-checkbox  v-model="html" label="html" ></v-checkbox></li>
+					 <li><v-checkbox  v-model="breaks" label="breaks" ></v-checkbox></li>
+					  <li><v-checkbox  v-model="linkify" label="linkify" ></v-checkbox></li>
+					  <li><v-checkbox  v-model="emoji" label="emoji" ></v-checkbox></li>
+					  <li> <v-checkbox  v-model="typographer" label="typographer" ></v-checkbox></li>
+					   </ul>
+				        </v-card-text>
+	        </v-card>
+	      </v-menu>
 	 </v-toolbar>
 	 <v-card-text>
-	       <div id="toc"></div>
-<vue-markdown :watches="['show','html','breaks','linkify','emoji','typographer','toc']"
+	  <v-row no-gutters style="flex-wrap: nowrap;">
+      <v-col v-if="toc" cols="3" class="flex-grow-0 flex-shrink-0" >
+        <v-card
+          class="pa-2"
+          outlined
+          tile
+        >
+          <div v-html="tochtml"></div>
+        </v-card>
+      </v-col>
+       <v-col cols="1" style="min-width: 100px; max-width: 100%;" 
+       class="flex-grow-1 flex-shrink-0" color="orange lighten-2">
+       <vue-markdown :watches="['show','html','breaks','linkify','emoji','typographer','toc']"
           :source="source" :show="show" :html="html" :breaks="breaks" :linkify="linkify"
           :emoji="emoji" :typographer="typographer" :toc="toc" v-on:rendered="allRight"
-          v-on:toc-rendered="tocAllRight" toc-id="toc">># h1 Heading 8-)
-## level 2
-### h3 Heading
+          v-on:toc-rendered="tocAllRight" toc-id="toc"> 
+ </vue-markdown>
+       </v-col>
+      </v-row>
+           
 
-## Horizontal Rules
-
-___
-
----
-
-***
-
-## Typographic replacements
-
-Enable typographer option to see result.
-
-(c) (C) (r) (R) (tm) (TM) (p) (P) +-
-</vue-markdown>
 	 </v-card-text>
  </v-card>
   
@@ -56,7 +73,8 @@ Enable typographer option to see result.
 	        linkify: false,
 	        emoji: true,
 	        typographer: true,
-	        toc: false
+	        toc: false,
+	        tochtml: null
 	      }
 	    },
 	      methods: {
@@ -64,14 +82,15 @@ Enable typographer option to see result.
 	            console.log("markdown is parsed !");
 	          },
 	          tocAllRight: function (tocHtmlStr) {
-	            console.log("toc is parsed :", tocHtmlStr);
+	        	  this.tochtml=tocHtmlStr
+	            console.log("toc is parsed :");
 	          }
 	        },    
 	created:function(){	
 
 		    HTTP.get("components/markdown")
 		    .then(r=>{      
-		          console.log("data::::",r.data);
+		          //console.log("data::::",r.data);
 		          this.source=r.data;
 		          })
 		    .catch(err=> {

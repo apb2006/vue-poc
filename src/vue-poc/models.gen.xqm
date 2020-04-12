@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2020-01-29T22:51:17.628Z 
+ : auto generated from xml files in entities folder at: 2020-03-12T23:25:24.314Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -239,65 +239,6 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
       "data": function() as element(user)*
        { user:list-details() },
-       
-       "views": map{ 
-       
-       }
-   },
-  "basexlogfile": map{
-     "name": "basexlogfile",
-     "description": "list of saved BaseX log files with entries in the vue-poc database",
-     "access": map{ 
-       "date": function($_ as element()) as xs:string {$_/@date },
-       "entries": function($_ as element()) as xs:integer {$_/@entries },
-       "max": function($_ as element()) as xs:integer {$_/@max },
-       "name": function($_ as element()) as xs:string {$_/@file },
-       "perhr": function($_ as element()) as xs:string {$_/@perhr } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( ) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "date": function($_ as element()) as element(date)? {
-            (: xs:string :)
-                        fn:data($_/@date)!element date {  .} 
-                 },
-           "entries": function($_ as element()) as element(entries)? {
-            (: xs:integer :)
-                        fn:data($_/@entries)!element entries { attribute type {'number'}, .} 
-                 },
-           "max": function($_ as element()) as element(max)? {
-            (: xs:integer :)
-                        fn:data($_/@max)!element max { attribute type {'number'}, .} 
-                 },
-           "name": function($_ as element()) as element(name)? {
-            (: xs:string :)
-                        fn:data($_/@file)!element name {  .} 
-                 },
-           "perhr": function($_ as element()) as element(perhr)? {
-            (: xs:string :)
-                        fn:data($_/@perhr)!element perhr {  .} 
-                 } },
-       
-      "data": function() as element(day)*
-       { 
-		let $hrs:=(0 to 23)!format-number(., "00")
-		for $item in db:dir("vue-poc","logs")
-		let $es:=db:open("vue-poc","logs/" || $item)/entries/entry
-		let $max:=round(max($es/@ms) div 1000)
-		let $times:=(for $e in $es
-		group by $hr:=substring($e/@time,1,2)
-		return map:entry($hr, max($e/@ms)))=>map:merge()
-		let $c:=for $h in $hrs return if(map:contains($times,$h)) then map:get($times,$h) else 0
-		
-		return <day  file="{ $item }"
-			date="{ fn:replace($item,".*(\d{4}-\d{2}-\d{2}).*","$1")}"
-			entries="{ count($es) }" 
-			max="{ $max }" 
-			perhr="{ string-join($c,' ') }" 
-		/>
-	 },
        
        "views": map{ 
        
@@ -659,6 +600,103 @@ hof:top-k-by(admin:logs(), string#1, 2)
        'filter': 'name description'
        }
    },
+  "quodatum.logfile": map{
+     "name": "quodatum.logfile",
+     "description": "list of saved BaseX log files with entries in the vue-poc database",
+     "access": map{ 
+       "date": function($_ as element()) as xs:string {$_/@date },
+       "entries": function($_ as element()) as xs:integer {$_/@entries },
+       "max": function($_ as element()) as xs:integer {$_/@max },
+       "name": function($_ as element()) as xs:string {$_/@file },
+       "perhr": function($_ as element()) as xs:string {$_/@perhr } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "date": function($_ as element()) as element(date)? {
+            (: xs:string :)
+                        fn:data($_/@date)!element date {  .} 
+                 },
+           "entries": function($_ as element()) as element(entries)? {
+            (: xs:integer :)
+                        fn:data($_/@entries)!element entries { attribute type {'number'}, .} 
+                 },
+           "max": function($_ as element()) as element(max)? {
+            (: xs:integer :)
+                        fn:data($_/@max)!element max { attribute type {'number'}, .} 
+                 },
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/@file)!element name {  .} 
+                 },
+           "perhr": function($_ as element()) as element(perhr)? {
+            (: xs:string :)
+                        fn:data($_/@perhr)!element perhr {  .} 
+                 } },
+       
+      "data": function() as element(day)*
+       { 
+		let $hrs:=(0 to 23)!format-number(., "00")
+		for $item in db:dir("vue-poc","logs")
+		let $es:=db:open("vue-poc","logs/" || $item)/entries/entry
+		let $max:=round(max($es/@ms) div 1000)
+		let $times:=(for $e in $es
+		group by $hr:=substring($e/@time,1,2)
+		return map:entry($hr, max($e/@ms)))=>map:merge()
+		let $c:=for $h in $hrs return if(map:contains($times,$h)) then map:get($times,$h) else 0
+		
+		return <day  file="{ $item }"
+			date="{ fn:replace($item,".*(\d{4}-\d{2}-\d{2}).*","$1")}"
+			entries="{ count($es) }" 
+			max="{ $max }" 
+			perhr="{ string-join($c,' ') }" 
+		/>
+	 },
+       
+       "views": map{ 
+       
+       }
+   },
+  "quodatum.task": map{
+     "name": "quodatum.task",
+     "description": "A predefined query with parameters, listed in taskdef.xml ",
+     "access": map{ 
+       "description": function($_ as element()) as xs:string {$_/fn:serialize(description/node()) },
+       "title": function($_ as element()) as xs:string {$_/title },
+       "to": function($_ as element()) as xs:string {$_/@name },
+       "url": function($_ as element()) as xs:string {$_/@url } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "description": function($_ as element()) as element(description)? {
+            (: xs:string :)
+                        fn:data($_/fn:serialize(description/node()))!element description {  .} 
+                 },
+           "title": function($_ as element()) as element(title)? {
+            (: xs:string :)
+                        fn:data($_/title)!element title {  .} 
+                 },
+           "to": function($_ as element()) as element(to)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element to {  .} 
+                 },
+           "url": function($_ as element()) as element(url)? {
+            (: xs:string :)
+                        fn:data($_/@url)!element url {  .} 
+                 } },
+       
+      "data": function() as element(task)*
+       { doc("tasks/taskdef.xml")/tasks/task },
+       
+       "views": map{ 
+       
+       }
+   },
   "search-result": map{
      "name": "search-result",
      "description": "About a search result.",
@@ -692,44 +730,6 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
       "data": function() as element(search)*
        { () },
-       
-       "views": map{ 
-       
-       }
-   },
-  "task": map{
-     "name": "task",
-     "description": "predefined queries with parameters ",
-     "access": map{ 
-       "description": function($_ as element()) as xs:string {$_/fn:serialize(description/node()) },
-       "title": function($_ as element()) as xs:string {$_/title },
-       "to": function($_ as element()) as xs:string {$_/@name },
-       "url": function($_ as element()) as xs:string {$_/@url } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( ) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "description": function($_ as element()) as element(description)? {
-            (: xs:string :)
-                        fn:data($_/fn:serialize(description/node()))!element description {  .} 
-                 },
-           "title": function($_ as element()) as element(title)? {
-            (: xs:string :)
-                        fn:data($_/title)!element title {  .} 
-                 },
-           "to": function($_ as element()) as element(to)? {
-            (: xs:string :)
-                        fn:data($_/@name)!element to {  .} 
-                 },
-           "url": function($_ as element()) as element(url)? {
-            (: xs:string :)
-                        fn:data($_/@url)!element url {  .} 
-                 } },
-       
-      "data": function() as element(task)*
-       { doc("tasks/taskdef.xml")/tasks/task },
        
        "views": map{ 
        
