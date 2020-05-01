@@ -126,17 +126,21 @@ const router = new VueRouter({
     
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
     
-    { path: '/tasks', component: Tasks, meta:{title:"Runnable tasks"} },
-    { path: '/tasks/model', component: Model, meta:{title:"build model"} },
-    { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
-    { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
-        
+    { path: '/tasks', component: { template: '<router-view/>' } ,  children:[
+		    { path: '', component: Tasks, meta:{title:"Runnable tasks"} },
+		    { path: 'model', component: Model, meta:{title:"build model"} },
+		    { path: 'vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
+		    { path: ':task',  props: true, component: { template: '<router-view/>' },
+		    	children:[
+		        {path:"",  props: true, component: Tasks1 },
+		    	{path: "run", component: Runtask, props: true,  meta:{title:"Run task"} },
+		    	]}
+    ]},  
    
    
     { path: '/map', component: Leaflet,meta:{title:"map"} },     
     
-    { path: '/about', component: { template: '<router-view/>' } 
-        ,children:[
+    { path: '/about', component: { template: '<router-view/>' }  ,children:[
       {path: '', component: About, meta:{title:"About Vue-poc"} },
       {path: 'package', component: Package, meta:{title:"Javascript components"} },
       {path: 'routes', component: Routes, meta:{title:"Routes"} },

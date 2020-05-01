@@ -14,7 +14,7 @@
 	<v-data-table
     :headers="headers"
     :items="routes"
-    :items-per-page="20"
+    :items-per-page="100"
     class="elevation-1"
   ></v-data-table>
 	 <pre>{{ pack | pretty }}</pre> </v-card-text> 
@@ -31,19 +31,24 @@
       headers:[
     	  { text: '#', value: 'index' },
     	  { text: 'Path', value: 'path' },
-          { text: 'Title', value: 'title' }
+    	  { text: 'Name', value: 'name' },
+          { text: 'Title', value: 'title' },
+          { text: 'Children', value: 'children' }
     	  ], 
   }
   },
   methods:{
 	  refresh(){
 		  var hits=this.$router.options.routes;
-		  this.routes=hits.map(function(v,i){
+		  hits=hits.map(function(v,i){
 			  return {"index":i,
 				      "path": v.path,
-				      "name":"ww",
-				      "title": v.meta && v.meta.title
+				      "name": v.name,
+				      "title": v.meta && v.meta.title,
+				      "children": v.children && v.children.length
 		  }});
+		  hits.sort((a,b)=>a.path.localeCompare(b.path) )
+		  this.routes=hits
 		  console.log("routes: ",hits)
 	    },
   },

@@ -1,6 +1,6 @@
 <!DOCTYPE html>
 <template id="edit">
-<v-container fluid>
+<v-container >
       <v-snackbar top color="error"  v-model="snackbar">
       {{ message }}
       <v-btn text  @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>

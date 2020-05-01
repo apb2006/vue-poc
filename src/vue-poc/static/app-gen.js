@@ -1,4 +1,4 @@
-// generated 2020-04-06T22:33:30.222+01:00
+// generated 2020-05-01T14:30:58.886+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -1185,7 +1185,8 @@ Vue.component('vue-ace',{template:`
       );
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/aceextras.js
-// ace customisations
+// ace customisations installs to $aceExtras
+// rhymeCompleter, basexCompleter, snippets
 const AceExtras={
     rhymeCompleter:  {
       // test completer
@@ -1703,17 +1704,20 @@ const Package=Vue.extend({template:`
      </v-card-title>
 	<v-spacer></v-spacer> 
 	</v-toolbar>
-	 <v-data-table :headers="headers" :items="desserts" :items-per-page="5" class="elevation-1"></v-data-table> 
-	<v-card-text>  <pre>{{ pack | pretty }}</pre> </v-card-text> 
+	 <v-data-table :headers="headers" :items="pack" :items-per-page="100" class="elevation-1"></v-data-table> 
 </v-card> 
 </v-container> 
  `,
       
   data:  function(){
     return { 
-      pack: null,
+      pack: [],
       fab: false,
-      showmenu: false
+      showmenu: false,
+      headers:[
+    	  { text: 'name', value: 'name' },
+    	  { text: 'version', value: 'version' }
+    	  ], 
   }
   },
   methods:{
@@ -1721,7 +1725,9 @@ const Package=Vue.extend({template:`
 	      HTTP.get("package.json")
 	      .then(r=>{
 	        console.log("status",r)
-	        this.pack=r.data.dependencies
+	        var m=r.data.dependencies
+	        var d = Object.keys(m).map(function (v,i){return {"name": v ,"version": m[v]}});
+	        this.pack=d.sort((a,b)=>a.name.localeCompare(b.name))
 	      })  
 	    },
   },
@@ -1742,7 +1748,7 @@ const Routes=Vue.extend({template:`
 	<v-spacer></v-spacer> 
 	</v-toolbar> 
 	<v-card-text>  
-	<v-data-table :headers="headers" :items="routes" :items-per-page="20" class="elevation-1"></v-data-table>
+	<v-data-table :headers="headers" :items="routes" :items-per-page="100" class="elevation-1"></v-data-table>
 	 <pre>{{ pack | pretty }}</pre> </v-card-text> 
 </v-card> 
 </v-container> 
@@ -1757,19 +1763,24 @@ const Routes=Vue.extend({template:`
       headers:[
     	  { text: '#', value: 'index' },
     	  { text: 'Path', value: 'path' },
-          { text: 'Title', value: 'title' }
+    	  { text: 'Name', value: 'name' },
+          { text: 'Title', value: 'title' },
+          { text: 'Children', value: 'children' }
     	  ], 
   }
   },
   methods:{
 	  refresh(){
 		  var hits=this.$router.options.routes;
-		  this.routes=hits.map(function(v,i){
+		  hits=hits.map(function(v,i){
 			  return {"index":i,
 				      "path": v.path,
-				      "name":"ww",
-				      "title": v.meta && v.meta.title
+				      "name": v.name,
+				      "title": v.meta && v.meta.title,
+				      "children": v.children && v.children.length
 		  }});
+		  hits.sort((a,b)=>a.path.localeCompare(b.path) )
+		  this.routes=hits
 		  console.log("routes: ",hits)
 	    },
   },
@@ -3082,7 +3093,7 @@ created:function(){
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/edit.vue
 const Edit=Vue.extend({template:` 
-<v-container fluid>
+<v-container>
       <v-snackbar top color="error" v-model="snackbar">
       {{ message }}
       <v-btn text @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
@@ -4119,74 +4130,6 @@ const Filehistory=Vue.extend({template:`
     this.get()
     console.log("history")
   }
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/history/taskhistory.vue
-const Taskhistory=Vue.extend({template:` 
- <v-container fluid>
- <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
- <v-card>
-  <v-toolbar>
-  <v-toolbar-title>
-     <v-breadcrumbs>
-            <v-breadcrumbs-item to="/tasks" :exact="true">
-            Tasks
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
-       </v-toolbar-title>  
-     <v-spacer></v-spacer>
-   
-   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
-   
-   <v-spacer></v-spacer>
-   <vp-entitylink entity="quodatum.task"></vp-entitylink>    
-   </v-toolbar>
-   
-   <v-card-text>
-    <v-data-table :headers="headers" :items="items" hide-default-footer :search="q" class="elevation-1">
-    <template slot="items" slot-scope="props">
-      <td>AA: <router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
-      <td>{{ props.item.description }}</td>
-    </template>
-    <template slot="no-data">
-      <v-alert :value="true" icon="warning">
-        No matching items.
-      </v-alert>
-    </template>
-  </v-data-table>
-   </v-card-text>
-    
-    </v-card>
-  
- </v-container>
- `,
-      
-  data(){
-    return {
-      items: [],
-      loading: false,
-      q: null,
-      headers: [   
-        { text: 'Task', value: 'title' },
-        { text: 'Description', value: 'description' },
-        ]
-      }
-  },
-  methods:{
-    getTasks(){
-        this.loading= true;
-        HTTP.get("tasks")
-        .then(r=>{
-		   this.items=r.data;
-		   this.loading= false;
-       })
-    }
-   },
-  created(){
-    this.getTasks()
-   }
 }
 
       );
@@ -7094,7 +7037,7 @@ const Model=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/task/runtask.vue
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/runtask.vue
 const Runtask=Vue.extend({template:` 
  <v-container fluid>
     <v-card>
@@ -7185,6 +7128,74 @@ const Runtask=Vue.extend({template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/taskhistory.vue
+const Taskhistory=Vue.extend({template:` 
+ <v-container fluid>
+ <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
+ <v-card>
+  <v-toolbar>
+  <v-toolbar-title>
+     <v-breadcrumbs>
+            <v-breadcrumbs-item to="/tasks" :exact="true">
+            Tasks
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+       </v-toolbar-title>  
+     <v-spacer></v-spacer>
+   
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
+   
+   <v-spacer></v-spacer>
+   <vp-entitylink entity="quodatum.task"></vp-entitylink>    
+   </v-toolbar>
+   
+   <v-card-text>
+    <v-data-table :headers="headers" :items="items" hide-default-footer :search="q" class="elevation-1">
+    <template slot="items" slot-scope="props">
+      <td>AA: <router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
+      <td>{{ props.item.description }}</td>
+    </template>
+    <template slot="no-data">
+      <v-alert :value="true" icon="warning">
+        No matching items.
+      </v-alert>
+    </template>
+  </v-data-table>
+   </v-card-text>
+    
+    </v-card>
+  
+ </v-container>
+ `,
+      
+  data(){
+    return {
+      items: [],
+      loading: false,
+      q: null,
+      headers: [   
+        { text: 'Task', value: 'title' },
+        { text: 'Description', value: 'description' },
+        ]
+      }
+  },
+  methods:{
+    getTasks(){
+        this.loading= true;
+        HTTP.get("tasks")
+        .then(r=>{
+		   this.items=r.data;
+		   this.loading= false;
+       })
+    }
+   },
+  created(){
+    this.getTasks()
+   }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/tasks.vue
 const Tasks=Vue.extend({template:` 
  <v-container fluid>
@@ -7211,7 +7222,7 @@ const Tasks=Vue.extend({template:`
    <v-card-text>
     <v-data-table :headers="headers" :items="items" hide-default-footer :search="q" class="elevation-1">
     <template v-slot:item.to="{ item }"> 
-	      <td><router-link :to="'tasks/' + item.to" v-text="item.to"></router-link></td>
+	      <td><router-link :to="item.to" :append="true" v-text="item.to"></router-link></td>
     </template>
     
     <template slot="no-data">
@@ -7230,6 +7241,74 @@ const Tasks=Vue.extend({template:`
   data(){
     return {
       crumbs: [{to: "/tasks", text: "Tasks"}],
+ 
+      items: [],
+      loading: false,
+      q: null,
+      headers: [
+    	{ text: 'Task', value: 'to' }, 
+        { text: 'Title', value: 'title' },
+        { text: 'Description', value: 'description' },
+        ]
+      }
+  },
+  methods:{
+    getTasks(){
+        this.loading= true;
+        HTTP.get("tasks")
+        .then(r=>{
+		   this.items=r.data;
+		   this.loading= false;
+       })
+    }
+   },
+  created(){
+    this.getTasks()
+   }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/tasks1.vue
+const Tasks1=Vue.extend({template:` 
+ <v-container fluid>
+ <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
+ <v-card>
+  <v-toolbar>
+  <v-toolbar-title>
+    <qd-breadcrumbs :crumbs="[{to: '/tasks', text:'Tasks'}, {text: task, disabled: true} ]">crumbs</qd-breadcrumbs> 
+       </v-toolbar-title>  
+     <v-spacer></v-spacer>
+   
+   <v-spacer></v-spacer>
+   <vp-entitylink entity="quodatum.task"></vp-entitylink>    
+   </v-toolbar>
+   
+   <v-card-text>
+  
+   <h1>{{ task }} </h1>
+   <ul><li>
+   <router-link :to="{path: 'run', append:true }"> <v-icon>folder</v-icon>Run</router-link>
+   </li>
+   <li>
+   <router-link :to="{name: 'edit',  query:{apple: task} }"> <v-icon>folder</v-icon>Edit</router-link>
+   </li>
+   <li>
+      <router-link :to="{name:'taskhistory', query:{task: task}}"><v-icon>history</v-icon>History</router-link>
+     </li>
+     </ul>
+   </v-card-text>
+    
+    </v-card>
+  
+ </v-container>
+ `,
+      
+	 props:["task"],
+  data(){
+    return {
+      crumbs: [{to: "/tasks", text: "Tasks"},
+    	       { text: this.task}],
  
       items: [],
       loading: false,
@@ -7949,17 +8028,21 @@ const router = new VueRouter({
     
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
     
-    { path: '/tasks', component: Tasks, meta:{title:"Runnable tasks"} },
-    { path: '/tasks/model', component: Model, meta:{title:"build model"} },
-    { path: '/tasks/vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
-    { path: '/tasks/:task', component: Runtask, props: true, meta:{title:"Run task"} },
-        
+    { path: '/tasks', component: { template: '<router-view/>' } ,  children:[
+		    { path: '', component: Tasks, meta:{title:"Runnable tasks"} },
+		    { path: 'model', component: Model, meta:{title:"build model"} },
+		    { path: 'vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
+		    { path: ':task',  props: true, component: { template: '<router-view/>' },
+		    	children:[
+		        {path:"",  props: true, component: Tasks1 },
+		    	{path: "run", component: Runtask, props: true,  meta:{title:"Run task"} },
+		    	]}
+    ]},  
    
    
     { path: '/map', component: Leaflet,meta:{title:"map"} },     
     
-    { path: '/about', component: { template: '<router-view/>' } 
-        ,children:[
+    { path: '/about', component: { template: '<router-view/>' }  ,children:[
       {path: '', component: About, meta:{title:"About Vue-poc"} },
       {path: 'package', component: Package, meta:{title:"Javascript components"} },
       {path: 'routes', component: Routes, meta:{title:"Routes"} },
@@ -8213,7 +8296,7 @@ const Vuepoc=Vue.extend({template:`
       {href: '/labs/markdown',text: 'Markdown',icon: 'receipt'},
       ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About Vue-poc' , icon: 'help'    }, 
+      {href: '/about',text: 'About' , icon: 'help'    }, 
     ]
 
   }},
@@ -8247,7 +8330,7 @@ const Vuepoc=Vue.extend({template:`
     },
     
   created(){
-    console.log("create-----------");
+    console.log("create-----------", this.items);
 		
     var that=this
     window.addEventListener('error', function (err) {

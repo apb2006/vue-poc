@@ -266,7 +266,7 @@
     },
     
   created(){
-    console.log("create-----------");
+    console.log("create-----------", this.items);
 		
     var that=this
     window.addEventListener('error', function (err) {

@@ -12,20 +12,23 @@
 	</v-toolbar>
 	 <v-data-table
     :headers="headers"
-    :items="desserts"
-    :items-per-page="5"
+    :items="pack"
+    :items-per-page="100"
     class="elevation-1"
   ></v-data-table> 
-	<v-card-text>  <pre>{{ pack | pretty }}</pre> </v-card-text> 
 </v-card> 
 </v-container> 
 </template>
 <script>{
   data:  function(){
     return { 
-      pack: null,
+      pack: [],
       fab: false,
-      showmenu: false
+      showmenu: false,
+      headers:[
+    	  { text: 'name', value: 'name' },
+    	  { text: 'version', value: 'version' }
+    	  ], 
   }
   },
   methods:{
@@ -33,7 +36,9 @@
 	      HTTP.get("package.json")
 	      .then(r=>{
 	        console.log("status",r)
-	        this.pack=r.data.dependencies
+	        var m=r.data.dependencies
+	        var d = Object.keys(m).map(function (v,i){return {"name": v ,"version": m[v]}});
+	        this.pack=d.sort((a,b)=>a.name.localeCompare(b.name))
 	      })  
 	    },
   },

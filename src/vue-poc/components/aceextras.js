@@ -1,4 +1,5 @@
-// ace customisations
+// ace customisations installs to $aceExtras
+// rhymeCompleter, basexCompleter, snippets
 const AceExtras={
     rhymeCompleter:  {
       // test completer
