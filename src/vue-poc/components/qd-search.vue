@@ -18,23 +18,17 @@
             
             <template  slot="item"  slot-scope="{ index, item, parent }" >
 		             <v-list-item-action>
-		                 <v-btn icon :to="item.value">
-		                  <v-icon>pages</v-icon>
+		                 <v-btn  icon :to="item.value">		                  
+		                  <v-icon>arrow_forward</v-icon>	
 		                 </v-btn>
 		            </v-list-item-action>
-                       
+                      <v-list-item-content>
+                        
 					      <v-list-item-title>
 					          {{ item.text }}
 					      </v-list-item-title>
-					      <v-spacer></v-spacer>
-					      <v-list-item-action>
-					        <v-btn
-					          icon
-					          :to="item.value"
-					        >
-                        <v-icon>arrow_forward</v-icon>					         
-					        </v-btn>
-					      </v-list-item-action>
+					      <v-list-item-subtitle>Page {{ item.value }}</v-list-item-subtitle>
+					   </v-list-item-content>
              </template>
               
      </v-combobox>

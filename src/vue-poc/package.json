@@ -1,6 +1,6 @@
 {
 	"name": "vue-poc",
-	"version": "0.5.5",
+	"version": "0.5.601",
 	"description": "Frontend vuetify, backend: basex",
 	"dependencies": {
 		"ace": "1.4.10",

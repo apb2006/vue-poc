@@ -59,6 +59,7 @@
       headers: [
     	{ text: 'Task', value: 'to' }, 
         { text: 'Title', value: 'title' },
+        { text: 'Url', value: 'url' },
         { text: 'Description', value: 'description' },
         ]
       }
