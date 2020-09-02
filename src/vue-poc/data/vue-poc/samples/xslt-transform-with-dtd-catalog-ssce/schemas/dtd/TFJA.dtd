@@ -1,0 +1,2761 @@
+<!-- Taylor & Francis Journal Article DTD (Version 1.10) -->
+
+<!--
+  VERSION: 0.1 (28/3/2004)
+           updated by: Neil Bradley
+              - This initial version of the DTD was created from the Dekker Article DTD
+                and modified to remove support for document types other than Journal articles, and enhanced to
+                support additional features found in the Taylor & Francis US DTD and the NCBI DTD.
+  VERSION: 0.2 (7/5/2004)
+           updated by: Neil Bradley
+              - Changed names of entities files and references from "Dekker" to "TandF"
+              - Added <terminology> element (used in place of <term> outside of definitions lists)
+              - Added specissuetitle attribute to <meta> element
+              - Added filename to <graphic> and media objects (removed from graphic attributes group)
+              - Removed redundant NOTATIONs
+              - Removed <toc> element
+              - Removed <syndication> element
+              - Removed productcode attribute from section attributes group
+              - Removed graphiclocation attribute from graphicAttrs group
+              - Removed fulltextlink attribute from <meta>
+              - Removed type attribute from <textref>
+              - Removed fileformat attribute from various elements
+              - Removed productcode attribute from media objects
+              - Removed displaydate attribute from <production-dates> element
+              - Changed <degrees> to <degree>
+              - Changed <defentry> to only allow one <definition>
+              - Changed partofspecissue attribute in <meta> element to only allow "yes" or "no"
+              - Changed <formula> to disallow embedded objects (including more <formula>)
+              - Changed <texformula> to disallow embedded formatting
+  VERSION: 1.0 (29/6/2004)
+           updated by: Neil Bradley
+              - Moved <endnotes> to before <references> 
+              - Changed <endnotes> to allow new <endnote> for separately numbered notes
+              - Added new <source> element to content of <extract> 
+              - Allowed optional new <no> element at start of <part>, <sectionX> and <equation> elements, and to the new <question> element in <exam>
+              - Added new indent attribute to <para>, with values to allow multiple indent levels 
+              - Made <seriesinfo> optional within <ref-book> 
+              - Changed <meetingloc> from "(city, (state|country))" to "(city, state?, country?)" 
+              - Added <poem> (in most places where <extract> can also appear), including stanza, poemline and source elements 
+              - Added index (wherever <para> can appear), including indexdiv and indexentry, author, subject and misc, indxname indxsubj, seeie, seealsoie and indexsubentry
+              - Added <exam> (in most places where <extract> can also appear) (including item-info, question-answer, question and answer elements)
+              - Allowed more than one <title> in <abstract>, mixed with other block elements 
+              - Added "Conclusion" to list of Type attribute options in SectionAttrs parameter 
+              - Allowed <keywordset> in <translation>
+              - Added <corporate> author as alternative content of <author-ref> element
+              - Made attribute <meta refstyle="..."> #IMPLIED 
+  VERSION: 1.1 (26/10/2004)
+           updated by: William Goodey
+              - Added attribute <coverdate> to ArticleAttrs
+              - Changed requirement for Document Type Declaration so the top of an article should read 
+                The Taylor and Francis preferred declaration 
+                DOCTYPE article PUBLIC "-//Taylor and Francis//Journal Article//EN" "tfja.dtd" 
+                DOCTYPE article SYSTEM "http://public.metapress.com/dtd/TAFXML/TFJA.dtd"
+  VERSION: 1.2 (24/11/2004)
+           updated by: William Goodey
+              - Made <reference> and <abstract> elements optional
+              - Made productfree attribute default as 'no' in <unarticle> (already 'no' in <article>)
+              - Made <journalcode> element required
+  VERSION: 1.3 (15/2/2005)
+           updated by: William Goodey
+              - Made the attribute <seq> a required attribute in the meta element.
+              - Made the attribute <refstyle> optional in the meta element.
+              - Made the element <articletitle> optional in <ref-periodic> element.
+              - Made the elements <state> and <country> optional in the <pubplace> element.
+              - Made the element <search> optional in the element <meta>.
+  VERSION: 1.4 (27/3/2006)
+           updated by: William Goodey
+              - Added optional element <countriesoforigin> to the <meta> element
+              - Added repeatable element <countryoforigin> to the <countriesoforigin> element in <meta>
+  VERSION: 1.5 (18/2/2009)
+           updated by: Vincent M. Lizzi
+              - All article XML should now specify the system address "http://cats.informa.com/tfja/dtd/TFJA.dtd" in their DOCTYPE. 
+                Note that the previous URL hosted at Metapress is no longer maintained.
+              - Updated contact details in documentation.
+              - Added seriesnum optional attribute in <meta>.
+              - Allowed <newpage> to appear following <meta> to eliminate need to place <newpage> within article title or supertitle.
+              - Added new <doi> element optional in all reference models.
+  VERSION: 1.6 (1/7/2009)
+           updated by: Vincent M. Lizzi
+              - Added taggingstage attribute in <meta>
+              - Updated description of articlestatus attribute to distinguish from taggingstage.
+              - Added <query> element to capture queries in articles in production.
+              - Made the elements <authorfield> and <editorfield> optional in <ref-book>.
+              - Added new specific types to <enunciation>: Case, Problem, Algorithm.
+              - Allowed <endnoteref> to appear in name elements, including author names and names in references.
+              - Allowed <prefix> to appear in author-ref, author-ref-text, editor-ref, editor-ref-text.
+              - Allowed <sup> and <sub>, to appear in name elements for author, author-ref, author-ref-text, editor-ref, editor-ref-text.
+              - Added element <docpubdate> to <ref-govpub> and <ref-govpub-text>.
+              - Made the element <contactinfo> optional in <author>.
+  VERSION: 1.7 (16/10/2009)
+           updated by: Vincent M. Lizzi
+              - Added character entity set file TandFxslt.ent. See TandFxslt.ent for details.
+  VERSION: 1.8 (16/6/2010)
+           updated by: Vincent M. Lizzi
+              - Updated common character entity sets to ISO and MathML entity sets from W3C "XML Entity Definitions for Characters, W3C Recommendation 01 April 2010".
+              - Updated TandF extended character entity sets to remove duplicates, assign Unicode values where possible, and add new entities for frequently-used characters.
+              - Updated documentation of Characters Allowed to reflect the updated entity sets, and to allow use of Unicode character entities when necessary.
+              - Updated documentation of <meta> attribute productid and <journalcode> element to indicate their actual use.
+              - Allowed <journaltitle> to appear in <unarticle> for consistency with <article> model.
+              - Added element <journalsubtitle> to appear in <article> and <unarticle>.
+              - Allowed <translation> to appear in <unarticle> consistent with <article> model.
+              - Updated documentation of language attribute for <translation> element.
+              - Added xml:lang attribute to <article> and <unarticle> to describe the primary language of the article text.
+              - Allowed formatting elements to appear within <webaddress> and <email>.
+              - Changed documentation of <webaddress> to require inclusion of protocol (e.g. http://) in url attribute.
+              - Added elements <relatedmaterial> and <relationnote> for tagging links to related articles or publications.
+              - Added doi attribute to <formaltable> and <informaltable> elements.
+              - Allowed missing Common ID Attributes in elements <exam>, <question-answer>, <question>, <answer>, <poem>, <stanza>,
+                 <poemline>, <source>, <corporate>.
+              - Allowed <title> to appear inside <extract>.
+              - Allowed <para> to appear inside <indexdiv>.
+              - Added element <shortauthors> to capture abbreviated author list as may appear in a running head in print,
+                 and updated documentation of <shorttitle> to indicate usage in conjunction with <shortauthors>.
+              - Allowed <query> element to appear inside <usa> and <internat> address elements.
+              - Refractored parameter entity a-group-GraphicAttrs to create new parameter entity a-group-FileRefAttrs.
+              - Allowed filename attribute to appear in <texstructure> and <formula> elements via a-group-FileRefAttrs parameter entity.
+              - Removed unused media elements <videoobject>, <videodata>, <simulationobject>, <simulation>, <audioobject> and <audiodata>.
+              - Added elements <supplementmaterial>, <supplementfile>, <suppmatref> for supplementary material (video, audio, datasets, etc.).
+              - Updated documentation of <author> to describe preferred tagging of author names that appear within text.
+              - Added elements <fundingdetails>, <fundingaward>, <fundingsource>, <fundawardid>, <fundingrecipient>, <principalinvestigator> to capture funding body information.
+              - Updated documention section "Introducing the TFJA DTD" to include links to the test article, and created a second test article with <unarticle> as the root element.
+              - Removed entity file TandFxslt.ent and parameter entity %TandFxsltEscape;. Added entity file TandFcust.ent and parameter entity %plane1D;.
+              - Allowed <query> element to appear in elements <name>, <author-ref>, <author-ref-text>, <editor-ref>, <editor-ref-text>, <patentowner-ref>, and <patentowner-ref-text>. Removed <query> from person name elements via %NameMixture;
+  VERSION: 1.9 (10/2/2011)
+           updated by: Vincent M. Lizzi
+              - Added volumeisissue attribute to <meta> element to support journals that publish using only volume numbers.
+              - Added elocation attribute to <meta> element to support non-page-based article numbering.
+              - Added type attribute to <abstract> element to support graphical abstracts.
+              - Added element <label> in <supplementmaterial>.
+              - Added pdfunavailable attribute to <meta> to clarify missing PDF files.
+              - Removed <relatedmaterial> and related elements introduced in 1.8 to replace with a simpler format closer to what Atypon supports.
+              - Added element <relatedarticle> element to support article relationships.
+              - Added element <issuetitle> to support formatting elements in issue titles.
+              - Deprecated unused elements <linkset> and <linkout>, and attribute article-association on unarticle.
+              - Added documentation for Identifier Conventions and File Naming Conventions.
+              - Updated documentation for attributes yearofpub, coverdate, issuenum, pdffilename, pdffilesize, printpubdate and webpubdate.
+              - Character entity idot in TandFchar.ent updated to correct Unicode character U+00069.
+  VERSION: 1.10 (3/7/2013)
+           updated by: Vincent M. Lizzi
+              - Added option "openaccess" to the value list of the productfree attribute on <article> and <unarticle>.
+              - Moved productfree attribute into attribute group a-group-ArticleAttrs. It was previously defined on elements <article> and <unarticle> separately.
+              - Added element <licensestatement> to hold a license statement.
+              - Added option "republish" to the value list of the relationtype attribute on <relatedarticle>.
+              - Updated many character entities to replace "[name]" values with Unicode values.
+-->
+
+<!--                                                                -->
+<!-- Documentation for the TFJA DTD can be viewed at:               -->
+<!-- http://cats.informa.com/tfja/doc                               -->
+<!--                                                                -->
+ 
+ 
+<!--                                                                -->
+<!--                                                                -->
+<!--                     NOTATIONS                                  -->
+<!--                                                                -->
+<!--                                                                -->
+ 
+ 
+ 
+ 
+<!-- IMAGE FORMATS -->
+ 
+<!NOTATION PS      SYSTEM "PS">
+<!NOTATION EPS     PUBLIC "+//ISBN 0-201-18127-4::Adobe//NOTATION PostScript Language Ref. Manual//EN" "">
+<!NOTATION FAX     PUBLIC "-//USA-DOD//NOTATION CCITT Group 4 Facsimile Type 1 Untiled Raster//EN" "">
+<!NOTATION TIFF    SYSTEM "TIFF">
+<!NOTATION JPG     SYSTEM "JPG">
+<!NOTATION JPEG    SYSTEM "JPG">
+<!NOTATION GIF     SYSTEM "GIF">
+<!NOTATION GIF87a  PUBLIC "-//CompuServe//NOTATION Graphics Interchange Format 87a//EN" "">
+<!NOTATION GIF89a  PUBLIC "-//CompuServe//NOTATION Graphics Interchange Format 89a//EN" "">
+<!NOTATION DVI     SYSTEM "DVI">
+<!NOTATION CGM-CHAR     PUBLIC "ISO 8632/2//NOTATION Character encoding//EN" "">
+<!NOTATION CGM-BINARY   PUBLIC "ISO 8632/3//NOTATION Binary encoding//EN" "">
+<!NOTATION CGM-CLEAR    PUBLIC "ISO 8632/4//NOTATION Clear text encoding//EN" "">
+ 
+<!-- TAGGING FORMATS -->
+ 
+<!NOTATION TEX	      PUBLIC "+//ISBN 0-201-13448-9::Knuth//NOTATION The TeXbook//EN" "">
+<!NOTATION TBL	      SYSTEM "TBL">
+<!NOTATION EQN	      SYSTEM "EQN">
+ 
+ 
+ 
+<!--                                                                -->
+<!--                                                                -->
+<!--                     ENTITIES                                   -->
+<!--                                                                -->
+<!--                                                                -->
+ 
+ 
+ 
+ 
+<!-- TandFcust entity file (can be used to customize entity definitions) -->
+<!ENTITY % TandFcust   
+           PUBLIC "-//TandF//ENTITIES Customizations//EN" 
+           "../entities/TandFcust.ent">
+%TandFcust;
+ 
+ 
+ 
+<!--                          -->
+<!-- COMMON CHARACTER MODULES -->
+<!--                          -->
+ 
+ 
+<!-- TandF extended character entity definitions -->
+ 
+<!ENTITY % TandFchar   
+           PUBLIC "-//TandF//ENTITIES Specific Character Entities//EN" 
+           "../entities/TandFchar.ent">
+ 
+<!ENTITY % TandFobj    
+           PUBLIC "-//TandF//ENTITIES Specific Object Entities//EN"    
+           "../entities/TandFobj.ent">
+ 
+<!ENTITY % TandFmath   
+           PUBLIC "-//TandF//ENTITIES Specific Math Operators//EN"     
+           "../entities/TandFmath.ent">
+ 
+ 
+<!-- Common character entity sets defined by W3C for MathML -->
+ 
+<!ENTITY % ent-isobox   
+           PUBLIC "-//W3C//ENTITIES Box and Line Drawing//EN"
+           "../entities/isobox.ent" >
+ 
+<!ENTITY % ent-isocyr1  
+           PUBLIC "-//W3C//ENTITIES Russian Cyrillic//EN"
+           "../entities/isocyr1.ent" >
+ 
+<!ENTITY % ent-isocyr2  
+           PUBLIC "-//W3C//ENTITIES Non-Russian Cyrillic//EN"
+           "../entities/isocyr2.ent" >
+ 
+<!ENTITY % ent-isodia   
+           PUBLIC "-//W3C//ENTITIES Diacritical Marks//EN"
+           "../entities/isodia.ent" >
+ 
+<!ENTITY % ent-isolat1  
+           PUBLIC "-//W3C//ENTITIES Added Latin 1//EN"
+           "../entities/isolat1.ent" >
+ 
+<!ENTITY % ent-isolat2  
+           PUBLIC "-//W3C//ENTITIES Added Latin 2//EN"
+           "../entities/isolat2.ent" >
+ 
+<!ENTITY % ent-isonum   
+           PUBLIC "-//W3C//ENTITIES Numeric and Special Graphic//EN"
+           "../entities/isonum.ent" >
+ 
+<!ENTITY % ent-isopub   
+           PUBLIC "-//W3C//ENTITIES Publishing//EN"
+           "../entities/isopub.ent" >
+ 
+<!ENTITY % ent-isoamsa  
+           PUBLIC "-//W3C//ENTITIES Added Math Symbols: Arrow Relations//EN"  
+           "../entities/isoamsa.ent">
+ 
+<!ENTITY % ent-isoamsb  
+           PUBLIC "-//W3C//ENTITIES Added Math Symbols: Binary Operators//EN" 
+           "../entities/isoamsb.ent">
+ 
+<!ENTITY % ent-isoamsc  
+           PUBLIC "-//W3C//ENTITIES Added Math Symbols: Delimiters//EN" 
+           "../entities/isoamsc.ent">
+ 
+<!ENTITY % ent-isoamsn  
+           PUBLIC "-//W3C//ENTITIES Added Math Symbols: Negated Relations//EN"
+           "../entities/isoamsn.ent">
+ 
+<!ENTITY % ent-isoamso  
+           PUBLIC "-//W3C//ENTITIES Added Math Symbols: Ordinary//EN"
+           "../entities/isoamso.ent">
+ 
+<!ENTITY % ent-isoamsr  
+           PUBLIC "-//W3C//ENTITIES Added Math Symbols: Relations//EN"
+           "../entities/isoamsr.ent">
+ 
+<!ENTITY % ent-isogrk1  
+           PUBLIC "-//W3C//ENTITIES Greek Letters//EN"
+           "../entities/isogrk1.ent">
+ 
+<!ENTITY % ent-isogrk2  
+           PUBLIC "-//W3C//ENTITIES Monotoniko Greek//EN"
+           "../entities/isogrk2.ent">
+ 
+<!ENTITY % ent-isogrk3  
+           PUBLIC "-//W3C//ENTITIES Greek Symbols//EN"
+           "../entities/isogrk3.ent">
+ 
+<!ENTITY % ent-isogrk4  
+           PUBLIC "-//W3C//ENTITIES Alternative Greek Symbols//EN"
+           "../entities/isogrk4.ent">
+ 
+<!ENTITY % ent-isomfrk  
+           PUBLIC "-//W3C//ENTITIES Math Alphabets: Fraktur//EN"
+           "../entities/isomfrk.ent" >
+ 
+<!ENTITY % ent-isomopf  
+           PUBLIC "-//W3C//ENTITIES Math Alphabets: Open Face//EN"
+           "../entities/isomopf.ent" >
+ 
+<!ENTITY % ent-isomscr  
+           PUBLIC "-//W3C//ENTITIES Math Alphabets: Script//EN"
+           "../entities/isomscr.ent" >
+ 
+<!ENTITY % ent-isotech  
+           PUBLIC "-//W3C//ENTITIES General Technical//EN"
+           "../entities/isotech.ent" >
+ 
+<!-- New characters defined by MathML -->
+<!ENTITY % ent-mmlextra 
+           PUBLIC "-//W3C//ENTITIES Additional MathML Symbols//EN"
+           "../entities/mmlextra.ent" >
+ 
+<!-- MathML aliases for characters defined above -->
+<!ENTITY % ent-mmlalias 
+           PUBLIC "-//W3C//ENTITIES MathML Aliases//EN"
+           "../entities/mmlalias.ent" >
+ 
+ 
+%TandFchar;
+%TandFobj;
+%TandFmath;
+ 
+%ent-isobox;
+%ent-isocyr1;
+%ent-isocyr2;
+%ent-isodia;
+%ent-isolat1;
+%ent-isolat2;
+%ent-isonum;
+%ent-isopub;
+%ent-isoamsa;
+%ent-isoamsb;
+%ent-isoamsc;
+%ent-isoamsn;
+%ent-isoamso;
+%ent-isoamsr;
+%ent-isogrk1;
+%ent-isogrk2;
+%ent-isogrk3;
+%ent-isogrk4;
+%ent-isomfrk;
+%ent-isomopf;
+%ent-isomscr;
+%ent-isotech;
+ 
+%ent-mmlextra;
+%ent-mmlalias;
+ 
+<!-- MATHML MODULE -->
+<!-- ***** NOT USED (not currently referenced from any element in this DTD)
+<!ENTITY % mathml2 PUBLIC "-//W3C//DTD MathML 2.0//EN" "mathml2.dtd" >
+%mathml2;
+***** -->
+<!-- ADVANCED CHEMISTRY MODULE -->
+<!-- note: must be referenced AFTER the "mix" entity declarations above -->
+<!-- ***** NOT USED (not currently referenced from any element in this DTD)
+<!ENTITY % TandFChemistry SYSTEM "TandFChemistry.mod" >
+%TandFChemistry;
+***** -->
+
+
+
+<!--  Common Required ID Attributes -->
+<!--  used in elements: affiliation ref-book ref-conf ref-govpub ref-patent ref-periodic ref-web
+                        query -->
+
+<!ENTITY % a-group-CommonRequiredIDAttrs '
+                id                       ID  #REQUIRED 
+                role                     NMTOKENS  #IMPLIED '>
+
+
+
+
+<!--  Common Optional ID Attributes -->
+<!--  used in elements: article unarticle meta journalcode issn coden pubitemid
+                        pubmedabbrev sici author name surname givenname inits
+                        middlename prefix suffix honorific degree contactinfo contact
+                        bioinfo biography photo authornote shortauthors affiliations institution
+                        department institutionname position affiltitle address usa internat
+                        addline city state zip province postalcode country
+                        phone fax addnote fundingdetails fundingaward fundingsource fundawardid
+                        fundingrecipient principalinvestigator relatedarticle search category primarysubcategory subcategory
+                        topic subtopic production-dates supertitle title subtitle shorttitle
+                        abbrevtitle doititle journaltitle journalsubtitle issuetitle logo abstract
+                        keywordset keyword abbrev-sect nomen-sect intro part section1
+                        shortsectionhead section2 section3 section4 section5 summary ackno
+                        notesaddedinproof glossary appendix references refsection readings ref-book-text
+                        authorfield author-ref corporate author-ref-text etal chaptitle booktitle
+                        edition editorfield editor-ref editor-ref-text seriesinfo publicationfield publicationfield-text
+                        pubname pubplace month year volumenum abstractnum pagefield
+                        firstpage lastpage addinfo linkset linkout ref-conf-text presentationtitle
+                        collectworktitle meetingfield meetingname meetingloc meetingdate day ref-govpub-text
+                        docpubtitle pubnum pubfield docpubdate ref-patent-text patentownerfield patentowner-ref
+                        patentowner-ref-text patenttitle patentnum date ref-periodic-text articletitle inpress
+                        periodicpubfield volume issue doi ref-web-text translation para
+                        extract poem stanza poemline computertext source simplelist
+                        listitem itemizedlist listtitle orderedlist deflist defentry term
+                        definition figure caption endnotes endnote graphic formaltable
+                        informaltable table tgroup colspec thead tfoot tbody
+                        row entry exam question-answer question answer index
+                        indexdiv indexentry indexsubentry matheqn unnummatheqn mathcompound equation
+                        texstructure formula chemeqn unnumchemeqn compound chemobj structure
+                        letter salutation closing signature address-text enunciation supplementmaterial
+                        supplementfile label email webaddress newpage sub sup
+                        b i smallcaps u box roman script
+                        tt overline strikethrough br footnote trademark companyname
+                        famousname citation acronym terminology refrange chemeqnref chemformref
+                        matheqnref tableref citationref figureref suppmatref listref listitemref
+                        chemstructureref footnoteref endnoteref enunciationref textref xref inlinematheqn
+                        inlinechemeqn inlinegraphic -->
+
+<!ENTITY % a-group-CommonIDAttrs '
+                id                       ID  #IMPLIED 
+                role                     NMTOKENS  #IMPLIED '>
+
+
+
+
+<!--  Year of Publication Attributes -->
+<!--  used in elements: article unarticle section1 section2 figure supplementmaterial -->
+
+<!ENTITY % a-group-YearOfPubAttrs '
+                yearofpub                CDATA  #IMPLIED '>
+
+
+
+
+<!--  Article Attributes -->
+<!--  used in elements: article unarticle -->
+
+<!ENTITY % a-group-ArticleAttrs '
+                articleid                CDATA  #REQUIRED 
+                articlenumber            CDATA  #IMPLIED 
+                coverdate                CDATA  #IMPLIED 
+                copyrighttf              (yes | no)  "yes" 
+                copyrightowner           CDATA  #IMPLIED 
+                doi                      CDATA  #IMPLIED 
+                tagger                   CDATA  #IMPLIED 
+                numcolorpages            CDATA  #IMPLIED 
+                publisherimprint         CDATA  #IMPLIED 
+                xml:lang                 NMTOKEN  #IMPLIED 
+                productfree              (yes | openaccess | no)  "no" '>
+
+
+
+
+<!--  Section Attributes -->
+<!--  used in elements: section1 section2 -->
+
+<!ENTITY % a-group-SectionAttrs '
+                articleid                CDATA  #IMPLIED 
+                productid                CDATA  #IMPLIED 
+                doi                      CDATA  #IMPLIED 
+                colorgraphics            (yes | no)  "no" 
+                firstpage                CDATA  #IMPLIED 
+                lastpage                 CDATA  #IMPLIED 
+                pagecount                CDATA  #IMPLIED 
+                type                     (Material | Theory | CaseStudy | Discussion | 
+                                          Results | Method | Exp | Intro | 
+                                          Procedure | Conclusion)  #IMPLIED 
+                primaryaudience          (Researcher | Professional | Librarian | Educator | 
+                                          Non-specialist | Undergraduate | Consumer)  #IMPLIED 
+                secondaryaudience        (Researcher | Professional | Librarian | Educator | 
+                                          Non-specialist | Undergraduate | Consumer)  #IMPLIED '>
+
+
+
+
+<!--  Interactive Attributes -->
+<!--  used in elements: photo logo figure graphic matheqn unnummatheqn formula
+                        chemeqn unnumchemeqn structure supplementfile inlinematheqn inlinechemeqn inlinegraphic
+                        -->
+
+<!ENTITY % a-group-InteractiveAttrs '
+                url                      CDATA  #IMPLIED '>
+
+
+
+
+<!--  File Reference Attributes -->
+<!--  used in elements: photo logo graphic texstructure formula structure supplementfile
+                        inlinegraphic -->
+
+<!ENTITY % a-group-FileRefAttrs '
+                fileref                  CDATA  #IMPLIED 
+                entityref                ENTITY  #IMPLIED 
+                filename                 CDATA  #IMPLIED '>
+
+
+
+
+<!--  Graphic Attributes -->
+<!--  used in elements: photo logo graphic structure inlinegraphic -->
+
+<!ENTITY % a-group-GraphicAttrs '
+                height                   CDATA  #IMPLIED 
+                width                    CDATA  #IMPLIED 
+                color                    (bw | 4-color | halftone | greyscale
+                                          )  #IMPLIED 
+                rights                   (full | electronic | print)  #IMPLIED '>
+
+
+
+ 
+
+<!--  Links from Text -->
+<!--  used in elements: addinfo caption endnotes endnote refrange -->
+
+<!ENTITY % LinksFromText 'xref | chemeqnref | chemformref | matheqnref | tableref | citationref | 
+                figureref | suppmatref | listref | listitemref | chemstructureref | 
+                footnoteref | endnoteref | textref | enunciationref'>
+
+
+<!--  Objects in Text -->
+<!--  used in elements: issuetitle booktitle addinfo meetingname term caption endnotes
+                        endnote supplementfile email webaddress terminology -->
+
+<!ENTITY % ObjectsInText 'inlinematheqn | inlinechemeqn | inlinegraphic'>
+
+
+<!--  Mail and Web Links in Text -->
+<!--  used in elements: fundingsource licensestatement booktitle addinfo caption endnotes endnote
+                        address-text -->
+
+<!ENTITY % MailAndWebLinksInText 'email | webaddress'>
+
+
+<!--  Names in Text -->
+<!--  used in elements: issuetitle booktitle addinfo meetingname term caption endnotes
+                        endnote supplementfile email webaddress b i smallcaps
+                        u box roman script tt overline strikethrough
+                        terminology -->
+
+<!ENTITY % NamesInText 'famousname | companyname | institutionname | citation'>
+
+
+<!--  Acronyms and Terms in Text -->
+<!--  used in elements: issuetitle booktitle addinfo term caption endnotes endnote
+                        terminology -->
+
+<!ENTITY % AcronymsAndTermsInText 'acronym | terminology'>
+
+
+<!--  Formatting in Text -->
+<!--  used in elements: shortauthors department institutionname fundingsource licensestatement relatedarticle issuetitle
+                        keyword booktitle month addinfo meetingname term caption
+                        endnotes endnote formula supplementfile email webaddress sub
+                        sup companyname terminology -->
+
+<!ENTITY % FormattingInText 'sub | sup | b | i | smallcaps | u | box | roman | 
+                script | tt | strikethrough | overline | newpage | query'>
+
+
+<!--  Formatting Objects in Text -->
+<!--  used in elements: corporate addinfo caption endnotes endnote -->
+
+<!ENTITY % FormatObjectsInText 'br | refrange'>
+
+
+<!--  Funding Details in Text -->
+<!--  used in elements: para -->
+
+<!ENTITY % FundingDetailsInText 'fundingsource | fundawardid'>
+
+
+<!--  Name Mixture -->
+<!--  used in elements: surname givenname inits middlename prefix suffix honorific
+                        degree -->
+
+<!ENTITY % NameMixture 'footnoteref | xref | citationref | endnoteref | sup | sub'>
+
+
+<!--  Document Title Content -->
+<!--  used in elements: supertitle title subtitle shorttitle abbrevtitle doititle shortsectionhead
+                        -->
+
+<!ENTITY % DocumentTitleContent 'trademark | 
+                %LinksFromText; | %ObjectsInText; | %MailAndWebLinksInText; | %NamesInText; | 
+                %AcronymsAndTermsInText; | %FormattingInText; | %FormatObjectsInText;'>
+
+
+<!--  Title Content -->
+<!--  used in elements: journaltitle journalsubtitle chaptitle pubname presentationtitle collectworktitle docpubtitle
+                        patenttitle articletitle listtitle -->
+
+<!ENTITY % TitleContent 'trademark | 
+                %LinksFromText; | %ObjectsInText; | %MailAndWebLinksInText; | %NamesInText; | 
+                %AcronymsAndTermsInText; | %FormattingInText; | %FormatObjectsInText;'>
+
+
+<!--  Paragraph Content -->
+<!--  used in elements: authornote para poemline computertext source entry -->
+
+<!ENTITY % ParagraphContent 'trademark | footnote | %LinksFromText; | %ObjectsInText; | %MailAndWebLinksInText; | %NamesInText; | 
+                %AcronymsAndTermsInText; | %FormattingInText; | %FormatObjectsInText;'>
+
+
+<!--  Emphasis Content -->
+<!--  used in elements: b i smallcaps u box roman script
+                        tt overline strikethrough -->
+
+<!ENTITY % EmphasisContent '%ObjectsInText; | %FormattingInText; | %FormatObjectsInText;'>
+
+
+<!--  Section Mixture -->
+<!--  used in elements: intro section1 section2 section3 section4 section5 summary
+                        ackno notesaddedinproof -->
+
+<!ENTITY % SectionMix '(para | figure | formaltable | graphic | informaltable | chemeqn | unnumchemeqn | formula | compound | 
+                structure | matheqn | unnummatheqn | simplelist | itemizedlist | orderedlist | deflist | 
+                extract | poem | exam | index | computertext | letter | address-text | supplementmaterial | 
+                enunciation | comment)+'>
+
+
+<!--  Reference Content -->
+<!--  used in elements: edition seriesinfo year volumenum abstractnum firstpage lastpage
+                        day pubnum pubfield patentnum date inpress volume
+                        issue chemeqnref chemformref matheqnref tableref citationref figureref
+                        suppmatref listref listitemref chemstructureref footnoteref endnoteref enunciationref
+                        textref xref -->
+
+<!ENTITY % ReferenceContent '%FormattingInText;'>
+
+
+
+
+
+<!-- ************************************ -->
+<!-- Article Structure -->
+<!-- ************************************ -->
+
+
+
+<!-- Complete journal article -->
+<!ELEMENT article                        (meta, newpage?, journaltitle?, journalsubtitle?, issuetitle?, supertitle?, title, subtitle?, shortauthors?, shorttitle, abbrevtitle?, 
+                                              doititle?, logo?, abstract?, keywordset*, 
+                                              (abbrev-sect | nomen-sect)*, 
+                                              intro, (part+ | section1+), 
+                                              summary*, ackno?, notesaddedinproof?, glossary*, 
+                                              (abbrev-sect | nomen-sect)*, appendix*, endnotes?, references?, abstract*, translation*
+                                              )>
+<!ATTLIST article
+                documenttype             (Original | Review | CaseReport | TechnicalNote | 
+                                          BriefNote | Miscellaneous)  #REQUIRED 
+               %a-group-CommonIDAttrs;
+               %a-group-ArticleAttrs;
+               %a-group-YearOfPubAttrs;>
+
+
+<!-- Non-structured simple or small article -->
+<!ELEMENT unarticle                      (meta, newpage?, journaltitle?, journalsubtitle?, issuetitle?, supertitle?, title?, subtitle?, shortauthors?, shorttitle?, abbrevtitle?, 
+                                              doititle?, logo?, 
+                                              (abstract | keywordset | abbrev-sect | nomen-sect | 
+                                              intro | part | section1 | 
+                                              summary | ackno | notesaddedinproof | glossary | appendix | references)+, 
+                                              endnotes?, translation*)>
+<!ATTLIST unarticle
+                article-association      CDATA  #IMPLIED 
+                documenttype             (Abstracts | Announcement | Calendar | BookReview | 
+                                          Commentary | Eulogy | Editorial | Erratum | 
+                                          Preface | LetterToEditor | Advertisement | Miscellaneous
+                                          )  #REQUIRED 
+               %a-group-CommonIDAttrs;
+               %a-group-ArticleAttrs;
+               %a-group-YearOfPubAttrs;>
+
+
+
+
+<!-- ************************************ -->
+<!-- Metadata -->
+<!-- ************************************ -->
+
+
+
+<!-- Information about the article -->
+<!ELEMENT meta                           (journalcode, issn+, coden, sici?, pubitemid?, pubmedabbrev?, author*, 
+                                              affiliations?, fundingdetails?, licensestatement?, relatedarticle*, supplementmaterial*, 
+                                              search?, production-dates, comment*, countriesoforigin?)>
+<!ATTLIST meta
+                articleurl               CDATA  #IMPLIED 
+                articlestatus            CDATA  #IMPLIED 
+                colorgraphics            (yes | no)  "no" 
+                contenttype              CDATA  #IMPLIED 
+                firstpage                CDATA  #IMPLIED 
+                inpress                  (yes | no)  #IMPLIED 
+                issuenum                 CDATA  #IMPLIED 
+                volumeisissue            (yes | no)  "no" 
+                lastpage                 CDATA  #IMPLIED 
+                elocation                CDATA  #IMPLIED 
+                medlinejrnltitle         CDATA  #IMPLIED 
+                pagecount                CDATA  #IMPLIED 
+                partofspecissue          (yes | no)  "no" 
+                pdffilename              CDATA  #IMPLIED 
+                pdffilesize              CDATA  #IMPLIED 
+                pdfpagecount             CDATA  #IMPLIED 
+                pdfunavailable           (retracted | rights | nosource | notproduced | 
+                                          notyetproduced)  #IMPLIED 
+                primaryaudience          (Researcher | Professional | Librarian | Educator | 
+                                          Non-specialist | Undergraduate | Consumer)  #IMPLIED 
+                productid                CDATA  #REQUIRED 
+                refstyle                 (Math | Chem | Med)  #IMPLIED 
+                secondaryaudience        (Researcher | Professional | Librarian | Educator | 
+                                          Non-specialist | Undergraduate | Consumer)  #IMPLIED 
+                seq                      CDATA  #REQUIRED 
+                specissuetitle           CDATA  #IMPLIED 
+                volumenum                CDATA  #IMPLIED 
+                seriesnum                CDATA  #IMPLIED 
+                taggingstage             (final | preview | inproduction)  "final" 
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Journal Metadata -->
+
+
+<!-- Journal code assigned by Taylor & Francis -->
+<!ELEMENT journalcode                    (#PCDATA)>
+<!ATTLIST journalcode
+               %a-group-CommonIDAttrs;>
+
+
+<!-- The ISSN code of the journal containing the article -->
+<!ELEMENT issn                           (#PCDATA)>
+<!ATTLIST issn
+                type                     (print | electronic | combo)  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- The CODEN code of the journal containing the article -->
+<!ELEMENT coden                          (#PCDATA)>
+<!ATTLIST coden
+               %a-group-CommonIDAttrs;>
+
+
+<!-- The publisher item identifier -->
+<!ELEMENT pubitemid                      (#PCDATA)>
+<!ATTLIST pubitemid
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Abbreviation assigned to journal by PubMed -->
+<!ELEMENT pubmedabbrev                   (#PCDATA)>
+<!ATTLIST pubmedabbrev
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Article Metadata -->
+
+
+<!-- The SICI code of the article -->
+<!ELEMENT sici                           (#PCDATA)>
+<!ATTLIST sici
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Countries of Origin -->
+
+
+<!-- The country (or countries) of origin of the article. -->
+<!ELEMENT countriesoforigin              (countryoforigin+)>
+
+
+<!-- The country of origin of the article. -->
+<!ELEMENT countryoforigin                (#PCDATA)>
+
+
+
+<!--  .  . Author Details -->
+
+
+<!-- Author of the article -->
+<!ELEMENT author                         (name, contactinfo?, bioinfo?, authornote*)>
+<!ATTLIST author
+                primaryauthor            (yes | no)  "no" 
+                corresponding            (yes | no)  "no" 
+                seq                      CDATA  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of person who wrote the article -->
+<!ELEMENT name                           ((honorific | prefix)*, 
+                                              givenname, inits?, middlename?, surname, 
+                                              (suffix | degree)*, query*)>
+<!ATTLIST name
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Surname of an author or editor -->
+<!ELEMENT surname                        (#PCDATA | %NameMixture;)*>
+<!ATTLIST surname
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Given name of an author or editor -->
+<!ELEMENT givenname                      (#PCDATA | %NameMixture;)*>
+<!ATTLIST givenname
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Initials of an author -->
+<!ELEMENT inits                          (#PCDATA | %NameMixture;)*>
+<!ATTLIST inits
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Middle name of author or editor -->
+<!ELEMENT middlename                     (#PCDATA | %NameMixture;)*>
+<!ATTLIST middlename
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Prefix of article author name -->
+<!ELEMENT prefix                         (#PCDATA | %NameMixture;)*>
+<!ATTLIST prefix
+                forcedisplay             (yes | no)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Suffix of an author or editor name. -->
+<!ELEMENT suffix                         (#PCDATA | %NameMixture;)*>
+<!ATTLIST suffix
+                forcedisplay             (yes | no)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- A mark of respect in the article author's name -->
+<!ELEMENT honorific                      (#PCDATA | %NameMixture;)*>
+<!ATTLIST honorific
+                forcedisplay             (yes | no)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Degree awarded to author of article  -->
+<!ELEMENT degree                         (#PCDATA | %NameMixture;)*>
+<!ATTLIST degree
+                forcedisplay             (yes | no)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Information on how to contact the author of the article -->
+<!ELEMENT contactinfo                    (contact+)>
+<!ATTLIST contactinfo
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Contact details for author of the article -->
+<!ELEMENT contact                        (position | address)>
+<!ATTLIST contact
+                corresponding            (yes | no)  "no" 
+                postpub                  (yes | no)  "no" 
+                biocontact               (yes | no)  "no" 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Biography and photo of author of the article -->
+<!ELEMENT bioinfo                        (biography, photo?)>
+<!ATTLIST bioinfo
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Biographical details of the author of the article -->
+<!ELEMENT biography                      (para | address-text | 
+                                              name | position | affiliation | 
+                                              chemeqn | unnumchemeqn | formula | compound | 
+                                              structure | matheqn | unnummatheqn | 
+                                              simplelist | itemizedlist | orderedlist | deflist | 
+                                              extract | comment)*>
+<!ATTLIST biography
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Photograph of the author of the article -->
+<!ELEMENT photo                          EMPTY>
+<!ATTLIST photo
+               %a-group-FileRefAttrs;
+               %a-group-GraphicAttrs;
+               %a-group-CommonIDAttrs;
+               %a-group-InteractiveAttrs;>
+
+
+<!-- Note about the author of the article -->
+<!ELEMENT authornote                     (#PCDATA | %ParagraphContent;)*>
+<!ATTLIST authornote
+                type                     (award | member | certified | election | 
+                                          featured | specialtitle | misc)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Comment on the article content or tagging -->
+<!ELEMENT comment                        (#PCDATA)>
+
+
+<!-- Shorter article authors list -->
+<!ELEMENT shortauthors                   (#PCDATA | %FormattingInText;)*>
+<!ATTLIST shortauthors
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  .  . Affiliations -->
+
+
+<!-- Article author affiliations -->
+<!ELEMENT affiliations                   (affiliation)+>
+<!ATTLIST affiliations
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Article author affiliation -->
+<!ELEMENT affiliation                    (institution, address)>
+<!ATTLIST affiliation
+                seq                      CDATA  #IMPLIED 
+               %a-group-CommonRequiredIDAttrs;>
+
+
+<!-- Name of department and institution the article author is or was affiliated to -->
+<!ELEMENT institution                    (department*, institutionname, department*)>
+<!ATTLIST institution
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of department within an institution the article author is or was affiliated to -->
+<!ELEMENT department                     (#PCDATA | %FormattingInText;)*>
+<!ATTLIST department
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of institution the article author is or was affiliated to -->
+<!ELEMENT institutionname                (#PCDATA | %FormattingInText;)*>
+<!ATTLIST institutionname
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Position of author at the affiliated institution -->
+<!ELEMENT position                       (affiltitle?, email*, phone*, fax*, webaddress*)>
+<!ATTLIST position
+                affilref                 IDREF  #REQUIRED 
+                primaryaffiliation       (yes | no)  "no" 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Article author role at affiliated institution -->
+<!ELEMENT affiltitle                     (#PCDATA)>
+<!ATTLIST affiltitle
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  .  . Address -->
+
+
+<!-- Address of author and affiliated institutions -->
+<!ELEMENT address                        (usa | internat)>
+<!ATTLIST address
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Author address or affiliated organisation address in the USA -->
+<!ELEMENT usa                            (addline*, city, state, zip?, country?, 
+                                              phone*, fax*, email*, webaddress*, addnote*, query*)>
+<!ATTLIST usa
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Author address or affiliated organisation address outside the USA -->
+<!ELEMENT internat                       ((addline | city | state | province | postalcode | country
+                                              )+, phone*, fax*, email*, webaddress*, addnote*, query*)>
+<!ATTLIST internat
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Single line of address of miscellaneous category -->
+<!ELEMENT addline                        (#PCDATA)>
+<!ATTLIST addline
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of city in address -->
+<!ELEMENT city                           (#PCDATA)>
+<!ATTLIST city
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of state in address -->
+<!ELEMENT state                          (#PCDATA)>
+<!ATTLIST state
+               %a-group-CommonIDAttrs;>
+
+
+<!-- ZIP code in USA address -->
+<!ELEMENT zip                            (#PCDATA)>
+<!ATTLIST zip
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of province in address -->
+<!ELEMENT province                       (#PCDATA)>
+<!ATTLIST province
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Postal code in address -->
+<!ELEMENT postalcode                     (#PCDATA)>
+<!ATTLIST postalcode
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of country in address -->
+<!ELEMENT country                        (#PCDATA)>
+<!ATTLIST country
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Telephone number in address -->
+<!ELEMENT phone                          (#PCDATA)>
+<!ATTLIST phone
+               %a-group-CommonIDAttrs;>
+
+
+<!-- FAX number in address -->
+<!ELEMENT fax                            (#PCDATA)>
+<!ATTLIST fax
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Note added to address -->
+<!ELEMENT addnote                        (#PCDATA)>
+<!ATTLIST addnote
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Funding Body Elements -->
+
+
+<!-- Container element for funding body information. -->
+<!ELEMENT fundingdetails                 (fundingaward+)>
+<!ATTLIST fundingdetails
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Contains information on one award that funded the article's research. -->
+<!ELEMENT fundingaward                   (fundingsource, fundawardid*, fundingrecipient*, principalinvestigator*)>
+<!ATTLIST fundingaward
+                awardtype                (grant | gift | contract)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of an organization or agency that provided research funding. -->
+<!ELEMENT fundingsource                  (#PCDATA | %FormattingInText; | %MailAndWebLinksInText; | acronym)*>
+<!ATTLIST fundingsource
+                sourcetype               (institution | society | government | corporation
+                                          )  #IMPLIED 
+                country                  NMTOKEN  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Award identifier assigned by a funding body -->
+<!ELEMENT fundawardid                    (#PCDATA)>
+<!ATTLIST fundawardid
+                fundsourceref            IDREF  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Person or institution that received research funding -->
+<!ELEMENT fundingrecipient               (name?, institution?)>
+<!ATTLIST fundingrecipient
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Person identified as principal investigator for research funding -->
+<!ELEMENT principalinvestigator          (name)>
+<!ATTLIST principalinvestigator
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . License Information -->
+
+
+<!-- Statement about the license used to publish the article -->
+<!ELEMENT licensestatement               (#PCDATA | %MailAndWebLinksInText; | %FormattingInText;)*>
+<!ATTLIST licensestatement
+                url                      CDATA  #IMPLIED >
+
+
+
+<!--  .  . Article Relationships -->
+
+
+<!-- Published article to which this article is related -->
+<!ELEMENT relatedarticle                 (#PCDATA | %FormattingInText; | comment)*>
+<!ATTLIST relatedarticle
+                relationtype             (erratum | corrigendum | retraction | commentary | 
+                                          companion | series | addendum | translation | 
+                                          republish)  #REQUIRED 
+                articleid                CDATA  #IMPLIED 
+                doi                      CDATA  #IMPLIED 
+                url                      CDATA  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Search -->
+
+
+<!-- Searchable classification codes -->
+<!ELEMENT search                         (category, primarysubcategory, subcategory+, topic*, subtopic*)>
+<!ATTLIST search
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Search category -->
+<!ELEMENT category                       (#PCDATA)>
+<!ATTLIST category
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Main sub-category of search category -->
+<!ELEMENT primarysubcategory             (#PCDATA)>
+<!ATTLIST primarysubcategory
+               %a-group-CommonIDAttrs;>
+
+
+<!-- secondary sub-category of search -->
+<!ELEMENT subcategory                    (#PCDATA)>
+<!ATTLIST subcategory
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Primary search topic -->
+<!ELEMENT topic                          (#PCDATA)>
+<!ATTLIST topic
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Secondary search topic -->
+<!ELEMENT subtopic                       (#PCDATA)>
+<!ATTLIST subtopic
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Miscellaneous Metadata -->
+
+
+<!-- Dates of various stages in production of the article -->
+<!ELEMENT production-dates               EMPTY>
+<!ATTLIST production-dates
+                projectedprintpubdate    CDATA  #IMPLIED 
+                printpubdate             CDATA  #IMPLIED 
+                webpubdate               CDATA  #IMPLIED 
+                receiveddate             CDATA  #IMPLIED 
+                acceptdate               CDATA  #IMPLIED 
+                reviseddate              CDATA  #IMPLIED 
+                qaapprovdate             CDATA  #IMPLIED 
+                finalapprovdate          CDATA  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+
+
+<!-- ************************************ -->
+<!-- Titles -->
+<!-- ************************************ -->
+
+
+
+<!-- Classifying title of the article -->
+<!ELEMENT supertitle                     (#PCDATA | %DocumentTitleContent;)*>
+<!ATTLIST supertitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of article or component of article -->
+<!ELEMENT title                          (#PCDATA | %DocumentTitleContent;)*>
+<!ATTLIST title
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Subtitle of article or references -->
+<!ELEMENT subtitle                       (#PCDATA | %DocumentTitleContent;)*>
+<!ATTLIST subtitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Shorter article title -->
+<!ELEMENT shorttitle                     (#PCDATA | %DocumentTitleContent;)*>
+<!ATTLIST shorttitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Cut-down version of full article title -->
+<!ELEMENT abbrevtitle                    (#PCDATA | %DocumentTitleContent;)*>
+<!ATTLIST abbrevtitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- DOI title of article -->
+<!ELEMENT doititle                       (#PCDATA | %DocumentTitleContent;)*>
+<!ATTLIST doititle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of the journal containing the article or of a referenced article -->
+<!ELEMENT journaltitle                   (#PCDATA | %TitleContent;)*>
+<!ATTLIST journaltitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Subtitle of the journal containing the article -->
+<!ELEMENT journalsubtitle                (#PCDATA | %TitleContent;)*>
+<!ATTLIST journalsubtitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of the issue containing the article -->
+<!ELEMENT issuetitle                     (#PCDATA | trademark | br
+                                               | %ObjectsInText; | %NamesInText;
+                                               | %AcronymsAndTermsInText; | %FormattingInText;)*>
+<!ATTLIST issuetitle
+                partofissue              (yes | no)  "no" 
+                issuetype                (normal | special | themed | proceedings
+                                          )  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+
+
+<!-- ************************************ -->
+<!-- Front Matter -->
+<!-- ************************************ -->
+
+
+
+<!-- Symbol adopted by organisation -->
+<!ELEMENT logo                           EMPTY>
+<!ATTLIST logo
+               %a-group-FileRefAttrs;
+               %a-group-GraphicAttrs;
+               %a-group-CommonIDAttrs;
+               %a-group-InteractiveAttrs;>
+
+
+<!-- Summary of the article -->
+<!ELEMENT abstract                       (title | para | figure | formaltable | graphic | informaltable | 
+                                              chemeqn | unnumchemeqn | formula | compound | 
+                                              structure | matheqn | unnummatheqn | 
+                                              simplelist | itemizedlist | orderedlist | deflist | 
+                                              extract | poem | exam | computertext | address-text | 
+                                              supplementmaterial | 
+                                              comment)+>
+<!ATTLIST abstract
+                type                     (primary | graphical)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Keywords -->
+
+
+<!-- Words that identify the subject of the article -->
+<!ELEMENT keywordset                     (title?, keyword+)>
+<!ATTLIST keywordset
+               %a-group-CommonIDAttrs;>
+
+
+<!-- One of several words that identify the subject of the article -->
+<!ELEMENT keyword                        (#PCDATA | %FormattingInText;)*>
+<!ATTLIST keyword
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Frontmatter Sections -->
+
+
+<!-- List of abbreivations used in article along with their explanations -->
+<!ELEMENT abbrev-sect                    (title, deflist)>
+<!ATTLIST abbrev-sect
+               %a-group-CommonIDAttrs;>
+
+
+<!-- List of terms used in the article with explanations of their meanings -->
+<!ELEMENT nomen-sect                     (title, deflist)>
+<!ATTLIST nomen-sect
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Introduction to the article -->
+<!ELEMENT intro                          (title?, (%SectionMix;)*, section2*)>
+<!ATTLIST intro
+               %a-group-CommonIDAttrs;>
+
+
+
+
+<!-- ************************************ -->
+<!-- Parts and Sections -->
+<!-- ************************************ -->
+
+
+
+<!-- One part of an article that contains multiple groups of sections -->
+<!ELEMENT part                           (no?, title, section1+)>
+<!ATTLIST part
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Number of section or equation -->
+<!ELEMENT no                             (#PCDATA)>
+
+
+<!-- Highest level article body section -->
+<!ELEMENT section1                       (no?, title, shortsectionhead?, (%SectionMix;)*, section2*)>
+<!ATTLIST section1
+                fulltextlink             CDATA  #IMPLIED 
+                issuenum                 CDATA  #IMPLIED 
+               %a-group-SectionAttrs;
+               %a-group-CommonIDAttrs;
+               %a-group-YearOfPubAttrs;>
+
+
+<!-- Shorter version of main section title -->
+<!ELEMENT shortsectionhead               (#PCDATA | %DocumentTitleContent;)*>
+<!ATTLIST shortsectionhead
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Sub-section of the article content -->
+<!ELEMENT section2                       (no?, title, (%SectionMix;)*, section3*)>
+<!ATTLIST section2
+                issuenum                 CDATA  #IMPLIED 
+               %a-group-SectionAttrs;
+               %a-group-CommonIDAttrs;
+               %a-group-YearOfPubAttrs;>
+
+
+<!-- Sub-section within a sub-section of a section -->
+<!ELEMENT section3                       (no?, title, (%SectionMix;)*, section4*)>
+<!ATTLIST section3
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Fourth-level sub-section -->
+<!ELEMENT section4                       (no?, title, (%SectionMix;)*, section5*)>
+<!ATTLIST section4
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Fifth-level sub-section -->
+<!ELEMENT section5                       (no?, title, (%SectionMix;)+)>
+<!ATTLIST section5
+               %a-group-CommonIDAttrs;>
+
+
+
+
+<!-- ************************************ -->
+<!-- Back Matter -->
+<!-- ************************************ -->
+
+
+
+
+<!--  . Backmatter Sections -->
+
+
+<!-- Summary of the article content. -->
+<!ELEMENT summary                        (title, (%SectionMix;)*, section2*)>
+<!ATTLIST summary
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Author acknowledgement to other people -->
+<!ELEMENT ackno                          (title?, (%SectionMix;)*)>
+<!ATTLIST ackno
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Notes added to article by author after proofing -->
+<!ELEMENT notesaddedinproof              (title, (%SectionMix;)*, section2*)>
+<!ATTLIST notesaddedinproof
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Alphabetical list of special terms or words used in the article -->
+<!ELEMENT glossary                       (title?, deflist)>
+<!ATTLIST glossary
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Supplementary material at the end of the article -->
+<!ELEMENT appendix                       (title?, section1+)>
+<!ATTLIST appendix
+                type                     (appendix | backmatter | supplementary)  "appendix" 
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . References -->
+
+
+<!-- References to other works -->
+<!ELEMENT references                     (title, subtitle?, para*, 
+                                              (ref-govpub | ref-conf | ref-periodic | ref-book | ref-patent | 
+                                              ref-web | footnote)*, (readings | refsection)*)>
+<!ATTLIST references
+                article-association      IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Delineated sub-group of references -->
+<!ELEMENT refsection                     (title, para*, 
+                                              (ref-govpub | ref-conf | ref-periodic | ref-book | ref-patent | 
+                                              ref-web | footnote)*)>
+<!ATTLIST refsection
+               %a-group-CommonIDAttrs;>
+
+
+<!-- References to readings rather than works -->
+<!ELEMENT readings                       (title, subtitle?, 
+                                              (ref-govpub | ref-conf | ref-periodic | ref-book | ref-patent | footnote)+)>
+<!ATTLIST readings
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Book References -->
+
+
+<!-- A reference to a book -->
+<!ELEMENT ref-book                       (ref-book-text | 
+                                              (authorfield?, chaptitle?, booktitle, editorfield?, 
+                                              seriesinfo?, publicationfield, pagefield+, doi?, addinfo?, linkset?))>
+<!ATTLIST ref-book
+                sequence                 CDATA  #IMPLIED 
+               %a-group-CommonRequiredIDAttrs;>
+
+
+<!-- Loose-text reference to a book -->
+<!ELEMENT ref-book-text                  (#PCDATA | author-ref-text | chaptitle | booktitle | editor-ref-text
+                                               | seriesinfo | publicationfield-text | firstpage | lastpage | doi
+                                               | addinfo | linkset)*>
+<!ATTLIST ref-book-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of the author(s) of the book -->
+<!ELEMENT authorfield                    (author-ref+)>
+<!ATTLIST authorfield
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of an author or "et al" or corporation name -->
+<!ELEMENT author-ref                     (corporate | (etal | (surname, prefix*, givenname, middlename?, suffix*, query*)))>
+<!ATTLIST author-ref
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Corporate author (not person's name) -->
+<!ELEMENT corporate                      (#PCDATA | %FormatObjectsInText;)*>
+<!ATTLIST corporate
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of the author of the work or "et al" mixed with loose text -->
+<!ELEMENT author-ref-text                (#PCDATA | etal | surname | prefix | givenname | middlename | suffix | query)*>
+<!ATTLIST author-ref-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Latin for "and others" (secondary authors or contributors) -->
+<!ELEMENT etal                           EMPTY>
+<!ATTLIST etal
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of the chapter of the reference book or government publication -->
+<!ELEMENT chaptitle                      (#PCDATA | %TitleContent;)*>
+<!ATTLIST chaptitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of referenced book -->
+<!ELEMENT booktitle                      (#PCDATA | trademark | edition | %ObjectsInText; | %MailAndWebLinksInText;
+                                               | %NamesInText; | %AcronymsAndTermsInText; | %FormattingInText;)*>
+<!ATTLIST booktitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Edition of referenced book -->
+<!ELEMENT edition                        (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST edition
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Names of the editors of the referenced book or conference presentation -->
+<!ELEMENT editorfield                    (editor-ref+)>
+<!ATTLIST editorfield
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name (or "et al") of an editor of the referenced book or conference presentation -->
+<!ELEMENT editor-ref                     (etal | (surname, prefix*, givenname, middlename?, suffix*, query*))>
+<!ATTLIST editor-ref
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of one editor of a book or "et al" mixed with loose text -->
+<!ELEMENT editor-ref-text                (#PCDATA | etal | surname | prefix | givenname | middlename | suffix | query)*>
+<!ATTLIST editor-ref-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Information about the series of books that includes the referenced book -->
+<!ELEMENT seriesinfo                     (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST seriesinfo
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Structured information about the publisher of the book or conference presentation -->
+<!ELEMENT publicationfield               (pubname, pubplace, month?, year, (volumenum | abstractnum)?)>
+<!ATTLIST publicationfield
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Loosly structured information about the publisher of the book or conference presentation -->
+<!ELEMENT publicationfield-text          (#PCDATA | pubname | pubplace | city | state | country
+                                               | month | year | volumenum | abstractnum)*>
+<!ATTLIST publicationfield-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of the publisher of the book or conference presentation -->
+<!ELEMENT pubname                        (#PCDATA | %TitleContent;)*>
+<!ATTLIST pubname
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Location of the publisher of the book or conference presentation -->
+<!ELEMENT pubplace                       (city, (state? | country?))>
+<!ATTLIST pubplace
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Month of the year of the referenced work -->
+<!ELEMENT month                          (#PCDATA | %FormattingInText;)*>
+<!ATTLIST month
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Year of publication of the referenced work -->
+<!ELEMENT year                           (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST year
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Volume number of the referenced book or conference presentation proceedings -->
+<!ELEMENT volumenum                      (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST volumenum
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Abstract number of the referenced book or conference presentation -->
+<!ELEMENT abstractnum                    (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST abstractnum
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Page or pages of interest in referenced work -->
+<!ELEMENT pagefield                      (firstpage, lastpage?)>
+<!ATTLIST pagefield
+               %a-group-CommonIDAttrs;>
+
+
+<!-- First page of interest in referenced work -->
+<!ELEMENT firstpage                      (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST firstpage
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Last page of interest in the referenced book -->
+<!ELEMENT lastpage                       (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST lastpage
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Uncategorised further information about the referenced work -->
+<!ELEMENT addinfo                        (#PCDATA | trademark | footnote
+                                               | %LinksFromText; | %ObjectsInText; | %MailAndWebLinksInText; | %NamesInText;
+                                               | %AcronymsAndTermsInText; | %FormattingInText; | %FormatObjectsInText;)*>
+<!ATTLIST addinfo
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Set of one or more links to referenced works available online -->
+<!ELEMENT linkset                        (linkout, inlinegraphic?)+>
+<!ATTLIST linkset
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Link to electronic version of referenced work -->
+<!ELEMENT linkout                        EMPTY>
+<!ATTLIST linkout
+                remarks                  CDATA  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Conference References -->
+
+
+<!-- Reference to a presentation given at a conference -->
+<!ELEMENT ref-conf                       (ref-conf-text | 
+                                              (authorfield, presentationtitle, collectworktitle?, meetingfield, 
+                                              editorfield?, publicationfield, pagefield+, doi?, addinfo?, linkset?))>
+<!ATTLIST ref-conf
+                sequence                 CDATA  #IMPLIED 
+               %a-group-CommonRequiredIDAttrs;>
+
+
+<!-- Reference to a presenation given at a conference -->
+<!ELEMENT ref-conf-text                  (#PCDATA | author-ref-text | presentationtitle | collectworktitle
+                                               | meetingname | city | state | country | month | day | year
+                                               | editor-ref-text | publicationfield-text | firstpage | lastpage | doi
+                                               | addinfo | linkset)*>
+<!ATTLIST ref-conf-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of a referenced presentation given at a conference -->
+<!ELEMENT presentationtitle              (#PCDATA | %TitleContent;)*>
+<!ATTLIST presentationtitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of a collected work that includes the referenced presentation -->
+<!ELEMENT collectworktitle               (#PCDATA | %TitleContent;)*>
+<!ATTLIST collectworktitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name and location and date of a conference meeting -->
+<!ELEMENT meetingfield                   (meetingname, meetingloc, meetingdate)>
+<!ATTLIST meetingfield
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of the conference meeting at which the referenced presentation was given -->
+<!ELEMENT meetingname                    (#PCDATA | %ObjectsInText; | %NamesInText; | %FormattingInText;)*>
+<!ATTLIST meetingname
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Location of the conference meeting at which the referenced presentation was given -->
+<!ELEMENT meetingloc                     (city, state?, country?)>
+<!ATTLIST meetingloc
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Date of the conference meeting at which the referenced presentation was given -->
+<!ELEMENT meetingdate                    (month, day?, year)>
+<!ATTLIST meetingdate
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Day of the month that a conference meeting was started -->
+<!ELEMENT day                            (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST day
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Government Publication References -->
+
+
+<!-- Reference to all or part of a government publication -->
+<!ELEMENT ref-govpub                     (ref-govpub-text | 
+                                              (authorfield, chaptitle?, docpubtitle, pubnum, pubfield, 
+                                              docpubdate?, pagefield+, doi?, addinfo?, linkset?))>
+<!ATTLIST ref-govpub
+                sequence                 CDATA  #IMPLIED 
+               %a-group-CommonRequiredIDAttrs;>
+
+
+<!-- Loose-text reference to all or part of a government publication -->
+<!ELEMENT ref-govpub-text                (#PCDATA | author-ref-text | chaptitle | docpubtitle | pubnum
+                                               | pubfield | docpubdate | firstpage | lastpage | doi | addinfo | linkset)*>
+<!ATTLIST ref-govpub-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of a referenced government publication -->
+<!ELEMENT docpubtitle                    (#PCDATA | %TitleContent;)*>
+<!ATTLIST docpubtitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Number of a referenced government publication -->
+<!ELEMENT pubnum                         (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST pubnum
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Publisher or location for a referenced government document -->
+<!ELEMENT pubfield                       (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST pubfield
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Date of publication of a referenced government document -->
+<!ELEMENT docpubdate                     (month?, day?, year)>
+<!ATTLIST docpubdate
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Patent References -->
+
+
+<!-- Reference to a patent -->
+<!ELEMENT ref-patent                     (ref-patent-text | 
+                                              (patentownerfield, patenttitle, patentnum, date, doi?, addinfo?, linkset?))>
+<!ATTLIST ref-patent
+                sequence                 CDATA  #IMPLIED 
+               %a-group-CommonRequiredIDAttrs;>
+
+
+<!-- Lose-text reference to a patent -->
+<!ELEMENT ref-patent-text                (#PCDATA | patentowner-ref-text | patenttitle | patentnum | date | doi
+                                               | addinfo | linkset)*>
+<!ATTLIST ref-patent-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Names of the owners of a referenced patent -->
+<!ELEMENT patentownerfield               (patentowner-ref+)>
+<!ATTLIST patentownerfield
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of an owner of a referenced patent or "et al" -->
+<!ELEMENT patentowner-ref                (etal | (surname, givenname, middlename?, suffix*, query*))>
+<!ATTLIST patentowner-ref
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Loose-text name of an owner of a referenced patent or "et al" -->
+<!ELEMENT patentowner-ref-text           (#PCDATA | etal | surname | givenname | middlename | suffix | query)*>
+<!ATTLIST patentowner-ref-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of the referenced patent -->
+<!ELEMENT patenttitle                    (#PCDATA | %TitleContent;)*>
+<!ATTLIST patenttitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Number of the referenced patent -->
+<!ELEMENT patentnum                      (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST patentnum
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Date when a referenced patent came into force -->
+<!ELEMENT date                           (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST date
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Periodical References -->
+
+
+<!-- Reference to a periodical publication -->
+<!ELEMENT ref-periodic                   (ref-periodic-text | 
+                                              (authorfield, articletitle?, journaltitle, 
+                                              (inpress | (periodicpubfield, pagefield+)
+                                              ), doi?, addinfo?, linkset?))>
+<!ATTLIST ref-periodic
+                sequence                 CDATA  #IMPLIED 
+               %a-group-CommonRequiredIDAttrs;>
+
+
+<!-- Loose-text reference to a periodical publication -->
+<!ELEMENT ref-periodic-text              (#PCDATA | author-ref-text | articletitle | journaltitle
+                                               | inpress | month | year | volume | issue | firstpage | lastpage | doi
+                                               | addinfo | linkset)*>
+<!ATTLIST ref-periodic-text
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of a referenced periodical article -->
+<!ELEMENT articletitle                   (#PCDATA | %TitleContent;)*>
+<!ATTLIST articletitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- A referenced article that has not yet been published -->
+<!ELEMENT inpress                        (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST inpress
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Date and page range details of a referenced article -->
+<!ELEMENT periodicpubfield               (month?, year, volume, issue?)>
+<!ATTLIST periodicpubfield
+               %a-group-CommonIDAttrs;>
+
+
+<!-- The volume in which a referenced periodical publication was published -->
+<!ELEMENT volume                         (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST volume
+               %a-group-CommonIDAttrs;>
+
+
+<!-- The issue of the journal containing the referenced article -->
+<!ELEMENT issue                          (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST issue
+               %a-group-CommonIDAttrs;>
+
+
+<!-- DOI of a referenced work. -->
+<!ELEMENT doi                            (#PCDATA)>
+<!ATTLIST doi
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Web Address References -->
+
+
+<!-- Reference to a Web page -->
+<!ELEMENT ref-web                        (ref-web-text | (webaddress, doi?, addinfo?))>
+<!ATTLIST ref-web
+                sequence                 CDATA  #IMPLIED 
+                accessed                 CDATA  #IMPLIED 
+               %a-group-CommonRequiredIDAttrs;>
+
+
+<!-- Loose-text reference to a Web page -->
+<!ELEMENT ref-web-text                   (#PCDATA | webaddress | doi | addinfo)*>
+<!ATTLIST ref-web-text
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Translations -->
+
+
+<!-- Translated titles and abstracts -->
+<!ELEMENT translation                    (title?, subtitle?, shortauthors?, shorttitle?, abbrevtitle?, keywordset?, abstract?)>
+<!ATTLIST translation
+                language                 CDATA  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+
+
+<!-- ************************************ -->
+<!-- Block-level Content -->
+<!-- ************************************ -->
+
+
+
+
+<!--  . Paragraphs -->
+
+
+<!-- Single logical paragraph -->
+<!ELEMENT para                           (#PCDATA | %ParagraphContent; | %FundingDetailsInText; | figure | formaltable | graphic | informaltable
+                                               | chemeqn | unnumchemeqn | formula | compound | structure | matheqn | unnummatheqn
+                                               | simplelist | itemizedlist | orderedlist | deflist
+                                               | extract | poem | computertext | letter | address-text
+                                               | supplementmaterial)*>
+<!ATTLIST para
+                indent                   (0 | 1 | 2 | 3 | 
+                                          4 | 5)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Extract of material from other source or standalone topic -->
+<!ELEMENT extract                        (title?, (para | 
+                                              chemeqn | unnumchemeqn | formula | compound | 
+                                              structure | matheqn | unnummatheqn | 
+                                              simplelist | itemizedlist | orderedlist | deflist | 
+                                              address-text | comment)+, source?)>
+<!ATTLIST extract
+                sidebox                  (no | yes)  "no" 
+                type                     (block | indent | quote | doublespace | 
+                                          other)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- a poem of fragment of a poem -->
+<!ELEMENT poem                           ((stanza | poemline)+, source?)>
+<!ATTLIST poem
+               %a-group-CommonIDAttrs;>
+
+
+<!-- a single stanza in a poem -->
+<!ELEMENT stanza                         (poemline+)>
+<!ATTLIST stanza
+               %a-group-CommonIDAttrs;>
+
+
+<!-- a single line in a poem -->
+<!ELEMENT poemline                       (#PCDATA | %ParagraphContent;)*>
+<!ATTLIST poemline
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Computer text or any fragment of monospaced lines -->
+<!ELEMENT computertext                   (#PCDATA | %ParagraphContent;)*>
+<!ATTLIST computertext
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Source of the poem or extract -->
+<!ELEMENT source                         (#PCDATA | %ParagraphContent;)*>
+<!ATTLIST source
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Lists -->
+
+
+<!-- List with no item prefix symbol or number -->
+<!ELEMENT simplelist                     (listitem+)>
+<!ATTLIST simplelist
+                level                    (1 | 2 | 3 | 4 | 
+                                          5 | 6 | 7 | 8 | 
+                                          9)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- One item is a series of list items -->
+<!ELEMENT listitem                       (para | 
+                                              figure | formaltable | graphic | informaltable | 
+                                              chemeqn | unnumchemeqn | formula | compound | 
+                                              structure | matheqn | unnummatheqn | 
+                                              simplelist | itemizedlist | orderedlist | deflist | 
+                                              extract | computertext | letter | address-text | 
+                                              comment)+>
+<!ATTLIST listitem
+                level                    (1 | 2 | 3 | 4 | 
+                                          5 | 6 | 7 | 8 | 
+                                          9)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- List containing items with prefix symbols -->
+<!ELEMENT itemizedlist                   (listtitle?, listitem+)>
+<!ATTLIST itemizedlist
+                listitemlabel            CDATA  #IMPLIED 
+                spacing                  (normal | compact)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Title of a list -->
+<!ELEMENT listtitle                      (#PCDATA | %TitleContent;)*>
+<!ATTLIST listtitle
+               %a-group-CommonIDAttrs;>
+
+
+<!-- List containing numbered items -->
+<!ELEMENT orderedlist                    (listtitle?, listitem+)>
+<!ATTLIST orderedlist
+                numeration               (arabic | upperalpha | loweralpha | upperroman | 
+                                          lowerroman)  #IMPLIED 
+                continuation             (continues | restarts)  "restarts" 
+                spacing                  (normal | compact)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- List of paired terms and their definitions -->
+<!ELEMENT deflist                        (listtitle?, defentry+)>
+<!ATTLIST deflist
+               %a-group-CommonIDAttrs;>
+
+
+<!-- A term and its definition(s) -->
+<!ELEMENT defentry                       (term, definition)>
+<!ATTLIST defentry
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Term in definition list item -->
+<!ELEMENT term                           (#PCDATA | trademark | footnote
+                                               | %ObjectsInText; | %NamesInText;
+                                               | %AcronymsAndTermsInText; | %FormattingInText;)*>
+<!ATTLIST term
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Definition for a separately isolated term -->
+<!ELEMENT definition                     (para | 
+                                              figure | formaltable | graphic | informaltable | 
+                                              chemeqn | unnumchemeqn | formula | compound | 
+                                              structure | matheqn | unnummatheqn | 
+                                              simplelist | itemizedlist | orderedlist | deflist | 
+                                              extract | computertext | letter | 
+                                              comment)+>
+<!ATTLIST definition
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Figures -->
+
+
+<!-- Official figure in the article -->
+<!ELEMENT figure                         (title?, caption?, 
+                                              (graphic | chemeqn | matheqn | formula | compound | structure)+, endnotes?)>
+<!ATTLIST figure
+                orient                   (port | land)  #IMPLIED 
+                pgwide                   (yes | no)  #IMPLIED 
+                issuenum                 CDATA  #IMPLIED 
+                articleid                CDATA  #REQUIRED 
+                productid                CDATA  #REQUIRED 
+                doi                      CDATA  #IMPLIED 
+                colorgraphics            (yes | no)  "no" 
+                primaryaudience          (Researcher | Professional | Librarian | Educator | 
+                                          Non-specialist | Undergraduate | Consumer)  #IMPLIED 
+                secondaryaudience        (Researcher | Professional | Librarian | Educator | 
+                                          Non-specialist | Undergraduate | Consumer)  #IMPLIED 
+                fulltextlink             CDATA  #IMPLIED 
+               %a-group-YearOfPubAttrs;
+               %a-group-InteractiveAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Caption for figure or media object -->
+<!ELEMENT caption                        (#PCDATA | trademark | footnote
+                                               | %LinksFromText; | %ObjectsInText; | %MailAndWebLinksInText; | %NamesInText;
+                                               | %AcronymsAndTermsInText; | %FormattingInText; | %FormatObjectsInText;)*>
+<!ATTLIST caption
+               %a-group-CommonIDAttrs;>
+
+
+<!-- End notes -->
+<!ELEMENT endnotes                       (#PCDATA | trademark
+                                               | %LinksFromText; | %ObjectsInText; | %MailAndWebLinksInText; | %NamesInText;
+                                               | %AcronymsAndTermsInText; | %FormattingInText; | %FormatObjectsInText;
+                                               | simplelist | itemizedlist | orderedlist | deflist | endnote)*>
+<!ATTLIST endnotes
+               %a-group-CommonIDAttrs;>
+
+
+<!-- single end note in a sequence of end notes -->
+<!ELEMENT endnote                        (#PCDATA | trademark
+                                               | %LinksFromText; | %ObjectsInText; | %MailAndWebLinksInText; | %NamesInText;
+                                               | %AcronymsAndTermsInText; | %FormattingInText; | %FormatObjectsInText;
+                                               | simplelist | itemizedlist | orderedlist | deflist)*>
+<!ATTLIST endnote
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to graphic image -->
+<!ELEMENT graphic                        EMPTY>
+<!ATTLIST graphic
+               %a-group-FileRefAttrs;
+               %a-group-GraphicAttrs;
+               %a-group-CommonIDAttrs;
+               %a-group-InteractiveAttrs;>
+
+
+
+<!--  . Tables -->
+
+
+<!-- Formal table with number and title -->
+<!ELEMENT formaltable                    (title?, ((table, endnotes?) | graphic+))>
+<!ATTLIST formaltable
+                doi                      CDATA  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Table that is not formally recognised and labelled as such -->
+<!ELEMENT informaltable                  (table, endnotes?)>
+<!ATTLIST informaltable
+                doi                      CDATA  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- CALS table model -->
+<!ELEMENT table                          (tgroup+)>
+<!ATTLIST table
+                frame                    (top | bottom | topbot | all | 
+                                          sides | none)  "topbot" 
+                orient                   (port | land)  "port" 
+                pgwide                   NMTOKEN  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Grid of cells within a table with set number of columns and column width -->
+<!ELEMENT tgroup                         (colspec+, thead?, tfoot?, tbody)>
+<!ATTLIST tgroup
+                cols                     NMTOKEN  #REQUIRED 
+                colsep                   NMTOKEN  #IMPLIED 
+                rowsep                   NMTOKEN  #IMPLIED 
+                align                    (left | right | center | justify | 
+                                          char)  #IMPLIED 
+                char                     CDATA  #IMPLIED 
+                charoff                  NMTOKEN  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Specification of width of one column of a table -->
+<!ELEMENT colspec                        EMPTY>
+<!ATTLIST colspec
+                colnum                   NMTOKEN  #REQUIRED 
+                colname                  NMTOKEN  #REQUIRED 
+                colwidth                 CDATA  #REQUIRED 
+                colsep                   NMTOKEN  #IMPLIED 
+                rowsep                   NMTOKEN  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Table header rows -->
+<!ELEMENT thead                          (row+)>
+<!ATTLIST thead
+                valign                   (top | middle | bottom)  "bottom" 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Table footnote rows -->
+<!ELEMENT tfoot                          (row+)>
+<!ATTLIST tfoot
+                valign                   (top | middle | bottom)  "top" 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Table body rows -->
+<!ELEMENT tbody                          (row+)>
+<!ATTLIST tbody
+                valign                   (top | middle | bottom)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Row of a table -->
+<!ELEMENT row                            (entry+)>
+<!ATTLIST row
+                rowsep                   NMTOKEN  #IMPLIED 
+                valign                   (top | middle | bottom)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- One entry in a table grid -->
+<!ELEMENT entry                          (#PCDATA | %ParagraphContent;
+                                               | para
+                                               | figure | formaltable | graphic | informaltable
+                                               | chemeqn | unnumchemeqn | formula | compound | structure
+                                               | matheqn | unnummatheqn
+                                               | simplelist | itemizedlist | orderedlist | deflist
+                                               | extract | poem | computertext | address-text)*>
+<!ATTLIST entry
+                colname                  NMTOKEN  #IMPLIED 
+                namest                   NMTOKEN  #IMPLIED 
+                nameend                  NMTOKEN  #IMPLIED 
+                morerows                 NMTOKEN  #IMPLIED 
+                colsep                   NMTOKEN  #IMPLIED 
+                rowsep                   NMTOKEN  #IMPLIED 
+                align                    (left | right | center | justify | 
+                                          char)  #IMPLIED 
+                char                     CDATA  #IMPLIED 
+                charoff                  NMTOKEN  #IMPLIED 
+                valign                   (top | middle | bottom)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Exams -->
+
+
+<!-- Examination questions and answers -->
+<!ELEMENT exam                           (para?, question-answer+)>
+<!ATTLIST exam
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Question and answer in examination -->
+<!ELEMENT question-answer                (question, answer)>
+<!ATTLIST question-answer
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Question in an examination -->
+<!ELEMENT question                       (no?, para+)>
+<!ATTLIST question
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Answer to an examination question -->
+<!ELEMENT answer                         (para+)>
+<!ATTLIST answer
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Index -->
+
+
+<!-- Index of terms used in article or journal -->
+<!ELEMENT index                          (title?, (para | indexentry)*, indexdiv*)>
+<!ATTLIST index
+                type                     (author | subject | misc)  "misc" 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Division of an index -->
+<!ELEMENT indexdiv                       (title?, (para | indexentry)*)>
+<!ATTLIST indexdiv
+               %a-group-CommonIDAttrs;>
+
+
+<!-- One entry within an index -->
+<!ELEMENT indexentry                     ((indxname | indxsubj)*, (seeie | seealsoie | indexsubentry)*)>
+<!ATTLIST indexentry
+               %a-group-CommonIDAttrs;>
+
+
+<!-- One entry within an entry within an index -->
+<!ELEMENT indexsubentry                  ((indxname | indxsubj)*, (seeie | seealsoie | indexsubentry)*)>
+<!ATTLIST indexsubentry
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Index Name -->
+<!ELEMENT indxname                       (#PCDATA | sub | sup | b | i)*>
+
+
+<!-- Index subject -->
+<!ELEMENT indxsubj                       (#PCDATA | subject | sub | sup | b | i | para)*>
+
+
+<!-- Subject term in index subject -->
+<!ELEMENT subject                        (#PCDATA | sub | sup | b | i)*>
+
+
+<!-- See other index entry -->
+<!ELEMENT seeie                          (#PCDATA | sub | sup | b | i)*>
+<!ATTLIST seeie
+                linkend                  IDREF  #REQUIRED >
+
+
+<!-- See other index entry -->
+<!ELEMENT seealsoie                      (#PCDATA | sub | sup | b | i)*>
+<!ATTLIST seealsoie
+                linkend                  IDREF  #REQUIRED >
+
+
+
+<!--  . Maths and Chemistry -->
+
+
+<!-- Numbered display mathematical equation -->
+<!ELEMENT matheqn                        (mathcompound | equation)>
+<!ATTLIST matheqn
+               %a-group-InteractiveAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Unnumbered display mathematical equation -->
+<!ELEMENT unnummatheqn                   (mathcompound | equation)>
+<!ATTLIST unnummatheqn
+               %a-group-InteractiveAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Compound of two or more math equations -->
+<!ELEMENT mathcompound                   (equation, equation+)>
+<!ATTLIST mathcompound
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Single equation in a mathematical formula -->
+<!ELEMENT equation                       (no?, texstructure?, graphic?, formula?)>
+<!ATTLIST equation
+               %a-group-CommonIDAttrs;>
+
+
+<!-- TEX encoded equation -->
+<!ELEMENT texstructure                   (#PCDATA)>
+<!ATTLIST texstructure
+               %a-group-FileRefAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Math formula XML content or reference to file -->
+<!ELEMENT formula                        (#PCDATA | %FormattingInText;)*>
+<!ATTLIST formula
+               %a-group-FileRefAttrs;
+               %a-group-InteractiveAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Chemical equation -->
+<!ELEMENT chemeqn                        (compound | chemobj)>
+<!ATTLIST chemeqn
+               %a-group-InteractiveAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Non-numbered display chemical equation -->
+<!ELEMENT unnumchemeqn                   (compound | chemobj)>
+<!ATTLIST unnumchemeqn
+               %a-group-InteractiveAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Chemical compound -->
+<!ELEMENT compound                       (chemobj, chemobj+)>
+<!ATTLIST compound
+               %a-group-CommonIDAttrs;>
+
+
+<!-- One chemical object of structures and a formula -->
+<!ELEMENT chemobj                        (structure*, formula?)>
+<!ATTLIST chemobj
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Chemical structure -->
+<!ELEMENT structure                      EMPTY>
+<!ATTLIST structure
+               %a-group-FileRefAttrs;
+               %a-group-GraphicAttrs;
+               %a-group-CommonIDAttrs;
+               %a-group-InteractiveAttrs;>
+
+
+
+<!--  . Letters -->
+
+
+<!-- Copy of written letter -->
+<!ELEMENT letter                         (salutation | closing | para)+>
+<!ATTLIST letter
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Salutation in a written letter -->
+<!ELEMENT salutation                     (#PCDATA | sub | sup)*>
+<!ATTLIST salutation
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Closing text of a written letter -->
+<!ELEMENT closing                        (para | signature)*>
+<!ATTLIST closing
+                align                    (left | right)  "left" 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Signature of the author of a written letter -->
+<!ELEMENT signature                      (#PCDATA | sub | sup | graphic)*>
+<!ATTLIST signature
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Address Text -->
+
+
+<!-- Loose-text address -->
+<!ELEMENT address-text                   (#PCDATA | addline | city | province | state
+                                               | zip | postalcode | country | phone | fax
+                                               | %MailAndWebLinksInText; | br)*>
+<!ATTLIST address-text
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Enunciation -->
+
+
+<!-- Enunciated content -->
+<!ELEMENT enunciation                    (title?, para+)>
+<!ATTLIST enunciation
+                type                     (Theorem | Lemma | Corollary | Proposition | 
+                                          Remark | Definition | Proof | Example | 
+                                          Results | Axiom | Step | Case | 
+                                          Problem | Algorithm | Other)  #IMPLIED 
+               %a-group-CommonIDAttrs;>
+
+
+
+
+<!-- ************************************ -->
+<!-- Multimedia -->
+<!-- ************************************ -->
+
+
+
+<!-- Supplementary material accompanying an article -->
+<!ELEMENT supplementmaterial             (label?, (supplementfile | webaddress), graphic?, caption?, comment*)>
+<!ATTLIST supplementmaterial
+                contenttype              (video | audio | simulation | document | 
+                                          appendix | table | dataset | software | 
+                                          image)  #REQUIRED 
+                freedownload             (yes | no)  "no" 
+                attachtoissue            (yes | no)  "no" 
+                articleid                CDATA  #IMPLIED 
+                productid                CDATA  #IMPLIED 
+                doi                      CDATA  #IMPLIED 
+               %a-group-YearOfPubAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to a supplementary file -->
+<!ELEMENT supplementfile                 (#PCDATA | %ObjectsInText; | %FormattingInText; | %NamesInText;)*>
+<!ATTLIST supplementfile
+                authorfilename           CDATA  #IMPLIED 
+                mimetype                 CDATA  #IMPLIED 
+                mimesubtype              CDATA  #IMPLIED 
+               %a-group-FileRefAttrs;
+               %a-group-CommonIDAttrs;
+               %a-group-InteractiveAttrs;>
+
+
+<!-- Label for a supplementary file -->
+<!ELEMENT label                          (#PCDATA)>
+<!ATTLIST label
+               %a-group-CommonIDAttrs;>
+
+
+
+
+<!-- ************************************ -->
+<!-- Inline-level Content -->
+<!-- ************************************ -->
+
+
+
+
+<!--  . Formatting and Identifying -->
+
+
+<!-- Electronic mail address and display text -->
+<!ELEMENT email                          (#PCDATA | %ObjectsInText; | %FormattingInText; | %NamesInText;)*>
+<!ATTLIST email
+                url                      CDATA  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Web address link and display text -->
+<!ELEMENT webaddress                     (#PCDATA | %ObjectsInText; | %FormattingInText; | %NamesInText;)*>
+<!ATTLIST webaddress
+                url                      CDATA  #REQUIRED 
+                target                   (new | main)  "new" 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Original publication page-break location and new page number -->
+<!ELEMENT newpage                        EMPTY>
+<!ATTLIST newpage
+                pagenumber               CDATA  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  .  . Format-Oriented -->
+
+
+<!-- Subscript characters -->
+<!ELEMENT sub                            (#PCDATA | %FormattingInText;)*>
+<!ATTLIST sub
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Superscript characters -->
+<!ELEMENT sup                            (#PCDATA | %FormattingInText;)*>
+<!ATTLIST sup
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Bold emphasis text -->
+<!ELEMENT b                              (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST b
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Italic emphasis text -->
+<!ELEMENT i                              (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST i
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Small caps emphasis text -->
+<!ELEMENT smallcaps                      (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST smallcaps
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Underline emphasis text -->
+<!ELEMENT u                              (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST u
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Boxed emphasis text -->
+<!ELEMENT box                            (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST box
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Roman font emphasis text -->
+<!ELEMENT roman                          (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST roman
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Script font emphasis text -->
+<!ELEMENT script                         (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST script
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Monospaced emphasis text -->
+<!ELEMENT tt                             (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST tt
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Overline emphasis text -->
+<!ELEMENT overline                       (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST overline
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Strikethrough emphasis text -->
+<!ELEMENT strikethrough                  (#PCDATA | %EmphasisContent; | %NamesInText;)*>
+<!ATTLIST strikethrough
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Break a line of text at a fixed location -->
+<!ELEMENT br                             EMPTY>
+<!ATTLIST br
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Footnote text -->
+<!ELEMENT footnote                       (para | 
+                                              chemeqn | unnumchemeqn | formula | compound | structure | 
+                                              matheqn | unnummatheqn | 
+                                              simplelist | itemizedlist | orderedlist | deflist | 
+                                              address-text | comment)*>
+<!ATTLIST footnote
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Queries added during production to be resolved before final publication. -->
+<!ELEMENT query                          (#PCDATA)>
+<!ATTLIST query
+                directedto               (author | copyeditor | production | typesetter
+                                          )  "author" 
+               %a-group-CommonRequiredIDAttrs;>
+
+
+
+<!--  .  . Generic-Oriented -->
+
+
+<!-- Trademark text -->
+<!ELEMENT trademark                      (#PCDATA)>
+<!ATTLIST trademark
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Company name in the text -->
+<!ELEMENT companyname                    (#PCDATA | %FormattingInText;)*>
+<!ATTLIST companyname
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Name of famous person in the text -->
+<!ELEMENT famousname                     (#PCDATA)>
+<!ATTLIST famousname
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Citation in the text -->
+<!ELEMENT citation                       (#PCDATA)>
+<!ATTLIST citation
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Acronym in the text -->
+<!ELEMENT acronym                        (#PCDATA)>
+<!ATTLIST acronym
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Term in text -->
+<!ELEMENT terminology                    (#PCDATA | trademark | footnote
+                                               | %ObjectsInText; | %NamesInText;
+                                               | %AcronymsAndTermsInText; | %FormattingInText;)*>
+<!ATTLIST terminology
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Linking -->
+
+
+<!-- Range of references in the text -->
+<!ELEMENT refrange                       (%LinksFromText;)+>
+<!ATTLIST refrange
+                display                  (popup | main | dropdown | other
+                                          )  #IMPLIED 
+                text                     CDATA  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to a chemical equation -->
+<!ELEMENT chemeqnref                     (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST chemeqnref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to a chemical formula from within text -->
+<!ELEMENT chemformref                    (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST chemformref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to a mathematical equation from within text -->
+<!ELEMENT matheqnref                     (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST matheqnref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Hypertext link to a table in the same article -->
+<!ELEMENT tableref                       (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST tableref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to a citation from within text -->
+<!ELEMENT citationref                    (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST citationref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to a figure from within text -->
+<!ELEMENT figureref                      (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST figureref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to a supplementary file from within text -->
+<!ELEMENT suppmatref                     (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST suppmatref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Hypertext link to a list in the same article -->
+<!ELEMENT listref                        (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST listref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Hypertext link to a list item in the same article -->
+<!ELEMENT listitemref                    (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST listitemref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Hypertext link to a chemical structure in the same article -->
+<!ELEMENT chemstructureref               (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST chemstructureref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Means of linking a footnote reference to the correct footnote -->
+<!ELEMENT footnoteref                    (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST footnoteref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Means of linking an endnote reference to the correct endnote -->
+<!ELEMENT endnoteref                     (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST endnoteref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Hypertext link to an enunciation in the same article -->
+<!ELEMENT enunciationref                 (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST enunciationref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to external text -->
+<!ELEMENT textref                        (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST textref
+                url                      CDATA  #REQUIRED 
+                target                   (new | main)  "new" 
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Reference to a text object in the article -->
+<!ELEMENT xref                           (#PCDATA | %ReferenceContent;)*>
+<!ATTLIST xref
+                linkend                  IDREF  #REQUIRED 
+               %a-group-CommonIDAttrs;>
+
+
+
+<!--  . Objects -->
+
+
+<!-- Mathematical equation within a text block -->
+<!ELEMENT inlinematheqn                  (equation)>
+<!ATTLIST inlinematheqn
+               %a-group-InteractiveAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Chemical equation within a text block -->
+<!ELEMENT inlinechemeqn                  (structure*, formula?)>
+<!ATTLIST inlinechemeqn
+               %a-group-InteractiveAttrs;
+               %a-group-CommonIDAttrs;>
+
+
+<!-- Graphic image that is within a line of text -->
+<!ELEMENT inlinegraphic                  EMPTY>
+<!ATTLIST inlinegraphic
+               %a-group-FileRefAttrs;
+               %a-group-GraphicAttrs;
+               %a-group-CommonIDAttrs;
+               %a-group-InteractiveAttrs;>
+
+
+<!-- END OF DTD -->

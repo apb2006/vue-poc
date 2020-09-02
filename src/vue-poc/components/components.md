@@ -9,7 +9,7 @@
 }
 ```
 
-## $auth
+## $auth 
 ```
  { user: "guest",
     role: null,
@@ -26,9 +26,9 @@ toggle()
 
 ## $MimeTypes
 ```
-contentType
-mode
-list
+$mimetype.contentType['image/svg+xml'] returns object {mode:'ace mode',..}
+$mimetype.mode['acemode'] return object { format:fn, icon:;icon'}
+$mimetype.list['acemode'] returns icon
 icon(mode)
 ```
 

@@ -1,0 +1,65 @@
+<!-- 
+TandFxslt.ent - This file may be used to override (pre-declare) character 
+entities in a local environment when processing TFJA XML and output of 
+character entities is desired instead of the automatic resolution of 
+character entities performed by most XML processors, for example when 
+converting TFJA to other formats using an XSLT processor. In the publicly 
+hosted version of TFJA DTD this file should contain only a declaration for 
+the TandFxsltEscape parameter entity.
+
+The TandFxsltEscape parameter entity is intended to be used in place of the 
+ampersand character when declaring overrides for character entities. This 
+avoids circular-definition and automatic-resolution problems that would 
+otherwise be encountered. The escape sequence defined by TandFxsltEscape 
+should be replaced with an ampersand (&) during processing, either as part of 
+the XSLT or using a simple search-and-replace.
+
+When converting between TFJA and another DTD, a mapping should be done between 
+the character entities defined in TFJA and the character entities defined in 
+the output DTD. The mapping should be created in a local file containing entity 
+declarations for each mapped character entity. The local file should be 
+invoked instead of the public version of this file, for example by using a 
+catalog file.
+
+Character entities that appear in both DTDs may be preserved by 
+creating a declaration using the escape sequence and the entity name. 
+For example:
+<!ENTITY Bgr "%TandFxsltEscape;Bgr;" >
+With this declaration &Bgr; in source text will output as &Bgr;
+
+Character entities that appear only in TFJA should map to a unicode entity or
+a unicode value. For example to map to a unicode entity:
+<!ENTITY Aopf "%TandFxsltEscape;#x1D538;" >
+With this declaration &Aopf; in source text will output as &#x1D538;
+
+If output of unicode is allowed the escape sequence is not necessary:
+<!ENTITY Aopf "&#x1D538;" >
+With this declaration &Aopf; in source text will output as unicode character #x1D538
+
+
+
+
+This entity file must be defined in the DTD before any other character entities 
+are defined. Typical invocation in DTD:
+<!ENTITY % TandFxslt
+           PUBLIC "-//TandF//ENTITIES Character Entity Overrides for XSLT//EN" 
+           "../entities/TandFxslt.ent">
+%TandFxslt;
+
+
+Typical invocation for entry in an OASIS TR9401 catalog file is:
+PUBLIC "-//TandF//ENTITIES Character Entity Overrides for XSLT//EN" "LocalCustomTandFxslt.ent"
+SYSTEM "..\entities\TandFxslt.ent" "LocalCustomTandFxslt.ent"
+
+
+Typical character entity definition using parameter entity:
+<!ENTITY alpha "%TandFxsltEscape;alpha;" >
+
+Typical character entity definition using escape sequence:
+<!ENTITY alpha "[xsltescapecharent]alpha;" >
+
+-->
+
+<!ENTITY % TandFxsltEscape "[xsltescapecharent]" ><!-- Escape sequence -->
+
+

@@ -1,0 +1,51 @@
+<!-- 
+TandFmath.ent
+Updated 2013-07-03
+
+Math operators and symbols identified during the XML tagging process 
+by Taylor & Francis vendors or Taylor & Francis internal staff.
+
+Idenitification and mapping are handled adhoc based on the type of
+operator and specific requirements for display.
+
+Mapping may be based on the specific character requirements, though
+mapping to Unicode is preferred. Where Unicode mapping is not possible 
+(character cannot currently be represented in Unicode) the entity 
+value should be declared with the entity name concatenated within 
+square brackets. Example: <!ENTITY Abar "[Abar]">
+
+Graphics for web rendering should be indicated in the description field.
+Every attempt should be made to use the same name for the graphic as 
+used in the replacement string with recognition of operating system
+limitations in recognition of upper/lower case filenames with the same 
+characters. Uppercase characters are indicated by inserting a low bar "_"
+between the base character and the diacritical for the name of the gif 
+file. Lower case is concatenated with the diacritical. Example: 
+&agr; vs. &Agr; would require filenames of agr.gif and A_gr.gif. 
+-->
+
+<!-- Typical invocation for XML.DCL entry in catalog entry is:
+
+PUBLIC "-//TandF//ENTITIES Specific Math Operators//EN" "entities/TandFmath.ent">
+SYSTEM "..\entities\TandFmath.ent" "entities\TandFmath.ent"
+
+-->
+
+
+<!--
+Because there are cases when the ISO greek character and the named character are used differently. 
+Specifically, the characters found in ISO-grk1 represent the same basic letter  forms found in ISO-grk4. 
+grk1 is used for text while grk4 is used for mathematical expressions. Example: mgr is the alphabetic 
+form of Greek 'm', however, 'mu' is the same character form. Use of the proper entity allows 
+differentiation via emphasis formatting (i.e. italics) on output.
+-->
+<!-- Greek with Diacriticals -->
+<!ENTITY omegadot        "[omegadot]"><!-- Greek Omega with Dot -->
+<!-- The alternative is the following -->
+<!ENTITY ohgrdot         "&#x003C9;&#x00307;"><!-- GREEK SMALL LETTER OMEGA WITH DOT ABOVE -->
+
+<!ENTITY b.epsis         "%plane1D;6C6;"><!-- mathematical bold small epsilon -->
+<!ENTITY b.equals        "&#x0003D;"><!-- bold equals : no direct unicode - aliasing ISONUM equals -->
+<!ENTITY b.infin         "&#x0221E;"><!-- bold infinity : no direct unicode - aliasing ISOTECH infin -->
+<!ENTITY b.nabla         "%plane1D;6C1;"><!-- mathematical bold nabla -->
+<!ENTITY b.phis          "%plane1D;6D7;"><!-- mathematical bold small phi -->

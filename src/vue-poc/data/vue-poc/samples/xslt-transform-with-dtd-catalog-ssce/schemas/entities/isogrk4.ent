@@ -1,0 +1,95 @@
+
+<!--
+Source:   XML Entity Definitions for Characters, W3C Recommendation 01 April 2010
+          http://www.w3.org/TR/2010/REC-xml-entity-names-20100401/
+Updated:  2010-04-01
+-->
+
+<!--
+     File isogrk4.ent produced by the XSL script entities.xsl
+     from input data in unicode.xml.
+
+     Copyright 1998 - 2010 W3C.
+
+     Use and distribution of this code are permitted under the terms of the
+     W3C Software Notice and License.
+     http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231.html
+
+     Please report any errors to David Carlisle
+     via the public W3C list www-math@w3.org.
+
+     The numeric character values assigned to each entity
+     (should) match the Unicode assignments in Unicode 5.x.
+
+     Entity names in this file are derived from files carrying the
+     following notice:
+
+     (C) International Organization for Standardization 1991
+     Permission to copy in any form is granted for use with
+     conforming SGML systems and applications as defined in
+     ISO 8879, provided this notice is included in all copies.
+
+-->
+
+
+<!-- 
+
+       Public identifier: -//W3C//ENTITIES Alternative Greek Symbols//EN//XML
+       System identifier: http://www.w3.org/2003/entities/2007/isogrk4.ent
+
+     The public identifier should always be used verbatim.
+     The system identifier may be changed to suit local requirements.
+
+     Typical invocation:
+
+       <!ENTITY % isogrk4 PUBLIC
+         "-//W3C//ENTITIES Alternative Greek Symbols//EN//XML"
+         "http://www.w3.org/2003/entities/2007/isogrk4.ent"
+       >
+       %isogrk4;
+
+-->
+
+<!ENTITY b.alpha          "%plane1D;6C2;" ><!--MATHEMATICAL BOLD SMALL ALPHA -->
+<!ENTITY b.beta           "%plane1D;6C3;" ><!--MATHEMATICAL BOLD SMALL BETA -->
+<!ENTITY b.chi            "%plane1D;6D8;" ><!--MATHEMATICAL BOLD SMALL CHI -->
+<!ENTITY b.delta          "%plane1D;6C5;" ><!--MATHEMATICAL BOLD SMALL DELTA -->
+<!ENTITY b.Delta          "%plane1D;6AB;" ><!--MATHEMATICAL BOLD CAPITAL DELTA -->
+<!ENTITY b.epsi           "%plane1D;6C6;" ><!--MATHEMATICAL BOLD SMALL EPSILON -->
+<!ENTITY b.epsiv          "%plane1D;6DC;" ><!--MATHEMATICAL BOLD EPSILON SYMBOL -->
+<!ENTITY b.eta            "%plane1D;6C8;" ><!--MATHEMATICAL BOLD SMALL ETA -->
+<!ENTITY b.gamma          "%plane1D;6C4;" ><!--MATHEMATICAL BOLD SMALL GAMMA -->
+<!ENTITY b.Gamma          "%plane1D;6AA;" ><!--MATHEMATICAL BOLD CAPITAL GAMMA -->
+<!ENTITY b.gammad         "%plane1D;7CB;" ><!--MATHEMATICAL BOLD SMALL DIGAMMA -->
+<!ENTITY b.Gammad         "%plane1D;7CA;" ><!--MATHEMATICAL BOLD CAPITAL DIGAMMA -->
+<!ENTITY b.iota           "%plane1D;6CA;" ><!--MATHEMATICAL BOLD SMALL IOTA -->
+<!ENTITY b.kappa          "%plane1D;6CB;" ><!--MATHEMATICAL BOLD SMALL KAPPA -->
+<!ENTITY b.kappav         "%plane1D;6DE;" ><!--MATHEMATICAL BOLD KAPPA SYMBOL -->
+<!ENTITY b.lambda         "%plane1D;6CC;" ><!--MATHEMATICAL BOLD SMALL LAMDA -->
+<!ENTITY b.Lambda         "%plane1D;6B2;" ><!--MATHEMATICAL BOLD CAPITAL LAMDA -->
+<!ENTITY b.mu             "%plane1D;6CD;" ><!--MATHEMATICAL BOLD SMALL MU -->
+<!ENTITY b.nu             "%plane1D;6CE;" ><!--MATHEMATICAL BOLD SMALL NU -->
+<!ENTITY b.omega          "%plane1D;6DA;" ><!--MATHEMATICAL BOLD SMALL OMEGA -->
+<!ENTITY b.Omega          "%plane1D;6C0;" ><!--MATHEMATICAL BOLD CAPITAL OMEGA -->
+<!ENTITY b.phi            "%plane1D;6D7;" ><!--MATHEMATICAL BOLD SMALL PHI -->
+<!ENTITY b.Phi            "%plane1D;6BD;" ><!--MATHEMATICAL BOLD CAPITAL PHI -->
+<!ENTITY b.phiv           "%plane1D;6DF;" ><!--MATHEMATICAL BOLD PHI SYMBOL -->
+<!ENTITY b.pi             "%plane1D;6D1;" ><!--MATHEMATICAL BOLD SMALL PI -->
+<!ENTITY b.Pi             "%plane1D;6B7;" ><!--MATHEMATICAL BOLD CAPITAL PI -->
+<!ENTITY b.piv            "%plane1D;6E1;" ><!--MATHEMATICAL BOLD PI SYMBOL -->
+<!ENTITY b.psi            "%plane1D;6D9;" ><!--MATHEMATICAL BOLD SMALL PSI -->
+<!ENTITY b.Psi            "%plane1D;6BF;" ><!--MATHEMATICAL BOLD CAPITAL PSI -->
+<!ENTITY b.rho            "%plane1D;6D2;" ><!--MATHEMATICAL BOLD SMALL RHO -->
+<!ENTITY b.rhov           "%plane1D;6E0;" ><!--MATHEMATICAL BOLD RHO SYMBOL -->
+<!ENTITY b.sigma          "%plane1D;6D4;" ><!--MATHEMATICAL BOLD SMALL SIGMA -->
+<!ENTITY b.Sigma          "%plane1D;6BA;" ><!--MATHEMATICAL BOLD CAPITAL SIGMA -->
+<!ENTITY b.sigmav         "%plane1D;6D3;" ><!--MATHEMATICAL BOLD SMALL FINAL SIGMA -->
+<!ENTITY b.tau            "%plane1D;6D5;" ><!--MATHEMATICAL BOLD SMALL TAU -->
+<!ENTITY b.Theta          "%plane1D;6AF;" ><!--MATHEMATICAL BOLD CAPITAL THETA -->
+<!ENTITY b.thetas         "%plane1D;6C9;" ><!--MATHEMATICAL BOLD SMALL THETA -->
+<!ENTITY b.thetav         "%plane1D;6DD;" ><!--MATHEMATICAL BOLD THETA SYMBOL -->
+<!ENTITY b.upsi           "%plane1D;6D6;" ><!--MATHEMATICAL BOLD SMALL UPSILON -->
+<!ENTITY b.Upsi           "%plane1D;6BC;" ><!--MATHEMATICAL BOLD CAPITAL UPSILON -->
+<!ENTITY b.xi             "%plane1D;6CF;" ><!--MATHEMATICAL BOLD SMALL XI -->
+<!ENTITY b.Xi             "%plane1D;6B5;" ><!--MATHEMATICAL BOLD CAPITAL XI -->
+<!ENTITY b.zeta           "%plane1D;6C7;" ><!--MATHEMATICAL BOLD SMALL ZETA -->

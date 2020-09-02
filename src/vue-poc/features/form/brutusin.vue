@@ -2,15 +2,15 @@
 <template id="brutusin">
  <v-container fluid>
      <v-card>
-     <v-toolbar flat>
+     <v-card-title>
 	     <v-toolbar-title>Form </v-toolbar-title>
 	
 	        <v-chip v-if="formValid" color="success">valid</v-chip>
 	        <v-chip v-else color="danger">invalid</v-chip>
 	        <v-btn color="primary" @click="$refs.myForm.validate()">validate</v-btn>
 	      <v-spacer></v-spacer>
-	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@0.35.0</qd-link>
-     </v-toolbar>
+	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@v1.10.0</qd-link>
+     </v-card-title>
      <v-card-actions>
      <v-layout row wrap>
        <v-flex xs2>
@@ -27,7 +27,7 @@
       <v-flex xs8>
       <v-form ref="myForm" v-model="formValid">
         <v-btn @click="submit" :disabled="!formValid">submit</v-btn>
-          <v-jsonschema-form v-if="schema" :schema="schema" :model="model" :options="options" @error="e => window.alert(e)" />
+          <v-jsf v-if="schema" :schema="schema" v-model="model" :options="options" @error="e => window.alert(e)" />
        </v-form>
        </v-flex>
        
@@ -44,7 +44,7 @@
 
 <script>{
   components: {
-    "v-jsonschema-form": VJsonschemaForm.default
+    "v-jsf": VJsf.default
    },
    data() {
      return {

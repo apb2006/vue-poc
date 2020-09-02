@@ -35,7 +35,7 @@ const GEditTabs={
           this.items.splice(pos, 0, etab)
         }else{
           this.items.push (etab);
-        };
+        }
         this.length++
         this.nextId++;
         var ind=this.items.indexOf(etab)
@@ -89,8 +89,8 @@ const GEditTabs={
         for (var i = 0; i < len; ++i) indices[i] = i;
         var list=this.items;
         indices=indices.filter(a=>(!q) || list[a].name.toLowerCase().includes(q.toLowerCase()))
-        var i= indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
-        return i
+        indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
+        return indices
       }
     },
     created(){

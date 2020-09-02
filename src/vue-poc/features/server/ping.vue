@@ -98,7 +98,8 @@
  </v-container>
 </template>
 
-<script>{
+<script>
+export default {
   data:  function(){
     return {
       nothingValues: new perfStat(),

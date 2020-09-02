@@ -1,10 +1,10 @@
 {
 	"name": "vue-poc",
-	"version": "0.5.601",
+	"version": "0.5@2020-07-06",
 	"description": "Frontend vuetify, backend: basex",
 	"dependencies": {
-		"ace": "1.4.10",
-		"vuetify": "2.2.21",
+		"ace": "1.4.12",
+		"vuetify": "2.3.7",
 		"vue": "2.6.11",
 		"vuex": "3.1.0",
 		"vue-router": "3.1.6",
@@ -18,6 +18,8 @@
 		"vuetify-jsonschema-form": "0.35.0",
 		"prism": "1.15.0",
 		"vue-prism-component": "1.1.1",
-		"vis-timeline-graph2d": "4.20.1"
+		"vis-timeline-graph2d": "4.20.1",
+		"leaflet": "1.6.0",
+		"vue2-leaflet": "2.5.2"
 	}
 }

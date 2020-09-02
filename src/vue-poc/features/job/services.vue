@@ -2,9 +2,11 @@
 <template id="services">
   <v-card >
    <v-toolbar >
+   <v-toolbar-title>Services</v-toolbar-title>
+     <v-spacer></v-spacer>
      <v-text-field
         prepend-icon="filter_list"
-        label="Filter jobs"
+        label="Filter services"
         single-line
         hide-details
         clearable
@@ -28,6 +30,7 @@
     >
     <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
     </v-btn>
+     <vp-entitylink entity="basex.service"></vp-entitylink> 
     </v-toolbar>
   <v-data-table
       :headers="headers"

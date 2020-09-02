@@ -1,5 +1,5 @@
 <entity name="basex.user" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>A BaseX user </description>
+	<description>BaseX users </description>
 
 	<fields>
 		<field name="name" type="xs:string">

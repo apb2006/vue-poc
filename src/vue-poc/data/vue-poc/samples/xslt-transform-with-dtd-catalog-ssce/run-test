@@ -1,0 +1,18 @@
+#!/usr/bin/env bash
+
+MAIN="$( cd -P "$(dirname "$FILE")/basex" && pwd )"
+CP=$MAIN/BaseX.jar:$MAIN/lib/custom/*:$MAIN/lib/*:$CLASSPATH
+echo confirm environment
+java -Dxml.catalog.verbosity=99 -cp "$CP" org.basex.BaseX -q"'java class path', proc:property('java.class.path'), 'xml catalog resolver verbosity', proc:property('xml.catalog.verbosity')"
+echo
+echo 1 Run XSLT in Saxon, works
+java -Dxml.catalog.verbosity=99 -cp "$CP" net.sf.saxon.Transform -s:input1.xml -xsl:transform.xsl -catalog:schemas/catalog.xml
+echo
+echo 2 Run XSLT in BaseX, not working
+java -Dxml.catalog.verbosity=99 -cp "$CP" org.basex.BaseX -q"(# db:catfile schemas/catalog.xml #) (# db:intparse false #) (# db:dtd true #) (# db:chop false #) { xslt:transform('input1.xml', 'transform.xsl') }"
+echo
+echo 3 Run XSLT in BaseX with Saxon features configured, not working
+java -Dxml.catalog.verbosity=99 -Dhttp://saxon.sf.net/feature/entityResolverClass=org.apache.xml.resolver.tools.CatalogResolver -Dhttp://saxon.sf.net/feature/uriResolverClass=org.apache.xml.resolver.tools.CatalogResolver -cp "$CP" org.basex.BaseX -q"(# db:catfile schemas/catalog.xml #) (# db:intparse false #) (# db:dtd true #) (# db:chop false #) { xslt:transform('input1.xml', 'transform.xsl') }"
+echo
+echo 4 Parse XML in BaseX usng fn:doc to show XML Catalog is configured correctly, works
+java -Dxml.catalog.verbosity=99 -cp "$CP" org.basex.BaseX -q"(# db:catfile schemas/catalog.xml #) (# db:intparse false #) (# db:dtd true #) (# db:chop false #) { doc('input1.xml') }"

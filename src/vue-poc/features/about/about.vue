@@ -116,7 +116,8 @@
       links:[
     	  {text:"3rd party components",icon:"mdi-clock",to:"about/package"},
     	  {text:"components",icon:"mdi-flag",to:"about/vue-cmps"},
-    	  {text:"routes",icon:"mdi-plus",to:"about/routes"}
+    	  {text:"routes",icon:"mdi-plus",to:"about/routes"},
+    	  {text:"routes2",icon:"mdi-plus",to:"about/routes2"}
       ]
   }
   },

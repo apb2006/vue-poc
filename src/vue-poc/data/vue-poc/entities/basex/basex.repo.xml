@@ -1,5 +1,5 @@
 <entity name="basex.repo" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>An entry in the basex repository</description>
+	<description>Packages installed in the BaseX repository</description>
 
 	<fields>
 		<field name="name" type="xs:string">

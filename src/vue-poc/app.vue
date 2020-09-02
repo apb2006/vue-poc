@@ -23,7 +23,7 @@
             <v-list-item-avatar >
               <v-btn icon @click="session">
               <v-avatar size="36">
-              <img src="/vue-poc/ui/quodatum.gif" />
+              <img src="/vue-poc/ui/quodatum.gif" alt="Vue-poc logo"/>
               </v-avatar>
               </v-btn>
             </v-list-item-avatar>
@@ -50,7 +50,7 @@
     
   {{$route.meta.title}}</v-toolbar-title>
    
-  <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
+ 
  
   <v-spacer></v-spacer>
   <v-toolbar-items>
@@ -74,17 +74,19 @@
                <v-list-item>
                 <v-list-item-title >permission: {{$auth.permission}}</v-list-item-title>
               </v-list-item>
-            
+            <v-list-item>
+                <v-list-item-title >$route.path: {{$route.path}}</v-list-item-title>
+              </v-list-item>
           </v-list>
       </v-menu>
       
        <v-btn  @click.stop="showNotifications = ! showNotifications" icon text title="Notifications">
-       <v-badge  overlap color="orange">
+       <v-badge   overlap color="orange">
       <span slot="badge" v-if=" $notification.unseen" >{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
-   
+    <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
     <v-menu bottom  left min-width="300px">
 	       <template v-slot:activator="{ on }">
 	         <v-btn icon v-on="on" >
@@ -109,14 +111,14 @@
 
 </v-app-bar>
  
- <v-content> 
+ <v-main> 
  <v-alert color="error" value="true" dismissible v-model="alert.show">
       <pre style="overflow:auto;">{{ alert.msg }}</pre>
     </v-alert>   
     <transition name="fade" mode="out-in">
       <router-view class="view ma-3"></router-view>
       </transition>
-  </v-content>
+  </v-main>
 
 </v-app>
 </template>

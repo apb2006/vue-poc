@@ -1,20 +1,20 @@
 <entity name="basex.job" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>An active BaseX job</description>
+	<description>Active BaseX jobs on the server. From <code>jobs:list-details</code></description>
 	<fields>
 		<field name="id" type="xs:string">
-			<description>unique id</description>
+			<description>Job id</description>
 			<xpath>@id</xpath>
 		</field>
 		<field name="state" type="xs:string">
-			<description>state</description>
+			<description> current state of the job: scheduled, queued, running, cached</description>
 			<xpath>@state</xpath>
 		</field>
 		<field name="type" type="xs:string">
-			<description>type of job</description>
+			<description>type of the job (command, query, REST, RESTXQ, etc.)</description>
 			<xpath>@type</xpath>
 		</field>
 		<field name="user" type="xs:string">
-			<description>user</description>
+			<description>user who started the job</description>
 			<xpath>@user</xpath>
 		</field>
 		<field name="registered" type="xs:string">
@@ -26,7 +26,7 @@
 			<xpath>@start</xpath>
 		</field>
 		<field name="duration" type="xs:string">
-			<description>duration</description>
+			<description>evaluation time (included if a job is running or if the result was cached)</description>
 			<xpath>@duration</xpath>
 		</field>
 		<field name="interval" type="xs:string">

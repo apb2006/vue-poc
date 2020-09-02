@@ -1,0 +1,54 @@
+<!-- 
+TandFobj.ent
+Updated 2013-07-03
+
+Non-character objects identified during the XML tagging process by 
+Taylor & Francis vendors or Taylor & Francis internal staff.
+
+Idenitification and mapping are handled adhoc based on the type of
+operator and specific requirements for display.
+
+Mapping may be based on the specific character requirements, though
+mapping to Unicode is preferred. Where Unicode mapping is not possible 
+(character cannot currently be represented in Unicode) the entity 
+value should be declared with the entity name concatenated within 
+square brackets. Example: <!ENTITY Abar "[Abar]">
+
+Graphics for web rendering should be indicated in the description field.
+Every attempt should be made to use the same name for the graphic as 
+used in the replacement string with recognition of operating system
+limitations in recognition of upper/lower case filenames with the same 
+characters. Uppercase characters are indicated by inserting a low bar "_"
+between the base character and the diacritical for the name of the gif 
+file. Lower case is concatenated with the diacritical. Example: 
+&agr; vs. &Agr; would require filenames of agr.gif and A_gr.gif. 
+-->
+
+<!-- Typical invocation for XML.DCL entry in catalog entry is:
+
+PUBLIC "-//TandF//ENTITIES Specific Character Entities//EN" "entities/TandFchar.ent"
+SYSTEM "..\entities\TandFobj.ent" "entities\TandFobj.ent"
+
+-->
+
+<!-- Entities copied from xhtml1-symbol.ent -->
+<!ENTITY crarr           "&#x021B5;"><!-- DOWNWARDS ARROW WITH CORNER LEFTWARDS -->
+<!ENTITY euro            "&#x020AC;"><!-- EURO SIGN -->
+<!ENTITY frasl           "&#x02044;"><!-- FRACTION SLASH -->
+<!-- Entities copied from xhtml1-special.ent -->
+<!ENTITY lrm             "&#x0200E;"><!-- LEFT-TO-RIGHT MARK -->
+<!ENTITY lsaquo          "&#x02039;"><!-- SINGLE LEFT-POINTING ANGLE QUOTATION MARK -->
+<!ENTITY rlm             "&#x0200F;"><!-- RIGHT-TO-LEFT MARK -->
+<!ENTITY rsaquo          "&#x0203A;"><!-- SINGLE RIGHT-POINTING ANGLE QUOTATION MARK -->
+<!ENTITY zwj             "&#x0200D;"><!-- ZERO WIDTH JOINER -->
+<!ENTITY zwnj            "&#x0200C;"><!-- ZERO WIDTH NON-JOINER -->
+
+<!ENTITY dbnd            "&#x002ED;"><!-- DOUBLE CHEM BOND : modifier letter unaspirated -->
+<!ENTITY franc           "&#x020A3;"><!-- french franc sign -->
+<!ENTITY frowny          "&#x02639;"><!-- White Frowning Face -->
+<!ENTITY qbnd            "&#x02263;"><!-- QUADRUPLE CHEM BOND : strictly equivalent to -->
+<!ENTITY sbnd            "&#x02012;"><!-- SINGLE CHEM BOND : figure dash -->
+<!ENTITY smiley          "&#x0263A;"><!-- White Smiling Face -->
+<!ENTITY squdiag         "&#x025E9;"><!-- DIAG HALF FILLED SQUARE : square with upper left diagonal half black -->
+<!ENTITY squgf           "&#x02592;"><!-- FILLED SQUARE-GREY -->
+<!ENTITY tbnd            "&#x02261;"><!-- TRIPLE CHEM BOND : alias ISOTECH equiv -->

@@ -1,5 +1,5 @@
 <entity name="entity" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>About an entity i.e. something described in this framework
+	<description>List of Entities i.e. things described in this framework
 	</description>
 	<namespace prefix="ent"
 		uri="https://github.com/Quodatum/app-doc/entity" />

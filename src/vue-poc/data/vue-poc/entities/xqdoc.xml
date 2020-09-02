@@ -1,5 +1,5 @@
 <entity name="xqdoc" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>XQuery documentation set </description>
+	<description>List of XQuery documentation sets </description>
 
 	<fields>
 	<field name="id" type="xs:string">

@@ -1,5 +1,5 @@
 <entity name="jobrun" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>About the running of a job</description>
+	<description>List of jobs run. From <code>collection("vue-poc/jobrun")/jobrun</code></description>
 	<namespace prefix="xqdoc" uri="http://www.xqdoc.org/1.0" />
 
 	<fields>

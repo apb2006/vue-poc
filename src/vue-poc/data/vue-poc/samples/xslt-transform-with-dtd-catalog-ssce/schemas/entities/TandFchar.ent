@@ -1,0 +1,583 @@
+<!-- 
+TandFchar.ent
+Updated 2013-07-03 
+
+Characters identified during the XML tagging process by Taylor & Francis 
+vendors or Taylor & Francis internal staff.
+
+Many potential characters and character combinations have been identified 
+below and established as entities.
+
+All duplicate declarations in ISO entity files have been removed.
+
+Mapping may be based on the specific character requirements, though
+mapping to Unicode is preferred. Where Unicode mapping is not possible 
+(character cannot currently be represented in Unicode) the entity 
+value should be declared with the entity name concatenated within 
+square brackets. Example: <!ENTITY Abar "[Abar]">
+
+Graphics for web rendering should be indicated in the description field.
+Every attempt should be made to use the same name for the graphic as 
+used in the replacement string with recognition of operating system
+limitations in recognition of upper/lower case filenames with the same 
+characters. Uppercase characters are indicated by inserting a low bar "_"
+between the base character and the diacritical for the name of the gif 
+file. Lower case is concatenated with the diacritical. Example: 
+&agr; vs. &Agr; would require filenames of agr.gif and A_gr.gif. 
+-->
+
+<!-- Typical invocation for XML.DCL entry in catalog entry is:
+
+PUBLIC "-//TandF//ENTITIES Specific Character Entities//EN" "entities\TandFchar.ent"
+SYSTEM "..\entities\TandFchar.ent" "entities\TandFchar.ent"
+
+-->
+
+<!-- Combining Diacritical Marks
+As the name implies, these are accents that can be combined with other characters.
+The combining mark MUST follow a character, and should never be placed after a 
+whitespace character.
+ -->
+<!ENTITY c.acutbl        "&#x00317;"><!-- combining acute accent below -->
+<!ENTITY c.acute         "&#x00301;"><!-- combining acute accent -->
+<!ENTITY c.annty         "&#x020E7;"><!-- combining annuity symbol -->
+<!ENTITY c.apeqab        "&#x0034C;"><!-- combining almost equal above (velopharyngeal friction) -->
+<!ENTITY c.awarab        "&#x020D4;"><!-- combining anticlockwise arrow above -->
+<!ENTITY c.awrgov        "&#x020DA;"><!-- combining anticlockwise ring overlay -->
+<!ENTITY c.breve         "&#x00306;"><!-- combining breve -->
+<!ENTITY c.brgab         "&#x00346;"><!-- combining bridge above (dentolabial) -->
+<!ENTITY c.brgbl         "&#x0032A;"><!-- combining bridge below -->
+<!ENTITY c.brvbl         "&#x0032E;"><!-- combining breve below -->
+<!ENTITY c.bsolov        "&#x020E5;"><!-- combining reverse solidus overlay -->
+<!ENTITY c.carnbl        "&#x0032C;"><!-- combining caron below -->
+<!ENTITY c.caron         "&#x0030C;"><!-- combining caron -->
+<!ENTITY c.cedil         "&#x00327;"><!-- combining cedilla -->
+<!ENTITY c.cirben        "&#x020E0;"><!-- combining enclosing circle with backslash -->
+<!ENTITY c.circ          "&#x00302;"><!-- combining circumflex accent -->
+<!ENTITY c.circbl        "&#x0032D;"><!-- combining circumflex accent below -->
+<!ENTITY c.circen        "&#x020DD;"><!-- combining enclosing circle -->
+<!ENTITY c.cndrb         "&#x00310;"><!-- combining candrabindu -->
+<!ENTITY c.comab         "&#x00313;"><!-- combining comma above -->
+<!ENTITY c.comabr        "&#x00315;"><!-- combining comma above right -->
+<!ENTITY c.commbl        "&#x00326;"><!-- combining comma below -->
+<!ENTITY c.cwarab        "&#x020D5;"><!-- combining clockwise arrow above -->
+<!ENTITY c.cwrgov        "&#x020D9;"><!-- combining clockwise ring overlay -->
+<!ENTITY c.dblac         "&#x0030B;"><!-- combining double acute accent -->
+<!ENTITY c.dblgr         "&#x0030F;"><!-- combining double grave accent -->
+<!ENTITY c.diamen        "&#x020DF;"><!-- combining enclosing diamond -->
+<!ENTITY c.diarbl        "&#x00324;"><!-- combining diaresis below -->
+<!ENTITY c.dotab         "&#x00307;"><!-- combining dot above -->
+<!ENTITY c.dotbl         "&#x00323;"><!-- combining dot below -->
+<!ENTITY c.dovlin        "&#x0033F;"><!-- combining double overline -->
+<!ENTITY c.dtckbl        "&#x0031E;"><!-- combining down tack below -->
+<!ENTITY c.duline        "&#x00333;"><!-- combining double underline (low line) -->
+<!ENTITY c.dvlnab        "&#x0030E;"><!-- combining double vertical line above -->
+<!ENTITY c.dvlnbl        "&#x00348;"><!-- combining double vertical line below (strong articulation) -->
+<!ENTITY c.dvstov        "&#x020E6;"><!-- combining double vertical stroke overlay -->
+<!ENTITY c.eqbl          "&#x00347;"><!-- combining equals sign below (alveolar) -->
+<!ENTITY c.gravbl        "&#x00316;"><!-- combining grave accent below -->
+<!ENTITY c.grave         "&#x00300;"><!-- combining grave accent -->
+<!ENTITY c.grjoin        "&#x0034F;"><!-- combining grapheme joiner -->
+<!ENTITY c.hmthab        "&#x0034B;"><!-- combining homothetic above (nasal escape) -->
+<!ENTITY c.hookab        "&#x00309;"><!-- combining hook above -->
+<!ENTITY c.horn          "&#x0031B;"><!-- combining horn -->
+<!ENTITY c.ibreve        "&#x00311;"><!-- combining inverted breve -->
+<!ENTITY c.ibrgbl        "&#x0033A;"><!-- combining inverted bridge below -->
+<!ENTITY c.ibrvbl        "&#x0032F;"><!-- combining inverted breve below -->
+<!ENTITY c.idarbl        "&#x0032B;"><!-- combining inverted double arch below -->
+<!ENTITY c.keyen         "&#x020E3;"><!-- combining enclosing keycap -->
+<!ENTITY c.langab        "&#x0031A;"><!-- combining left angle above -->
+<!ENTITY c.langbl        "&#x00349;"><!-- combining left angle below (weak articulation) -->
+<!ENTITY c.larrab        "&#x020D6;"><!-- combining left arrow above -->
+<!ENTITY c.larrov        "&#x020EA;"><!-- combining left arrow overlay -->
+<!ENTITY c.lharab        "&#x020D0;"><!-- combining left harpoon above -->
+<!ENTITY c.lhrgbl        "&#x0031C;"><!-- combining left half ring below -->
+<!ENTITY c.lrarab        "&#x020E1;"><!-- combining left right arrow above -->
+<!ENTITY c.lrarbl        "&#x0034D;"><!-- combining left right arrow below (labial spreading) -->
+<!ENTITY c.lsolov        "&#x00338;"><!-- combining long solidus overlay -->
+<!ENTITY c.lstrov        "&#x00336;"><!-- combining long stroke overlay -->
+<!ENTITY c.ltckbl        "&#x00318;"><!-- combining left tack below -->
+<!ENTITY c.lvlnov        "&#x020D2;"><!-- combining long vertical line overlay -->
+<!ENTITY c.macr          "&#x00304;"><!-- combining macron -->
+<!ENTITY c.macrbl        "&#x00331;"><!-- combining macr below -->
+<!ENTITY c.minbl         "&#x00320;"><!-- combining minus below -->
+<!ENTITY c.ntldab        "&#x0034A;"><!-- combining not tilde above (denasal) -->
+<!ENTITY c.ogonek        "&#x00328;"><!-- combining ogonek -->
+<!ENTITY c.ovline        "&#x00305;"><!-- combining overline -->
+<!ENTITY c.palat         "&#x00321;"><!-- combining palatalized hook below -->
+<!ENTITY c.plusbl        "&#x0031F;"><!-- combining plus below -->
+<!ENTITY c.qdotab        "&#x020DC;"><!-- combining four dots above -->
+<!ENTITY c.rarrab        "&#x020D7;"><!-- combining right arrow above -->
+<!ENTITY c.rcomab        "&#x00314;"><!-- combining reversed comma above -->
+<!ENTITY c.retro         "&#x00322;"><!-- combining retroflex hook below -->
+<!ENTITY c.rharab        "&#x020D1;"><!-- combining right harpoon above -->
+<!ENTITY c.rhrgbl        "&#x00339;"><!-- combining right half ring below -->
+<!ENTITY c.ringab        "&#x0030A;"><!-- combining ring above -->
+<!ENTITY c.ringbl        "&#x00325;"><!-- combining ring below -->
+<!ENTITY c.ringov        "&#x020D8;"><!-- combining ring overlay -->
+<!ENTITY c.rtckbl        "&#x00319;"><!-- combining right tack below -->
+<!ENTITY c.scrnen        "&#x020E2;"><!-- combining enclosing screen -->
+<!ENTITY c.sglbl         "&#x0033C;"><!-- combining seagull below -->
+<!ENTITY c.squbl         "&#x0033B;"><!-- combining square below -->
+<!ENTITY c.squen         "&#x020DE;"><!-- combining enclosing square -->
+<!ENTITY c.ssolov        "&#x00337;"><!-- combining short solidus overlay -->
+<!ENTITY c.sstrov        "&#x00335;"><!-- combining short stroke overlay -->
+<!ENTITY c.svlnov        "&#x020D3;"><!-- combining short vertical line overlay -->
+<!ENTITY c.tcomab        "&#x00312;"><!-- combining turned comma above -->
+<!ENTITY c.tdotab        "&#x020DB;"><!-- combining three dots above -->
+<!ENTITY c.tdotbl        "&#x020E8;"><!-- combining triple underdot -->
+<!ENTITY c.tildbl        "&#x00330;"><!-- combining tilde below -->
+<!ENTITY c.tilde         "&#x00303;"><!-- combining tilde -->
+<!ENTITY c.tildov        "&#x00334;"><!-- combining tilde overlay -->
+<!ENTITY c.uarrbl        "&#x0034E;"><!-- combining up arrow below (labial spreading) -->
+<!ENTITY c.uline         "&#x00332;"><!-- combining underline (low line) -->
+<!ENTITY c.uml           "&#x00308;"><!-- combining diaresis/umlaut -->
+<!ENTITY c.utckbl        "&#x0031D;"><!-- combining up tack below -->
+<!ENTITY c.utrien        "&#x020E4;"><!-- combining enclosing upward pointing triangle -->
+<!ENTITY c.vlnab         "&#x0030D;"><!-- combining vertical line above -->
+<!ENTITY c.vlnbl         "&#x00329;"><!-- combining vertical line below -->
+<!ENTITY c.vtilde        "&#x0033E;"><!-- combining vertical tilde -->
+<!ENTITY c.wbrgab        "&#x020E9;"><!-- combining wide bridge above -->
+<!ENTITY c.xab           "&#x0033D;"><!-- combining x above -->
+
+<!ENTITY Abar            "&#x023A;"><!-- LATIN CAPITAL LETTER A WITH STROKE -->
+<!ENTITY abar            "&#x2C65;"><!--  LATIN SMALL LETTER A WITH STROKE -->
+<!ENTITY acaron          "&#x001CE;"><!-- latin small letter a with caron -->
+<!ENTITY Acheck          "[Acheck]"><!--   -->
+<!ENTITY acheck          "[acheck]"><!--   -->
+<!ENTITY Addot           "&#x1EA0;"><!--  latin capital letter a with dot below -->
+<!ENTITY addot           "&#x1EA1;"><!--  latin small letter a with dot below -->
+<!ENTITY Adot            "&#x00226;"><!-- latin capital letter a with dot above -->
+<!ENTITY adot            "&#x00227;"><!-- latin small letter a with dot above -->
+<!ENTITY Avec            "[Avec]"><!--   -->
+<!ENTITY avec            "[avec]"><!--   -->
+<!ENTITY Bacute          "[Bacute]"><!--   -->
+<!ENTITY bacute          "[bacute]"><!--   -->
+<!ENTITY Bbar            "&#x0243;"><!--  LATIN CAPITAL LETTER B WITH STROKE -->
+<!ENTITY bbar            "&#x0180;"><!--  latin small letter b with stroke -->
+<!ENTITY Bbreve          "[Bbreve]"><!--   -->
+<!ENTITY bbreve          "[bbreve]"><!--   -->
+<!ENTITY Bcheck          "[Bcheck]"><!--   -->
+<!ENTITY bcheck          "[bcheck]"><!--   -->
+<!ENTITY Bcirc           "[Bcirc]"><!--   -->
+<!ENTITY bcirc           "[bcirc]"><!--   -->
+<!ENTITY Bddot           "[Bddot]"><!--   -->
+<!ENTITY bddot           "[bcheck]"><!--   -->
+<!ENTITY Bdot            "&#x1E02;"><!--  latin capital letter b with dot above -->
+<!ENTITY bdot            "&#x1E03;"><!--  latin small letter b with dot above -->
+<!ENTITY Bgrave          "[Bgrave]"><!--   -->
+<!ENTITY bgrave          "[bgrave]"><!--   -->
+<!ENTITY Btilde          "[Btilde]"><!--   -->
+<!ENTITY btilde          "%plane1D;6C;"><!--  latin lowecase b with tilde -->
+<!ENTITY Bvec            "[Bvec]"><!--   -->
+<!ENTITY bvec            "[bvec]"><!--   -->
+<!ENTITY Cbar            "&#x23B;"><!--  latin capital letter c with stroke -->
+<!ENTITY cbar            "&#x23C;"><!--  latin small letter c with stroke -->
+<!ENTITY Cbreve          "[Cbreve]"><!--   -->
+<!ENTITY cbreve          "[cbreve]"><!--   -->
+<!ENTITY Ccheck          "[Ccheck]"><!--   -->
+<!ENTITY ccheck          "[ccheck]"><!--   -->
+<!ENTITY Cddot           "[Cddot]"><!--   -->
+<!ENTITY cddot           "[cddot]"><!--   -->
+<!ENTITY Cgrave          "[Cgrave]"><!--   -->
+<!ENTITY cgrave          "[cgrave]"><!--   -->
+<!ENTITY Ctilde          "[Ctilde]"><!--   -->
+<!ENTITY ctilde          "[ctilde]"><!--   -->
+<!ENTITY Cvec            "[Cvec]"><!--   -->
+<!ENTITY cvec            "[cvec]"><!--   -->
+<!ENTITY c_dot           "&#x0010B;"><!--  latin lowercase c with dot above -->
+<!ENTITY Dacute          "[Dacute]"><!--   -->
+<!ENTITY dacute          "[dacute]"><!--   -->
+<!ENTITY Dbar            "&#x0110;"><!--  latin capital d with stroke -->
+<!ENTITY dbar            "&#x0111;"><!--  latin lowercase d with stroke -->
+<!ENTITY Dbreve          "[Dbreve]"><!--   -->
+<!ENTITY dbreve          "[dbreve]"><!--   -->
+<!ENTITY Dcheck          "[Dcheck]"><!--   -->
+<!ENTITY dcheck          "[dcheck]"><!--   -->
+<!ENTITY Dcirc           "[Dcirc]"><!--   -->
+<!ENTITY dcirc           "[dcirc]"><!--   -->
+<!ENTITY Dddot           "[Dddot]"><!--   -->
+<!ENTITY dddot           "[dddot]"><!--   -->
+<!ENTITY Ddot            "[Ddot]"><!--   -->
+<!ENTITY ddot            "[ddot]"><!--   -->
+<!ENTITY Dgrave          "[Dgrave]"><!--   -->
+<!ENTITY dgrave          "[ddot]"><!--   -->
+<!ENTITY Dtilde          "[Dtilde]"><!--   -->
+<!ENTITY dtilde          "%plane1D;6D;"><!--  latin lowercase d with tilde -->
+<!ENTITY Dvec            "[Dvec]"><!--   -->
+<!ENTITY dvec            "[dvec]"><!--   -->
+<!ENTITY Ebar            "&#x0112;"><!--  latin capital e with macron -->
+<!ENTITY ebar            "&#x0113;"><!--  latin lowercase e with macron -->
+<!ENTITY Ebreve          "&#x00114;"><!-- latin capital letter e with breve -->
+<!ENTITY ebreve          "&#x00115;"><!-- latin small letter e with breve -->
+<!ENTITY Echeck          "[Echeck]"><!--   -->
+<!ENTITY echeck          "[echeck]"><!--   -->
+<!ENTITY Eddot           "[Eddot]"><!--   -->
+<!ENTITY eddot           "[eddot]"><!--   -->
+<!ENTITY Etilde          "&#x1EBC;"><!--  latin capital letter e with tilde -->
+<!ENTITY etilde          "&#x1EBD;"><!--  latin small letter e with tilde -->
+<!ENTITY Evec            "[Evec]"><!--   -->
+<!ENTITY evec            "[evec]"><!--   -->
+<!ENTITY Facute          "[Facute]"><!--   -->
+<!ENTITY facute          "[facute]"><!--   -->
+<!ENTITY Fbar            "[Fbar]"><!--   -->
+<!ENTITY fbar            "[fbar]"><!--   -->
+<!ENTITY Fbreve          "[Fbreve]"><!--   -->
+<!ENTITY fbreve          "[fbreve]"><!--   -->
+<!ENTITY Fcheck          "[Fcheck]"><!--   -->
+<!ENTITY fcheck          "[fcheck]"><!--   -->
+<!ENTITY Fcirc           "[Fcirc]"><!--   -->
+<!ENTITY fcirc           "[fcirc]"><!--   -->
+<!ENTITY Fddot           "[Fddot]"><!--   -->
+<!ENTITY fddot           "[fddot]"><!--   -->
+<!ENTITY Fdot            "[Fdot]"><!--   -->
+<!ENTITY fdot            "[fdot]"><!--   -->
+<!ENTITY Fgrave          "[Fgrave]"><!--   -->
+<!ENTITY fgrave          "[fgrave]"><!--   -->
+<!ENTITY Ftilde          "[Ftilde]"><!--   -->
+<!ENTITY ftilde          "%plane1D;6E;"><!--  latin lowercase f with tilde -->
+<!ENTITY Fvec            "[Fvec]"><!--   -->
+<!ENTITY fvec            "[fvec]"><!--   -->
+<!ENTITY Gacute          "&#x1F4;"><!--  latin capital g with acute -->
+<!ENTITY Gbar            "&#x1E4;"><!--  latin capital letter g with stroke -->
+<!ENTITY gbar            "&#x1E5;"><!--  latin small letter g with stroke -->
+<!ENTITY gcaron          "&#x001E7;"><!-- latin small letter g with caron -->
+<!ENTITY Gcheck          "[Gcheck]"><!--   -->
+<!ENTITY gcheck          "[gcheck]"><!--   -->
+<!ENTITY Gddot           "[Gddot]"><!--   -->
+<!ENTITY gddot           "[gddot]"><!--   -->
+<!ENTITY Ggrave          "[Ggrave]"><!--   -->
+<!ENTITY ggrave          "[ggrave]"><!--   -->
+<!ENTITY Gtilde          "[Gtilde]"><!--   -->
+<!ENTITY gtilde          "[gtilde]"><!--   -->
+<!ENTITY Gvec            "[Gvec]"><!--   -->
+<!ENTITY gvec            "[gvec]"><!--   -->
+<!ENTITY Hacute          "[Hacute]"><!--   -->
+<!ENTITY hacute          "[hacute]"><!--   -->
+<!ENTITY Hbar            "[Hbar]"><!--   -->
+<!ENTITY Hbreve          "&#x1E2A;"><!--  latin capital h with breve below -->
+<!ENTITY hbreve          "&#x1E2B;"><!--  latin lowercase h with breve below -->
+<!ENTITY Hcheck          "[Hcheck]"><!--   -->
+<!ENTITY hcheck          "[hcheck]"><!--   -->
+<!ENTITY Hddot           "&#x1E24;"><!--  latin capital letter h with dot below -->
+<!ENTITY hddot           "&#x1E25;"><!--  latin lowercase letter h with dot below -->
+<!ENTITY Hdot            "&#x1E22;"><!--  latin capital h with dot above -->
+<!ENTITY hdot            "&#x1E23;"><!--  latin lowercase h with dot above -->
+<!ENTITY HE              "&#x005D4;"><!-- Hebrew letter HE -->
+<!ENTITY Hgrave          "[Hgrave]"><!--   -->
+<!ENTITY hgrave          "[hgrave]"><!--   -->
+<!ENTITY Hmacr           "&#x00048;&#x00304;"><!-- latin capital letter H with macron -->
+<!ENTITY Htilde          "[Htilde]"><!--   -->
+<!ENTITY htilde          "[htilde]"><!--   -->
+<!ENTITY Hvec            "[Hvec]"><!--   -->
+<!ENTITY hvec            "[hvec]"><!--   -->
+<!ENTITY h_bar           "&#x0127;"><!--  lowercase h with bar -->
+<!ENTITY Ibar            "&#x197;"><!--  latin capital i with bar -->
+<!ENTITY ibar            "&#x00268;"><!-- LATIN SMALL LETTER I WITH STROKE -->
+<!ENTITY Ibreve          "&#x0012C;"><!-- latin capital letter i with breve -->
+<!ENTITY ibreve          "&#x0012D;"><!-- latin small letter i with breve -->
+<!ENTITY icaron          "&#x001D0;"><!-- latin small letter i with caron -->
+<!ENTITY Icheck          "[Icheck]"><!--   -->
+<!ENTITY icheck          "[icheck]"><!--   -->
+<!ENTITY Iddot           "&#x1ECA;"><!--  latin capital letter i with dot -->
+<!ENTITY iddot           "&#x1ECB;"><!--  latin lowercase letter i with dot -->
+<!ENTITY idot            "&#x00069;"><!-- lower-case latin letter i -->
+<!ENTITY Ivec            "[Ivec]"><!--   -->
+<!ENTITY ivec            "[ivec]"><!--   -->
+<!ENTITY Jacute          "[Jacute]"><!--   -->
+<!ENTITY jacute          "[jacute]"><!--   -->
+<!ENTITY Jbar            "[Jbar]"><!--   -->
+<!ENTITY jbar            "&#x25F;"><!--  latin lowercase j with bar -->
+<!ENTITY Jbreve          "[Jbreve]"><!--   -->
+<!ENTITY jbreve          "[jbreve]"><!--   -->
+<!ENTITY Jcheck          "[Jcheck]"><!--   -->
+<!ENTITY jcheck          "[jcheck]"><!--   -->
+<!ENTITY Jddot           "[Jddot]"><!--   -->
+<!ENTITY jddot           "[jddot]"><!--   -->
+<!ENTITY Jdot            "[Jdot]"><!--   -->
+<!ENTITY jdot            "[jdot]"><!--   -->
+<!ENTITY Jgrave          "[Jgrave]"><!--   -->
+<!ENTITY jgrave          "[jgrave]"><!--   -->
+<!ENTITY Jtilde          "[Jtilde]"><!--   -->
+<!ENTITY jtilde          "[jtilde]"><!--   -->
+<!ENTITY Jvec            "[Jvec]"><!--   -->
+<!ENTITY jvec            "[jvec]"><!--   -->
+<!ENTITY Kacute          "&#x1E30;"><!--  latin capital k with acute -->
+<!ENTITY kacute          "&#x1E31;"><!--  latin lowercase k with acute -->
+<!ENTITY Kbar            "[Kbar]"><!--   -->
+<!ENTITY kbar            "[kbar]"><!--   -->
+<!ENTITY Kbreve          "[Kbreve]"><!--   -->
+<!ENTITY kbreve          "[kbreve]"><!--   -->
+<!ENTITY Kcheck          "[Kcheck]"><!--   -->
+<!ENTITY kcheck          "[kcheck]"><!--   -->
+<!ENTITY Kcirc           "[Kcirc]"><!--   -->
+<!ENTITY kcirc           "[kcirc]"><!--   -->
+<!ENTITY Kddot           "[Kddot]"><!--   -->
+<!ENTITY kddot           "[kddot]"><!--   -->
+<!ENTITY Kdot            "&#x1E32;"><!--  latin capital letter k with dot below -->
+<!ENTITY kdot            "&#x1E33;"><!--  latin lowercase letter k with dot below -->
+<!ENTITY Kgrave          "[Kgrave]"><!--   -->
+<!ENTITY kgrave          "[kgrave]"><!--   -->
+<!ENTITY Ktilde          "[Ktilde]"><!--   -->
+<!ENTITY ktilde          "[ktilde]"><!--   -->
+<!ENTITY Kvec            "[Kvec]"><!--   -->
+<!ENTITY kvec            "[kvec]"><!--   -->
+<!ENTITY Lbar            "&#x0141;"><!--  latin capital l with bar -->
+<!ENTITY lbar            "&#x0142;"><!--  latin lowercase l with bar -->
+<!ENTITY Lbreve          "[Lbreve]"><!--   -->
+<!ENTITY lbreve          "[lbreve]"><!--   -->
+<!ENTITY Lcheck          "[Lcheck]"><!--   -->
+<!ENTITY lcheck          "[lcheck]"><!--   -->
+<!ENTITY Lcirc           "&#x1E3C;"><!--  latin capital l with circumflex -->
+<!ENTITY lcirc           "&#x1E3D;"><!--  latin lowercase l with circumflex -->
+<!ENTITY Lddot           "&#x1E36;"><!--  latin capital l with dot below -->
+<!ENTITY lddot           "&#x1E37;"><!-- latin small letter l with dot below -->
+<!ENTITY Ldot            "&#x013F;"><!-- latin capital letter l with middle dot -->
+<!ENTITY Lgrave          "[Lgrave]"><!--   -->
+<!ENTITY lgrave          "[lgrave]"><!--   -->
+<!ENTITY Ltilde          "[Ltilde]"><!--   -->
+<!ENTITY ltilde          "&#x026B;"><!-- latin small letter l with middle tilde -->
+<!ENTITY Lvec            "[Lvec]"><!--   -->
+<!ENTITY lvec            "[lvec]"><!--   -->
+<!ENTITY l_dot           "&#x1E39;"><!-- latin small letter l with dot -->
+<!ENTITY Macute          "&#x1E3E;"><!--  latin capital m with acute -->
+<!ENTITY macute          "&#x1E3F;"><!--  latin lowercase m with acute -->
+<!ENTITY Mbar            "[Mbar]"><!--   -->
+<!ENTITY mbar            "[mbar]"><!--   -->
+<!ENTITY Mbreve          "[Mbreve]"><!--   -->
+<!ENTITY mbreve          "[mbreve]"><!--   -->
+<!ENTITY Mcheck          "[Mcheck]"><!--   -->
+<!ENTITY mcheck          "[mcheck]"><!--   -->
+<!ENTITY Mcirc           "[Mcirc]"><!--   -->
+<!ENTITY mcirc           "[mcirc]"><!--   -->
+<!ENTITY Mddot           "&#x1E42;"><!--  latin capital m with dot below -->
+<!ENTITY mddot           "&#x1E43;"><!--  latin lowercase m with dot below -->
+<!ENTITY Mdot            "&#x1E40;"><!--  latin capital m with dot above -->
+<!ENTITY mdot            "&#x1E41;"><!--  latin lowercase m with dot above -->
+<!ENTITY Mgrave          "[Mgrave]"><!--   -->
+<!ENTITY mgrave          "[mgrave]"><!--   -->
+<!ENTITY Mtilde          "[Mtilde]"><!--   -->
+<!ENTITY mtilde          "%plane1D;6F;"><!--  latin lowercase m with middle tilde -->
+<!ENTITY Mvec            "[Mvec]"><!--   -->
+<!ENTITY mvec            "[mvec]"><!--   -->
+<!ENTITY Nbar            "[Nbar]"><!--   -->
+<!ENTITY nbar            "[nbar]"><!--   -->
+<!ENTITY Nbreve          "[Nbreve]"><!--   -->
+<!ENTITY nbreve          "[nbreve]"><!--   -->
+<!ENTITY Ncheck          "[Ncheck]"><!--   -->
+<!ENTITY ncheck          "[ncheck]"><!--   -->
+<!ENTITY Ncirc           "&#x1E4A;"><!--  latin capital letter n with circumflex below -->
+<!ENTITY ncirc           "&#x1E4B;"><!--  latin small letter n with circumflex below -->
+<!ENTITY Nddot           "&#x1E46;"><!--  latin capital n with dot below -->
+<!ENTITY nddot           "&#x1E47;"><!--  latin lowercase n with dot below -->
+<!ENTITY Ndot            "&#x1E44;"><!--  latin capital n with dot above -->
+<!ENTITY ndot            "&#x1E45;"><!--  latin lowercase n with dot above -->
+<!ENTITY Ngrave          "&#x1F8;"><!--  latin capital n with grave -->
+<!ENTITY ngrave          "&#x1F9;"><!--  latin lowercase n with grave -->
+<!ENTITY Nvec            "[Nvec]"><!--   -->
+<!ENTITY nvec            "[nvec]"><!--   -->
+<!ENTITY Obar            "&#x14C;"><!--  latin capital o with macron -->
+<!ENTITY obar            "&#x14D;"><!--  latin lowercase o with macron -->
+<!ENTITY Obreve          "&#x0014E;"><!-- latin capital letter o with breve -->
+<!ENTITY obreve          "&#x0014F;"><!-- latin small letter o with breve -->
+<!ENTITY Ocheck          "[Ocheck]"><!--   -->
+<!ENTITY ocheck          "[ocheck]"><!--   -->
+<!ENTITY Oddot           "[Oddot]"><!--   -->
+<!ENTITY oddot           "[oddot]"><!--   -->
+<!ENTITY Odot            "&#x22E;"><!--  latin capital o with dot above -->
+<!ENTITY okina           "&#x002BB;"><!-- MODIFIER LETTER TURNED COMMA, for Hawai'i -->
+<!ENTITY Ovec            "[Ovec]"><!--   -->
+<!ENTITY ovec            "[ovec]"><!--   -->
+<!ENTITY o_dot           "&#x22F;"><!-- latin lowercase o with dot above -->
+<!ENTITY Pacute          "&#x1E54;"><!--  latin capital p with acute -->
+<!ENTITY pacute          "&#x1E55;"><!--  latin lowercase p with acute -->
+<!ENTITY Pbar            "[Pbar]"><!--   -->
+<!ENTITY pbar            "[pbar]"><!--   -->
+<!ENTITY Pbreve          "[Pbreve]"><!--   -->
+<!ENTITY pbreve          "[pbreve]"><!--   -->
+<!ENTITY Pcheck          "[Pcheck]"><!--   -->
+<!ENTITY pcheck          "[pcheck]"><!--   -->
+<!ENTITY Pcirc           "[Pcirc]"><!--   -->
+<!ENTITY pcirc           "[pcirc]"><!--   -->
+<!ENTITY Pddot           "[Pddot]"><!--   -->
+<!ENTITY pddot           "[pddot]"><!--   -->
+<!ENTITY Pdot            "&#x1E56;"><!--  latin capital p with dot above -->
+<!ENTITY pdot            "&#x1E57;"><!--  latin lowercase p with dot above -->
+<!ENTITY Pgrave          "[Pgrave]"><!--   -->
+<!ENTITY pgrave          "[pgrave]"><!--   -->
+<!ENTITY Ptilde          "[Ptilde]"><!--   -->
+<!ENTITY ptilde          "%plane1D;71;"><!--  latin lowercase p with tilde -->
+<!ENTITY Pvec            "[Pvec]"><!--   -->
+<!ENTITY pvec            "[pvec]"><!--   -->
+<!ENTITY Qacute          "[Qacute]"><!--   -->
+<!ENTITY qacute          "[qacute]"><!--   -->
+<!ENTITY Qbar            "[Qbar]"><!--   -->
+<!ENTITY qbar            "[qbar]"><!--   -->
+<!ENTITY Qbreve          "[Qbreve]"><!--   -->
+<!ENTITY qbreve          "[qbreve]"><!--   -->
+<!ENTITY Qcheck          "[Qcheck]"><!--   -->
+<!ENTITY qcheck          "[qcheck]"><!--   -->
+<!ENTITY Qcirc           "[Qcirc]"><!--   -->
+<!ENTITY qcirc           "[qcirc]"><!--   -->
+<!ENTITY Qddot           "[Qddot]"><!--   -->
+<!ENTITY qddot           "[qddot]"><!--   -->
+<!ENTITY Qdot            "[Qdot]"><!--   -->
+<!ENTITY qdot            "[qdot]"><!--   -->
+<!ENTITY Qgrave          "[Qgrave]"><!--   -->
+<!ENTITY qgrave          "[qgrave]"><!--   -->
+<!ENTITY Qtilde          "[Qtilde]"><!--   -->
+<!ENTITY qtilde          "[qtilde]"><!--   -->
+<!ENTITY Qvec            "[Qvec]"><!--   -->
+<!ENTITY qvec            "[qvec]"><!--   -->
+<!ENTITY Rbar            "[Rbar]"><!--   -->
+<!ENTITY rbar            "[rbar]"><!--   -->
+<!ENTITY Rbreve          "&#x212;"><!--  latin capital r with breve -->
+<!ENTITY rbreve          "&#x213;"><!--  latin lowercase r with breve -->
+<!ENTITY Rcheck          "[Rcheck]"><!--   -->
+<!ENTITY rcheck          "[rcheck]"><!--   -->
+<!ENTITY Rcirc           "[Rcirc]"><!--   -->
+<!ENTITY rcirc           "[rcirc]"><!--   -->
+<!ENTITY Rddot           "&#x1E5A;"><!--  latin capital R with dot below -->
+<!ENTITY rddot           "&#x1E5B;"><!--  latin lowercase r with dot below -->
+<!ENTITY Rdot            "&#x1E58;"><!--  latin capital r with dot above -->
+<!ENTITY rdot            "&#x1E59;"><!--  latin lowercase r with dot below -->
+<!ENTITY Rgrave          "[Rgrave]"><!--   -->
+<!ENTITY rgrave          "[rgrave]"><!--   -->
+<!ENTITY Rtilde          "[Rtilde]"><!--   -->
+<!ENTITY rtilde          "%plane1D;72;"><!--  latin lowercase r with tilde -->
+<!ENTITY ruml            "[ruml]"><!-- Lowercase r with umlaut -->
+<!ENTITY Rvec            "[Rvec]"><!--   -->
+<!ENTITY rvec            "[rvec]"><!--   -->
+<!ENTITY Sbar            "[Sbar]"><!--   -->
+<!ENTITY sbar            "[sbar]"><!--   -->
+<!ENTITY Sbreve          "[Sbreve]"><!--   -->
+<!ENTITY sbreve          "[sbreve]"><!-- LOWERCASE s + BREVE -->
+<!ENTITY Scheck          "[Scheck]"><!--   -->
+<!ENTITY scheck          "[scheck]"><!--   -->
+<!ENTITY Sddot           "[Sddot]"><!--   -->
+<!ENTITY sddot           "[sddot]"><!--   -->
+<!ENTITY Sdot            "&#x1E60;"><!--  latin capital s with dot above -->
+<!ENTITY Sgrave          "[Sgrave]"><!--   -->
+<!ENTITY sgrave          "[sgrave]"><!--   -->
+<!ENTITY Stilde          "[Stilde]"><!--   -->
+<!ENTITY stilde          "%plane1D;74;"><!--  latin lowercase s with tilde -->
+<!ENTITY Svec            "[Svec]"><!--   -->
+<!ENTITY svec            "[svec]"><!--   -->
+<!ENTITY Tacute          "[Tacute]"><!--   -->
+<!ENTITY tacute          "[tacute]"><!--   -->
+<!ENTITY Tbar            "&#x0166;"><!--  latin capital t with stroke -->
+<!ENTITY tbar            "&#x0167;"><!--  latin lowercase t with stroke -->
+<!ENTITY Tbreve          "[Tbreve]"><!--   -->
+<!ENTITY tbreve          "[tbreve]"><!--   -->
+<!ENTITY Tcheck          "[Tcheck]"><!--   -->
+<!ENTITY tcheck          "[tcheck]"><!--   -->
+<!ENTITY Tcirc           "[Tcirc]"><!--   -->
+<!ENTITY tcirc           "[tcirc]"><!--   -->
+<!ENTITY Tddot           "[Tddot]"><!--   -->
+<!ENTITY tddot           "[tddot]"><!--   -->
+<!ENTITY Tdot            "&#x1E6A;"><!--  latin capital t with dot above -->
+<!ENTITY Tgrave          "[Tgrave]"><!--   -->
+<!ENTITY tgrave          "[tgrave]"><!--   -->
+<!ENTITY Ttilde          "[Ttilde]"><!--   -->
+<!ENTITY ttilde          "%plane1D;75;"><!--  latin lowercase t with tilde -->
+<!ENTITY Tvec            "[Tvec]"><!--   -->
+<!ENTITY tvec            "[tvec]"><!--   -->
+<!ENTITY Ubar            "&#x0244;"><!--  latin capital letter u bar -->
+<!ENTITY ubar            "&#x289;"><!--  latin small letter u bar -->
+<!ENTITY Ucheck          "[Ucheck]"><!--   -->
+<!ENTITY ucheck          "[ucheck]"><!--   -->
+<!ENTITY Uddot           "&#x1EE4;"><!--  latin capital letter u with dot below -->
+<!ENTITY uddot           "&#x1EE5;"><!--  latin small letter u with dot below -->
+<!ENTITY Udot            "[Udot]"><!--   -->
+<!ENTITY udot            "[udot]"><!--   -->
+<!ENTITY Uvec            "[Uvec]"><!--   -->
+<!ENTITY uvec            "[uvec]"><!--   -->
+<!ENTITY Vacute          "[Vacute]"><!--   -->
+<!ENTITY vacute          "[vacute]"><!--   -->
+<!ENTITY Vbreve          "[Vbreve]"><!--   -->
+<!ENTITY vbreve          "[vbreve]"><!--   -->
+<!ENTITY Vcheck          "[Vcheck]"><!--   -->
+<!ENTITY vcheck          "[vcheck]"><!--   -->
+<!ENTITY Vcirc           "[Vcirc]"><!--   -->
+<!ENTITY vcirc           "[vcirc]"><!--   -->
+<!ENTITY Vddot           "&#x1E7E;"><!--  LATIN CAPITAL LETTER V WITH DOT BELOW -->
+<!ENTITY vddot           "&#x1E7F;"><!--  LATIN SMALL LETTER V WITH DOT BELOW -->
+<!ENTITY Vdot            "[Vdot]"><!--   -->
+<!ENTITY vdot            "[vdot]"><!--   -->
+<!ENTITY Vgrave          "[Vgrave]"><!--   -->
+<!ENTITY vgrave          "[vgrave]"><!--   -->
+<!ENTITY Vtilde          "&#x1E7C;"><!--  latin capital letter v with tilde -->
+<!ENTITY vtilde          "&#x1E7D;"><!--  latin small letter v with tilde -->
+<!ENTITY Vvec            "[Vvec]"><!--   -->
+<!ENTITY vvec            "[vvec]"><!--   -->
+<!ENTITY V_bar           "[V_bar]"><!--   -->
+<!ENTITY v_bar           "[v_bar]"><!--   -->
+<!ENTITY Wacute          "&#x1E82;"><!--  latin capital letter w with acute -->
+<!ENTITY wacute          "&#x1E83;"><!--  latin small letter w with acute -->
+<!ENTITY Wbar            "[Wbar]"><!--   -->
+<!ENTITY wbar            "[wbar]"><!--   -->
+<!ENTITY Wbreve          "[Wbreve]"><!--   -->
+<!ENTITY wbreve          "[wbreve]"><!--   -->
+<!ENTITY Wcheck          "[Wcheck]"><!--   -->
+<!ENTITY wcheck          "[wcheck]"><!--   -->
+<!ENTITY Wddot           "&#x1E88;"><!--  latin capital letter w with dot below -->
+<!ENTITY wddot           "&#x1E89;"><!--  latin small letter w with dot below -->
+<!ENTITY Wdot            "&#x1E86;"><!--  latin capital letter w with dot above -->
+<!ENTITY wdot            "&#x1E87;"><!--  latin small letter w with dot above -->
+<!ENTITY Wgrave          "&#x1E80;"><!--  latin capital letter w with grave -->
+<!ENTITY wgrave          "&#x1E81;"><!--  latin small letter w with grave -->
+<!ENTITY Wtilde          "[Wtilde]"><!--   -->
+<!ENTITY wtilde          "[wtilde]"><!--   -->
+<!ENTITY Wvec            "[Wvec]"><!--   -->
+<!ENTITY wvec            "[wvec]"><!--   -->
+<!ENTITY Xacute          "[Xacute]"><!--   -->
+<!ENTITY xacute          "[xacute]"><!--   -->
+<!ENTITY Xbar            "[Xbar]"><!--   -->
+<!ENTITY xbar            "[xbar]"><!--   -->
+<!ENTITY Xbreve          "[Xbreve]"><!--   -->
+<!ENTITY xbreve          "[xbreve]"><!--   -->
+<!ENTITY Xcheck          "[Xcheck]"><!--   -->
+<!ENTITY xcheck          "[xcheck]"><!--   -->
+<!ENTITY Xcirc           "[Xcirc]"><!--   -->
+<!ENTITY Xddot           "[Xddot]"><!--   -->
+<!ENTITY xddot           "[xddot]"><!--   -->
+<!ENTITY Xdot            "&#x1E8A;"><!--  latin capital letter x with dot above -->
+<!ENTITY xdot            "&#x1E8B;"><!--  latin small letter x with dot above -->
+<!ENTITY Xgrave          "[Xgrave]"><!--   -->
+<!ENTITY xgrave          "[xgrave]"><!--   -->
+<!ENTITY Xtilde          "[Xtilde]"><!--   -->
+<!ENTITY xtilde          "[xtilde]"><!--   -->
+<!ENTITY Xvec            "[Xvec]"><!--   -->
+<!ENTITY xvec            "[xvec]"><!--   -->
+<!ENTITY Ybar            "[Ybar]"><!--   -->
+<!ENTITY ybar            "[ybar]"><!--   -->
+<!ENTITY Ybreve          "[Ybreve]"><!--   -->
+<!ENTITY ybreve          "[ybreve]"><!--   -->
+<!ENTITY Ycheck          "[Ycheck]"><!--   -->
+<!ENTITY ycheck          "[ycheck]"><!--   -->
+<!ENTITY Yddot           "&#x1EF4;"><!--  latin capital letter y with dot below -->
+<!ENTITY yddot           "&#x1EF5;"><!--  latin small letter y with dot below -->
+<!ENTITY Ydot            "&#x1E8E;"><!--  latin capital letter y with dot above -->
+<!ENTITY ydot            "&#x1E8F;"><!--  latin small letter y with dot above -->
+<!ENTITY Ygrave          "&#x1EF2;"><!--  latin capital letter y with grave -->
+<!ENTITY ygrave          "&#x1EF3;"><!--  latin small letter y with grave -->
+<!ENTITY Ytilde          "&#x1EF8;"><!--  latin capital letter y with tilde -->
+<!ENTITY ytilde          "&#x1EF9;"><!--  latin small letter y with tilde -->
+<!ENTITY Yvec            "[Yvec]"><!--   -->
+<!ENTITY yvec            "[yvec]"><!--   -->
+<!ENTITY Zbar            "[Zbar]"><!--   -->
+<!ENTITY zbar            "[zbar]"><!--   -->
+<!ENTITY Zbreve          "[Zbreve]"><!--   -->
+<!ENTITY zbreve          "[zbreve]"><!--   -->
+<!ENTITY Zcheck          "[Zcheck]"><!--   -->
+<!ENTITY zcheck          "[zcheck]"><!--   -->
+<!ENTITY Zcirc           "&#x1E90;"><!--  latin capital letter z with circumflex -->
+<!ENTITY zcirc           "&#x1E91;"><!--  latin small letter z with circumflex -->
+<!ENTITY Zddot           "&#x1E92;"><!--  latin capital letter z with dot below -->
+<!ENTITY zddot           "&#x1E93;"><!--  latin small letter z with dot below -->
+<!ENTITY Zgrave          "[Zgrave]"><!--   -->
+<!ENTITY zgrave          "[zgrave]"><!--   -->
+<!ENTITY Ztilde          "[Ztilde]"><!--   -->
+<!ENTITY ztilde          "[ztilde]"><!--   -->
+<!ENTITY Zvec            "[Zvec]"><!--   -->
+<!ENTITY zvec            "[zvec]"><!--   -->

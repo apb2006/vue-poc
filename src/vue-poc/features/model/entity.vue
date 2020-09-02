@@ -22,7 +22,7 @@
 					       </template>
 		     </v-breadcrumbs>
 		   </v-toolbar-title>
-			 
+			  <v-spacer></v-spacer> 
 			 <v-text-field  prepend-icon="filter_list" label="Filter..." v-model="q" type="search"
 		   hide-details single-line  @keyup.enter="setfilter"
 		   clearable></v-text-field>

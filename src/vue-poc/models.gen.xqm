@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2020-05-04T21:53:38.229+01:00 
+ : auto generated from xml files in entities folder at: 2020-07-08T23:08:03.678+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -12,7 +12,7 @@ declare namespace c='http://www.w3.org/ns/xproc-step';
 declare variable $entity:list:=map { 
   "basex.job": map{
      "name": "basex.job",
-     "description": "An active BaseX job",
+     "description": "Active BaseX jobs on the server. From jobs:list-details",
      "access": map{ 
        "duration": function($_ as element()) as xs:string {$_/@duration },
        "id": function($_ as element()) as xs:string {$_/@id },
@@ -142,7 +142,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "basex.repo": map{
      "name": "basex.repo",
-     "description": "An entry in the basex repository",
+     "description": "Packages installed in the BaseX repository",
      "access": map{ 
        "name": function($_ as element()) as xs:string {$_/@name },
        "type": function($_ as element()) as xs:string {$_/@type },
@@ -175,7 +175,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "basex.service": map{
      "name": "basex.service",
-     "description": "basex services a list of all jobs that have been persistently registered as Services.",
+     "description": "basex services. A list of all jobs that have been persistently registered as Services.",
      "access": map{ 
        "base-uri": function($_ as element()) as xs:string {$_/@base-uri },
        "id": function($_ as element()) as xs:string {$_/@id },
@@ -218,7 +218,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "basex.user": map{
      "name": "basex.user",
-     "description": "A BaseX user ",
+     "description": "BaseX users ",
      "access": map{ 
        "name": function($_ as element()) as xs:string {$_/@name },
        "permission": function($_ as element()) as xs:string {$_/@permission } },
@@ -289,7 +289,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "entity": map{
      "name": "entity",
-     "description": "About an entity i.e. something described in this framework
+     "description": "List of Entities i.e. things described in this framework
 	",
      "access": map{ 
        "code": function($_ as element()) as xs:string? {$_/ent:data },
@@ -415,7 +415,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "jobrun": map{
      "name": "jobrun",
-     "description": "About the running of a job",
+     "description": "List of jobs run. From collection(""vue-poc/jobrun"")/jobrun",
      "access": map{ 
        "created": function($_ as element()) as xs:string {$_/json/dateTime },
        "id": function($_ as element()) as xs:string {$_/@id },
@@ -524,7 +524,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "namespace": map{
      "name": "namespace",
-     "description": "An XML namespace",
+     "description": "Known XML namespaces",
      "access": map{ 
        "description": function($_ as element()) as xs:string {$_/qns:description },
        "prefix": function($_ as element()) as xs:string {$_/@prefix },
@@ -558,7 +558,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "query": map{
      "name": "query",
-     "description": "An replx query",
+     "description": "List of replx query. From collection(""replx/queries"")/query",
      "access": map{ 
        "created": function($_ as element()) as xs:string {$_/created },
        "id": function($_ as element()) as xs:string {$_/@id },
@@ -661,7 +661,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "quodatum.task": map{
      "name": "quodatum.task",
-     "description": "A predefined query with parameters, listed in taskdef.xml ",
+     "description": "Predefined queries with parameters, listed in taskdef.xml ",
      "access": map{ 
        "description": function($_ as element()) as xs:string {$_/fn:serialize(description/node()) },
        "title": function($_ as element()) as xs:string {$_/title },
@@ -838,7 +838,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
    },
   "xqdoc": map{
      "name": "xqdoc",
-     "description": "XQuery documentation set ",
+     "description": "List of XQuery documentation sets ",
      "access": map{ 
        "id": function($_ as element()) as xs:string {$_/@id },
        "root": function($_ as element()) as xs:string {$_/"file:///C:/tmp/xqdoc/" },

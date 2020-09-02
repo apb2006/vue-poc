@@ -1,0 +1,25 @@
+<!-- 
+TandFcust.ent - This file may be used to modify certain entity definitions in the TFJA DTD.
+Updated 2010-06-15
+
+This file is provided so that certain entity definitions can be modified without chainging the main DTD file.
+This entity file must be referenced in the DTD before any other entities are defined. 
+
+Typical invocation in DTD:
+<!ENTITY % TandFcust
+           PUBLIC "-//TandF//ENTITIES Customizations//EN" 
+           "../entities/TandFcust.ent">
+%TandFcust;
+
+Typical invocation for entry in an OASIS TR9401 catalog file is:
+PUBLIC "-//TandF//ENTITIES Customizations//EN" "TandFcust.ent"
+SYSTEM "..\entities\TandFcust.ent" "TandFcust.ent"
+-->
+
+<!--
+Parameter entity definition for Unicode Plane 1 characters in range 1D000 - 1DFFF.
+The default definition "&#38;38;#x1D" allows entities to resolve to correct Unicode characters using standard XML parsers.
+This definition may be changed for use with parsers (such as nsgmls) that do not yet support Unicode Plane 1 characters.
+-->
+<!ENTITY % plane1D  "&#38;#38;#x1D">
+

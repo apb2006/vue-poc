@@ -1,0 +1,104 @@
+
+<!--
+Source:   XML Entity Definitions for Characters, W3C Recommendation 01 April 2010
+          http://www.w3.org/TR/2010/REC-xml-entity-names-20100401/
+Updated:  2010-04-01
+-->
+
+<!--
+     File isomscr.ent produced by the XSL script entities.xsl
+     from input data in unicode.xml.
+
+     Copyright 1998 - 2010 W3C.
+
+     Use and distribution of this code are permitted under the terms of the
+     W3C Software Notice and License.
+     http://www.w3.org/Consortium/Legal/2002/copyright-software-20021231.html
+
+     Please report any errors to David Carlisle
+     via the public W3C list www-math@w3.org.
+
+     The numeric character values assigned to each entity
+     (should) match the Unicode assignments in Unicode 5.x.
+
+     Entity names in this file are derived from files carrying the
+     following notice:
+
+     (C) International Organization for Standardization 1991
+     Permission to copy in any form is granted for use with
+     conforming SGML systems and applications as defined in
+     ISO 8879, provided this notice is included in all copies.
+
+-->
+
+
+<!-- 
+
+       Public identifier: -//W3C//ENTITIES Math Alphabets: Script//EN//XML
+       System identifier: http://www.w3.org/2003/entities/2007/isomscr.ent
+
+     The public identifier should always be used verbatim.
+     The system identifier may be changed to suit local requirements.
+
+     Typical invocation:
+
+       <!ENTITY % isomscr PUBLIC
+         "-//W3C//ENTITIES Math Alphabets: Script//EN//XML"
+         "http://www.w3.org/2003/entities/2007/isomscr.ent"
+       >
+       %isomscr;
+
+-->
+
+<!ENTITY ascr             "%plane1D;4B6;" ><!--MATHEMATICAL SCRIPT SMALL A -->
+<!ENTITY Ascr             "%plane1D;49C;" ><!--MATHEMATICAL SCRIPT CAPITAL A -->
+<!ENTITY bscr             "%plane1D;4B7;" ><!--MATHEMATICAL SCRIPT SMALL B -->
+<!ENTITY Bscr             "&#x0212C;" ><!--SCRIPT CAPITAL B -->
+<!ENTITY cscr             "%plane1D;4B8;" ><!--MATHEMATICAL SCRIPT SMALL C -->
+<!ENTITY Cscr             "%plane1D;49E;" ><!--MATHEMATICAL SCRIPT CAPITAL C -->
+<!ENTITY dscr             "%plane1D;4B9;" ><!--MATHEMATICAL SCRIPT SMALL D -->
+<!ENTITY Dscr             "%plane1D;49F;" ><!--MATHEMATICAL SCRIPT CAPITAL D -->
+<!ENTITY escr             "&#x0212F;" ><!--SCRIPT SMALL E -->
+<!ENTITY Escr             "&#x02130;" ><!--SCRIPT CAPITAL E -->
+<!ENTITY fscr             "%plane1D;4BB;" ><!--MATHEMATICAL SCRIPT SMALL F -->
+<!ENTITY Fscr             "&#x02131;" ><!--SCRIPT CAPITAL F -->
+<!ENTITY gscr             "&#x0210A;" ><!--SCRIPT SMALL G -->
+<!ENTITY Gscr             "%plane1D;4A2;" ><!--MATHEMATICAL SCRIPT CAPITAL G -->
+<!ENTITY hscr             "%plane1D;4BD;" ><!--MATHEMATICAL SCRIPT SMALL H -->
+<!ENTITY Hscr             "&#x0210B;" ><!--SCRIPT CAPITAL H -->
+<!ENTITY iscr             "%plane1D;4BE;" ><!--MATHEMATICAL SCRIPT SMALL I -->
+<!ENTITY Iscr             "&#x02110;" ><!--SCRIPT CAPITAL I -->
+<!ENTITY jscr             "%plane1D;4BF;" ><!--MATHEMATICAL SCRIPT SMALL J -->
+<!ENTITY Jscr             "%plane1D;4A5;" ><!--MATHEMATICAL SCRIPT CAPITAL J -->
+<!ENTITY kscr             "%plane1D;4C0;" ><!--MATHEMATICAL SCRIPT SMALL K -->
+<!ENTITY Kscr             "%plane1D;4A6;" ><!--MATHEMATICAL SCRIPT CAPITAL K -->
+<!ENTITY lscr             "%plane1D;4C1;" ><!--MATHEMATICAL SCRIPT SMALL L -->
+<!ENTITY Lscr             "&#x02112;" ><!--SCRIPT CAPITAL L -->
+<!ENTITY mscr             "%plane1D;4C2;" ><!--MATHEMATICAL SCRIPT SMALL M -->
+<!ENTITY Mscr             "&#x02133;" ><!--SCRIPT CAPITAL M -->
+<!ENTITY nscr             "%plane1D;4C3;" ><!--MATHEMATICAL SCRIPT SMALL N -->
+<!ENTITY Nscr             "%plane1D;4A9;" ><!--MATHEMATICAL SCRIPT CAPITAL N -->
+<!ENTITY oscr             "&#x02134;" ><!--SCRIPT SMALL O -->
+<!ENTITY Oscr             "%plane1D;4AA;" ><!--MATHEMATICAL SCRIPT CAPITAL O -->
+<!ENTITY pscr             "%plane1D;4C5;" ><!--MATHEMATICAL SCRIPT SMALL P -->
+<!ENTITY Pscr             "%plane1D;4AB;" ><!--MATHEMATICAL SCRIPT CAPITAL P -->
+<!ENTITY qscr             "%plane1D;4C6;" ><!--MATHEMATICAL SCRIPT SMALL Q -->
+<!ENTITY Qscr             "%plane1D;4AC;" ><!--MATHEMATICAL SCRIPT CAPITAL Q -->
+<!ENTITY rscr             "%plane1D;4C7;" ><!--MATHEMATICAL SCRIPT SMALL R -->
+<!ENTITY Rscr             "&#x0211B;" ><!--SCRIPT CAPITAL R -->
+<!ENTITY sscr             "%plane1D;4C8;" ><!--MATHEMATICAL SCRIPT SMALL S -->
+<!ENTITY Sscr             "%plane1D;4AE;" ><!--MATHEMATICAL SCRIPT CAPITAL S -->
+<!ENTITY tscr             "%plane1D;4C9;" ><!--MATHEMATICAL SCRIPT SMALL T -->
+<!ENTITY Tscr             "%plane1D;4AF;" ><!--MATHEMATICAL SCRIPT CAPITAL T -->
+<!ENTITY uscr             "%plane1D;4CA;" ><!--MATHEMATICAL SCRIPT SMALL U -->
+<!ENTITY Uscr             "%plane1D;4B0;" ><!--MATHEMATICAL SCRIPT CAPITAL U -->
+<!ENTITY vscr             "%plane1D;4CB;" ><!--MATHEMATICAL SCRIPT SMALL V -->
+<!ENTITY Vscr             "%plane1D;4B1;" ><!--MATHEMATICAL SCRIPT CAPITAL V -->
+<!ENTITY wscr             "%plane1D;4CC;" ><!--MATHEMATICAL SCRIPT SMALL W -->
+<!ENTITY Wscr             "%plane1D;4B2;" ><!--MATHEMATICAL SCRIPT CAPITAL W -->
+<!ENTITY xscr             "%plane1D;4CD;" ><!--MATHEMATICAL SCRIPT SMALL X -->
+<!ENTITY Xscr             "%plane1D;4B3;" ><!--MATHEMATICAL SCRIPT CAPITAL X -->
+<!ENTITY yscr             "%plane1D;4CE;" ><!--MATHEMATICAL SCRIPT SMALL Y -->
+<!ENTITY Yscr             "%plane1D;4B4;" ><!--MATHEMATICAL SCRIPT CAPITAL Y -->
+<!ENTITY zscr             "%plane1D;4CF;" ><!--MATHEMATICAL SCRIPT SMALL Z -->
+<!ENTITY Zscr             "%plane1D;4B5;" ><!--MATHEMATICAL SCRIPT CAPITAL Z -->

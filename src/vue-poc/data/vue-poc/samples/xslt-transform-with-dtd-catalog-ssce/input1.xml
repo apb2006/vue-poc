@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE unarticle SYSTEM "http://public.metapress.com/dtd/TAFXML/TFJA.dtd" [
+<!ENTITY F0001 SYSTEM ".\TBIS_A_652592_O_XML_IMAGES\TBIS_A_652592_O_F0001g.gif" NDATA GIF>
+]>
+<unarticle articleid="652592" documenttype="Miscellaneous">
+    <meta productid="TBIS" seq="1">
+        <journalcode></journalcode>
+        <issn type="electronic">1944-6705</issn>
+        <coden>test</coden>
+        <production-dates/>
+    </meta>
+    <abstract>
+        <para>This should be a French Franc symbol: &franc;</para>
+        <para>This inlinegraphic's entityref be transformed to a filename: <inlinegraphic entityref="F0001"/></para>
+    </abstract>
+</unarticle>

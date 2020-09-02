@@ -16,15 +16,19 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: Home, meta:{title:"Home"} },
     { path: '/session', component: Session ,meta: {title:"Session"}},
+ 
+    {path: '/images', component: { template: '<router-view/>' }, 
+    	children: [
+    {path: '', redirect: 'item' },		
+    { path: 'item', name:'images', component: Images, meta:{title: "Images"} },
+    { path: 'report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
+    { path: 'item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
+    { path: 'thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
+    { path: 'keywords', component: Keywords, meta:{title:"Image keywords"} },
+    { path: 'dates', component: Dates, meta:{title:"Image dates"} },
+    { path: 'people', component: People, meta:{title:"Image people"} }
+    ]},
     
-    {path: '/images', redirect: '/images/item' },
-    { path: '/images/item', name:'images', component: Images, meta:{title: "Images"} },
-    { path: '/images/report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
-    { path: '/images/item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
-    { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
-    { path: '/images/keywords', component: Keywords, meta:{title:"Image keywords"} },
-    { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
-    { path: '/images/people', component: People, meta:{title:"Image people"} },
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
     
@@ -32,7 +36,17 @@ const router = new VueRouter({
     { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
     
     { path: '/entity', component: Entity, meta:{title:"Entities"} },
-    { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
+    { path: '/entity/:entity', component: { template: '<router-view/>' }
+          ,children: [
+        	  {
+                  path: '',
+                  component: Entity1, props: true, meta:{title:"Entity"} 
+                }, 
+                { 
+                	path: 'data', component: Entity1data, props: true, meta:{title:"Entity data"}   
+                }
+          ]
+    }, 
     
     { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
     { path: '/namespace/item', component: Namespace1, meta:{title:"Namespace"} },
@@ -144,6 +158,7 @@ const router = new VueRouter({
       {path: '', component: About, meta:{title:"About Vue-poc"} },
       {path: 'package', component: Package, meta:{title:"Javascript components"} },
       {path: 'routes', component: Routes, meta:{title:"Routes"} },
+      {path: 'routes2', name: 'routes', component: Routes2, meta:{title:"Routes2"} },
       {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
    ]},
    

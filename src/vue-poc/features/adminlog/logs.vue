@@ -63,7 +63,7 @@
       :search="search"
       class="elevation-1"
       no-data-text="No logs found"
-      v-bind:pagination.sync="pagination"
+      v-bind:options.sync="pagination"
     >
     <template slot="items" slot-scope="props">
       <td   :title="props.item.time">{{ props.item.time  }}</td>

@@ -5,7 +5,8 @@ const MimeTypes=new function(){
   var formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});
   var formatjs= t=>js_beautify(t, { indent_size: 2 });
   var formatcss= t=>css_beautify(t, { indent_size: 2 });
-  
+ 
+ // mimetype to ace mode
  this.contentType={
      "text/plain":{ mode: "text"},
      "text/xml":{ mode: "xml"},
@@ -22,7 +23,7 @@ const MimeTypes=new function(){
   
   this.mode={
     "text": {
-      icon: "library_books"
+      "icon": "library_books"
     },
     "javascript": {
       "format": formatjs

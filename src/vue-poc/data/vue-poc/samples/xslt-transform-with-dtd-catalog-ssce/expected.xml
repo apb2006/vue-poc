@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?><unarticle articleid="652592" documenttype="Miscellaneous" copyrighttf="yes" productfree="no">
+    <meta productid="TBIS" seq="1" colorgraphics="no" volumeisissue="no" partofspecissue="no" taggingstage="final">
+        <journalcode/>
+        <issn type="electronic">1944-6705</issn>
+        <coden>test</coden>
+        <production-dates/>
+    </meta>
+    <abstract>
+        <para>This should be a French Franc symbol: ₣</para>
+        <para>This inlinegraphic's entityref be transformed to a filename: <inlinegraphic filename="TBIS_A_652592_O_F0001g.gif"/></para>
+    </abstract>
+</unarticle>

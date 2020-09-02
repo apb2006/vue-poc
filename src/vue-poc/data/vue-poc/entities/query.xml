@@ -1,5 +1,5 @@
 <entity name="query" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>An replx query</description>
+	<description>List of replx query. From <code>collection("replx/queries")/query</code></description>
 	<namespace prefix="xqdoc" uri="http://www.xqdoc.org/1.0" />
 
 	<fields>

@@ -1,5 +1,5 @@
 <entity name="quodatum.task" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>A predefined query with parameters, listed in taskdef.xml </description>
+	<description>Predefined queries with parameters, listed in taskdef.xml </description>
 	<fields>
 		<field name="to" type="xs:string">
 			<description>name for task</description>

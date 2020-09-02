@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<x:description xmlns:x="http://www.jenitennison.com/xslt/xspec" stylesheet="transform.xsl">
+    <x:scenario label="inlinegraphic entityref">
+        <x:context href="input1.xml"/>
+        <x:expect label="character entity expanded based on DTD" test="//abstract/para[1]">
+            <para>This should be a French Franc symbol: ₣</para>
+        </x:expect>
+        <x:expect label="entityref parsed to file name" test="//inlinegraphic">
+            <inlinegraphic filename="TBIS_A_652592_O_F0001g.gif"/>
+        </x:expect>
+    </x:scenario>
+</x:description>

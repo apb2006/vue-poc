@@ -18,7 +18,12 @@
               </v-btn>
             </template>
             <v-list dense>
-                <v-subheader >Actions</v-subheader>
+                <v-subheader >Views</v-subheader>
+                <v-list-item >
+                  <router-link :to="$route.path + '/data'">
+                  <v-list-item-title  >Data {{ $route.path }}</v-list-item-title>
+                  </router-link>
+                </v-list-item>
                 <v-list-item @click="getxml" >
                   <v-list-item-title  >View XML</v-list-item-title>
                 </v-list-item>

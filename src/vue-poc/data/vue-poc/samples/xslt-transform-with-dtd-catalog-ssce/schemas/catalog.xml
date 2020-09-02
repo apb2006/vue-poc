@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE catalog PUBLIC "-//OASIS//DTD XML Catalogs V1.1//EN" "http://www.oasis-open.org/committees/entity/release/1.1/catalog.dtd">
+<catalog prefer="system" xmlns="urn:oasis:names:tc:entity:xmlns:xml:catalog">
+    
+    <!-- TFJA DTD -->
+    <!-- preferred -->
+    <public publicId="-//Taylor and Francis//Journal Article//EN" uri="dtd/TFJA.dtd"/>
+    <system systemId="http://cats.informa.com/tfja/dtd/TFJA.dtd" uri="dtd/TFJA.dtd"/>
+    <!-- alternate and old -->
+    <system systemId="http://public.metapress.com/dtd/TAFXML/TFJA.dtd" uri="dtd/TFJA.dtd"/>
+    <system systemId="http://cats.tfinforma.com/dtd/tfja/dtd/TFJA.dtd" uri="dtd/TFJA.dtd"/>
+    <system systemId="http://cats.informa.com/dtd/tfja/dtd/TFJA.dtd" uri="dtd/TFJA.dtd"/>
+    <systemSuffix systemIdSuffix="tfja.dtd" uri="dtd/TFJA.dtd"/>
+    <systemSuffix systemIdSuffix="TFJA.dtd" uri="dtd/TFJA.dtd"/>
+    
+</catalog>

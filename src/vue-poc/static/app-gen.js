@@ -1,4 +1,4 @@
-// generated 2020-05-16T22:21:09.903+01:00
+// generated 2020-09-01T22:40:57.014+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -1303,7 +1303,7 @@ const GEditTabs={
           this.items.splice(pos, 0, etab)
         }else{
           this.items.push (etab);
-        };
+        }
         this.length++
         this.nextId++;
         var ind=this.items.indexOf(etab)
@@ -1357,8 +1357,8 @@ const GEditTabs={
         for (var i = 0; i < len; ++i) indices[i] = i;
         var list=this.items;
         indices=indices.filter(a=>(!q) || list[a].name.toLowerCase().includes(q.toLowerCase()))
-        var i= indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
-        return i
+        indices.sort((a,b) =>list[a].name.localeCompare(list[b].name))
+        return indices
       }
     },
     created(){
@@ -1474,7 +1474,8 @@ const MimeTypes=new function(){
   var formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});
   var formatjs= t=>js_beautify(t, { indent_size: 2 });
   var formatcss= t=>css_beautify(t, { indent_size: 2 });
-  
+ 
+ // mimetype to ace mode
  this.contentType={
      "text/plain":{ mode: "text"},
      "text/xml":{ mode: "xml"},
@@ -1491,7 +1492,7 @@ const MimeTypes=new function(){
   
   this.mode={
     "text": {
-      icon: "library_books"
+      "icon": "library_books"
     },
     "javascript": {
       "format": formatjs
@@ -1671,7 +1672,8 @@ const About=Vue.extend({template:`
       links:[
     	  {text:"3rd party components",icon:"mdi-clock",to:"about/package"},
     	  {text:"components",icon:"mdi-flag",to:"about/vue-cmps"},
-    	  {text:"routes",icon:"mdi-plus",to:"about/routes"}
+    	  {text:"routes",icon:"mdi-plus",to:"about/routes"},
+    	  {text:"routes2",icon:"mdi-plus",to:"about/routes2"}
       ]
   }
   },
@@ -1783,6 +1785,150 @@ const Routes=Vue.extend({template:`
   },
   created(){
 	  this.refresh()
+  }
+}
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/about/routes2.vue
+const Routes2=Vue.extend({template:`  
+<v-container>
+  <v-card hover raised> 
+  <v-toolbar> 
+    <v-card-title> 
+      <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/about', text:'about'}, {text: 'routes tree', disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
+     </v-card-title>
+	<v-spacer>
+	<v-text-field v-model="search" label="Search routes" prepend-icon="filter_list" flat solo-inverted hide-details clearable clear-icon="mdi-close-circle-outline"></v-text-field>
+	</v-spacer>
+	<v-btn @click="refresh"> 
+	<v-icon>refresh</v-icon>
+    </v-btn>
+	</v-toolbar> 
+	<v-card-text>
+	 <v-row>
+      <v-col>  
+	 <v-treeview style="max-height: calc(100vh - 210px); overflow-y: auto;" v-model="tree" :open="open" :items="items" activatable item-key="index" :search="search" :filter="filter" open-on-click v-on:update:active="doActive">
+    <template v-slot:prepend="{ item, open }">
+      <v-icon v-if="item.children">
+        {{ open ? 'mdi-folder-open' : 'mdi-folder' }}
+      </v-icon>
+      <v-icon v-else>mdi-file-document-outline</v-icon>
+    </template>
+    
+    <template v-slot:label="{ item, open }">
+    <v-card :id="'path'+item.index">
+    <v-card-title style="padding:0">
+     
+     {{ item.name }} 
+    
+     <v-spacer></v-spacer>
+    
+         {{ item.index }} 
+   
+       </v-card-title>
+       </v-card>
+    </template>
+    
+  </v-treeview>
+  </v-col>
+  
+  <v-col v-if="active">
+  <v-card>
+  <v-toolbar> 
+  <v-card-title>
+  {{ active.path}}
+  </v-card-title>
+   <router-link :to="active.path"><v-icon>link</v-icon></router-link>
+  <v-spacer></v-spacer>
+  <v-btn @click="$vuetify.goTo('#path'+ active.index)">{{ active.index }}</v-btn>
+  </v-toolbar>
+  <v-card-text>ffgfgfgf bbfb
+  <pre><code>{{ active | pretty }}</code></pre>
+  </v-card-text>
+  </v-card>
+  </v-col>
+  </v-row>
+</v-card-text></v-card>
+
+</v-container> 
+ `,
+      
+  data:  () => ({
+	  showmenu: false,
+      open: [],    
+      tree: [],
+      items: [],
+      active:null, // object from routelist or null.
+      routes: [],
+      search:null
+    }),
+
+  methods:{
+	  refresh(){
+		  var hits=this.routelist();
+		  console.log("routelist",this.$router.options.routes)
+		  this.items=hits
+		  
+	    },
+	    doActive(a){
+	    	this.active= a[0]?this.findItem(this.routelist(),a[0],"index"):null
+	    	console.log("act",a[0],this.active)
+	    },
+	    routelist(){
+	    	 var hits=this.$router.options.routes;
+			  var index=0;
+			  var pick=function(list,parent){
+				  return list.map(function(route){
+					  const path=(parent.path?parent.path + "/":"")+ route.path+(route.children?"/":"")
+					  const data={
+							  "index":++index,
+						      "refname": route.name,
+						      "path": route.path,
+						      "name": path,
+						      "title": route.meta && route.meta.title
+					  };
+					  if(route.children){
+						  data.children=pick(route.children,data)  
+					  }
+					 return data
+				  })
+				  };
+			  hits=pick(hits,{})
+			  hits.sort((a,b)=>a.name.localeCompare(b.name) )
+			  return hits	
+	    },
+	    findItem (tree, value, key = 'id', reverse = false) {
+	    	  const stack = tree
+	    	  while (stack.length) {
+	    	    const node = stack[reverse ? 'pop' : 'shift']()
+	    	    if (node[key] === value) return node
+	    	    node.children && stack.push(...node.children)
+	    	  }
+	    	  return null
+	    	}
+  },
+  
+  watch: {
+	    active: function (a) {
+	    	const query = Object.assign({}, this.$route.query);
+	    	if(a){
+			 query.index = a.index
+	    	}else 
+	    		delete query.index;
+			 this.$router.push({ query });
+	    }
+  },
+  
+  created(){
+	  this.routes=this.routelist()
+	  console.log("routes: ",this.routes)
+	  this.refresh()
+	  if(this.$route.query.index){
+		    const index= parseInt(this.$route.query.index)
+	    	//const h= this.findItem(this.routes,index)
+	    	//console.log("search",h, index)
+	    	//this.active=h
+	    }
   }
 }
       );
@@ -2233,7 +2379,7 @@ const Log=Vue.extend({template:`
             </v-list>
           </v-menu>
     </v-toolbar>
-  <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" v-bind:pagination.sync="pagination">
+  <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" v-bind:options.sync="pagination">
     <template slot="items" slot-scope="props">
       <td :title="props.item.time">{{ props.item.time  }}</td>
       <td class="text-xs-right">{{ props.item.user }}</td>
@@ -3972,15 +4118,15 @@ const Evalid=Vue.extend({template:`
 const Brutusin=Vue.extend({template:` 
  <v-container fluid>
      <v-card>
-     <v-toolbar flat>
+     <v-card-title>
 	     <v-toolbar-title>Form </v-toolbar-title>
 	
 	        <v-chip v-if="formValid" color="success">valid</v-chip>
 	        <v-chip v-else color="danger">invalid</v-chip>
 	        <v-btn color="primary" @click="$refs.myForm.validate()">validate</v-btn>
 	      <v-spacer></v-spacer>
-	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@0.35.0</qd-link>
-     </v-toolbar>
+	      <qd-link href="https://github.com/koumoul-dev/vuetify-jsonschema-form/">vuetify-jsonschema-form@v1.10.0</qd-link>
+     </v-card-title>
      <v-card-actions>
      <v-layout row wrap>
        <v-flex xs2>
@@ -3997,8 +4143,8 @@ const Brutusin=Vue.extend({template:`
       <v-flex xs8>
       <v-form ref="myForm" v-model="formValid">
         <v-btn @click="submit" :disabled="!formValid">submit</v-btn>
-          <v-jsonschema-form v-if="schema" :schema="schema" :model="model" :options="options" @error="e => window.alert(e)">
-       </v-jsonschema-form></v-form>
+          <v-jsf v-if="schema" :schema="schema" v-model="model" :options="options" @error="e => window.alert(e)">
+       </v-jsf></v-form>
        </v-flex>
        
        <v-flex xs4 class="grey lighten-2">
@@ -4013,7 +4159,7 @@ const Brutusin=Vue.extend({template:`
  `,
       
   components: {
-    "v-jsonschema-form": VJsonschemaForm.default
+    "v-jsf": VJsf.default
    },
    data() {
      return {
@@ -5074,7 +5220,9 @@ const Jobs=Vue.extend({template:`
 const Services=Vue.extend({template:` 
   <v-card>
    <v-toolbar>
-     <v-text-field prepend-icon="filter_list" label="Filter jobs" single-line hide-details clearable v-model="search"></v-text-field> 
+   <v-toolbar-title>Services</v-toolbar-title>
+     <v-spacer></v-spacer>
+     <v-text-field prepend-icon="filter_list" label="Filter services" single-line hide-details clearable v-model="search"></v-text-field> 
       <v-spacer></v-spacer>
      <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
    
@@ -5084,6 +5232,7 @@ const Services=Vue.extend({template:`
        <v-btn icon :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
     <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
     </v-btn>
+     <vp-entitylink entity="basex.service"></vp-entitylink> 
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" show-select class="elevation-1" no-data-text="No Jobs currently running">
     <template slot="items" slot-scope="props">
@@ -5251,16 +5400,28 @@ const Login=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/map.vue
 const Leaflet=Vue.extend({template:` 
- <v-container fluid>
-     <v-layout row wrap>
-      <v-flex xs12 style="height:400px">
-     <l-map :zoom="zoom" :center="center">
+<v-container>
+  <v-card hover raised> 
+  <v-toolbar> 
+    <v-card-title> 
+      map
+     </v-card-title>
+	<v-spacer></v-spacer>
+	 Center: {{ center }}, zoom is: {{ zoom }}
+	</v-toolbar> 
+	<v-card-text>
+	 <v-row>
+      <v-col style="height: calc(100vh - 210px);">  
+  
+     <l-map :zoom="zoom" :center="center" @update:center="centerUpdate" @update:zoom="zoomUpdate" style="height:100%;">
       <l-tilelayer :url="url" :attribution="attribution"></l-tilelayer>
       <l-marker :lat-lng="marker"></l-marker>
     </l-map>
-    </v-flex>
-    </v-layout>
- </v-container>
+     </v-col>
+     </v-row>
+     </v-card-text>
+     </v-card>
+     </v-container>
  `,
       
 //leaflet
@@ -5279,8 +5440,39 @@ const Leaflet=Vue.extend({template:`
       marker: L.latLng(54.320498718, -2.739663708)
     }
   },
+  methods: {
+	  zoomUpdate(zoom) {
+	      this.zoom = zoom;
+	    },
+	    centerUpdate(center) {
+	      this.center = center;
+	    },
+  },
+  watch:{
+	 center: function(c){
+		 const query = Object.assign({}, this.$route.query);
+		 const isArray= Array.isArray(c)
+		 query.center=isArray? c[0]+","+c[1] : c.lat + "," + c.lng 
+		 this.$router.push({ query });
+	 },
+	 zoom: function(z){
+		 const query = Object.assign({}, this.$route.query);
+		 query.zoom= z 
+		 this.$router.push({ query });
+	 } 
+  },
   created:function(){
     console.log("map")
+    if(this.$route.query.center){
+    	const c= this.$route.query.center.split(",").map(x=>parseFloat(x))
+    	console.log("center",c)
+    	this.center= c
+    }
+    if(this.$route.query.zoom){
+    	const z= parseFloat(this.$route.query.zoom)
+    	console.log("zoom",z)
+    	this.zoom= z
+    }
   }
 }
 
@@ -5303,7 +5495,7 @@ const Entity=Vue.extend({template:`
 					       </template>
 		     </v-breadcrumbs>
 		   </v-toolbar-title>
-			 
+			  <v-spacer></v-spacer> 
 			 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
 		   <v-spacer></v-spacer>
 			 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
@@ -5390,7 +5582,12 @@ const Entity1=Vue.extend({template:`
               </v-btn>
             </template>
             <v-list dense>
-                <v-subheader>Actions</v-subheader>
+                <v-subheader>Views</v-subheader>
+                <v-list-item>
+                  <router-link :to="$route.path + '/data'">
+                  <v-list-item-title>Data {{ $route.path }}</v-list-item-title>
+                  </router-link>
+                </v-list-item>
                 <v-list-item @click="getxml">
                   <v-list-item-title>View XML</v-list-item-title>
                 </v-list-item>
@@ -5504,6 +5701,73 @@ const Entity1=Vue.extend({template:`
          return '/vue-poc/api/data/' + this.entity;
        }   
   },
+  created:function(){
+    this.getItem()
+  },
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/entity1data.vue
+const Entity1data=Vue.extend({template:` 
+<v-card>
+	<v-toolbar>
+	 <v-toolbar-title> 
+         <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
+         </v-toolbar-title>   
+          <v-menu v-model="showmenu">
+            <template v-slot:activator="{ on }">
+              <v-btn dark icon v-on="on">
+                <v-icon>mdi-dots-vertical</v-icon>
+              </v-btn>
+            </template>
+            <v-list dense>
+                <v-subheader>Views</v-subheader>
+                <v-list-item>
+                  <router-link :to="$route.path + '/data'">
+                  <v-list-item-title>Data {{ $route.path }}</v-list-item-title>
+                  </router-link>
+                </v-list-item>
+                <v-list-item>
+                  <v-list-item-title>View XML</v-list-item-title>
+                </v-list-item>
+                
+            </v-list>         
+           </v-menu> 
+
+	 <v-spacer></v-spacer>
+	 
+	 <v-btn icon @click="getItem" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+	
+	 </v-toolbar>
+
+  <v-container fluid>
+	  <pre>{{ data | pretty }}</pre>
+  </v-container>
+   </v-card>
+ `,
+      
+ 
+  props: ['entity'],
+  data:  function(){
+    return {
+      data:  null,
+      showmenu: false,
+      loading: false,
+    }
+  },
+  methods:{
+    getItem(){
+      this.loading=true
+      HTTP.get("data/"+ this.entity)
+      .then(r=>{
+        this.loading=false
+        this.data=Object.assign({}, this.item, r.data)
+        console.log("data",this.data)
+        }) 
+    }
+  },
+ 
   created:function(){
     this.getItem()
   },
@@ -7916,15 +8180,19 @@ const router = new VueRouter({
   routes: [
     { path: '/', component: Home, meta:{title:"Home"} },
     { path: '/session', component: Session ,meta: {title:"Session"}},
+ 
+    {path: '/images', component: { template: '<router-view/>' }, 
+    	children: [
+    {path: '', redirect: 'item' },		
+    { path: 'item', name:'images', component: Images, meta:{title: "Images"} },
+    { path: 'report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
+    { path: 'item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
+    { path: 'thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
+    { path: 'keywords', component: Keywords, meta:{title:"Image keywords"} },
+    { path: 'dates', component: Dates, meta:{title:"Image dates"} },
+    { path: 'people', component: People, meta:{title:"Image people"} }
+    ]},
     
-    {path: '/images', redirect: '/images/item' },
-    { path: '/images/item', name:'images', component: Images, meta:{title: "Images"} },
-    { path: '/images/report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
-    { path: '/images/item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
-    { path: '/images/thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
-    { path: '/images/keywords', component: Keywords, meta:{title:"Image keywords"} },
-    { path: '/images/dates', component: Dates, meta:{title:"Image dates"} },
-    { path: '/images/people', component: People, meta:{title:"Image people"} },
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
     
@@ -7932,7 +8200,17 @@ const router = new VueRouter({
     { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
     
     { path: '/entity', component: Entity, meta:{title:"Entities"} },
-    { path: '/entity/:entity',  name:"entity1", component: Entity1, props: true, meta:{title:"Entity"} },
+    { path: '/entity/:entity', component: { template: '<router-view/>' }
+          ,children: [
+        	  {
+                  path: '',
+                  component: Entity1, props: true, meta:{title:"Entity"} 
+                }, 
+                { 
+                	path: 'data', component: Entity1data, props: true, meta:{title:"Entity data"}   
+                }
+          ]
+    }, 
     
     { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
     { path: '/namespace/item', component: Namespace1, meta:{title:"Namespace"} },
@@ -8044,6 +8322,7 @@ const router = new VueRouter({
       {path: '', component: About, meta:{title:"About Vue-poc"} },
       {path: 'package', component: Package, meta:{title:"Javascript components"} },
       {path: 'routes', component: Routes, meta:{title:"Routes"} },
+      {path: 'routes2', name: 'routes', component: Routes2, meta:{title:"Routes2"} },
       {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
    ]},
    
@@ -8088,7 +8367,7 @@ const Vuepoc=Vue.extend({template:`
             <v-list-item-avatar>
               <v-btn icon @click="session">
               <v-avatar size="36">
-              <img src="/vue-poc/ui/quodatum.gif">
+              <img src="/vue-poc/ui/quodatum.gif" alt="Vue-poc logo">
               </v-avatar>
               </v-btn>
             </v-list-item-avatar>
@@ -8113,7 +8392,7 @@ const Vuepoc=Vue.extend({template:`
     
   {{$route.meta.title}}</v-toolbar-title>
    
-  <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
+ 
  
   <v-spacer></v-spacer>
   <v-toolbar-items>
@@ -8137,7 +8416,9 @@ const Vuepoc=Vue.extend({template:`
                <v-list-item>
                 <v-list-item-title>permission: {{$auth.permission}}</v-list-item-title>
               </v-list-item>
-            
+            <v-list-item>
+                <v-list-item-title>$route.path: {{$route.path}}</v-list-item-title>
+              </v-list-item>
           </v-list>
       </v-menu>
       
@@ -8147,7 +8428,7 @@ const Vuepoc=Vue.extend({template:`
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
-   
+    <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
     <v-menu bottom left min-width="300px">
 	       <template v-slot:activator="{ on }">
 	         <v-btn icon v-on="on">
@@ -8172,14 +8453,14 @@ const Vuepoc=Vue.extend({template:`
 
 </v-app-bar>
  
- <v-content> 
+ <v-main> 
  <v-alert color="error" value="true" dismissible v-model="alert.show">
       <pre style="overflow:auto;">{{ alert.msg }}</pre>
     </v-alert>   
     <transition name="fade" mode="out-in">
       <router-view class="view ma-3"></router-view>
       </transition>
-  </v-content>
+  </v-main>
 
 </v-app>
  `,

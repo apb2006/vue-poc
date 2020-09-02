@@ -1,5 +1,5 @@
 <entity name="namespace" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>An XML namespace</description>
+	<description>Known XML namespaces</description>
 	<namespace prefix="qns" uri="https://github.com/Quodatum/namespaces" />
 	<fields>
 		<field name="xmlns" type="xs:string">
