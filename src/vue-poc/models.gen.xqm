@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2020-07-08T23:08:03.678+01:00 
+ : auto generated from xml files in entities folder at: 2020-09-04T11:37:53.188+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -244,51 +244,8 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        }
    },
-  "entity.field": map{
-     "name": "entity.field",
-     "description": "About an entity field. ",
-     "access": map{ 
-       "description": function($_ as element()) as xs:string {$_/ent:description },
-       "name": function($_ as element()) as xs:string {$_/@name },
-       "parent": function($_ as element()) as xs:string {$_/../../@name },
-       "type": function($_ as element()) as xs:string {$_/@type },
-       "xpath": function($_ as element()) as xs:string {$_/ent:xpath } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( $item/@name, $item/ent:description) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "description": function($_ as element()) as element(description)? {
-            (: xs:string :)
-                        fn:data($_/ent:description)!element description {  .} 
-                 },
-           "name": function($_ as element()) as element(name)? {
-            (: xs:string :)
-                        fn:data($_/@name)!element name {  .} 
-                 },
-           "parent": function($_ as element()) as element(parent)? {
-            (: xs:string :)
-                        fn:data($_/../../@name)!element parent {  .} 
-                 },
-           "type": function($_ as element()) as element(type)? {
-            (: xs:string :)
-                        fn:data($_/@type)!element type {  .} 
-                 },
-           "xpath": function($_ as element()) as element(xpath)? {
-            (: xs:string :)
-                        fn:data($_/ent:xpath)!element xpath {  .} 
-                 } },
-       
-      "data": function() as element(ent:field)*
-       { collection("doc-doc")/ent:entity/ent:fields/ent:field },
-       
-       "views": map{ 
-       'filter': 'name description'
-       }
-   },
-  "entity": map{
-     "name": "entity",
+  "dice.entity": map{
+     "name": "dice.entity",
      "description": "List of Entities i.e. things described in this framework
 	",
      "access": map{ 
@@ -365,6 +322,49 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
       "data": function() as element(ent:entity)*
        { collection("vue-poc")/ent:entity },
+       
+       "views": map{ 
+       'filter': 'name description'
+       }
+   },
+  "dice.field": map{
+     "name": "dice.field",
+     "description": "About an entity field. ",
+     "access": map{ 
+       "description": function($_ as element()) as xs:string {$_/ent:description },
+       "name": function($_ as element()) as xs:string {$_/@name },
+       "parent": function($_ as element()) as xs:string {$_/../../@name },
+       "type": function($_ as element()) as xs:string {$_/@type },
+       "xpath": function($_ as element()) as xs:string {$_/ent:xpath } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( $item/@name, $item/ent:description) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "description": function($_ as element()) as element(description)? {
+            (: xs:string :)
+                        fn:data($_/ent:description)!element description {  .} 
+                 },
+           "name": function($_ as element()) as element(name)? {
+            (: xs:string :)
+                        fn:data($_/@name)!element name {  .} 
+                 },
+           "parent": function($_ as element()) as element(parent)? {
+            (: xs:string :)
+                        fn:data($_/../../@name)!element parent {  .} 
+                 },
+           "type": function($_ as element()) as element(type)? {
+            (: xs:string :)
+                        fn:data($_/@type)!element type {  .} 
+                 },
+           "xpath": function($_ as element()) as element(xpath)? {
+            (: xs:string :)
+                        fn:data($_/ent:xpath)!element xpath {  .} 
+                 } },
+       
+      "data": function() as element(ent:field)*
+       { collection("doc-doc")/ent:entity/ent:fields/ent:field },
        
        "views": map{ 
        'filter': 'name description'

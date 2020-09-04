@@ -1,10 +1,10 @@
 {
 	"name": "vue-poc",
-	"version": "0.5@2020-07-06",
-	"description": "Frontend vuetify, backend: basex",
+	"version": "0.5.2@2020-09-04",
+	"description": "App framework experiments, Frontend vuetify, backend: basex",
 	"dependencies": {
 		"ace": "1.4.12",
-		"vuetify": "2.3.7",
+		"vuetify": "2.3.10",
 		"vue": "2.6.11",
 		"vuex": "3.1.0",
 		"vue-router": "3.1.6",
@@ -15,7 +15,7 @@
 		"qs": "6.4.0",
 		"localforage": "1.7.1",
 		"momentjs": "2.24.0",
-		"vuetify-jsonschema-form": "0.35.0",
+		"@koumoul/vjsf": "1.10.0",
 		"prism": "1.15.0",
 		"vue-prism-component": "1.1.1",
 		"vis-timeline-graph2d": "4.20.1",

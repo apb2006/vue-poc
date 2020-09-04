@@ -71,7 +71,7 @@
          var data={message: this.message,
                type: this.type,
                checkbox: this.checkbox};
-         HTTP.post("log/add",Qs.stringify(data))
+         HTTP.post("basex.log/add",Qs.stringify(data))
       .then(r=>{
         console.log("submit: ",data);
         if(this.checkbox){

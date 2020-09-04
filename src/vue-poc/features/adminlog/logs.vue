@@ -63,6 +63,7 @@
       :search="search"
       class="elevation-1"
       no-data-text="No logs found"
+      sort-by= "time"
       v-bind:options.sync="pagination"
     >
     <template slot="items" slot-scope="props">
@@ -95,7 +96,7 @@
         { text: 'address', value: 'address' },
       ],
       items:[],
-      pagination:{sortBy: 'time',descending:true,rowsPerPage:25},
+      pagination:{ rowsPerPage:25},
       selected:[],
       search:"",
       loading:false,

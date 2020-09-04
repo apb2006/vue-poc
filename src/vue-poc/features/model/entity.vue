@@ -31,7 +31,7 @@
 			  :loading="loading"
 		      :disabled="loading"
 			 ><v-icon>refresh</v-icon></v-btn>
-		   <vp-entitylink entity="entity"></vp-entitylink>
+		   <vp-entitylink entity="dice.entity"></vp-entitylink>
 	 </v-toolbar>
 	 </template>
 	 

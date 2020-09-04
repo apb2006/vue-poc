@@ -2,14 +2,13 @@
  : generate xquery access code for entity definitions
  :)
 module namespace bf = 'quodatum.tools.buildfields';
-declare default function namespace 'quodatum.tools.buildfields'; 
 declare namespace ent="https://github.com/Quodatum/app-doc/entity"; 
 
 
 (:~
  : generate xquery module for given entities as a string
  :)
-declare function module($entities as element(ent:entity)*,$imports)
+declare function bf:module($entities as element(ent:entity)*,$imports)
 as xs:string
 {
 let $src:= <text>(: entity access maps 
@@ -36,14 +35,14 @@ as map(*){{
 (:~
  : generate xquery for to return field value in the format: "name":function($_){}
  :)
-declare function accessfn($f as element(ent:field)) as xs:string
+declare function bf:accessfn($f as element(ent:field)) as xs:string
 {
 let $type:=$f/@type/fn:string()
 return <field>
        "{$f/@name/fn:string()}": function($_ as element()) as {$type} {{$_/{$f/ent:xpath } }}</field>
 };
 
-declare function generate($e as element(ent:entity)) as xs:string
+declare function bf:generate($e as element(ent:entity)) as xs:string
 {
   let $fields:=for $field in $e/ent:fields/ent:field   
                 order by $field/@name
@@ -55,14 +54,14 @@ declare function generate($e as element(ent:entity)) as xs:string
   return <field>
   "{$e/@name/fn:string()}": map{{
      "name": "{ $e/@name/fn:string()}",
-     "description": "{ escape($e/ent:description)}",
-     "access": map{{ {$fields!accessfn(.)=>fn:string-join(",")} }},
+     "description": "{ bf:escape($e/ent:description)}",
+     "access": map{{ {$fields!bf:accessfn(.)=>fn:string-join(",")} }},
     
      "filter": function($item,$q) as xs:boolean{{ 
          some $e in ( {fn:string-join($filter,", ")}) satisfies
          fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
       }},
-       "json":   map{{ {$fields!jsonfn(.)=>fn:string-join(",")} }},
+       "json":   map{{ {$fields!bf:jsonfn(.)=>fn:string-join(",")} }},
        
       "data": function() as {$e/ent:data/@type/fn:string(.)}*
        {{ {let $a:=$e/ent:data/fn:string() return if($a)then $a else "()"} }},
@@ -76,23 +75,24 @@ declare function generate($e as element(ent:entity)) as xs:string
 (:~
  : @return sequence of element(entity) items for definitions at path
  :)
-declare function entities($path as xs:string) 
+declare function bf:entities($path as xs:string) 
 as element(ent:entity)*
 {
 let $_:=fn:trace($path,"DD")
  let $p:=fn:resolve-uri($path) || "/"
- return for $f in file:list($p)
+ return for $f in file:list($p,fn:true())
+        where not(ends-with(trace($f),file:dir-separator()))
         order by $f
         return fn:doc(fn:concat($p,$f))/ent:entity
 };
 
 (:map for entity :)
-declare function build-map($entity as element(ent:entity)) 
+declare function bf:build-map($entity as element(ent:entity)) 
 as xs:string
 {
 let $m:=for $field in $entity/ent:fields/ent:field   
         order by $field/@name
-        return accessfn($field)
+        return bf:accessfn($field)
 return <text>
 declare variable $entity:{$entity/@name/fn:string()}: map{{ {fn:string-join($m,",")}
 }};
@@ -103,14 +103,14 @@ declare variable $entity:{$entity/@name/fn:string()}: map{{ {fn:string-join($m,"
 (:~ 
  :  return xml for suitable json serialization for field 
 :)
-declare function jsonfn($f as element(ent:field)) 
+declare function bf:jsonfn($f as element(ent:field)) 
 as xs:string
 {
     let $name:=$f/@name/fn:string()
     let $type:=$f/@type/fn:string()
     let $opt:=fn:contains($type,"?")
     let $repeat:=fn:contains($type,"*")
-    let $json-type:=json-type($type)
+    let $json-type:=bf:json-type($type)
     let $mult:=if($repeat) then "*" else "?"
     
     let $at:=if($json-type ne "string") 
@@ -149,7 +149,7 @@ as xs:string
 
 (:~ convert xs type to json
 :)
-declare function json-type($xsd as xs:string) as xs:string{
+declare function bf:json-type($xsd as xs:string) as xs:string{
 switch ($xsd)
    case "element()" return "string" 
    case "xs:boolean" return "boolean"
@@ -161,28 +161,28 @@ switch ($xsd)
 };
 
 (:~ declare any namespaces found :)
-declare function build-namespaces($entities as element()*)
+declare function bf:build-namespaces($entities as element()*)
 {
-  for $n in distinct-deep($entities/ent:namespace)
+  for $n in bf:distinct-deep($entities/ent:namespace)
   return 
 <text>declare namespace {$n/@prefix/fn:string()}='{$n/@uri/fn:string()}';
 </text>
 };
 
 (:~ import any modules found must be in repo :)
-declare function build-imports($entities as element()*)
+declare function bf:build-imports($entities as element()*)
 {
-  for $n in distinct-deep($entities/ent:module)
+  for $n in bf:distinct-deep($entities/ent:module)
   return 
 <text>import module namespace {$n/@prefix/fn:string()}='{$n/@namespace/fn:string()}';
 </text>
 };
 
-declare function build-describe($entities)
+declare function bf:build-describe($entities)
 as xs:string
 {
   let $m:=for $e in  $entities
-          return generate($e)
+          return bf:generate($e)
   return <text>          
 declare variable $entity:list:=map {{ {fn:string-join($m,",")}
 }};
@@ -190,7 +190,7 @@ declare variable $entity:list:=map {{ {fn:string-join($m,",")}
 </text>        
 };
 
-declare function escape($str as xs:string) 
+declare function bf:escape($str as xs:string) 
 as xs:string
 {
    fn:replace(
@@ -200,15 +200,15 @@ as xs:string
 
 (:-----from functx-------------------:)
 
- declare function distinct-deep 
+ declare function bf:distinct-deep 
   ( $nodes as node()* )  as node()* {
        
     for $seq in (1 to fn:count($nodes))
-    return $nodes[$seq][fn:not(is-node-in-sequence-deep-equal(
+    return $nodes[$seq][fn:not(bf:is-node-in-sequence-deep-equal(
                           .,$nodes[fn:position() < $seq]))]
 };
 
-declare function is-node-in-sequence-deep-equal 
+declare function bf:is-node-in-sequence-deep-equal 
   ( $node as node()? ,
     $seq as node()* )  as xs:boolean {
        

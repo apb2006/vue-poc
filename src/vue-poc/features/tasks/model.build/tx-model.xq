@@ -2,7 +2,7 @@
  : Update `generated/models.xqm` from XML files in `data/models`
  :)
 
-import module namespace bf = 'quodatum.tools.buildfields' at "./../../../lib/entity-gen.xqm";
+import module namespace bf = 'quodatum.tools.buildfields' at "entity-gen.xqm";
 
 (:~ 
  : Folder containing model definitions as xml
@@ -20,6 +20,7 @@ declare variable $target as xs:anyURI  external
 
 
 let $config:='import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";'
+
 let $src:=bf:module(bf:entities($efolder),$config)
 return (
   prof:variables(),

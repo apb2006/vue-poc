@@ -6,7 +6,7 @@
  :)
 module namespace vue-api = 'quodatum:vue.api';
 
-import module namespace bf = 'quodatum.tools.buildfields' at "./../../../lib/entity-gen.xqm";
+import module namespace bf = 'quodatum.tools.buildfields' at "entity-gen.xqm";
 import module namespace query-a = 'vue-poc/query-a' at "../../../lib/query-a.xqm";
 
 declare variable $vue-api:query:="tx-model.xq";

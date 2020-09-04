@@ -7,12 +7,12 @@ import module namespace web = 'quodatum.web.utils4' at "../../lib/webutils.xqm";
  :  show active log
  :)
 declare  
-%rest:GET %rest:path("/vue-poc/api/log")
+%rest:GET %rest:path("/vue-poc/api/basex.log")
 %output:method("json")   
 function j:list()
 as element(json)
 {
-  let $entity:=$entity:list("basexlog")
+  let $entity:=$entity:list("basex.log")
  let $items:=$entity("data")()
  let $items:=$items[false() or not(ends-with(. ,"/vue-poc/api/log"))]
  (: let $_:=admin:write-log("hello admin:write-log") :)
@@ -44,7 +44,7 @@ as element(json)
  : create a log entry
  :)
 declare  
-%rest:POST %rest:path("/vue-poc/api/log/add")
+%rest:POST %rest:path("/vue-poc/api/basex.log/add")
 %rest:form-param("type", "{$type}")
 %rest:form-param("message", "{$message}")
 %output:method("text")   

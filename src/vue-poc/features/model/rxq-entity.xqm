@@ -24,7 +24,7 @@ declare
 %rest:query-param("q", "{$q}") 
 %output:method("json")    
 function model-list($q) {
- let $entity:=$entity:list("entity")
+ let $entity:=$entity:list("dice.entity")
  let $items:=$entity?data()
  let $items:=if($q)then $items[fn:contains($entity("access")("name")(.),$q)] else $items
  return dice:response($items,$entity,web:dice())
@@ -55,7 +55,7 @@ declare
 %rest:produces("application/json")
 %output:method("json")    
 function model($entity) {
-let $this:=$entity:list("entity")
+let $this:=$entity:list("dice.entity")
  let $items:=$this?data()
  let $fields:=$this?json
  let $item:=$items[@name=$entity]
@@ -72,7 +72,7 @@ declare
 %rest:produces("text/xml;qs=0.8")
 %output:method("xml")    
 function model2($entity) {
-let $this:=$entity:list("entity")
+let $this:=$entity:list("dice.entity")
  let $items:=$this?data()
  let $fields:=$this?json
  let $item:=$items[@name=$entity]
@@ -88,10 +88,10 @@ declare
 %rest:GET %rest:path("vue-poc/api/data/entity/{$entity}/field")
 %output:method("json")    
 function field-list($entity) {
-    let $dentity:=$entity:list("entity")
+    let $dentity:=$entity:list("dice.entity")
     let $items:=$dentity?data()
     let $items:=$items[@name=$entity]/ent:fields/ent:field
-    let $fentity:=$entity:list("entity.field")
+    let $fentity:=$entity:list("dice.field")
     return dice:response($items,$fentity,web:dice())
                       
 };

@@ -1,4 +1,4 @@
-<entity name="entity" xmlns="https://github.com/Quodatum/app-doc/entity">
+<entity name="dice.entity" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>List of Entities i.e. things described in this framework
 	</description>
 	<namespace prefix="ent"

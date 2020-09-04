@@ -1,4 +1,4 @@
-// generated 2020-09-01T22:40:57.014+01:00
+// generated 2020-09-04T12:21:45.271+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -2322,7 +2322,7 @@ const Logadd=Vue.extend({template:`
          var data={message: this.message,
                type: this.type,
                checkbox: this.checkbox};
-         HTTP.post("log/add",Qs.stringify(data))
+         HTTP.post("basex.log/add",Qs.stringify(data))
       .then(r=>{
         console.log("submit: ",data);
         if(this.checkbox){
@@ -2379,7 +2379,7 @@ const Log=Vue.extend({template:`
             </v-list>
           </v-menu>
     </v-toolbar>
-  <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" v-bind:options.sync="pagination">
+  <v-data-table :headers="headers" :items="items" :search="search" class="elevation-1" no-data-text="No logs found" sort-by="time" v-bind:options.sync="pagination">
     <template slot="items" slot-scope="props">
       <td :title="props.item.time">{{ props.item.time  }}</td>
       <td class="text-xs-right">{{ props.item.user }}</td>
@@ -2409,7 +2409,7 @@ const Log=Vue.extend({template:`
         { text: 'address', value: 'address' },
       ],
       items:[],
-      pagination:{sortBy: 'time',descending:true,rowsPerPage:25},
+      pagination:{ rowsPerPage:25},
       selected:[],
       search:"",
       loading:false,
@@ -5499,7 +5499,7 @@ const Entity=Vue.extend({template:`
 			 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
 		   <v-spacer></v-spacer>
 			 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
-		   <vp-entitylink entity="entity"></vp-entitylink>
+		   <vp-entitylink entity="dice.entity"></vp-entitylink>
 	 </v-toolbar>
 	 </template>
 	 
@@ -5639,7 +5639,7 @@ const Entity1=Vue.extend({template:`
 	          </v-layout>
 	      </v-expansion-panel-header> 
 	      <v-expansion-panel-content>
-	           <qd-table :headers="headers" :data-uri="&quot;data/entity/&quot;+entity +&quot;/field&quot;" entity="entity.field" no-data-msg="Nothing found">
+	           <qd-table :headers="headers" :data-uri="&quot;data/entity/&quot;+entity +&quot;/field&quot;" entity="dice.field" no-data-msg="Nothing found">
 	          </qd-table>
 	      </v-expansion-panel-content>
 	     </v-expansion-panel>

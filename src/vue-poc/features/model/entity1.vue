@@ -78,7 +78,7 @@
 	          </v-layout>
 	      </v-expansion-panel-header> 
 	      <v-expansion-panel-content>
-	           <qd-table :headers="headers" :data-uri='"data/entity/"+entity +"/field"' entity="entity.field" no-data-msg="Nothing found">
+	           <qd-table :headers="headers" :data-uri='"data/entity/"+entity +"/field"' entity="dice.field" no-data-msg="Nothing found">
 	          </qd-table>
 	      </v-expansion-panel-content>
 	     </v-expansion-panel>

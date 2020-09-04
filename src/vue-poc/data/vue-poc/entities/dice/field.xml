@@ -1,4 +1,4 @@
-<entity name="entity.field" xmlns="https://github.com/Quodatum/app-doc/entity">
+<entity name="dice.field" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>About an entity field. </description>
 	<namespace prefix="ent"
 		uri="https://github.com/Quodatum/app-doc/entity" />
