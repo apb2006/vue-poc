@@ -9,6 +9,9 @@
             <v-breadcrumbs-item  to="/tasks" :exact="true">
             Tasks
             </v-breadcrumbs-item>
+            <v-breadcrumbs-item  >
+            History
+            </v-breadcrumbs-item>
         </v-breadcrumbs>
        </v-toolbar-title>  
      <v-spacer></v-spacer>

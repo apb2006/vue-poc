@@ -1,0 +1,25 @@
+<entity name="favorites" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>vue-poc favourites </description>
+	<fields>
+		<field name="created" type="xs:string">
+			<description>time of event</description>
+			<xpath>@when</xpath>
+		</field>
+		<field name="user" type="xs:string">
+			<description>user</description>
+			<xpath>@user</xpath>
+		</field>
+		<field name="id" type="xs:string">
+			<description>id</description>
+			<xpath>@id</xpath>
+		</field>
+		
+
+		<field name="url" type="xs:string">
+			<description>path</description>
+			<xpath>@url</xpath>
+		</field>
+	</fields>
+	<views iconclass="star_border"/>
+	<data type="element(favorite)">doc("vue-poc/favorites.xml")/favorites/favorite</data>
+</entity>

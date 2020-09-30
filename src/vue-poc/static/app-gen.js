@@ -1,4 +1,4 @@
-// generated 2020-09-04T12:21:45.271+01:00
+// generated 2020-09-30T18:25:58.643+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -17,7 +17,7 @@ Vue.component('qd-autoheight',{template:`
         var e=el;
        // console.log("top",e.offsetTop,e.getBoundingClientRect().top,window.innerHeight);
         var h=window.innerHeight - e.getBoundingClientRect().top -10;
-        var h=Math.max(1,h) ;
+        h=Math.max(1,h) ;
         // console.log("h",h)
         e.style.height=h +"px"; 
     }
@@ -346,18 +346,17 @@ Vue.component('qd-search',{template:`
   <v-combobox placeholder="Search..." prepend-icon="search" autocomplete :loading="loading" clearable :items="items2" @keyup.enter="goSearch" :search-input.sync="si" v-model="q">
             
             <template slot="item" slot-scope="{ index, item, parent }">
-		             <v-list-item-action>
-		                 <v-btn icon :to="item.value">		                  
-		                  <v-icon>arrow_forward</v-icon>	
-		                 </v-btn>
-		            </v-list-item-action>
                       <v-list-item-content>
-                        
-					      <v-list-item-title>
-					          {{ item.text }}
-					      </v-list-item-title>
-					      <v-list-item-subtitle>Page {{ item.value }}</v-list-item-subtitle>
+                 
+					      <v-list-item-title>Search "{{ item.text }}"</v-list-item-title>
+					      <v-list-item-subtitle>or goto 
+					          <router-link :to="item.value">
+					          {{ item.value }} 		                  
+		                      <v-icon>launch</v-icon>	
+		                     </router-link>
+		                 </v-list-item-subtitle>
 					   </v-list-item-content>
+					   
              </template>
               
      </v-combobox>
@@ -379,7 +378,7 @@ Vue.component('qd-search',{template:`
       this.loading = true
       // Simulated ajax query
       setTimeout(() => {
-        this.items2 = this.si?this.matchItems(this.si.toLowerCase()):[],
+        this.items2 = this.si?this.matchItems(this.si.toLowerCase()):[] 
         this.loading = false
       }, 500)
     },
@@ -390,8 +389,8 @@ Vue.component('qd-search',{template:`
       
     matchItems(typed){
         var hits=this.titles;
-        var typed=typed.toLowerCase();
-         hits=hits.filter(item=>item.title.indexOf(typed) !== -1)
+        typed=typed.toLowerCase();
+        hits=hits.filter(item=>item.title.indexOf(typed) !== -1)
         return hits.map(r=>{return {text:r.title,
                                     value:r.path}
                       });
@@ -608,7 +607,7 @@ Vue.component('vis-time-line',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-entitylink.vue
 Vue.component('vp-entitylink',{template:` 
-		    <router-link :to="'entity/'+entity">E</router-link>   
+		    <router-link :to="'/entity/'+entity">E</router-link>   
  `,
       
   props: ['entity']
@@ -627,19 +626,24 @@ Vue.component('vp-favorite',{template:`
        <v-card style="width:400px;">
             <v-toolbar class="green"> 
         <v-card-title>
-            Bookmark this page
+            Add to favorites
           </v-card-title>
+          <v-spacer></v-spacer>
+          <v-btn @click="set(false)" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           
          <v-card-text>
-            <h6>{{$route.meta.title}}</h6>
+            <h6>{{$route.meta.title}}  
+              <v-btn v-if="canCopy" @click="setclip" icon title="Copy location"><v-icon>content_copy</v-icon></v-btn>
+            </h6>
             <v-combobox multiple v-model="tags" label="tags" chips tags :items="taglist"></v-combobox>
          </v-card-text>
          
          <v-card-actions>
+            <v-btn color="primary" text @click.stop="favorite(); set(false)">Done</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click.stop="set(false)">Cancel</v-btn>
-            <v-btn color="primary" text @click.stop="favorite(); set(false)">Save</v-btn>
+            <v-btn text @click.stop="set(false)">Cancel</v-btn>
+           
           </v-card-actions>
         </v-card>
    </v-menu> `,
@@ -649,27 +653,28 @@ Vue.component('vp-favorite',{template:`
   },
   data(){
     return {
+     canCopy:false,	
       tags: [],
-      taglist: [
-        'todo',
-        'find',
-        'some',
-        'good',
-        'tags'
-      ],
+      taglist: [  'todo',  'find',  'some',  'good',  'tags' ],
     }
   },
   methods:{
     set(v){
       this.$emit('update:frmfav', v)
     },
-    
+    async setclip(){
+    	      await navigator.clipboard.writeText(this.$route.fullPath);
+    	      alert('Copied!' + this.$route.fullPath);
+    },
     favorite(){
       this.$store.commit('increment')
       console.log(this.$store.state.count)
       alert("save");
     }
-  }
+  },
+  created() {
+    this.canCopy = !!navigator.clipboard;
+  },
 }
       );
       
@@ -812,7 +817,7 @@ Vue.component('vp-paramform',{template:`
 	              <v-layout column xs8> 
 	              <v-flex v-for="field in fields" :key="field.model">
 	              
-	              <v-text-field v-if="field.type === 'xs:anyURI'" v-model="params[field.model]" :label="field.label" clearable :rules="fieldrules(field)" filled append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
+	              <v-text-field v-if="field.type === 'xs:anyURI'" v-model="params[field.model]" :label="field.label &amp;&amp; field.model" clearable :rules="fieldrules(field)" filled append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
 	              
 	              <v-switch v-else-if="field.type === 'xs:boolean'" :label="field.label" v-model="params[field.model]">
 	              </v-switch>
@@ -1836,7 +1841,7 @@ const Routes2=Vue.extend({template:`
   <v-card>
   <v-toolbar> 
   <v-card-title>
-  {{ active.path}}
+  {{ active.name}}
   </v-card-title>
    <router-link :to="active.path"><v-icon>link</v-icon></router-link>
   <v-spacer></v-spacer>
@@ -1925,8 +1930,8 @@ const Routes2=Vue.extend({template:`
 	  this.refresh()
 	  if(this.$route.query.index){
 		    const index= parseInt(this.$route.query.index)
-	    	//const h= this.findItem(this.routes,index)
-	    	//console.log("search",h, index)
+	    	const h= this.findItem(this.routes,index)
+	    	console.log("search",h, index)
 	    	//this.active=h
 	    }
   }
@@ -2453,77 +2458,36 @@ const Log=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/documentation.vue
 const Documentation=Vue.extend({template:` 
- <v-container fluid grid-list-md>
-    <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="search" hide-default-footer>
-
-   <template v-slot:header>
-        <v-toolbar>
-       <v-toolbar-title>XQDocs</v-toolbar-title>
-        <v-spacer></v-spacer>
-          <v-text-field v-model="search" clearable flat solo-inverted hide-details prepend-inner-icon="search" label="Search"></v-text-field>
-           <v-spacer></v-spacer>
-           <router-link :to="{path:'/tasks/xqdoca'}">
-              <v-icon>add_circle</v-icon>
-           </router-link>
-           <v-btn @click="get" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
-          </v-toolbar>
-      </template>
-          
-      <template v-slot:default="props">
-        <v-layout wrap>
-          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
-            <v-card :hover="true">
-		           <v-toolbar color="blue lighten-3" dense>
-			           <v-card-title>{{ item.name }}</v-card-title>
-			           <v-spacer></v-spacer>
-			           <a :href="item.href" target="_new">go</a>
-		           </v-toolbar>
-		           <v-card-text>{{ item.id }}</v-card-text>
-		            <v-card-text>
-		              <span :title="item.created">{{ item.created | fromNow }}</span>
-		              
-		            </v-card-text>
-		           <v-card-actions>
-		           <v-btn>Run</v-btn>
-		           </v-card-actions>
-           </v-card>
-            
-          </v-flex>
-        </v-layout>
-      </template>
-
-    </v-data-iterator>
+ <v-container fluid>
+ <v-card>
+<v-toolbar dense>
+    <v-toolbar-title>
+		    <v-breadcrumbs :items="crumbs">
+		        <span slot="divider" style="padding:0;"></span>
+		         <template slot="item" slot-scope="props">
+						    <v-breadcrumbs-item :to="{ query: { url:  props.item.path }}" :exact="true">
+						    <v-icon v-if="props.item.icon">{{ props.item.icon }}</v-icon>
+						    {{ props.item.name }}
+						    </v-breadcrumbs-item>
+				    </template>
+		    </v-breadcrumbs>
+    </v-toolbar-title>
+    </v-toolbar>
+    <v-card-text>
+    <ul>
+    <li>
+    <router-link to="documentation/xqdoc"><v-icon>Q</v-icon>XQdoc</router-link>
+    </li>
+    <li>
+    <router-link to="documentation/xqdoc"><v-icon>Q</v-icon>XQdoc</router-link>
+    </li>
+    </ul>
+    </v-card-text>
+    </v-card>
   </v-container>
  `,
       
-  data:  function(){
-    return {
-      itemsPerPage: 100,
-      page: 1,
-      items:[],
-      search: '',
-      filter: {},
-      loading: false
-      }
-  },
-  methods:{
-    get() {
-      this.loading=true;
-      HTTP.get('xqdocjob')
-      .then((res) => {
-        this.items = res.data;
-        this.loading=false;
-      });
-    },
-    doEdit(item){
-      console.log("history: ",item)
-        router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
-    }
-  },
-  created:function(){
-    this.get()
-    console.log("history")
-  }
+ 
 }
 
       );
@@ -2806,6 +2770,83 @@ const Files=Vue.extend({template:`
     this.url=url?url:"/";
     this.q=this.$route.query.q || this.q
     this.load()
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/xqdocs.vue
+const Xqdocs=Vue.extend({template:` 
+ <v-container fluid grid-list-md>
+    <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="search" hide-default-footer>
+
+   <template v-slot:header>
+        <v-toolbar>
+       <v-toolbar-title>XQDocs</v-toolbar-title>
+        <v-spacer></v-spacer>
+          <v-text-field v-model="search" clearable flat solo-inverted hide-details prepend-inner-icon="search" label="Search"></v-text-field>
+           <v-spacer></v-spacer>
+           <router-link :to="{path:'/tasks/xqdoca'}">
+              <v-icon>add_circle</v-icon>
+           </router-link>
+           <v-btn @click="get" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+          </v-toolbar>
+      </template>
+          
+      <template v-slot:default="props">
+        <v-layout wrap>
+          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
+            <v-card :hover="true">
+		           <v-toolbar color="blue lighten-3" dense>
+			           <v-card-title>{{ item.name }}</v-card-title>
+			           <v-spacer></v-spacer>
+			           <a :href="item.href" target="_new">go</a>
+		           </v-toolbar>
+		           <v-card-text>{{ item.id }}</v-card-text>
+		            <v-card-text>
+		              <span :title="item.created">{{ item.created | fromNow }}</span>
+		              
+		            </v-card-text>
+		           <v-card-actions>
+		           <v-btn>Run</v-btn>
+		           </v-card-actions>
+           </v-card>
+            
+          </v-flex>
+        </v-layout>
+      </template>
+
+    </v-data-iterator>
+  </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      itemsPerPage: 100,
+      page: 1,
+      items:[],
+      search: '',
+      filter: {},
+      loading: false
+      }
+  },
+  methods:{
+    get() {
+      this.loading=true;
+      HTTP.get('xqdocjob')
+      .then((res) => {
+        this.items = res.data;
+        this.loading=false;
+      });
+    },
+    doEdit(item){
+      console.log("history: ",item)
+        router.push({ path: 'edit', query: { url:item.url, protocol:item.protocol  }})
+    }
+  },
+  created:function(){
+    this.get()
+    console.log("history")
   }
 }
 
@@ -3171,11 +3212,12 @@ created:function(){
 const Tree2=Vue.extend({template:` 
  <v-container fluid>
  <v-card>
- <v-toolbar class="lime darken-1">
-   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.29</qd-link> </v-card-title>
-   <v-spacer></v-spacer>
-   <v-btn>todo</v-btn>
+  <v-toolbar flat floating class="lime darken-1">
+	   <v-card-title><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.29</qd-link> </v-card-title>
+	   <v-spacer></v-spacer>
+	   <v-btn>todo</v-btn>
    </v-toolbar>
+   
    <v-card-text>
      <v-layout row wrap>
      <v-flex xs4>
@@ -5138,6 +5180,7 @@ const Jobs=Vue.extend({template:`
        <v-btn icon :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
     <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
     </v-btn>
+    <vp-entitylink entity="basex.job"></vp-entitylink> 
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" show-select class="elevation-1" no-data-text="No Jobs currently running">
     <template slot="items" slot-scope="props">
@@ -5487,7 +5530,7 @@ const Entity=Vue.extend({template:`
      <template v-slot:header>
        <v-toolbar>
 			 <v-toolbar-title> 
-			    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]">
+			    <v-breadcrumbs :items="[{text:'Entities',to:'/model/entity'}]">
 						     <template slot="item" slot-scope="props">
 					           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
 					                {{ props.item.text }}
@@ -5573,7 +5616,7 @@ const Entity1=Vue.extend({template:`
 <v-card>
 	<v-toolbar>
 	 <v-toolbar-title> 
-         <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
+         <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/model/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
          </v-toolbar-title>   
           <v-menu v-model="showmenu">
             <template v-slot:activator="{ on }">
@@ -5770,6 +5813,279 @@ const Entity1data=Vue.extend({template:`
  
   created:function(){
     this.getItem()
+  },
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/mimetype.vue
+const Mimetype=Vue.extend({template:` 
+<v-container fluid grid-list-md>
+  
+    <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="q" hide-default-footer select-all :value="selected">
+    
+     <template v-slot:header>
+       <v-toolbar>
+			 <v-toolbar-title> 
+			 mimetype TODO
+			    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]">
+						     <template slot="item" slot-scope="props">
+					           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+					                {{ props.item.text }}
+					           </v-breadcrumbs-item>
+					       </template>
+		     </v-breadcrumbs>
+		   </v-toolbar-title>
+			  <v-spacer></v-spacer> 
+			 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
+		   <v-spacer></v-spacer>
+			 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+		   <vp-entitylink entity="mimetype"></vp-entitylink>
+	 </v-toolbar>
+	 </template>
+	 
+     <template v-slot:default="props">
+        <v-layout wrap>
+          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
+     
+        <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
+        
+          <v-toolbar color="blue lighten-3" dense>
+		          <v-toolbar-title>
+		           <router-link :to="{path:'entity/'+ item.name}">
+		            <v-avatar>
+		             <v-icon>{{ item.iconclass }}</v-icon> 
+		            </v-avatar> {{ item.name }}
+		            </router-link></v-toolbar-title>
+		         
+		         <v-spacer></v-spacer>
+		         <v-badge>
+			      <span slot="badge">{{ item.nfields }}</span>
+			    </v-badge>
+          </v-toolbar>
+          <v-card-text>{{ item.description }}<!--<v-card-text-->
+        </v-card-text></v-card>
+      </v-flex>
+      </v-layout>
+      </template>
+    </v-data-iterator>
+  </v-container>
+ `,
+      
+  data:  function(){
+    return {
+   	  itemsPerPage: 100,
+      page: 1,
+      items:[],
+      search: '',
+      filter: {},
+      loading: false,
+      q: '',   
+      selected:[]
+      }
+  },
+  methods:{
+    getItems(){
+      this.loading=true
+      HTTP.get("data/entity",{params:{q:this.q}})
+      .then(r=>{
+        this.loading=false
+        //console.log(r.data)
+        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
+        this.items=r.data.items
+        }) 
+    },
+    setfilter(){
+      console.log("TODO",this.q);
+      this.$router.push({ query: {url: this.url,
+                                   q: this.q }})
+    }
+  },
+
+  created:function(){
+    this.getItems()
+  },
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/schema.vue
+const Schema=Vue.extend({template:` 
+<v-container fluid grid-list-md>
+  
+    <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="q" hide-default-footer select-all :value="selected">
+    
+     <template v-slot:header>
+       <v-toolbar>
+			 <v-toolbar-title> 
+			 schema TODO
+			    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]">
+						     <template slot="item" slot-scope="props">
+					           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+					                {{ props.item.text }}
+					           </v-breadcrumbs-item>
+					       </template>
+		     </v-breadcrumbs>
+		   </v-toolbar-title>
+			  <v-spacer></v-spacer> 
+			 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
+		   <v-spacer></v-spacer>
+			 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+		   <vp-entitylink entity="taxonomy"></vp-entitylink>
+	 </v-toolbar>
+	 </template>
+	 
+     <template v-slot:default="props">
+        <v-layout wrap>
+          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
+     
+        <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
+        
+          <v-toolbar color="blue lighten-3" dense>
+		          <v-toolbar-title>
+		           <router-link :to="{path:'entity/'+ item.name}">
+		            <v-avatar>
+		             <v-icon>{{ item.iconclass }}</v-icon> 
+		            </v-avatar> {{ item.name }}
+		            </router-link></v-toolbar-title>
+		         
+		         <v-spacer></v-spacer>
+		         <v-badge>
+			      <span slot="badge">{{ item.nfields }}</span>
+			    </v-badge>
+          </v-toolbar>
+          <v-card-text>{{ item.description }}<!--<v-card-text-->
+        </v-card-text></v-card>
+      </v-flex>
+      </v-layout>
+      </template>
+    </v-data-iterator>
+  </v-container>
+ `,
+      
+  data:  function(){
+    return {
+   	  itemsPerPage: 100,
+      page: 1,
+      items:[],
+      search: '',
+      filter: {},
+      loading: false,
+      q: '',   
+      selected:[]
+      }
+  },
+  methods:{
+    getItems(){
+      this.loading=true
+      HTTP.get("data/entity",{params:{q:this.q}})
+      .then(r=>{
+        this.loading=false
+        //console.log(r.data)
+        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
+        this.items=r.data.items
+        }) 
+    },
+    setfilter(){
+      console.log("TODO",this.q);
+      this.$router.push({ query: {url: this.url,
+                                   q: this.q }})
+    }
+  },
+
+  created:function(){
+    this.getItems()
+  },
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/taxonomy.vue
+const Taxonomy=Vue.extend({template:` 
+<v-container fluid grid-list-md>
+  
+    <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="q" hide-default-footer select-all :value="selected">
+    
+     <template v-slot:header>
+       <v-toolbar>
+			 <v-toolbar-title> 
+			 Taxonomy TODO
+			    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]">
+						     <template slot="item" slot-scope="props">
+					           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
+					                {{ props.item.text }}
+					           </v-breadcrumbs-item>
+					       </template>
+		     </v-breadcrumbs>
+		   </v-toolbar-title>
+			  <v-spacer></v-spacer> 
+			 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
+		   <v-spacer></v-spacer>
+			 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+		   <vp-entitylink entity="taxonomy"></vp-entitylink>
+	 </v-toolbar>
+	 </template>
+	 
+     <template v-slot:default="props">
+        <v-layout wrap>
+          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
+     
+        <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
+        
+          <v-toolbar color="blue lighten-3" dense>
+		          <v-toolbar-title>
+		           <router-link :to="{path:'entity/'+ item.name}">
+		            <v-avatar>
+		             <v-icon>{{ item.iconclass }}</v-icon> 
+		            </v-avatar> {{ item.name }}
+		            </router-link></v-toolbar-title>
+		         
+		         <v-spacer></v-spacer>
+		         <v-badge>
+			      <span slot="badge">{{ item.nfields }}</span>
+			    </v-badge>
+          </v-toolbar>
+          <v-card-text>{{ item.description }}<!--<v-card-text-->
+        </v-card-text></v-card>
+      </v-flex>
+      </v-layout>
+      </template>
+    </v-data-iterator>
+  </v-container>
+ `,
+      
+  data:  function(){
+    return {
+   	  itemsPerPage: 100,
+      page: 1,
+      items:[],
+      search: '',
+      filter: {},
+      loading: false,
+      q: '',   
+      selected:[]
+      }
+  },
+  methods:{
+    getItems(){
+      this.loading=true
+      HTTP.get("data/entity",{params:{q:this.q}})
+      .then(r=>{
+        this.loading=false
+        //console.log(r.data)
+        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
+        this.items=r.data.items
+        }) 
+    },
+    setfilter(){
+      console.log("TODO",this.q);
+      this.$router.push({ query: {url: this.url,
+                                   q: this.q }})
+    }
+  },
+
+  created:function(){
+    this.getItems()
   },
 }
 
@@ -7400,6 +7716,9 @@ const Taskhistory=Vue.extend({template:`
             <v-breadcrumbs-item to="/tasks" :exact="true">
             Tasks
             </v-breadcrumbs-item>
+            <v-breadcrumbs-item>
+            History
+            </v-breadcrumbs-item>
         </v-breadcrumbs>
        </v-toolbar-title>  
      <v-spacer></v-spacer>
@@ -7477,6 +7796,8 @@ const Tasks=Vue.extend({template:`
    <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
    
    <v-spacer></v-spacer>
+   <router-link :to="{path:'/history/tasks'}"><v-icon>history</v-icon>History</router-link>
+   <v-spacer></v-spacer>
    <vp-entitylink entity="quodatum.task"></vp-entitylink>    
    </v-toolbar>
    
@@ -7541,7 +7862,23 @@ const Tasks1=Vue.extend({template:`
     <qd-breadcrumbs :crumbs="[{to: '/tasks', text:'Tasks'}, {text: task, disabled: true} ]">crumbs</qd-breadcrumbs> 
        </v-toolbar-title>  
      <v-spacer></v-spacer>
-   
+       <v-btn-toggle v-model="view" borderless>
+          <v-btn value>
+            <router-link :to="{path: 'run', append:true }"> <v-icon>home</v-icon>Home</router-link>       
+          </v-btn>
+
+          <v-btn value="run">
+             <router-link :to="{path: 'run', append:true }"> <v-icon>play_circle_outline</v-icon>Run</router-link>
+          </v-btn>
+
+          <v-btn value="edit" v-if="data">
+            <router-link :to="{name: 'edit',  query:{url: data.url} }"> <v-icon>edit</v-icon>Edit</router-link>
+          </v-btn>
+
+          <v-btn value="history">
+            <router-link :to="{name:'taskhistory', query:{task: task}}"><v-icon>history</v-icon>History</router-link>
+          </v-btn>
+        </v-btn-toggle>
    <v-spacer></v-spacer>
    <vp-entitylink entity="quodatum.task"></vp-entitylink>    
    </v-toolbar>
@@ -7549,16 +7886,12 @@ const Tasks1=Vue.extend({template:`
    <v-card-text>
   
    <h1>{{ task }} </h1>
-   <ul><li>
-   <router-link :to="{path: 'run', append:true }"> <v-icon>folder</v-icon>Run</router-link>
-   </li>
-   <li>
-   <router-link :to="{name: 'edit',  query:{apple: task} }"> <v-icon>folder</v-icon>Edit</router-link>
-   </li>
-   <li>
-      <router-link :to="{name:'taskhistory', query:{task: task}}"><v-icon>history</v-icon>History</router-link>
-     </li>
-     </ul>
+   <div v-if="data">
+   <p>{{ data.description }}</p>
+   <a :href="data.url">{{ data.url }}</a>
+   </div>
+   
+     <pre>{{ data | pretty }}</pre>
    </v-card-text>
     
     </v-card>
@@ -7572,27 +7905,22 @@ const Tasks1=Vue.extend({template:`
       crumbs: [{to: "/tasks", text: "Tasks"},
     	       { text: this.task}],
  
-      items: [],
+      data: null,
       loading: false,
-      q: null,
-      headers: [
-    	{ text: 'Task', value: 'to' }, 
-        { text: 'Title', value: 'title' },
-        { text: 'Description', value: 'description' },
-        ]
+      view: null
       }
   },
   methods:{
     getTasks(){
         this.loading= true;
-        HTTP.get("tasks")
+        HTTP.get("tasks/" + this.task)
         .then(r=>{
-		   this.items=r.data;
+		   this.data= r.data;
 		   this.loading= false;
        })
     }
    },
-  created(){
+  mounted(){
     this.getTasks()
    }
 }
@@ -8163,6 +8491,7 @@ const Transform=Vue.extend({template:`
       
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\router.js
 // vue-poc application routes
+
 const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
@@ -8183,38 +8512,45 @@ const router = new VueRouter({
  
     {path: '/images', component: { template: '<router-view/>' }, 
     	children: [
-    {path: '', redirect: 'item' },		
-    { path: 'item', name:'images', component: Images, meta:{title: "Images"} },
-    { path: 'report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
-    { path: 'item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
-    { path: 'thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
-    { path: 'keywords', component: Keywords, meta:{title:"Image keywords"} },
-    { path: 'dates', component: Dates, meta:{title:"Image dates"} },
-    { path: 'people', component: People, meta:{title:"Image people"} }
+		    {path: '', redirect: 'item' },		
+		    { path: 'item', name:'images', component: Images, meta:{title: "Images"} },
+		    { path: 'report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
+		    { path: 'item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
+		    { path: 'thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
+		    { path: 'keywords', component: Keywords, meta:{title:"Image keywords"} },
+		    { path: 'dates', component: Dates, meta:{title:"Image dates"} },
+		    { path: 'people', component: People, meta:{title:"Image people"} }
     ]},
     
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
+    { path: '/documentation/xqdoc', component: Xqdocs, meta:{title:"XQdoc"} },
     
     { path: '/logdate', component: Basexlogdate, meta:{title:"log files"} },
     { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
     
-    { path: '/entity', component: Entity, meta:{title:"Entities"} },
-    { path: '/entity/:entity', component: { template: '<router-view/>' }
-          ,children: [
-        	  {
-                  path: '',
-                  component: Entity1, props: true, meta:{title:"Entity"} 
-                }, 
-                { 
-                	path: 'data', component: Entity1data, props: true, meta:{title:"Entity data"}   
-                }
-          ]
-    }, 
-    
-    { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
-    { path: '/namespace/item', component: Namespace1, meta:{title:"Namespace"} },
-    
+    {path: '/model', component: { template: '<router-view/>' }, 
+    	children: [
+		    {path: '', redirect: 'schema' },	
+		    { path: 'schema', name:"schema", component: Schema, meta:{title:"Schemas"} },
+		    { path: 'taxonomy', component: Taxonomy, meta:{title:"Taxonomies"} },
+		    { path: 'mimetype', component: Mimetype, meta:{title:"Mimetypes"} },
+		    { path: 'namespace', component: Namespace, meta:{title:"Namespaces"} },
+		    { path: 'namespace/item', component: Namespace1, meta:{title:"Namespace"} },
+		    { path: 'entity', component: Entity, meta:{title:"Entities"} },
+		    { path: 'entity/:entity', component: { template: '<router-view/>' }
+	          ,children: [
+	        	  {
+	                  path: '',
+	                  component: Entity1, props: true, meta:{title:"Entity"} 
+	                }, 
+	                { 
+	                	path: 'data', component: Entity1data, props: true, meta:{title:"Entity data"}   
+	                }
+	          ]
+		    } 
+         ]},
+         
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },
@@ -8275,8 +8611,7 @@ const router = new VueRouter({
     },
     { path: '/history', component: { template: '<router-view/>' }
     ,children: [
-      { path: 'files', component: Filehistory, meta:{title: "File History"} },
-      { path: 'tasks', name: 'taskhistory', component: Taskhistory, meta:{title: "Task History"} },
+      { path: 'files', component: Filehistory, meta:{title: "File History"} }
       ]
     },
     { path: '/labs', component: { template: '<router-view/>' }
@@ -8483,13 +8818,14 @@ const Vuepoc=Vue.extend({template:`
     frmfav: false,
   
     items: [
-      {href: '/',text: 'Dashboard', icon: 'dashboard'    },
+      {href: '/',text: 'Dashboard', icon: 'home'    },
       {
         icon: 'input',
         text: 'Actions' ,
         model: false,
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
+      {href: '/tasks',text: 'Tasks',icon: 'update'},
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
@@ -8504,8 +8840,8 @@ const Vuepoc=Vue.extend({template:`
         children: [
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
-   
-       {href: '/tasks',text: 'Tasks',icon: 'update'},
+       {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
+     
        {href: '/logdate',text: 'XML logs',icon: 'dns'},
        {href: '/history/files',text: 'history',icon: 'history'}
       ]},
@@ -8514,9 +8850,11 @@ const Vuepoc=Vue.extend({template:`
         text: 'Models' ,
         model: false,
         children: [             
-          {href: '/entity', text: 'Entities',icon: 'redeem' },
-          {href: '/documentation', text: 'Documentation',icon: 'library_books' },
-          {href: '/namespace', text: 'Namespaces',icon: 'label' },
+          {href: '/model/entity', text: 'Entities',icon: 'redeem' },
+          {href: '/model/namespace', text: 'Namespaces',icon: 'dns' },
+          {href: '/model/schema', text: 'Schemas',icon: 'verified' },
+          {href: '/model/taxonomy', text: 'Taxonomies',icon: 'local_offer' },
+          {href: '/model/mimetype', text: 'Mimetypes',icon: 'assignment' },
       ]},
       
       {
@@ -8566,7 +8904,7 @@ const Vuepoc=Vue.extend({template:`
         children: [
       {href: '/labs/scratch',text: 'Scratch pad',icon: 'filter_frames'},
       {href: '/labs/form',text: 'Forms',icon: 'subtitles'  },
-      {href: '/labs/timeline',text: 'Time line',icon: 'timelapse'},
+      {href: '/labs/timeline',text: 'Time line',icon: 'event_note'},
       {href: '/labs/svg',text: 'SVG',icon: 'extension'},
       {href: '/labs/svg2',text: 'SVG2',icon: 'extension'},
       {href: '/labs/tree',text: 'Tree',icon: 'nature'},

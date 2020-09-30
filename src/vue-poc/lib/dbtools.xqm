@@ -11,9 +11,7 @@ import module namespace db="http://basex.org/modules/db";
 import module namespace archive="http://basex.org/modules/archive";
 import module namespace hof="http://basex.org/modules/hof";
 
-(:  trailing slash :)
-declare variable $dbtools:webpath:= db:system()/globaloptions/webpath/fn:string()
-                             || file:dir-separator();
+
 
 (:~ 
 : save all in db to zip
@@ -69,6 +67,7 @@ let $files:=$files!fn:translate(.,"\","/")
 let $files:=fn:filter($files,function($f){file:is-file(fn:concat($path,$f))})
 let $dbpath:=tokenize($dbpath,"/")[.]
 let $dbname:= head($dbpath)
+let $dbpath:=string-join(tail($dbpath),"/") || "/"
 return if(db:exists($dbname)) then
            (
            for $d in db:list($dbname) 
@@ -77,14 +76,16 @@ return if(db:exists($dbname)) then
            
            for $f in $files
            let $_:=fn:trace($path || $f,"file:") 
-           let $content:=$ingest($path || $f) 
-           return db:replace($dbname,$f,$content),
+           let $content:=$ingest($path || $f)
+           let $dest:= $dbpath || $f
+           return db:replace($dbname,$dest,$content),
            
            db:optimize($dbname)
            )
        else
-          let $full:=$files!fn:concat($path,.)
-          let $content:=$full!$ingest(.) 
-          return (db:create($dbname,$content,$files))
+          let $src:= $files!fn:concat($path,.)
+          let $dest:= $files!fn:concat($dbpath,.)
+          let $content:= $src!$ingest(.) 
+          return (db:create($dbname,$content,$dest))
 };
 

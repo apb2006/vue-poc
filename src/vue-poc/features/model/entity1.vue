@@ -4,7 +4,7 @@
 	<v-toolbar>
 	 <v-toolbar-title> 
          <qd-breadcrumbs @todo="showmenu= ! showmenu" 
-         :crumbs="[{to: '/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]"
+         :crumbs="[{to: '/model/entity', text:'Entities'}, {text: entity, disabled: false, menu: 'todo'}]"
          >crumbs</qd-breadcrumbs> 
          </v-toolbar-title>   
           <v-menu  v-model="showmenu" >

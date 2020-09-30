@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<!DOCTYPE message [
+  <!ELEMENT message (to,from,subject,text)>
+  <!ELEMENT to       (#PCDATA)>
+  <!ELEMENT from     (#PCDATA)>
+  <!ELEMENT subject  (#PCDATA)>
+  <!ELEMENT text     (#PCDATA)>
+  <!ATTLIST to gender CDATA "male">
+]>
+
+<message>
+  <to>Dave</to>
+  <from>Susan</from>
+  <subject>Reminder</subject>
+  <text>Dont forget to buy milk on the way home.</text>
+</message>

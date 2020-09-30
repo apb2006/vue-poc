@@ -5,12 +5,8 @@
 		</description>
 	</task>
 
-	<task name="import" url="task/tx-dbimport.xq">
-		<title>Load files into database</title>
-		<description>Load files into database</description>
-	</task>
 	<task name="import2" url="task/tx-dbimport2.xq">
-		<title>Import files into a database</title>
+		<title>Import files from drive into a database</title>
 		<description>Load files into database</description>
 	</task>
 	
@@ -28,7 +24,11 @@
 		<title>Create xqDoc</title>
 		<description>xquery documentation</description>
 	</task>
-	
+
+	<task name="primes" url="../../tasks/primes.xq">
+		<title>Calculate primes</title>
+		<description>performance</description>
+	</task>
 	<task name="newapp" url="task/tx-newapp.xq">
 		<title>application template</title>
 		<description>application template</description>

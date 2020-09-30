@@ -30,7 +30,8 @@ function vue-api:edit-get($url as xs:string)
       "xmldb":   vue-api:get-basexdb#1
       }
     let $reader:=trace($reader)
-   return $reader($protocol)($url)
+    let $fn:=($reader($protocol),vue-api:get-webfile#1)[1]
+   return $fn($url)
 };
 
 (:~
@@ -82,7 +83,7 @@ as element(json)
 
 (:~
  : Returns a file content.
- : @param $url starts with protocol
+ : @param $url starts with protocol accepts xmldb:path, file:path, webfile:/ path 
  :)
 declare 
 %rest:GET %rest:path("/vue-poc/api/get")
@@ -124,5 +125,5 @@ as element(json)
                         <data>{serialize($doc)}</data> 
                      </json>
           else 
-            error(xs:QName('vue-api:raw'),$url)
+            error(xs:QName('vue-api:get-basexdb'),$url)
 };

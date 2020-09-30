@@ -1,4 +1,5 @@
 // vue-poc application routes
+
 const router = new VueRouter({
   base:"/vue-poc/ui/",
   mode: 'history',
@@ -19,38 +20,45 @@ const router = new VueRouter({
  
     {path: '/images', component: { template: '<router-view/>' }, 
     	children: [
-    {path: '', redirect: 'item' },		
-    { path: 'item', name:'images', component: Images, meta:{title: "Images"} },
-    { path: 'report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
-    { path: 'item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
-    { path: 'thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
-    { path: 'keywords', component: Keywords, meta:{title:"Image keywords"} },
-    { path: 'dates', component: Dates, meta:{title:"Image dates"} },
-    { path: 'people', component: People, meta:{title:"Image people"} }
+		    {path: '', redirect: 'item' },		
+		    { path: 'item', name:'images', component: Images, meta:{title: "Images"} },
+		    { path: 'report', name:"image-reports", component: Report, props: true, meta:{title: "Image report"}},
+		    { path: 'item/:id', name:"image",component: Image, props: true, meta:{title: "Image details"}},
+		    { path: 'thumbnail', component: Thumbnail, meta:{title:"Thumbnail generator"} },
+		    { path: 'keywords', component: Keywords, meta:{title:"Image keywords"} },
+		    { path: 'dates', component: Dates, meta:{title:"Image dates"} },
+		    { path: 'people', component: People, meta:{title:"Image people"} }
     ]},
     
     
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
+    { path: '/documentation/xqdoc', component: Xqdocs, meta:{title:"XQdoc"} },
     
     { path: '/logdate', component: Basexlogdate, meta:{title:"log files"} },
     { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
     
-    { path: '/entity', component: Entity, meta:{title:"Entities"} },
-    { path: '/entity/:entity', component: { template: '<router-view/>' }
-          ,children: [
-        	  {
-                  path: '',
-                  component: Entity1, props: true, meta:{title:"Entity"} 
-                }, 
-                { 
-                	path: 'data', component: Entity1data, props: true, meta:{title:"Entity data"}   
-                }
-          ]
-    }, 
-    
-    { path: '/namespace', component: Namespace, meta:{title:"Namespaces"} },
-    { path: '/namespace/item', component: Namespace1, meta:{title:"Namespace"} },
-    
+    {path: '/model', component: { template: '<router-view/>' }, 
+    	children: [
+		    {path: '', redirect: 'schema' },	
+		    { path: 'schema', name:"schema", component: Schema, meta:{title:"Schemas"} },
+		    { path: 'taxonomy', component: Taxonomy, meta:{title:"Taxonomies"} },
+		    { path: 'mimetype', component: Mimetype, meta:{title:"Mimetypes"} },
+		    { path: 'namespace', component: Namespace, meta:{title:"Namespaces"} },
+		    { path: 'namespace/item', component: Namespace1, meta:{title:"Namespace"} },
+		    { path: 'entity', component: Entity, meta:{title:"Entities"} },
+		    { path: 'entity/:entity', component: { template: '<router-view/>' }
+	          ,children: [
+	        	  {
+	                  path: '',
+	                  component: Entity1, props: true, meta:{title:"Entity"} 
+	                }, 
+	                { 
+	                	path: 'data', component: Entity1data, props: true, meta:{title:"Entity data"}   
+	                }
+	          ]
+		    } 
+         ]},
+         
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },
@@ -111,8 +119,7 @@ const router = new VueRouter({
     },
     { path: '/history', component: { template: '<router-view/>' }
     ,children: [
-      { path: 'files', component: Filehistory, meta:{title: "File History"} },
-      { path: 'tasks', name: 'taskhistory', component: Taskhistory, meta:{title: "Task History"} },
+      { path: 'files', component: Filehistory, meta:{title: "File History"} }
       ]
     },
     { path: '/labs', component: { template: '<router-view/>' }

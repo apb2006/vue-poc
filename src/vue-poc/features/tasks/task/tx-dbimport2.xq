@@ -7,18 +7,18 @@ import module namespace dbtools = 'quodatum.dbtools' at "../../../lib/dbtools.xq
 
 
 (:~ URL of file or folder to import
- : @default C:/Users/andy/git/vue-poc/src/vue-poc/models/entities
+ : @default C:\Users\andy\git\vue-poc\src\vue-poc\data\vue-poc\entities\
   :)
-declare variable $srcpath as xs:anyURI  external :="C:/Users/andy/git/vue-poc/src/vue-poc/models/entities";
+declare variable $srcpath as xs:string  external :="C:\Users\andy\git\vue-poc\src\vue-poc\data\vue-poc\entities\";
 
 (:~ Target BaseX db root path for imported files 
- : @default /vue-poc/entities
+ : @default /vue-poc/entities/
  :)
-declare variable $targetpath as xs:anyURI external :="/vuepoc-test";
+declare variable $targetpath as xs:string external :="/vuepoc-test";
 
 (:~ delete from database if not if import files list
- : @default false
-  :)
-declare variable $deleteMissing as xs:boolean  external :=false();
+ @default false
+:)
+declare variable $deleteMissing as xs:boolean  external :=true();
            
 dbtools:sync-from-path($targetpath, $srcpath,$deleteMissing )

@@ -1,5 +1,5 @@
 (:~
- : XQuery evalution helpers library
+ : XQuery evaluation of uri helper library
  :    query-a:inspect($mod as xs:anyURI) return {description:.., updating:.., url:.., fields:[{model:..,label:..,type:..}]}
  :    query-a:params($mod as xs:anyURI)
  :    query-a:run($query as xs:anyURI,$params as map(*))
@@ -47,6 +47,7 @@ declare function query-a:cast($val as item(),$type as xs:string)
 as item() 
 {
   switch($type)
+   case "xs:boolean" return $val="true"
    case "xs:anyURI" return xs:anyURI($val)
    default          return $val
 };

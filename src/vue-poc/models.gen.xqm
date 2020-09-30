@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2020-09-04T11:37:53.188+01:00 
+ : auto generated from xml files in entities folder at: 2020-09-30T17:59:30.342+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -368,6 +368,44 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        "views": map{ 
        'filter': 'name description'
+       }
+   },
+  "favorites": map{
+     "name": "favorites",
+     "description": "vue-poc favourites ",
+     "access": map{ 
+       "created": function($_ as element()) as xs:string {$_/@when },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "url": function($_ as element()) as xs:string {$_/@url },
+       "user": function($_ as element()) as xs:string {$_/@user } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "created": function($_ as element()) as element(created)? {
+            (: xs:string :)
+                        fn:data($_/@when)!element created {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "url": function($_ as element()) as element(url)? {
+            (: xs:string :)
+                        fn:data($_/@url)!element url {  .} 
+                 },
+           "user": function($_ as element()) as element(user)? {
+            (: xs:string :)
+                        fn:data($_/@user)!element user {  .} 
+                 } },
+       
+      "data": function() as element(favorite)*
+       { doc("vue-poc/favorites.xml")/favorites/favorite },
+       
+       "views": map{ 
+       
        }
    },
   "filehistory": map{

@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<favourites xmlns="urn:quodatum:vue-poc.favourite" next-id="1">
+    <item id="0" when='' user=''>
+        <tags>
+            <tag>svg</tag> 
+        </tags>
+    </item>   
+</favourites>

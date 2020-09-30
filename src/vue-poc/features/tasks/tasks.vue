@@ -20,6 +20,8 @@
    clearable></v-text-field>
    
    <v-spacer></v-spacer>
+   <router-link :to="{path:'/history/tasks'}"><v-icon>history</v-icon>History</router-link>
+   <v-spacer></v-spacer>
    <vp-entitylink entity="quodatum.task"></vp-entitylink>    
    </v-toolbar>
    

@@ -17,12 +17,16 @@ display button that invokes a  save favorite form
        <v-card style="width:400px;">
             <v-toolbar class="green"> 
         <v-card-title>
-            Bookmark this page
+            Add to favorites
           </v-card-title>
+          <v-spacer></v-spacer>
+          <v-btn  @click="set(false)" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           
          <v-card-text>
-            <h6>{{$route.meta.title}}</h6>
+            <h6>{{$route.meta.title}}  
+              <v-btn v-if="canCopy" @click="setclip" icon title="Copy location"><v-icon>content_copy</v-icon></v-btn>
+            </h6>
             <v-combobox multiple
               v-model="tags"
               label="tags"
@@ -33,9 +37,10 @@ display button that invokes a  save favorite form
          </v-card-text>
          
          <v-card-actions>
+            <v-btn color="primary" text @click.stop="favorite(); set(false)">Done</v-btn>
             <v-spacer></v-spacer>
-            <v-btn color="primary" text @click.stop="set(false)">Cancel</v-btn>
-            <v-btn color="primary" text @click.stop="favorite(); set(false)">Save</v-btn>
+            <v-btn  text @click.stop="set(false)">Cancel</v-btn>
+           
           </v-card-actions>
         </v-card>
    </v-menu></template>
@@ -45,25 +50,26 @@ display button that invokes a  save favorite form
   },
   data(){
     return {
+     canCopy:false,	
       tags: [],
-      taglist: [
-        'todo',
-        'find',
-        'some',
-        'good',
-        'tags'
-      ],
+      taglist: [  'todo',  'find',  'some',  'good',  'tags' ],
     }
   },
   methods:{
     set(v){
       this.$emit('update:frmfav', v)
     },
-    
+    async setclip(){
+    	      await navigator.clipboard.writeText(this.$route.fullPath);
+    	      alert('Copied!' + this.$route.fullPath);
+    },
     favorite(){
       this.$store.commit('increment')
       console.log(this.$store.state.count)
       alert("save");
     }
-  }
+  },
+  created() {
+    this.canCopy = !!navigator.clipboard;
+  },
 }</script>

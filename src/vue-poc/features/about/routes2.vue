@@ -66,7 +66,7 @@
   <v-card>
   <v-toolbar> 
   <v-card-title>
-  {{ active.path}}
+  {{ active.name}}
   </v-card-title>
    <router-link :to="active.path"><v-icon>link</v-icon></router-link>
   <v-spacer></v-spacer>
@@ -155,8 +155,8 @@
 	  this.refresh()
 	  if(this.$route.query.index){
 		    const index= parseInt(this.$route.query.index)
-	    	//const h= this.findItem(this.routes,index)
-	    	//console.log("search",h, index)
+	    	const h= this.findItem(this.routes,index)
+	    	console.log("search",h, index)
 	    	//this.active=h
 	    }
   }

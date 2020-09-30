@@ -17,18 +17,17 @@
             >
             
             <template  slot="item"  slot-scope="{ index, item, parent }" >
-		             <v-list-item-action>
-		                 <v-btn  icon :to="item.value">		                  
-		                  <v-icon>arrow_forward</v-icon>	
-		                 </v-btn>
-		            </v-list-item-action>
                       <v-list-item-content>
-                        
-					      <v-list-item-title>
-					          {{ item.text }}
-					      </v-list-item-title>
-					      <v-list-item-subtitle>Page {{ item.value }}</v-list-item-subtitle>
+                 
+					      <v-list-item-title>Search "{{ item.text }}"</v-list-item-title>
+					      <v-list-item-subtitle>or goto 
+					          <router-link :to="item.value">
+					          {{ item.value }} 		                  
+		                      <v-icon>launch</v-icon>	
+		                     </router-link>
+		                 </v-list-item-subtitle>
 					   </v-list-item-content>
+					   
              </template>
               
      </v-combobox>
@@ -51,7 +50,7 @@
       this.loading = true
       // Simulated ajax query
       setTimeout(() => {
-        this.items2 = this.si?this.matchItems(this.si.toLowerCase()):[],
+        this.items2 = this.si?this.matchItems(this.si.toLowerCase()):[] 
         this.loading = false
       }, 500)
     },
@@ -62,8 +61,8 @@
       
     matchItems(typed){
         var hits=this.titles;
-        var typed=typed.toLowerCase();
-         hits=hits.filter(item=>item.title.indexOf(typed) !== -1)
+        typed=typed.toLowerCase();
+        hits=hits.filter(item=>item.title.indexOf(typed) !== -1)
         return hits.map(r=>{return {text:r.title,
                                     value:r.path}
                       });

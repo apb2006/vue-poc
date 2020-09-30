@@ -28,6 +28,7 @@
     >
     <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
     </v-btn>
+    <vp-entitylink entity="basex.job"></vp-entitylink> 
     </v-toolbar>
   <v-data-table
       :headers="headers"

@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<template id="entity">
+<template id="taxonomy">
 <v-container fluid grid-list-md>
   
     <v-data-iterator
@@ -12,9 +12,10 @@
     >
     
      <template v-slot:header>
-       <v-toolbar  >
+       <v-toolbar >
 			 <v-toolbar-title> 
-			    <v-breadcrumbs :items="[{text:'Entities',to:'/model/entity'}]" >
+			 Taxonomy TODO
+			    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]" >
 						     <template slot="item" slot-scope="props">
 					           <v-breadcrumbs-item  :to="props.item.to" :disabled="props.item.disabled" :exact="true">
 					                {{ props.item.text }}
@@ -31,7 +32,7 @@
 			  :loading="loading"
 		      :disabled="loading"
 			 ><v-icon>refresh</v-icon></v-btn>
-		   <vp-entitylink entity="dice.entity"></vp-entitylink>
+		   <vp-entitylink entity="taxonomy"></vp-entitylink>
 	 </v-toolbar>
 	 </template>
 	 

@@ -6,6 +6,9 @@ module namespace hlog = 'quodatum.data.history';
 declare namespace hist="urn:quodatum:vue-poc.history";
 declare variable $hlog:doc as element(hist:history):=db:open("vue-poc","/history.xml")/hist:history;
 
+(:~
+ wrap $item in <hist:event id=".." when=".." > node and insert in /history.xml in database vue-poc
+ :)
 declare 
 %updating
 function hlog:save($item as element(*))

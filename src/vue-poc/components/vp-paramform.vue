@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <!-- 
- manage parameters for query
- including  submit form function 
+ A form to manage parameters for query
+ including  submit form function via POST 
  -->
 <template id="vp-paramform">
   <v-card >
@@ -21,7 +21,7 @@
 	              <v-flex v-for="field in fields" :key="field.model" >
 	              
 	              <v-text-field  v-if="field.type === 'xs:anyURI'" 
-	                v-model="params[field.model]" :label="field.label" 
+	                v-model="params[field.model]" :label="field.label && field.model" 
 	                clearable  :rules="fieldrules(field)" filled
 	                append-outer-icon="send" @click:append-outer="source(field)"
 	              ></v-text-field>

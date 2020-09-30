@@ -142,13 +142,14 @@
     frmfav: false,
   
     items: [
-      {href: '/',text: 'Dashboard', icon: 'dashboard'    },
+      {href: '/',text: 'Dashboard', icon: 'home'    },
       {
         icon: 'input',
         text: 'Actions' ,
         model: false,
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
+      {href: '/tasks',text: 'Tasks',icon: 'update'},
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
@@ -163,8 +164,8 @@
         children: [
        {href: '/database', text: 'Databases',icon: 'developer_mode' },
        {href: '/files', text: 'File system',icon: 'folder' },
-   
-       {href: '/tasks',text: 'Tasks',icon: 'update'},
+       {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
+     
        {href: '/logdate',text: 'XML logs',icon: 'dns'},
        {href: '/history/files',text: 'history',icon: 'history'}
       ]},
@@ -173,9 +174,11 @@
         text: 'Models' ,
         model: false,
         children: [             
-          {href: '/entity', text: 'Entities',icon: 'redeem' },
-          {href: '/documentation', text: 'Documentation',icon: 'library_books' },
-          {href: '/namespace', text: 'Namespaces',icon: 'label' },
+          {href: '/model/entity', text: 'Entities',icon: 'redeem' },
+          {href: '/model/namespace', text: 'Namespaces',icon: 'dns' },
+          {href: '/model/schema', text: 'Schemas',icon: 'verified' },
+          {href: '/model/taxonomy', text: 'Taxonomies',icon: 'local_offer' },
+          {href: '/model/mimetype', text: 'Mimetypes',icon: 'assignment' },
       ]},
       
       {
@@ -225,7 +228,7 @@
         children: [
       {href: '/labs/scratch',text: 'Scratch pad',icon: 'filter_frames'},
       {href: '/labs/form',text: 'Forms',icon: 'subtitles'  },
-      {href: '/labs/timeline',text: 'Time line',icon: 'timelapse'},
+      {href: '/labs/timeline',text: 'Time line',icon: 'event_note'},
       {href: '/labs/svg',text: 'SVG',icon: 'extension'},
       {href: '/labs/svg2',text: 'SVG2',icon: 'extension'},
       {href: '/labs/tree',text: 'Tree',icon: 'nature'},

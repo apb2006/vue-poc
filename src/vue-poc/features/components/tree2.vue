@@ -2,11 +2,12 @@
 <template id="tree2">
  <v-container fluid>
  <v-card>
- <v-toolbar class="lime darken-1">
-   <v-card-title ><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.29</qd-link> </v-card-title>
-   <v-spacer></v-spacer>
-   <v-btn>todo</v-btn>
+  <v-toolbar flat floating class="lime darken-1">
+	   <v-card-title ><qd-link href="https://github.com/riophae/vue-treeselect">vue-treeselect@0.0.29</qd-link> </v-card-title>
+	   <v-spacer></v-spacer>
+	   <v-btn>todo</v-btn>
    </v-toolbar>
+   
    <v-card-text>
      <v-layout row wrap>
      <v-flex xs4 >
