@@ -17,7 +17,7 @@ declare variable $srcpath as xs:string  external :="C:\Users\andy\git\vue-poc\sr
 declare variable $targetpath as xs:string external :="/vuepoc-test";
 
 (:~ delete from database if not if import files list
- @default false
+ @default true
 :)
 declare variable $deleteMissing as xs:boolean  external :=true();
            

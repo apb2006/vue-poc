@@ -23,6 +23,6 @@ declare
 function _:model-list($id) {
  let $entity:=$entity:list("namespace")
  let $_:=trace($id," ID:")
- let $item:=$entity?data()[1]
+ let $item:=dice:get($entity,$id,"xmlns")
  return dice:one($item,$entity)
 };

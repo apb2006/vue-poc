@@ -4,7 +4,11 @@
 		<description> Generate <code>model.gen.xqm</code> from files in entity folder
 		</description>
 	</task>
-
+	<task name="model2" url="model.build/tx-model.xq">
+		<title>Generate model.gen.xqm</title>
+		<description> Generate <code>model.gen.xqm</code> from files in entity folder
+		</description>
+	</task>
 	<task name="import2" url="task/tx-dbimport2.xq">
 		<title>Import files from drive into a database</title>
 		<description>Load files into database</description>

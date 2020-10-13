@@ -34,10 +34,11 @@
      {{ result }}
   </v-card-text>
   
-  <v-card-text>
-     <code>{{ jobstate.text }}</code>
-  </v-card-text>
-  
+   <v-card-text>
+    <v-flex xs12 style="height:200px"  fill-height>
+		  <vue-ace  :content="jobstate.text" mode="xquery" wrap="true"></vue-ace>
+    </v-flex>
+     </v-card-text> 
  </v-card>
 </template>
 

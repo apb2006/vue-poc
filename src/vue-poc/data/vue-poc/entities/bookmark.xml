@@ -1,5 +1,6 @@
-<entity name="favorites" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>vue-poc favourites </description>
+<entity name="bookmark" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>vue-poc bookmark </description>
+	<namespace prefix="bmk" uri="urn:quodatum:vue-poc.favourite" />
 	<fields>
 		<field name="created" type="xs:string">
 			<description>time of event</description>
@@ -21,5 +22,5 @@
 		</field>
 	</fields>
 	<views iconclass="star_border"/>
-	<data type="element(favorite)">doc("vue-poc/favorites.xml")/favorites/favorite</data>
+	<data type="element(bmk:favorite)">doc("vue-poc/bookmarks.xml")/bmk:favorites/bmk:favorite</data>
 </entity>

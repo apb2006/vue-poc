@@ -2,7 +2,7 @@
 <template id="tree">
  <v-container fluid>
  <v-card>
-   <v-toolbar  card color="grey lighten-3"> 
+   <v-toolbar  color="grey lighten-3"> 
 		   <v-card-title >Taxonomy test</v-card-title>
 		   <v-spacer></v-spacer>
 		   <v-btn>todo</v-btn>
@@ -11,24 +11,18 @@
      <v-card-text>
        <v-layout >
       
-       <v-flex xs6 >
-       <v-sheet class="pa-3 primary lighten-2">
+       <v-flex xs6  >
+       <v-sheet >
       <v-text-field
         v-model="search"
         label="Filter tag"
-        flat
-        solo-inverted
         hide-details
         clearable
       ></v-text-field>
-      <v-checkbox
-        v-model="caseSensitive"
-        dark
-        hide-details
-        label="Case sensitive search"
-      ></v-checkbox>
+      
     </v-sheet>
-        <v-treeview :items="items" item-text="label"
+    <div style="height:300px; overflow:auto;">
+        <v-treeview :items="items" item-text="label" 
             v-model="tree"  :search="search"
             :open.sync="open" activatable
             active-class="grey lighten-4 indigo--text"
@@ -44,6 +38,7 @@
 				      </v-icon>
 				    </template>
          </v-treeview>
+         </div>
         </v-flex>
         <v-divider vertical></v-divider>
         <v-flex xs6>

@@ -1,5 +1,5 @@
 // Mimetype info as vue extension. defines $MimeTypes
-// 
+// $MimeTypes.mode 
 // 
 const MimeTypes=new function(){
   var formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});

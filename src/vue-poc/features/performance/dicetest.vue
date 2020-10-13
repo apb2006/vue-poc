@@ -14,29 +14,25 @@
      <v-combobox
           v-model="entity"
           :items="entities" item-text="name" 
-          label="Select target" clearable open-on-clear
-        ></v-combobox>
+          label="Select target" clearable open-on-clear>
+        <template v-slot:item="{ parent, item }">
+            <v-icon>{{ item.iconclass }}</v-icon>
+            {{ item.name }}
+        </template>
+        </v-combobox>
       
     </v-flex>
- 
-  <table class="v-data-table">
-      <thead> 
+ <v-simple-table>
+    <template v-slot:default>
+      <thead>
         <tr>
-         <th xs1>url</th>
-         <th xs1>Action</th>
-          <th xs1>Repeat</th>
-          <th xs1>Last</th>
-          <th xs1>Count</th>
-          <th xs1>Avg</th>
-          <th xs1>min</th>
-          <th xs1>max</th>
-          <th xs1>Median</th>
+          <th v-for="col in columns " class="text-left">
+            {{ col.label }}
+          </th>
         </tr>
       </thead>
       <tbody>
-
-      
-          <tr>
+        <tr>
               <td>
               {{ entity && entity.name  }}
                </td>
@@ -70,10 +66,11 @@
                   <span >{{getValues.median}}</span>
               </td>
           </tr>
-          
+  
           
       </tbody>
-    </table>
+</template>
+</v-simple-table>
     
      <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
      <pre>{{ result | pretty}}</pre>
@@ -91,7 +88,18 @@
       entity: null,
       counter: 0,
       result: null,
-      entities: null
+      entities: null,
+      columns: [
+    	  {label:"Entity"},
+    	  {label:"Action"},
+    	  {label:"Repeat"},
+    	  {label:"Last"},
+    	  {label:"Count"},
+    	  {label:"Avg"},
+    	  {label:"min"},
+    	  {label:"max"},
+    	  {label:"Median"}
+    	  ]
       }
   },
   methods:{

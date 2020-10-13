@@ -1,4 +1,4 @@
-// generated 2020-09-30T18:25:58.643+01:00
+// generated 2020-10-13T11:46:19.117+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -427,53 +427,94 @@ Vue.component('qd-search',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-table.vue
 Vue.component('qd-table',{template:` 
- <v-container fluid>
   <v-card>
-   <v-toolbar>
-    <v-text-field prepend-icon="filter_list" label="Filter items..." single-line hide-details v-model="search" clearable></v-text-field>   
+   <v-toolbar color="blue lighten-4">
+   <vp-entitylink v-if="entity" :entity="entity"></vp-entitylink>
+   <v-toolbar-title>{{ title }}</v-toolbar-title>
+     
+   <v-spacer></v-spacer>
+    <v-text-field prepend-icon="filter_list" label="Filter..." single-line hide-details v-model="query.filter" clearable></v-text-field>   
       <v-spacer></v-spacer>
-         <v-btn icon :loading="loading" :disabled="loading" @click="getItems">
+       <v-menu v-if="selected.length" offset-y left>
+               <template v-slot:activator="{ on }">
+                       <v-btn icon v-on="on">
+	                       <v-badge color="orange">
+						       <span slot="badge">{{ selected.length  }}</span>
+						       <v-icon>share</v-icon>
+					       </v-badge>
+                       </v-btn>         
+               </template>
+              <v-card>
+              <v-toolbar color="cyan lighten-2">
+                  <v-card-title>Actions</v-card-title>
+               </v-toolbar>
+                  
+               <v-card-text>
+                  <slot name="actions"></slot>
+                </v-card-text>
+              </v-card>
+         </v-menu>  
+           
+    <v-spacer></v-spacer>
+     <v-btn icon :loading="loading" :disabled="loading" @click="getItems">
     <v-icon>refresh</v-icon>
     </v-btn> 
-    <span>{{ entity }}</span>
+     <v-menu offset-y left>
+               <template v-slot:activator="{ on }">
+                       <v-btn icon v-on="on"><v-icon>settings</v-icon></v-btn>         
+               </template>
+              <v-card>
+              <v-toolbar color="cyan lighten-1">
+                  <v-card-title>Table settings</v-card-title>
+                  </v-toolbar>
+                  
+               <v-card-text>          
+               <v-list>
+				  <v-list-item>
+	                 <v-list-item-title>Show selection</v-list-item-title>
+	                 <v-list-item-action><v-switch v-model="showSelectL"></v-switch> </v-list-item-action>
+	              </v-list-item>
+	              <v-list-item>
+	                 <v-list-item-title>Multi-sort</v-list-item-title>
+	                 <v-list-item-action><v-switch v-model="multiSortL"></v-switch> </v-list-item-action>
+	              </v-list-item>
+	              <v-list-item>
+	                 <v-list-item-title>Auto-refresh</v-list-item-title>
+	                 <v-list-item-action><v-switch v-model="autoRefreshL"></v-switch> </v-list-item-action>
+	              </v-list-item>
+               </v-list>
+                </v-card-text>
+                </v-card>
+              </v-menu>
     </v-toolbar>
-    
-   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" show-select class="elevation-1" :no-data-text="noDataMsg">
-    <template slot="items" slot-scope="props">
-     <td>
-        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
-      </td>
-      <td v-for="col in headers" :key="col.name">{{ foo(props,col) }}</td>
-    </template>
+    <v-card-text>
+   <v-data-table :headers="headers" :items="items" v-model="selected" :item-key="itemKey" :search="query.filter" :items-per-page="10" :show-select="showSelectL" :multi-sort="multiSortL" :loading="loading" class="elevation-1" :fixed-header="true" :no-data-text="noDataMsg">
+   <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"></slot></template>
+   
   </v-data-table>
+  </v-card-text>
   </v-card>
- </v-container>
  `,
       
-	  props: {
-	    headers: {
-	      default: [
-	        { text: 'Name', value: 'id'},
-	        { text: 'Permission', value: 'state' }
-	      ]
-	  },
-	  dataUri:{
-	    default: "entity"
-	  },
-	  noDataMsg:{
-	    default: "No data found."
-	  },
-	  entity:{
-      default: "entity"
-    }
+  props: {
+	  headers: {default: [ { text: 'Name', value: 'id'} ]},
+	  dataUri:{  default: "data/dice.entity"},
+	  itemKey:{ default: "id"},
+	  noDataMsg:{  default: "No data found."},
+	  title:{ default: "" },
+	  entity:{  },
+	  query: {default: function(){return {filter:null}}},
+	  showSelect: {  default: false  },
+	  multiSort: {  default: false  }
   },
   data:  function(){
     return {
+      selected: [],
       loading: false,
       items: [],
-      search: null,
-      selected: [],
-
+      showSelectL: this.showSelect,
+      multiSortL: this.multiSort,
+      autoRefreshL: false
       }
   },
   methods:{
@@ -482,18 +523,13 @@ Vue.component('qd-table',{template:`
         HTTP.get(this.dataUri)
         .then(r=>{
            this.loading=false;
-           console.log("items",r.data.items,"headers ",this.headers);
+           console.log("Jobs items",r.data.items,"headers ",this.headers);
            this.items=r.data.items;
+           if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
         })
-     },
-     foo(props,header){
-       //console.log("value ",header)
-       if(header){
-         return  props.item[header.value]
-       }
-       return props.selected
      }
   },
+ 
   created:function(){
     console.log("qd-table");
     this.getItems();
@@ -607,7 +643,7 @@ Vue.component('vis-time-line',{template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-entitylink.vue
 Vue.component('vp-entitylink',{template:` 
-		    <router-link :to="'/entity/'+entity">E</router-link>   
+		    <router-link :to="'/model/entity/'+entity" :title="entity">@</router-link>   
  `,
       
   props: ['entity']
@@ -620,30 +656,29 @@ Vue.component('vp-favorite',{template:`
   <v-menu :close-on-click="false" offset-x :close-on-content-click="false" :nudge-width="200" v-model="frmfav">
     <template v-slot:activator="{ on }">
        <v-btn v-on="on" text @click.stop="set(!frmfav)" icon title="Bookmark this page">
-          <v-icon>star_border</v-icon>
+          <v-icon>{{ icon  }}</v-icon>
        </v-btn>
      </template>
        <v-card style="width:400px;">
             <v-toolbar class="green"> 
         <v-card-title>
-            Add to favorites
+            Add to bookmarks
           </v-card-title>
           <v-spacer></v-spacer>
           <v-btn @click="set(false)" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           
          <v-card-text>
-            <h6>{{$route.meta.title}}  
+            <h6 :title="this.$route.fullPath">{{$route.meta.title}}  
               <v-btn v-if="canCopy" @click="setclip" icon title="Copy location"><v-icon>content_copy</v-icon></v-btn>
             </h6>
             <v-combobox multiple v-model="tags" label="tags" chips tags :items="taglist"></v-combobox>
          </v-card-text>
          
-         <v-card-actions>
+         <v-card-actions class="text-center">
             <v-btn color="primary" text @click.stop="favorite(); set(false)">Done</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn text @click.stop="set(false)">Cancel</v-btn>
-           
+            <v-spacer></v-spacer>           
+            <v-btn text @click.stop="set(false)">Cancel</v-btn>         
           </v-card-actions>
         </v-card>
    </v-menu> `,
@@ -656,6 +691,7 @@ Vue.component('vp-favorite',{template:`
      canCopy:false,	
       tags: [],
       taglist: [  'todo',  'find',  'some',  'good',  'tags' ],
+      exists: false
     }
   },
   methods:{
@@ -664,13 +700,16 @@ Vue.component('vp-favorite',{template:`
     },
     async setclip(){
     	      await navigator.clipboard.writeText(this.$route.fullPath);
-    	      alert('Copied!' + this.$route.fullPath);
     },
     favorite(){
       this.$store.commit('increment')
       console.log(this.$store.state.count)
+       this.exists= !this.exists
       alert("save");
     }
+  },
+  computed:{
+	 icon: function(){return this.exists?"star":"star_border" } 
   },
   created() {
     this.canCopy = !!navigator.clipboard;
@@ -1473,7 +1512,7 @@ Vue.use(Fullscreen);
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/mimetypes.js
 // Mimetype info as vue extension. defines $MimeTypes
-// 
+// $MimeTypes.mode 
 // 
 const MimeTypes=new function(){
   var formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});
@@ -2487,7 +2526,12 @@ const Documentation=Vue.extend({template:`
   </v-container>
  `,
       
- 
+	  data(){
+		    return { 
+		            url: "",
+		            crumbs: [{ text:'Documentation'}]
+		    }
+	  }
 }
 
       );
@@ -3131,7 +3175,7 @@ created(){
 const Tree=Vue.extend({template:` 
  <v-container fluid>
  <v-card>
-   <v-toolbar card color="grey lighten-3"> 
+   <v-toolbar color="grey lighten-3"> 
 		   <v-card-title>Taxonomy test</v-card-title>
 		   <v-spacer></v-spacer>
 		   <v-btn>todo</v-btn>
@@ -3141,10 +3185,11 @@ const Tree=Vue.extend({template:`
        <v-layout>
       
        <v-flex xs6>
-       <v-sheet class="pa-3 primary lighten-2">
-      <v-text-field v-model="search" label="Filter tag" flat solo-inverted hide-details clearable></v-text-field>
-      <v-checkbox v-model="caseSensitive" dark hide-details label="Case sensitive search"></v-checkbox>
+       <v-sheet>
+      <v-text-field v-model="search" label="Filter tag" hide-details clearable></v-text-field>
+      
     </v-sheet>
+    <div style="height:300px; overflow:auto;">
         <v-treeview :items="items" item-text="label" v-model="tree" :search="search" :open.sync="open" activatable active-class="grey lighten-4 indigo--text" selected-color="indigo" open-on-click selectable>
            <template slot="prepend" slot-scope="{ item, open }">
 				      <v-icon v-if="item.children">
@@ -3155,6 +3200,7 @@ const Tree=Vue.extend({template:`
 				      </v-icon>
 				    </template>
          </v-treeview>
+         </div>
         </v-flex>
         <v-divider vertical></v-divider>
         <v-flex xs6>
@@ -3968,12 +4014,12 @@ const Eval=Vue.extend({template:`
    
     
    </v-toolbar>
- 
-  <v-flex xs12 style="height:200px" fill-height>
-  <vue-ace :content="xq" mode="xquery" wrap="true" :settings="aceSettings" v-on:change-content="onChange"></vue-ace>
+   <v-card-text>
+    <v-flex xs12 style="height:200px" fill-height>
+		  <vue-ace :content="xq" mode="xquery" wrap="true" :settings="aceSettings" v-on:change-content="onChange"></vue-ace>
     </v-flex>
-   
     <vp-job v-if="showJob" :job="job" :waiting="waiting" :job-state="jobState" :elapsed="elapsed"></vp-job>
+     </v-card-text>
     <v-card-text v-if="showError">
      <v-alert color="error" v-model="showError">Error </v-alert>
     </v-card-text>
@@ -5113,10 +5159,11 @@ const Job=Vue.extend({template:`
      {{ result }}
   </v-card-text>
   
-  <v-card-text>
-     <code>{{ jobstate.text }}</code>
-  </v-card-text>
-  
+   <v-card-text>
+    <v-flex xs12 style="height:200px" fill-height>
+		  <vue-ace :content="jobstate.text" mode="xquery" wrap="true"></vue-ace>
+    </v-flex>
+     </v-card-text> 
  </v-card>
  `,
       
@@ -5183,19 +5230,26 @@ const Jobs=Vue.extend({template:`
     <vp-entitylink entity="basex.job"></vp-entitylink> 
     </v-toolbar>
   <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" show-select class="elevation-1" no-data-text="No Jobs currently running">
-    <template slot="items" slot-scope="props">
-    <td class="vtop">
-        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
-      </td>
-      <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
-      <td class="vtop "><div>{{ props.item.state }}</div><div>{{ props.item.type }}</div> </td>
-      <td class="vtop " :title="props.item.registered">{{ props.item.registered | fromNow}}</td>
-      <td class="vtop " :title="props.item.start">{{ props.item.start | fromNow}}</td>
-       <td class="vtop text-xs-right">{{ props.item.duration }}</td>    
-       <td class="vtop text-xs-right">{{ props.item.writes }}</td>
-        <td class="vtop text-xs-right">{{ props.item.reads }}</td>
-      <td class="vtop text-xs-right">{{ props.item.user }}</td>
-    </template>
+    <template v-slot:item.id="{ item }">
+         <router-link :to="{name: 'job1', params: {job: item.id }}">{{ item.id }}</router-link>     
+      </template>
+      
+     <template v-slot:item.isservice="{ item }">
+        <router-link v-if="item.isService" title="Service" :to="{name: 'service1', params: { service: item.id }}">
+            <v-avatar color="red" size="24">
+		      <span class="white--text headline">S</span>
+		    </v-avatar>
+		</router-link>
+      </template>
+        
+     <template v-slot:item.registered="{ item }">
+         <span>{{ item.registered | formatDate}}</span>
+      </template>
+       
+      <template v-slot:item.start="{ item }">
+         <span>{{ item.start | fromNow }}</span>
+      </template>
+         
   </v-data-table>
  </v-card>
  `,
@@ -5209,8 +5263,10 @@ const Jobs=Vue.extend({template:`
           value: 'id'
         },
         { text: 'State', value: 'state' },
-        { text: 'Registered', value: 'registered' },
+        { text: 'Service?', value: 'isservice' }, // https://stackoverflow.com/a/58034316/3210344      
         { text: 'Start', value: 'start' },
+        { text: 'Interval', value: 'interval' },
+        { text: 'Registered', value: 'registered' },
         { text: 'Duration', value: 'duration' },
         { text: 'WriteL', value: 'writes' },
         { text: 'ReadL', value: 'reads' },
@@ -5231,7 +5287,7 @@ const Jobs=Vue.extend({template:`
 	    HTTP.get("job")
 	    .then(r=>{
 	       this.loading=false
-	       this.items=r.data
+	       this.items=r.data.items
 	       if(this.autorefresh) this.timer=setTimeout(()=>{ this.getJobs() }, 10000);
 	    })
 	   
@@ -5251,6 +5307,92 @@ const Jobs=Vue.extend({template:`
   },
   created(){
     this.getJobs()
+  },
+  beforeDestroy(){
+    if(this.timer) clearTimeout(this.timer);
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/job/service1.vue
+const Service1=Vue.extend({template:` 
+  <v-card>
+   <v-toolbar>
+   <v-toolbar-title>Service info</v-toolbar-title>
+     <v-spacer></v-spacer>
+     <v-text-field prepend-icon="filter_list" label="Filter services" single-line hide-details clearable v-model="search"></v-text-field> 
+      <v-spacer></v-spacer>
+     <v-btn @click="stop()" :disabled="noSelection">Stop</v-btn>
+   
+      <v-btn icon><v-icon>add</v-icon></v-btn>   
+      <v-spacer></v-spacer>
+      
+       <v-btn icon :loading="loading" @click="getJobs()" @dblclick="autorefresh = !autorefresh" :disabled="loading">
+    <v-icon>{{ autorefresh?'refresh':'arrow_downward' }}</v-icon>
+    </v-btn>
+     <vp-entitylink entity="basex.service"></vp-entitylink> 
+    </v-toolbar>
+  <v-data-table :headers="headers" :items="items" :search="search" v-model="selected" show-select class="elevation-1" no-data-text="No Jobs currently running">
+    <template slot="items" slot-scope="props">
+    <td class="vtop">
+        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
+      </td>
+      <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
+      <td class="vtop "><div>{{ props.item.running }}</div>
+      </td><td class="vtop " :title="props.item.interval">{{ props.item.interval }}</td>
+      <td class="vtop " :title="props.item.base-uri">{{ props.item['base-uri'] }}</td>
+       <td class="vtop ">{{ props.item.query }}</td>    
+    </template>
+  </v-data-table>
+ </v-card>
+ `,
+      
+	  props: ['service'],
+	  data:  function(){
+	    return {
+	      headers: [
+	        { text: 'Job id',  left: true, value: 'id'},
+	        { text: 'Running', value: 'running' },
+	        { text: 'Interval', value: 'interval' },
+	        { text: 'Base-uri', value: 'base-uri' },
+	        { text: 'Query', value: 'query' },
+	      ],
+	      items:[],
+	      selected: [],
+	      search: "",
+	      loading: false,
+	      autorefresh: true,
+	      timer:null
+	      }
+	  },
+	  
+  methods:{
+    load(){    
+        this.loading= true
+        HTTP.get("data/basex.service",{params:{q:this.q}})
+        .then(r=>{
+          this.items= r.data.items
+          this.loading= false
+          if(this.autorefresh) this.timer=setTimeout(()=>{ this.load() }, 10000);
+          })
+        
+      },
+    stop(){
+      var s=this.selected.map((j)=>{return j.id}).join(",")
+      console.log("AAA",this.selected)
+      alert(s)
+    }
+  },
+  computed: {
+    // a computed getter
+    noSelection: function () {
+      // `this` points to the vm instance
+      return this.selected.length==0
+    },
+  },
+  created(){
+    this.load()
   },
   beforeDestroy(){
     if(this.timer) clearTimeout(this.timer);
@@ -5647,7 +5789,7 @@ const Entity1=Vue.extend({template:`
 	 </v-toolbar>
 
   <v-container fluid>
-	  <v-expansion-panels>
+	  <v-expansion-panels v-model="panel" multiple>
 	    <v-expansion-panel expand>
 			     <v-expansion-panel-header>
 			     <v-layout>
@@ -5682,7 +5824,7 @@ const Entity1=Vue.extend({template:`
 	          </v-layout>
 	      </v-expansion-panel-header> 
 	      <v-expansion-panel-content>
-	           <qd-table :headers="headers" :data-uri="&quot;data/entity/&quot;+entity +&quot;/field&quot;" entity="dice.field" no-data-msg="Nothing found">
+	           <qd-table :headers="headers" :data-uri="&quot;data/entity/&quot;+entity +&quot;/field&quot;" entity="dice.field" item-key="name" :show-select="false">
 	          </qd-table>
 	      </v-expansion-panel-content>
 	     </v-expansion-panel>
@@ -5711,7 +5853,7 @@ const Entity1=Vue.extend({template:`
         {text: "description", value: "description"},
         {text: "xpath", value: "xpath"}
       ],
-      panel: [true, false, true]
+      panel: [1,2]
       }
   },
   methods:{
@@ -6093,34 +6235,10 @@ const Taxonomy=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespaces/namespace.vue
 const Namespace=Vue.extend({template:` 
- <v-container fluid>
- <v-card>
- 
-   <v-toolbar>
-   <v-toolbar-title>
-    <v-breadcrumbs :items="crumbs">
-         <template slot="item" slot-scope="props">
-             <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
-                  {{ props.item.text }}
-              </v-breadcrumbs-item>
-          </template>
-     </v-breadcrumbs>
-   </v-toolbar-title>
-     <v-btn @click="load" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
-   
-   <v-spacer></v-spacer>
-   
-   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
-   
-   <v-spacer></v-spacer>
-   <vp-entitylink entity="namespace"></vp-entitylink> 
-   </v-toolbar>
-   
-   <v-card-text>
-    <v-data-table :headers="headers" :items="items" :loading="loading" hide-default-footer :search="q" class="elevation-1">
-  
-  <template v-slot:item.xmlns="{ item }"> 
-	      <td><router-link :to="{path:'namespace/item?xmlns='+ item.xmlns}">
+<v-container fluid>
+   <qd-table :headers="headers" data-uri="data/namespace" entity="namespace" item-key="xmlns">
+    <template v-slot:item.xmlns="{ item }"> 
+	      <td><router-link :to="{name:'namespace1', query:{ id: item.xmlns}}">
                  {{ item.xmlns }}
                 </router-link></td>
     </template>
@@ -6132,59 +6250,18 @@ const Namespace=Vue.extend({template:`
     <template slot="no-data">
         No matching items.
     </template>
-  </v-data-table>
-   </v-card-text>
-   </v-card>
-   </v-container>
- `,
+   </qd-table>
+ </v-container>
+  `,
       
   data:  function(){
     return {
-      items: [],
-      loading: false,
-      q: "",
-      message: 'bad route!',
-     
-      selected:[],
       headers: [
-        
-        { text: 'xmlns', value: 'xmlns' },
-        
+        { text: 'namespace', value: 'xmlns'},
         { text: 'Description', value: 'description' },
         { text: 'Prefix', value: 'prefix' }
-        ],
-        crumbs:[{to:"/namespace", text:"namespaces"}]
+      ] 
       }
-  },
-  methods: {
-    load(){
-    
-      this.loading= true
-      HTTP.get("data/namespace",{params:{q:this.q}})
-      .then(r=>{
-        this.items= r.data.items
-        this.loading= false
-        })
-      
-    },
-    setfilter(){
-      console.log("TODO",this.q)
-      this.$router.push({  query: {url:this.url,q:this.q }})
-    },
-  },
-  watch:{
-    $route(vnew,vold){
-      console.log("ROUTE",vnew,vold)    
-      var url=this.$route.query.url
-      this.url=url?url:"/";
-      if(vnew.query.url != vold.query.url) this.load() 
-    }
-  },
-
-  created:function(){
-    this.q=this.$route.query.q || this.q;
-    this.load();
-    console.log("namespaces")
   }
 }
 
@@ -6196,7 +6273,7 @@ const Namespace1=Vue.extend({template:`
 	<v-toolbar>
 	 <v-toolbar-title> 
    <v-breadcrumbs>
-            <v-breadcrumbs-item to="/namespace" :exact="true">
+            <v-breadcrumbs-item :to="{name: 'namespace'}" :exact="true">
             Namespaces
             </v-breadcrumbs-item>
             
@@ -6232,7 +6309,7 @@ const Namespace1=Vue.extend({template:`
   methods:{
     getItem(){
       this.loading=true
-      HTTP.get("data/namespace/item",{id: this.xmlns})
+      HTTP.get("data/namespace/item",{params: {id: this.xmlns}})
       .then(r=>{
         this.loading=false;
         console.log(r.data)
@@ -6241,9 +6318,335 @@ const Namespace1=Vue.extend({template:`
     }
   },
   created:function(){
-    this.xmlns=this.$route.query.xmlns;
+    this.xmlns=this.$route.query.id;
     this.getItem()
   },
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/performance/dicetest.vue
+const Dicetest=Vue.extend({template:` 
+ <v-container fluid>
+ <v-card>
+ <v-toolbar>
+ <v-toolbar-title>Dice entity list</v-toolbar-title>
+ 
+ <v-spacer></v-spacer>
+ <v-btn @click="reset()">Reset</v-btn>
+ </v-toolbar>
+ <v-card-text>
+  <p>Read json data for 1st page for entity.</p>
+   <v-flex xs12 sm6>
+     <v-combobox v-model="entity" :items="entities" item-text="name" label="Select target" clearable open-on-clear>
+        <template v-slot:item="{ parent, item }">
+            <v-icon>{{ item.iconclass }}</v-icon>
+            {{ item.name }}
+        </template>
+        </v-combobox>
+      
+    </v-flex>
+ <v-simple-table>
+    <template v-slot:default>
+      <thead>
+        <tr>
+          <th v-for="col in columns " class="text-left">
+            {{ col.label }}
+          </th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr>
+              <td>
+              {{ entity &amp;&amp; entity.name  }}
+               </td>
+              <td>
+               <v-btn @click="get()" :disabled="!entity">
+                   Read <v-icon right>compare_arrows</v-icon> 
+                </v-btn>
+               </td>
+               <td>
+                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
+
+             </td>    
+              <td>
+                  <span>{{getValues.last}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.count}}</span>
+              </td>   
+            
+              <td>
+                  <span>{{getValues.avg | round(2)}}</span>
+              </td>
+            
+              <td>
+                  <span>{{getValues.min}}</span>
+              </td>
+              <td>
+                  <span>{{getValues.max}}</span>
+              </td>
+                <td>
+                  <span>{{getValues.median}}</span>
+              </td>
+          </tr>
+  
+          
+      </tbody>
+</template>
+</v-simple-table>
+    
+     <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
+     <pre>{{ result | pretty}}</pre>
+    </v-card-text>
+    </v-card>
+    
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      getValues: new perfStat(),
+      repeat: {get:false},
+      entity: null,
+      counter: 0,
+      result: null,
+      entities: null,
+      columns: [
+    	  {label:"Entity"},
+    	  {label:"Action"},
+    	  {label:"Repeat"},
+    	  {label:"Last"},
+    	  {label:"Count"},
+    	  {label:"Avg"},
+    	  {label:"min"},
+    	  {label:"max"},
+    	  {label:"Median"}
+    	  ]
+      }
+  },
+  methods:{
+
+    get(){
+     var _start = performance.now();
+     console.log("entity:", this.entity)
+     HTTP.get(this.entity.datalink,axios_json)
+     .then(r=>{
+       var elapsed=Math.floor(performance.now() - _start);
+       this.counter++;
+       this.result=r.data;
+       Object.assign(this.getValues,this.getValues.log(elapsed))
+       this.$forceUpdate()
+        if(this.repeat.get){
+          this.get(); //does this leak??
+        }
+     })
+    },
+    gchange(v){
+      if(v)this.get() 
+    },
+    
+    reset(){
+      Object.assign(this.getValues,this.getValues.clear());
+      this.$forceUpdate()
+    },
+    getentities(){
+      HTTP.get("data/entity",axios_json)
+      .then(r=>{
+        console.log("entities: ",r.data);
+        this.entities=r.data.items
+      })
+    }
+  },
+  created(){
+    console.log("GET entities: ");
+    this.getentities()
+  },
+  beforeRouteLeave(to, from, next){
+    var on=this.repeat.get 
+
+    if (on) {
+      alert("running!") //<--undefined
+      return next(false)
+    } else {
+      return next()
+    }
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/performance/ping.vue
+const Ping=Vue.extend({template:` 
+ <v-container fluid>
+ <v-card>
+ <v-toolbar>
+ <v-toolbar-title>Simple response counter</v-toolbar-title>
+ <v-spacer></v-spacer>
+ <v-btn @click="reset()">Reset</v-btn>
+ </v-toolbar>
+ <v-card-text>
+  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
+  <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
+  <table class="v-table">
+      <thead> 
+        <tr>
+         <th class="col-md-1">Action</th>
+          <th class="col-md-1">Repeat</th>
+          <th class="col-md-1 text-right">Last</th>
+          <th class="col-md-1 text-right">Count</th>
+          <th class="col-md-1 text-right">Avg</th>
+          <th class="col-md-1 text-right">min</th>
+          <th class="col-md-1 text-right">max</th>
+          <th class="col-md-1 text-right">Median</th>
+        </tr>
+      </thead>
+      <tbody>
+
+      
+          <tr>
+              <td>
+               <v-btn @click="get()">
+                   Read Db<v-icon right>compare_arrows</v-icon> 
+                </v-btn>
+             
+               </td>
+               <td>
+                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
+
+             </td>    
+              <td>
+                  <p class="text-right">{{getValues.last}}</p>
+              </td>
+              <td>
+                  <p class="text-right">{{getValues.count}}</p>
+              </td>   
+            
+              <td>
+                  <p class="text-right">{{getValues.avg | round(2)}}</p>
+              </td>
+            
+              <td>
+                  <p class="text-right">{{getValues.min}}</p>
+              </td>
+              <td>
+                  <p class="text-right">{{getValues.max}}</p>
+              </td>
+                <td>
+                  <p class="text-right">{{getValues.median}}</p>
+              </td>
+          </tr>
+          
+            <tr>
+          <td>
+           <v-btn @click="update()">
+                 Write Db<v-icon right>compare_arrows</v-icon>
+            </v-btn>
+          </td>
+          
+          <td>
+           <v-switch v-on:change="pchange" v-model="repeat.post"></v-switch>
+          </td>
+           <td class="text-right">
+                <span>{{postValues.last}}</span>
+           </td>
+          <td class="text-right">
+            <span>{{postValues.count}}</span>
+          </td>
+                 
+          <td class="text-right">
+            <span>{{postValues.avg | round(2)}}</span>
+          </td>
+          
+          <td class="text-right">
+            <span>{{postValues.min}}</span>
+          </td>
+          <td class="text-right">
+              <span>{{postValues.max}}</span>
+          </td>
+            <td class="text-right">
+              <span>{{postValues.median}}</span>
+           </td>
+        </tr>
+      </tbody>
+    </table>
+    </v-card-text>
+    </v-card>
+    
+ </v-container>
+ `,
+      
+  data:  function(){
+    return {
+      nothingValues: new perfStat(),
+      staticValues: new perfStat(),
+      getValues: new perfStat(),
+      postValues: new perfStat(),
+      repeat: {get: false, post: false, staticx: false, nothing: false},
+      counter: "(unread)"
+      }
+  },
+  methods:{
+    update () {
+       var _start = performance.now();
+      HTTP.post("ping",axios_json)
+      .then(r=>{
+        var elapsed=Math.floor(performance.now() - _start);
+        this.counter=r.data
+        Object.assign(this.postValues,this.postValues.log(elapsed))
+        if(this.repeat.post){
+          this.update(); //does this leak??
+        }
+      })
+    },
+    
+    get(){
+     var _start = performance.now();
+     HTTP.get("ping",axios_json)
+     .then(r=>{
+       var elapsed=Math.floor(performance.now() - _start);
+       this.counter=r.data
+       Object.assign(this.getValues,this.getValues.log(elapsed))
+       this.$forceUpdate()
+        if(this.repeat.get){
+          this.get(); //does this leak??
+        }
+     })
+    },
+    nothing () {
+      var _start = performance.now();
+     HTTP.post("nothing",axios_json)
+     .then(r=>{
+       var elapsed=Math.floor(performance.now() - _start);
+       this.counter=r.data
+       Object.assign(this.nothingValues,this.nothingValues.log(elapsed))
+       if(this.repeat.nothing){
+         this.nothing(); //does this leak??
+       }
+     })
+   },
+    gchange(v){
+      if(v)this.get() 
+    },
+    pchange(v){
+      if(v)this.update() 
+    },
+    reset(){
+      Object.assign(this.getValues,this.getValues.clear());
+      Object.assign(this.postValues,this.postValues.clear());
+      this.$forceUpdate()
+    }
+  },
+  beforeRouteLeave(to, from, next){
+    var on=this.repeat.get || this.repeat.post
+
+    if (on) {
+      alert("running!") //<--undefined
+      return next(false)
+    } else {
+      return next()
+    }
+  }
 }
 
       );
@@ -6324,44 +6727,6 @@ const Puzzle=Vue.extend({template:`
   }
 }
 
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/repository.vue
-const Repo=Vue.extend({template:` 
- <v-container fluid>
-   <qd-table :headers="headers" data-uri="data/basex.repo" entity="repo" no-data-msg="Nothing found">
-    <template slot="items" slot-scope="props">
-      <td>
-        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
-      </td>
-      <td>{{ props.item.name}}</td>
-      <td>{{ props.item.type }}</td>
-        <td>{{ props.item.version }}</td>
-    </template>
-   </qd-table>
- </v-container>
-
- `,
-      
-  data:  function(){
-    return {
-      loading: false,
-      items: [],
-      search: null,
-      selected: [],
-      headers: [
-        { text: 'Name', value: 'name'},
-        { text: 'Type', value: 'type' },
-        { text: 'Version', value: 'version' }
-      ] 
-      }
-  },
- 
-created:function(){
-  console.log("repo")
-}
-}
 
       );
       
@@ -6770,6 +7135,7 @@ const Basexsettings=Vue.extend({template:`
   </v-toolbar>
   
   <v-card-text>
+  
      <v-data-table :headers="headers" :items="filtered" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td>{{ props.item.name }}</td>
@@ -6831,319 +7197,120 @@ const Basexsettings=Vue.extend({template:`
 }
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/dicetest.vue
-const Dicetest=Vue.extend({template:` 
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/repository.vue
+const Repo=Vue.extend({template:` 
  <v-container fluid>
- <v-card>
- <v-toolbar>
- <v-toolbar-title>Dice entity list</v-toolbar-title>
- 
- <v-spacer></v-spacer>
- <v-btn @click="reset()">Reset</v-btn>
- </v-toolbar>
- <v-card-text>
-  <p>Read json data for 1st page for entity.</p>
-   <v-flex xs12 sm6>
-     <v-combobox v-model="entity" :items="entities" item-text="name" label="Select target" clearable open-on-clear></v-combobox>
-      
-    </v-flex>
- 
-  <table class="v-data-table">
-      <thead> 
-        <tr>
-         <th xs1>url</th>
-         <th xs1>Action</th>
-          <th xs1>Repeat</th>
-          <th xs1>Last</th>
-          <th xs1>Count</th>
-          <th xs1>Avg</th>
-          <th xs1>min</th>
-          <th xs1>max</th>
-          <th xs1>Median</th>
-        </tr>
-      </thead>
-      <tbody>
-
-      
-          <tr>
-              <td>
-              {{ entity &amp;&amp; entity.name  }}
-               </td>
-              <td>
-               <v-btn @click="get()" :disabled="!entity">
-                   Read <v-icon right>compare_arrows</v-icon> 
-                </v-btn>
-               </td>
-               <td>
-                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
-
-             </td>    
-              <td>
-                  <span>{{getValues.last}}</span>
-              </td>
-              <td>
-                  <span>{{getValues.count}}</span>
-              </td>   
-            
-              <td>
-                  <span>{{getValues.avg | round(2)}}</span>
-              </td>
-            
-              <td>
-                  <span>{{getValues.min}}</span>
-              </td>
-              <td>
-                  <span>{{getValues.max}}</span>
-              </td>
-                <td>
-                  <span>{{getValues.median}}</span>
-              </td>
-          </tr>
-          
-          
-      </tbody>
-    </table>
-    
-     <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
-     <pre>{{ result | pretty}}</pre>
-    </v-card-text>
-    </v-card>
-    
+   <qd-table :headers="headers" data-uri="data/basex.repo" entity="basex.repo" item-key="name" :show-select="false" :query.sync="query">
+   <template v-slot:item.name="{ item }">
+      <router-link :to="{name: 'repo1', query: {id: item.name }}">{{ item.name }} </router-link>
+   </template>
+   <template v-slot:actions>
+     <v-btn>action here</v-btn>
+   </template>
+   </qd-table>
  </v-container>
+
  `,
       
   data:  function(){
     return {
-      getValues: new perfStat(),
-      repeat: {get:false},
-      entity: null,
-      counter: 0,
-      result: null,
-      entities: null
+      selected: [],
+      query: {filter:null},
+      entity: "basex.repo",
+      headers: [
+        { text: 'Name', value: 'name'},
+        { text: 'Type', value: 'type' },
+        { text: 'Version', value: 'version' }
+      ] 
       }
   },
-  methods:{
-
-    get(){
-     var _start = performance.now();
-     console.log("entity:", this.entity)
-     HTTP.get(this.entity.datalink,axios_json)
-     .then(r=>{
-       var elapsed=Math.floor(performance.now() - _start);
-       this.counter++;
-       this.result=r.data;
-       Object.assign(this.getValues,this.getValues.log(elapsed))
-       this.$forceUpdate()
-        if(this.repeat.get){
-          this.get(); //does this leak??
-        }
-     })
-    },
-    gchange(v){
-      if(v)this.get() 
-    },
-    
-    reset(){
-      Object.assign(this.getValues,this.getValues.clear());
-      this.$forceUpdate()
-    },
-    getentities(){
-      HTTP.get("data/entity",axios_json)
-      .then(r=>{
-        console.log("entities: ",r.data);
-        this.entities=r.data.items
-      })
-    }
+  watch: {
+		"query":{
+		    handler:function(vnew,vold){
+		      //console.log("watch",this.query)	     
+		      this.$router.push({  query: this.query?this.query:null })
+		      },
+		    deep:true
+		  }
   },
-  created(){
-    console.log("GET entities: ");
-    this.getentities()
-  },
-  beforeRouteLeave(to, from, next){
-    var on=this.repeat.get 
-
-    if (on) {
-      alert("running!") //<--undefined
-      return next(false)
-    } else {
-      return next()
-    }
-  }
+created:function(){
+  console.log("repo")
+ // this.query.filter=this.$route.query.filter || this.query.filter
+}
 }
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/ping.vue
-const Ping=Vue.extend({template:` 
- <v-container fluid>
- <v-card>
- <v-toolbar>
- <v-toolbar-title>Simple response counter</v-toolbar-title>
- <v-spacer></v-spacer>
- <v-btn @click="reset()">Reset</v-btn>
- </v-toolbar>
- <v-card-text>
-  <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
-  <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
-  <table class="v-table">
-      <thead> 
-        <tr>
-         <th class="col-md-1">Action</th>
-          <th class="col-md-1">Repeat</th>
-          <th class="col-md-1 text-right">Last</th>
-          <th class="col-md-1 text-right">Count</th>
-          <th class="col-md-1 text-right">Avg</th>
-          <th class="col-md-1 text-right">min</th>
-          <th class="col-md-1 text-right">max</th>
-          <th class="col-md-1 text-right">Median</th>
-        </tr>
-      </thead>
-      <tbody>
-
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/server/repository1.vue
+const Repo1=Vue.extend({template:` 
+<v-card>
+	<v-toolbar>
+	 <v-toolbar-title> 
+	  <v-breadcrumbs divider="/">
+            <v-breadcrumbs-item :to="{name: 'repo'}" :exact="true">
+            Repository
+            </v-breadcrumbs-item>
+              <v-breadcrumbs-item>
+            {{ repo }}
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+   </v-toolbar-title>
       
-          <tr>
-              <td>
-               <v-btn @click="get()">
-                   Read Db<v-icon right>compare_arrows</v-icon> 
-                </v-btn>
-             
-               </td>
-               <td>
-                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
+	 <v-spacer></v-spacer>
+	 
+	 <v-btn icon @click="getItem" :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
+	
+	 </v-toolbar>
 
-             </td>    
-              <td>
-                  <p class="text-right">{{getValues.last}}</p>
-              </td>
-              <td>
-                  <p class="text-right">{{getValues.count}}</p>
-              </td>   
-            
-              <td>
-                  <p class="text-right">{{getValues.avg | round(2)}}</p>
-              </td>
-            
-              <td>
-                  <p class="text-right">{{getValues.min}}</p>
-              </td>
-              <td>
-                  <p class="text-right">{{getValues.max}}</p>
-              </td>
-                <td>
-                  <p class="text-right">{{getValues.median}}</p>
-              </td>
-          </tr>
-          
-            <tr>
-          <td>
-           <v-btn @click="update()">
-                 Write Db<v-icon right>compare_arrows</v-icon>
-            </v-btn>
-          </td>
-          
-          <td>
-           <v-switch v-on:change="pchange" v-model="repeat.post"></v-switch>
-          </td>
-           <td class="text-right">
-                <span>{{postValues.last}}</span>
-           </td>
-          <td class="text-right">
-            <span>{{postValues.count}}</span>
-          </td>
-                 
-          <td class="text-right">
-            <span>{{postValues.avg | round(2)}}</span>
-          </td>
-          
-          <td class="text-right">
-            <span>{{postValues.min}}</span>
-          </td>
-          <td class="text-right">
-              <span>{{postValues.max}}</span>
-          </td>
-            <td class="text-right">
-              <span>{{postValues.median}}</span>
-           </td>
-        </tr>
-      </tbody>
-    </table>
-    </v-card-text>
-    </v-card>
-    
- </v-container>
+  <v-container fluid>
+	 todo
+  </v-container>
+   </v-card>
  `,
       
+  
+
   data:  function(){
     return {
-      nothingValues: new perfStat(),
-      staticValues: new perfStat(),
-      getValues: new perfStat(),
-      postValues: new perfStat(),
-      repeat: {get: false, post: false, staticx: false, nothing: false},
-      counter: "(unread)"
+      repo:null,
+      loading: false
+     
       }
   },
   methods:{
-    update () {
-       var _start = performance.now();
-      HTTP.post("ping",axios_json)
+    getItem(){
+      this.loading=true
+      HTTP.get("data/entity/"+this.entity)
       .then(r=>{
-        var elapsed=Math.floor(performance.now() - _start);
-        this.counter=r.data
-        Object.assign(this.postValues,this.postValues.log(elapsed))
-        if(this.repeat.post){
-          this.update(); //does this leak??
-        }
-      })
+        this.loading=false
+        this.item=Object.assign({}, this.item, r.data)
+        }) 
     },
-    
-    get(){
-     var _start = performance.now();
-     HTTP.get("ping",axios_json)
-     .then(r=>{
-       var elapsed=Math.floor(performance.now() - _start);
-       this.counter=r.data
-       Object.assign(this.getValues,this.getValues.log(elapsed))
-       this.$forceUpdate()
-        if(this.repeat.get){
-          this.get(); //does this leak??
-        }
-     })
+    code(item){
+      return item.modules + " " +  item.namespaces + " " +item.code       
     },
-    nothing () {
-      var _start = performance.now();
-     HTTP.post("nothing",axios_json)
-     .then(r=>{
-       var elapsed=Math.floor(performance.now() - _start);
-       this.counter=r.data
-       Object.assign(this.nothingValues,this.nothingValues.log(elapsed))
-       if(this.repeat.nothing){
-         this.nothing(); //does this leak??
-       }
-     })
-   },
-    gchange(v){
-      if(v)this.get() 
+    getxml(){
+      HTTP.get("data/entity/"+this.entity,{ headers: {Accept: "text/xml"}})
+      .then(r=>{
+        this.xml=r.data;
+            }) 
     },
-    pchange(v){
-      if(v)this.update() 
-    },
-    reset(){
-      Object.assign(this.getValues,this.getValues.clear());
-      Object.assign(this.postValues,this.postValues.clear());
-      this.$forceUpdate()
+    todo(){
+      alert("TODO");
     }
   },
-  beforeRouteLeave(to, from, next){
-    var on=this.repeat.get || this.repeat.post
-
-    if (on) {
-      alert("running!") //<--undefined
-      return next(false)
-    } else {
-      return next()
-    }
-  }
+  computed: {
+    dataurl(){
+         return '/vue-poc/api/data/' + this.entity;
+       },
+       xquery(){
+         return '/vue-poc/api/data/' + this.entity;
+       }   
+  },
+  created:function(){
+	  this.repo=this.$route.query.id;
+    //this.getItem()
+  },
 }
 
       );
@@ -7661,7 +7828,9 @@ const Runtask=Vue.extend({template:`
 			snackbar: {show:false,msg:"",context:"success"},
 			valid: false,
 			id: null,
-			crumbs: [{to:"/tasks", text:"Tasks"},{text: this.task, disabled: true}]
+			crumbs: [{to:"/tasks", text:"Tasks"},
+				     {to:"/tasks/"+this.task, text: this.task},
+				     {text:"run", disabled: true}]
 		  
     }
   },
@@ -7863,10 +8032,7 @@ const Tasks1=Vue.extend({template:`
        </v-toolbar-title>  
      <v-spacer></v-spacer>
        <v-btn-toggle v-model="view" borderless>
-          <v-btn value>
-            <router-link :to="{path: 'run', append:true }"> <v-icon>home</v-icon>Home</router-link>       
-          </v-btn>
-
+      
           <v-btn value="run">
              <router-link :to="{path: 'run', append:true }"> <v-icon>play_circle_outline</v-icon>Run</router-link>
           </v-btn>
@@ -8204,14 +8370,7 @@ const Thumbnail=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/users/users.vue
 const Users=Vue.extend({template:` 
  <v-container fluid>
-   <qd-table :headers="headers" data-uri="data/basex.user" entity="user" no-data-msg="Nothing found">
-    <template slot="items" slot-scope="props">
-      <td>
-        <v-checkbox primary hide-details v-model="props.selected"></v-checkbox>
-      </td>
-      <td>{{ props.item.name}}</td>
-      <td>{{ props.item.permission }}</td>
-    </template>
+   <qd-table :headers="headers" data-uri="data/basex.user" entity="basex.user" item-key="name" no-data-msg="No users found">
    </qd-table>
  </v-container>
 
@@ -8219,10 +8378,6 @@ const Users=Vue.extend({template:`
       
   data:  function(){
     return {
-      loading: false,
-      items: [],
-      search: null,
-      selected: [],
       headers: [
         { text: 'Name', value: 'name'},
         { text: 'Permission', value: 'permission' }
@@ -8535,8 +8690,8 @@ const router = new VueRouter({
 		    { path: 'schema', name:"schema", component: Schema, meta:{title:"Schemas"} },
 		    { path: 'taxonomy', component: Taxonomy, meta:{title:"Taxonomies"} },
 		    { path: 'mimetype', component: Mimetype, meta:{title:"Mimetypes"} },
-		    { path: 'namespace', component: Namespace, meta:{title:"Namespaces"} },
-		    { path: 'namespace/item', component: Namespace1, meta:{title:"Namespace"} },
+		    { path: 'namespace', name: "namespace", component: Namespace, meta:{title:"Namespaces"} },
+		    { path: 'namespace/item', name: "namespace1", component: Namespace1, meta:{title:"Namespace"} },
 		    { path: 'entity', component: Entity, meta:{title:"Entities"} },
 		    { path: 'entity/:entity', component: { template: '<router-view/>' }
 	          ,children: [
@@ -8560,6 +8715,7 @@ const router = new VueRouter({
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/login', component: Login,meta:{title:"login"} },
+    
     { path: '/settings', component: { template: '<router-view/>' }
          ,children: [
            {
@@ -8577,6 +8733,13 @@ const router = new VueRouter({
             meta:{title:"Editor settings"} 
           }
           ]
+    },
+    
+    { path: '/performance', component: { template: '<router-view/>' }
+    ,children: [
+		    	{ path: 'ping', component: Ping, meta:{title:"Ping"} },
+		        { path: 'dicetest', component: Dicetest, meta:{title: "Dice test"} }
+               ]
     },
     
     { path: '/server', component: { template: '<router-view/>' }
@@ -8598,15 +8761,16 @@ const router = new VueRouter({
       },
       
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
-      { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+      { path: 'jobs/:job',  name:"job1", component: Job, props: true, meta:{title:"Job Status"} },
       { path: 'services',  component: Services, meta:{title:"Services"} },
-      { path: 'upload', component: Upload,meta:{title:"Upload"} },
+      { path: 'services/:service',  name:"service1", component: Service1, props: true, meta:{title:"Service info"} },
+      { path: 'upload', component: Upload, meta:{title:"Upload"} },
      
-      { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} },
-      { path: 'ping', component: Ping,meta:{title:"Ping"} },
-      { path: 'dicetest', component: Dicetest,meta:{title:"Dice test"} },
-      { path: 'users', component: Users,meta:{title:"Users"} },
-      { path: 'repo', component: Repo,meta:{title:"Repository"} },
+      { path: 'settings', component: Basexsettings, meta:{title: "BaseX settings"} },
+      
+      { path: 'users', component: Users, meta:{title: "Users"} },
+      { path: 'repo', name: 'repo', component: Repo, meta:{title: "BaseX Repository"} },
+      { path: 'repo1', name: "repo1", component: Repo1,  props: true, meta:{title: "Repository item"} },
      ]
     },
     { path: '/history', component: { template: '<router-view/>' }
@@ -8694,10 +8858,8 @@ const Vuepoc=Vue.extend({template:`
     <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
   </v-navigation-drawer>
   
- <v-navigation-drawer app :mini-variant.sync="mini" v-model="drawer" :clipped="$vuetify.breakpoint.lgAndUp">
-    
-  <v-list class="pa-0">
-
+ <v-navigation-drawer app :mini-variant.sync="mini" v-model="drawer" :clipped="$vuetify.breakpoint.lgAndUp">  
+     <v-list class="pa-0">
           <v-list-item tag="div">
             <v-list-item-avatar>
               <v-btn icon @click="session">
@@ -8723,47 +8885,23 @@ const Vuepoc=Vue.extend({template:`
   
  <v-app-bar app :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dense dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
-  <v-toolbar-title class="hidden-sm-and-down">
-    
-  {{$route.meta.title}}</v-toolbar-title>
-   
- 
- 
+  <v-toolbar-title class="hidden-sm-and-down">    
+    {{$route.meta.title}}</v-toolbar-title>
+    <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
   <v-spacer></v-spacer>
   <v-toolbar-items>
     <qd-search></qd-search>
   </v-toolbar-items>
   <v-spacer></v-spacer>
   
-   <v-menu left transition="v-fade-transition">
-   <template v-slot:activator="{ on }">
-      <v-btn dark icon v-on="on">
-        {{$auth.user}}
-      </v-btn>
-    </template>   
-          <v-list>
-              <v-list-item to="/session" ripple>
-                <v-list-item-title>Session</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="logout()">
-                <v-list-item-title>logout</v-list-item-title>
-              </v-list-item>
-               <v-list-item>
-                <v-list-item-title>permission: {{$auth.permission}}</v-list-item-title>
-              </v-list-item>
-            <v-list-item>
-                <v-list-item-title>$route.path: {{$route.path}}</v-list-item-title>
-              </v-list-item>
-          </v-list>
-      </v-menu>
-      
+  
        <v-btn @click.stop="showNotifications = ! showNotifications" icon text title="Notifications">
        <v-badge overlap color="orange">
       <span slot="badge" v-if=" $notification.unseen">{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
-    <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
+   
     <v-menu bottom left min-width="300px">
 	       <template v-slot:activator="{ on }">
 	         <v-btn icon v-on="on">
@@ -8772,7 +8910,8 @@ const Vuepoc=Vue.extend({template:`
            </template>
             <v-list>
               <v-list-item>
-                <v-list-item-title><qd-fullscreen> Full screen</qd-fullscreen></v-list-item-title>
+                <v-list-item-title>Full screen</v-list-item-title>
+                <v-list-item-action><qd-fullscreen></qd-fullscreen></v-list-item-action>
               </v-list-item>
               <v-list-item>
                 <v-list-item-title>Dark theme</v-list-item-title>
@@ -8785,7 +8924,29 @@ const Vuepoc=Vue.extend({template:`
               </v-list-item>
             </v-list>
         </v-menu>
-
+        
+	 <v-menu left transition="v-fade-transition">
+	   <template v-slot:activator="{ on }">
+	      <v-btn dark icon v-on="on">
+	        {{$auth.user}}
+	      </v-btn>
+	    </template>   
+        <v-list>
+            <v-list-item to="/session" ripple>
+              <v-list-item-title>Session</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="logout()">
+              <v-list-item-title>logout</v-list-item-title>
+            </v-list-item>
+             <v-list-item>
+              <v-list-item-title>permission: {{$auth.permission}}</v-list-item-title>
+            </v-list-item>
+          <v-list-item>
+              <v-list-item-title>$route.path: {{$route.path}}</v-list-item-title>
+            </v-list-item>
+        </v-list>
+     </v-menu>
+      
 </v-app-bar>
  
  <v-main> 
@@ -8825,26 +8986,31 @@ const Vuepoc=Vue.extend({template:`
         model: false,
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
-      {href: '/tasks',text: 'Tasks',icon: 'update'},
+   
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
-      {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
-      
-      {href: '/history/tasks',text: 'history',icon: 'history'}
+      {href: '/transform',text: 'XSLT Transform',icon: 'forward'}
       ]},
+      
       {
-        icon: 'folder_open',
-        text: 'Collections' ,
+        icon: 'add_task',
+        text: 'Tasks' ,
         model: false,
         children: [
-       {href: '/database', text: 'Databases',icon: 'developer_mode' },
-       {href: '/files', text: 'File system',icon: 'folder' },
-       {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
-     
-       {href: '/logdate',text: 'XML logs',icon: 'dns'},
-       {href: '/history/files',text: 'history',icon: 'history'}
+        	   {href: '/tasks',text: 'Task list',icon: 'assignment'},
+        	   {href: '/history/tasks',text: 'History',icon: 'history'}
       ]},
+      {
+          icon: 'folder_open',
+          text: 'Collections' ,
+          model: false,
+          children: [
+         {href: '/database', text: 'Databases',icon: 'developer_mode' },
+         {href: '/files', text: 'File system',icon: 'folder' },
+         {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
+         {href: '/history/files',text: 'history',icon: 'history'}
+        ]},
       {
         icon: 'memory',
         text: 'Models' ,
@@ -8866,14 +9032,23 @@ const Vuepoc=Vue.extend({template:`
           {href: '/server/services',text: 'Services',icon: 'dashboard'},   
           {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
-          {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
+          {href: '/server/repo',text: 'Package repository',icon: 'local_library'},
         
           {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
-          {href: '/server/ping',text: 'Ping',icon: 'update'},
-          {href: '/server/dicetest',text: 'Dice performance',icon: 'update'},
+         
           {href: '/server/settings',text: 'Server settings',icon: 'settings_applications'}
       ]},
       
+      {
+          icon: 'hourglass_empty',
+          text: 'Performance' ,
+          model: false,
+          children: [
+        	  {href: '/logdate',text: 'XML logs',icon: 'dns'},
+        	  {href: '/performance/ping',text: 'Ping',icon: 'update'},
+              {href: '/performance/dicetest',text: 'Dice performance',icon: 'update'}
+        	  ]
+      },
       {
         icon: 'camera_roll',
         text: 'Images' ,

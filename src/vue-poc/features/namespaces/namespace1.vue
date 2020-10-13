@@ -4,7 +4,7 @@
 	<v-toolbar >
 	 <v-toolbar-title> 
    <v-breadcrumbs >
-            <v-breadcrumbs-item  to="/namespace" :exact="true">
+            <v-breadcrumbs-item  :to="{name: 'namespace'}" :exact="true">
             Namespaces
             </v-breadcrumbs-item>
             
@@ -44,7 +44,7 @@
   methods:{
     getItem(){
       this.loading=true
-      HTTP.get("data/namespace/item",{id: this.xmlns})
+      HTTP.get("data/namespace/item",{params: {id: this.xmlns}})
       .then(r=>{
         this.loading=false;
         console.log(r.data)
@@ -53,7 +53,7 @@
     }
   },
   created:function(){
-    this.xmlns=this.$route.query.xmlns;
+    this.xmlns=this.$route.query.id;
     this.getItem()
   },
 }

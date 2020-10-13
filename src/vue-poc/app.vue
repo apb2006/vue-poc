@@ -14,11 +14,8 @@
     <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
   </v-navigation-drawer>
   
- <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   :clipped="$vuetify.breakpoint.lgAndUp"
-   >
-    
-  <v-list class="pa-0">
-
+ <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   :clipped="$vuetify.breakpoint.lgAndUp">  
+     <v-list class="pa-0">
           <v-list-item  tag="div">
             <v-list-item-avatar >
               <v-btn icon @click="session">
@@ -46,47 +43,23 @@
       color="blue darken-3" dense  
       dark >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"  ></v-app-bar-nav-icon>
-  <v-toolbar-title class="hidden-sm-and-down" >
-    
-  {{$route.meta.title}}</v-toolbar-title>
-   
- 
- 
+  <v-toolbar-title class="hidden-sm-and-down" >    
+    {{$route.meta.title}}</v-toolbar-title>
+    <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
   <v-spacer></v-spacer>
   <v-toolbar-items>
     <qd-search></qd-search>
   </v-toolbar-items>
   <v-spacer></v-spacer>
   
-   <v-menu left  transition="v-fade-transition">
-   <template v-slot:activator="{ on }">
-      <v-btn dark icon v-on="on">
-        {{$auth.user}}
-      </v-btn>
-    </template >   
-          <v-list>
-              <v-list-item to="/session"   ripple>
-                <v-list-item-title >Session</v-list-item-title>
-              </v-list-item>
-              <v-list-item @click="logout()">
-                <v-list-item-title >logout</v-list-item-title>
-              </v-list-item>
-               <v-list-item>
-                <v-list-item-title >permission: {{$auth.permission}}</v-list-item-title>
-              </v-list-item>
-            <v-list-item>
-                <v-list-item-title >$route.path: {{$route.path}}</v-list-item-title>
-              </v-list-item>
-          </v-list>
-      </v-menu>
-      
+  
        <v-btn  @click.stop="showNotifications = ! showNotifications" icon text title="Notifications">
        <v-badge   overlap color="orange">
       <span slot="badge" v-if=" $notification.unseen" >{{ $notification.unseen }}</span>
        <v-icon>notifications</v-icon>
        </v-badge>
    </v-btn>
-    <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
+   
     <v-menu bottom  left min-width="300px">
 	       <template v-slot:activator="{ on }">
 	         <v-btn icon v-on="on" >
@@ -95,7 +68,8 @@
            </template>
             <v-list>
               <v-list-item  >
-                <v-list-item-title><qd-fullscreen> Full screen</qd-fullscreen></v-list-item-title>
+                <v-list-item-title>Full screen</v-list-item-title>
+                <v-list-item-action ><qd-fullscreen></qd-fullscreen></v-list-item-action>
               </v-list-item>
               <v-list-item  >
                 <v-list-item-title>Dark theme</v-list-item-title>
@@ -108,7 +82,29 @@
               </v-list-item>
             </v-list>
         </v-menu>
-
+        
+	 <v-menu left  transition="v-fade-transition">
+	   <template v-slot:activator="{ on }">
+	      <v-btn dark icon v-on="on">
+	        {{$auth.user}}
+	      </v-btn>
+	    </template >   
+        <v-list>
+            <v-list-item to="/session"   ripple>
+              <v-list-item-title >Session</v-list-item-title>
+            </v-list-item>
+            <v-list-item @click="logout()">
+              <v-list-item-title >logout</v-list-item-title>
+            </v-list-item>
+             <v-list-item>
+              <v-list-item-title >permission: {{$auth.permission}}</v-list-item-title>
+            </v-list-item>
+          <v-list-item>
+              <v-list-item-title >$route.path: {{$route.path}}</v-list-item-title>
+            </v-list-item>
+        </v-list>
+     </v-menu>
+      
 </v-app-bar>
  
  <v-main> 
@@ -149,26 +145,31 @@
         model: false,
         children: [
       {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
-      {href: '/tasks',text: 'Tasks',icon: 'update'},
+   
       {href: '/edit',text: 'Edit',icon: 'mode_edit'},
       {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
       {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
-      {href: '/transform',text: 'XSLT Transform',icon: 'forward'},
-      
-      {href: '/history/tasks',text: 'history',icon: 'history'}
+      {href: '/transform',text: 'XSLT Transform',icon: 'forward'}
       ]},
+      
       {
-        icon: 'folder_open',
-        text: 'Collections' ,
+        icon: 'add_task',
+        text: 'Tasks' ,
         model: false,
         children: [
-       {href: '/database', text: 'Databases',icon: 'developer_mode' },
-       {href: '/files', text: 'File system',icon: 'folder' },
-       {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
-     
-       {href: '/logdate',text: 'XML logs',icon: 'dns'},
-       {href: '/history/files',text: 'history',icon: 'history'}
+        	   {href: '/tasks',text: 'Task list',icon: 'assignment'},
+        	   {href: '/history/tasks',text: 'History',icon: 'history'}
       ]},
+      {
+          icon: 'folder_open',
+          text: 'Collections' ,
+          model: false,
+          children: [
+         {href: '/database', text: 'Databases',icon: 'developer_mode' },
+         {href: '/files', text: 'File system',icon: 'folder' },
+         {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
+         {href: '/history/files',text: 'history',icon: 'history'}
+        ]},
       {
         icon: 'memory',
         text: 'Models' ,
@@ -190,14 +191,23 @@
           {href: '/server/services',text: 'Services',icon: 'dashboard'},   
           {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
-          {href: '/server/repo',text: 'Server code repository',icon: 'local_library'},
+          {href: '/server/repo',text: 'Package repository',icon: 'local_library'},
         
           {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
-          {href: '/server/ping',text: 'Ping',icon: 'update'},
-          {href: '/server/dicetest',text: 'Dice performance',icon: 'update'},
+         
           {href: '/server/settings',text: 'Server settings',icon: 'settings_applications'}
       ]},
       
+      {
+          icon: 'hourglass_empty',
+          text: 'Performance' ,
+          model: false,
+          children: [
+        	  {href: '/logdate',text: 'XML logs',icon: 'dns'},
+        	  {href: '/performance/ping',text: 'Ping',icon: 'update'},
+              {href: '/performance/dicetest',text: 'Dice performance',icon: 'update'}
+        	  ]
+      },
       {
         icon: 'camera_roll',
         text: 'Images' ,

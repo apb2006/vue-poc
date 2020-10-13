@@ -1,22 +1,21 @@
 module namespace j = 'quodatum.test.jobs';
-
+import module namespace entity ='quodatum.models.generated' at "../../models.gen.xqm";
+import module namespace dice = 'quodatum.web.dice/v4' at "../../lib/dice.xqm"; 
+import module namespace web = 'quodatum.web.utils4' at "../../lib/webutils.xqm";
 
 (:~
  :  job list
  :)
 declare  
 %rest:GET %rest:path("/vue-poc/api/job")
+%rest:produces("application/json")
 %output:method("json")   
 function j:list()
 as element(json)
 {
- let $jlist:=jobs:list()[. != jobs:current()] !jobs:list-details(.)
- return <json type="array">
- {for $j in reverse($jlist)
- return <_ type="object">
-   {j:job-json($j)}
- </_>
- }</json>
+ let $entity:=$entity:list("basex.job")
+ let $items:=$entity?data()
+ return dice:response($items,$entity,web:dice())
 };
 
 
@@ -26,27 +25,16 @@ as element(json)
  :)
 declare  
 %rest:GET %rest:path("/vue-poc/api/job/{$job}")
+%rest:produces("application/json")
 %output:method("json")   
 function j:job($job)
 as element(json)
 {
- let $j:=jobs:list-details($job)
- return <json type="object">
-         {if($j) then j:job-json($j) else ()}
-        </json>
+ let $this:=$entity:list("basex.job")
+ let $items:=$this?data()
+ let $fields:=$this?json
+ let $item:=$items[@id=$job]
+ (: just one :)
+ return <json objects="json">{dice:json-flds($item,$fields)/*}</json>
 };
 
-declare function j:job-json($j as element(job)) 
-as element(*)*
-{
-     <id>{$j/@id/string()}</id>
-     ,<type>{$j/@type/string()}</type>
-     ,<state>{$j/@state/string()}</state>
-     ,<user>{$j/@user/string()}</user>
-      ,<registered>{$j/@time/string()}</registered>
-      ,if($j/@start) then <start>{$j/@start/string()}</start> else ()
-     ,<duration>{$j/@duration/string()}</duration>
-     ,<text>{$j/string()}</text>
-      ,<reads>{$j/@reads/string()}</reads>
-       ,<writes>{$j/@writes/string()}</writes>
-};

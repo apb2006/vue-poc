@@ -60,14 +60,14 @@
    
     
    </v-toolbar>
- 
-  <v-flex xs12 style="height:200px"  fill-height>
-  <vue-ace  :content="xq" mode="xquery" wrap="true"
-     :settings="aceSettings" v-on:change-content="onChange" 
-    ></vue-ace>
+   <v-card-text>
+    <v-flex xs12 style="height:200px"  fill-height>
+		  <vue-ace  :content="xq" mode="xquery" wrap="true"
+		     :settings="aceSettings" v-on:change-content="onChange" 
+		    ></vue-ace>
     </v-flex>
-   </v-card-text>
     <vp-job  v-if="showJob" :job="job" :waiting="waiting" :job-state="jobState" :elapsed="elapsed"></vp-job>
+     </v-card-text>
     <v-card-text v-if="showError">
      <v-alert color="error" v-model="showError">Error </v-alert>
     </v-card-text>

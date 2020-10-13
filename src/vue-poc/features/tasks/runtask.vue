@@ -53,7 +53,9 @@
 			snackbar: {show:false,msg:"",context:"success"},
 			valid: false,
 			id: null,
-			crumbs: [{to:"/tasks", text:"Tasks"},{text: this.task, disabled: true}]
+			crumbs: [{to:"/tasks", text:"Tasks"},
+				     {to:"/tasks/"+this.task, text: this.task},
+				     {text:"run", disabled: true}]
 		  
     }
   },

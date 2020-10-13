@@ -14,10 +14,7 @@
           v-model="view"
           borderless
         >
-          <v-btn value="">
-            <router-link :to="{path: 'run', append:true }"> <v-icon>home</v-icon>Home</router-link>       
-          </v-btn>
-
+      
           <v-btn value="run">
              <router-link :to="{path: 'run', append:true }"  > <v-icon>play_circle_outline</v-icon>Run</router-link>
           </v-btn>

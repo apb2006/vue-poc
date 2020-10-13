@@ -31,6 +31,11 @@
 </template>
 
 <script>{
- 
+	  data(){
+		    return { 
+		            url: "",
+		            crumbs: [{ text:'Documentation'}]
+		    }
+	  }
 }
 </script>

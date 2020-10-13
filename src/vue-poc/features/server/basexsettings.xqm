@@ -20,11 +20,11 @@ function set:values()
 {for $name in $names 
 let $change:=$dm($name) ne $sm($name)
 return <_ type="object">
-                                <name>{$name}</name>
-                                <default>{$dm($name)}</default>
-                                <current>{$sm($name)}</current>
-                                <changed type="boolean">{ if ($change) then $change else false() }</changed>
-                            </_>}
+            <name>{$name}</name>
+            <default>{$dm($name)}</default>
+            <current>{$sm($name)}</current>
+            <changed type="boolean">{ if ($change) then $change else false() }</changed>
+        </_>}
  </json>
 };
 

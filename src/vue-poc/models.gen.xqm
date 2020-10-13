@@ -1,9 +1,10 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2020-09-30T17:59:30.342+01:00 
+ : auto generated from xml files in entities folder at: 2020-10-13T11:34:00.267+01:00 
  :)
 
 module namespace entity = 'quodatum.models.generated';
-import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace ent='https://github.com/Quodatum/app-doc/entity';
+import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace bmk='urn:quodatum:vue-poc.favourite';
+declare namespace ent='https://github.com/Quodatum/app-doc/entity';
 declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace qns='https://github.com/Quodatum/namespaces';
@@ -17,6 +18,7 @@ declare variable $entity:list:=map {
        "duration": function($_ as element()) as xs:string {$_/@duration },
        "id": function($_ as element()) as xs:string {$_/@id },
        "interval": function($_ as element()) as xs:string {$_/@interval },
+       "isService": function($_ as element()) as xs:boolean {$_/@id = jobs:services()/@id },
        "reads": function($_ as element()) as xs:string {$_/@reads },
        "registered": function($_ as element()) as xs:string {$_/@time },
        "start": function($_ as element()) as xs:string {$_/@start },
@@ -42,6 +44,10 @@ declare variable $entity:list:=map {
            "interval": function($_ as element()) as element(interval)? {
             (: xs:string :)
                         fn:data($_/@interval)!element interval {  .} 
+                 },
+           "isService": function($_ as element()) as element(isService)? {
+            (: xs:boolean :)
+                        fn:data($_/@id = jobs:services()/@id)!element isService { attribute type {'boolean'}, .} 
                  },
            "reads": function($_ as element()) as element(reads)? {
             (: xs:string :)
@@ -244,6 +250,44 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        }
    },
+  "bookmark": map{
+     "name": "bookmark",
+     "description": "vue-poc bookmark ",
+     "access": map{ 
+       "created": function($_ as element()) as xs:string {$_/@when },
+       "id": function($_ as element()) as xs:string {$_/@id },
+       "url": function($_ as element()) as xs:string {$_/@url },
+       "user": function($_ as element()) as xs:string {$_/@user } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "created": function($_ as element()) as element(created)? {
+            (: xs:string :)
+                        fn:data($_/@when)!element created {  .} 
+                 },
+           "id": function($_ as element()) as element(id)? {
+            (: xs:string :)
+                        fn:data($_/@id)!element id {  .} 
+                 },
+           "url": function($_ as element()) as element(url)? {
+            (: xs:string :)
+                        fn:data($_/@url)!element url {  .} 
+                 },
+           "user": function($_ as element()) as element(user)? {
+            (: xs:string :)
+                        fn:data($_/@user)!element user {  .} 
+                 } },
+       
+      "data": function() as element(bmk:favorite)*
+       { doc("vue-poc/bookmarks.xml")/bmk:favorites/bmk:favorite },
+       
+       "views": map{ 
+       
+       }
+   },
   "dice.entity": map{
      "name": "dice.entity",
      "description": "List of Entities i.e. things described in this framework
@@ -368,44 +412,6 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        "views": map{ 
        'filter': 'name description'
-       }
-   },
-  "favorites": map{
-     "name": "favorites",
-     "description": "vue-poc favourites ",
-     "access": map{ 
-       "created": function($_ as element()) as xs:string {$_/@when },
-       "id": function($_ as element()) as xs:string {$_/@id },
-       "url": function($_ as element()) as xs:string {$_/@url },
-       "user": function($_ as element()) as xs:string {$_/@user } },
-    
-     "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( ) satisfies
-         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
-      },
-       "json":   map{ 
-           "created": function($_ as element()) as element(created)? {
-            (: xs:string :)
-                        fn:data($_/@when)!element created {  .} 
-                 },
-           "id": function($_ as element()) as element(id)? {
-            (: xs:string :)
-                        fn:data($_/@id)!element id {  .} 
-                 },
-           "url": function($_ as element()) as element(url)? {
-            (: xs:string :)
-                        fn:data($_/@url)!element url {  .} 
-                 },
-           "user": function($_ as element()) as element(user)? {
-            (: xs:string :)
-                        fn:data($_/@user)!element user {  .} 
-                 } },
-       
-      "data": function() as element(favorite)*
-       { doc("vue-poc/favorites.xml")/favorites/favorite },
-       
-       "views": map{ 
-       
        }
    },
   "filehistory": map{
@@ -566,10 +572,10 @@ hof:top-k-by(admin:logs(), string#1, 2)
      "access": map{ 
        "description": function($_ as element()) as xs:string {$_/qns:description },
        "prefix": function($_ as element()) as xs:string {$_/@prefix },
-       "xmlns": function($_ as element()) as xs:string {$_/@uri } },
+       "xmlns": function($_ as element()) as xs:string {$_/@xml:id } },
     
      "filter": function($item,$q) as xs:boolean{ 
-         some $e in ( $item/@uri, $item/qns:description) satisfies
+         some $e in ( $item/@xml:id, $item/qns:description) satisfies
          fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
       },
        "json":   map{ 
@@ -583,7 +589,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  },
            "xmlns": function($_ as element()) as element(xmlns)? {
             (: xs:string :)
-                        fn:data($_/@uri)!element xmlns {  .} 
+                        fn:data($_/@xml:id)!element xmlns {  .} 
                  } },
        
       "data": function() as element(qns:namespace)*

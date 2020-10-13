@@ -8,7 +8,7 @@ import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace session = "http://basex.org/modules/session";
 import module namespace ufile = 'vue-poc/file' at "../../lib/file.xqm";
 
-import module namespace mt = 'quodatum.data.mimetype' at "../../lib/mimetype.xqm";
+import module namespace mt = 'urn:quodatum:data:mimetype' at "../../lib/mimetype.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
 

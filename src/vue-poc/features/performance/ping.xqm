@@ -13,10 +13,10 @@ declare %updating
 %rest:POST %rest:path("/vue-poc/api/ping")
 %output:method("text")
 function ping:dopost()
-{
-    (replace value of node $ping:state/ping with 1+$ping:state/ping,
-            update:output(1+$ping:state/ping))
-};
+{( 
+     replace value of node $ping:state/ping with 1+$ping:state/ping,
+     update:output(1+$ping:state/ping)
+)};
 
 (:~
  :  read counter

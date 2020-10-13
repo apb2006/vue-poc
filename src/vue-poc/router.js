@@ -43,8 +43,8 @@ const router = new VueRouter({
 		    { path: 'schema', name:"schema", component: Schema, meta:{title:"Schemas"} },
 		    { path: 'taxonomy', component: Taxonomy, meta:{title:"Taxonomies"} },
 		    { path: 'mimetype', component: Mimetype, meta:{title:"Mimetypes"} },
-		    { path: 'namespace', component: Namespace, meta:{title:"Namespaces"} },
-		    { path: 'namespace/item', component: Namespace1, meta:{title:"Namespace"} },
+		    { path: 'namespace', name: "namespace", component: Namespace, meta:{title:"Namespaces"} },
+		    { path: 'namespace/item', name: "namespace1", component: Namespace1, meta:{title:"Namespace"} },
 		    { path: 'entity', component: Entity, meta:{title:"Entities"} },
 		    { path: 'entity/:entity', component: { template: '<router-view/>' }
 	          ,children: [
@@ -68,6 +68,7 @@ const router = new VueRouter({
     { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/login', component: Login,meta:{title:"login"} },
+    
     { path: '/settings', component: { template: '<router-view/>' }
          ,children: [
            {
@@ -85,6 +86,13 @@ const router = new VueRouter({
             meta:{title:"Editor settings"} 
           }
           ]
+    },
+    
+    { path: '/performance', component: { template: '<router-view/>' }
+    ,children: [
+		    	{ path: 'ping', component: Ping, meta:{title:"Ping"} },
+		        { path: 'dicetest', component: Dicetest, meta:{title: "Dice test"} }
+               ]
     },
     
     { path: '/server', component: { template: '<router-view/>' }
@@ -106,15 +114,16 @@ const router = new VueRouter({
       },
       
       { path: 'jobs', name:"jobs", component: Jobs, meta:{title:"Jobs running"} },
-      { path: 'jobs/:job',  name:"jobShow", component: Job, props: true, meta:{title:"Job Status"} },
+      { path: 'jobs/:job',  name:"job1", component: Job, props: true, meta:{title:"Job Status"} },
       { path: 'services',  component: Services, meta:{title:"Services"} },
-      { path: 'upload', component: Upload,meta:{title:"Upload"} },
+      { path: 'services/:service',  name:"service1", component: Service1, props: true, meta:{title:"Service info"} },
+      { path: 'upload', component: Upload, meta:{title:"Upload"} },
      
-      { path: 'settings', component: Basexsettings,meta:{title:"BaseX settings"} },
-      { path: 'ping', component: Ping,meta:{title:"Ping"} },
-      { path: 'dicetest', component: Dicetest,meta:{title:"Dice test"} },
-      { path: 'users', component: Users,meta:{title:"Users"} },
-      { path: 'repo', component: Repo,meta:{title:"Repository"} },
+      { path: 'settings', component: Basexsettings, meta:{title: "BaseX settings"} },
+      
+      { path: 'users', component: Users, meta:{title: "Users"} },
+      { path: 'repo', name: 'repo', component: Repo, meta:{title: "BaseX Repository"} },
+      { path: 'repo1', name: "repo1", component: Repo1,  props: true, meta:{title: "Repository item"} },
      ]
     },
     { path: '/history', component: { template: '<router-view/>' }

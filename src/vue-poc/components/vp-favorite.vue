@@ -11,20 +11,20 @@ display button that invokes a  save favorite form
     >
     <template v-slot:activator="{ on }">
        <v-btn v-on="on" text @click.stop="set(!frmfav)" icon  title="Bookmark this page">
-          <v-icon>star_border</v-icon>
+          <v-icon>{{ icon  }}</v-icon>
        </v-btn>
      </template>
        <v-card style="width:400px;">
             <v-toolbar class="green"> 
         <v-card-title>
-            Add to favorites
+            Add to bookmarks
           </v-card-title>
           <v-spacer></v-spacer>
           <v-btn  @click="set(false)" icon><v-icon>close</v-icon></v-btn>
           </v-toolbar>
           
          <v-card-text>
-            <h6>{{$route.meta.title}}  
+            <h6 :title="this.$route.fullPath">{{$route.meta.title}}  
               <v-btn v-if="canCopy" @click="setclip" icon title="Copy location"><v-icon>content_copy</v-icon></v-btn>
             </h6>
             <v-combobox multiple
@@ -36,11 +36,10 @@ display button that invokes a  save favorite form
             ></v-combobox>
          </v-card-text>
          
-         <v-card-actions>
-            <v-btn color="primary" text @click.stop="favorite(); set(false)">Done</v-btn>
-            <v-spacer></v-spacer>
-            <v-btn  text @click.stop="set(false)">Cancel</v-btn>
-           
+         <v-card-actions class="text-center">
+            <v-btn  color="primary" text @click.stop="favorite(); set(false)"  >Done</v-btn>
+            <v-spacer></v-spacer>           
+            <v-btn  text @click.stop="set(false)"  >Cancel</v-btn>         
           </v-card-actions>
         </v-card>
    </v-menu></template>
@@ -53,6 +52,7 @@ display button that invokes a  save favorite form
      canCopy:false,	
       tags: [],
       taglist: [  'todo',  'find',  'some',  'good',  'tags' ],
+      exists: false
     }
   },
   methods:{
@@ -61,13 +61,16 @@ display button that invokes a  save favorite form
     },
     async setclip(){
     	      await navigator.clipboard.writeText(this.$route.fullPath);
-    	      alert('Copied!' + this.$route.fullPath);
     },
     favorite(){
       this.$store.commit('increment')
       console.log(this.$store.state.count)
+       this.exists= !this.exists
       alert("save");
     }
+  },
+  computed:{
+	 icon: function(){return this.exists?"star":"star_border" } 
   },
   created() {
     this.canCopy = !!navigator.clipboard;

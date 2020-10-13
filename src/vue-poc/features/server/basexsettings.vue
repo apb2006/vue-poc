@@ -13,6 +13,7 @@
   </v-toolbar>
   
   <v-card-text>
+  
      <v-data-table
     :headers="headers"
     :items="filtered"

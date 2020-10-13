@@ -43,7 +43,7 @@
 	 </v-toolbar>
 
   <v-container fluid >
-	  <v-expansion-panels>
+	  <v-expansion-panels  v-model="panel" multiple>
 	    <v-expansion-panel  expand >
 			     <v-expansion-panel-header>
 			     <v-layout>
@@ -78,7 +78,8 @@
 	          </v-layout>
 	      </v-expansion-panel-header> 
 	      <v-expansion-panel-content>
-	           <qd-table :headers="headers" :data-uri='"data/entity/"+entity +"/field"' entity="dice.field" no-data-msg="Nothing found">
+	           <qd-table :headers="headers" :data-uri='"data/entity/"+entity +"/field"' 
+	           entity="dice.field" item-key="name" :show-select="false">
 	          </qd-table>
 	      </v-expansion-panel-content>
 	     </v-expansion-panel>
@@ -108,7 +109,7 @@
         {text: "description", value: "description"},
         {text: "xpath", value: "xpath"}
       ],
-      panel: [true, false, true]
+      panel: [1,2]
       }
   },
   methods:{

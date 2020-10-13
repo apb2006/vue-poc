@@ -1,19 +1,47 @@
 <!DOCTYPE html>
-<!-- card showing table -->
+<!-- card showing entity data table 
+ talks to dataUri, example data-uri="data/basex.repo"
+ all slots passed down from parent 
+ slots:actions for selection
+ @see https://stackoverflow.com/questions/50891858/vue-how-to-pass-down-slots-inside-wrapper-component
+-->
 <template id="qd-table">
- <v-container fluid>
   <v-card >
-   <v-toolbar >
+   <v-toolbar color="blue lighten-4">
+   <vp-entitylink v-if="entity" :entity="entity"></vp-entitylink>
+   <v-toolbar-title>{{ title }}</v-toolbar-title>
+     
+   <v-spacer></v-spacer>
     <v-text-field
-        prepend-icon="filter_list" 
-        label="Filter items..."
-        single-line
-        hide-details
-        v-model="search"
+        prepend-icon="filter_list"
+        label="Filter..."
+        single-line  hide-details
+        v-model="query.filter"
         clearable
       ></v-text-field>   
       <v-spacer></v-spacer>
-         <v-btn
+       <v-menu v-if="selected.length" offset-y left>
+               <template v-slot:activator="{ on }">
+                       <v-btn icon  v-on="on">
+	                       <v-badge  color="orange">
+						       <span slot="badge">{{ selected.length  }}</span>
+						       <v-icon>share</v-icon>
+					       </v-badge>
+                       </v-btn>         
+               </template>
+              <v-card >
+              <v-toolbar color="cyan lighten-2">
+                  <v-card-title >Actions</v-card-title>
+               </v-toolbar>
+                  
+               <v-card-text>
+                  <slot name="actions"></slot>
+                </v-card-text>
+              </v-card>
+         </v-menu>  
+           
+    <v-spacer></v-spacer>
+     <v-btn
        icon 
       :loading="loading"
       :disabled="loading"      
@@ -21,58 +49,74 @@
     >
     <v-icon>refresh</v-icon>
     </v-btn> 
-    <span>{{ entity }}</span>
+     <v-menu offset-y left>
+               <template v-slot:activator="{ on }">
+                       <v-btn icon  v-on="on"><v-icon>settings</v-icon></v-btn>         
+               </template>
+              <v-card >
+              <v-toolbar color="cyan lighten-1">
+                  <v-card-title >Table settings</v-card-title>
+                  </v-toolbar>
+                  
+               <v-card-text>          
+               <v-list>
+				  <v-list-item>
+	                 <v-list-item-title>Show selection</v-list-item-title>
+	                 <v-list-item-action ><v-switch  v-model="showSelectL"></v-switch> </v-list-item-action>
+	              </v-list-item>
+	              <v-list-item>
+	                 <v-list-item-title>Multi-sort</v-list-item-title>
+	                 <v-list-item-action ><v-switch  v-model="multiSortL"></v-switch> </v-list-item-action>
+	              </v-list-item>
+	              <v-list-item>
+	                 <v-list-item-title>Auto-refresh</v-list-item-title>
+	                 <v-list-item-action ><v-switch  v-model="autoRefreshL"></v-switch> </v-list-item-action>
+	              </v-list-item>
+               </v-list>
+                </v-card-text>
+                </v-card>
+              </v-menu>
     </v-toolbar>
-    
-   <v-data-table
-      :headers="headers"
-      :items="items"
-      :search="search"
-       v-model="selected"
-       show-select
+    <v-card-text>
+   <v-data-table   
+      :headers="headers"  :items="items" 
+      v-model="selected" :item-key="itemKey"
+      :search="query.filter"
+      :items-per-page="10" 
+      :show-select="showSelectL"
+      :multi-sort="multiSortL"
+      :loading="loading"
       class="elevation-1"
+      :fixed-header="true"
       :no-data-text="noDataMsg"
     >
-    <template slot="items" slot-scope="props">
-     <td >
-        <v-checkbox
-          primary
-          hide-details
-          v-model="props.selected"
-        ></v-checkbox>
-      </td>
-      <td v-for="col in headers" :key="col.name">{{ foo(props,col) }}</td>
-    </template>
+   <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
+   
   </v-data-table>
+  </v-card-text>
   </v-card>
- </v-container>
 </template>
 
 <script>{
-	  props: {
-	    headers: {
-	      default: [
-	        { text: 'Name', value: 'id'},
-	        { text: 'Permission', value: 'state' }
-	      ]
-	  },
-	  dataUri:{
-	    default: "entity"
-	  },
-	  noDataMsg:{
-	    default: "No data found."
-	  },
-	  entity:{
-      default: "entity"
-    }
+  props: {
+	  headers: {default: [ { text: 'Name', value: 'id'} ]},
+	  dataUri:{  default: "data/dice.entity"},
+	  itemKey:{ default: "id"},
+	  noDataMsg:{  default: "No data found."},
+	  title:{ default: "" },
+	  entity:{  },
+	  query: {default: function(){return {filter:null}}},
+	  showSelect: {  default: false  },
+	  multiSort: {  default: false  }
   },
   data:  function(){
     return {
+      selected: [],
       loading: false,
       items: [],
-      search: null,
-      selected: [],
-
+      showSelectL: this.showSelect,
+      multiSortL: this.multiSort,
+      autoRefreshL: false
       }
   },
   methods:{
@@ -81,18 +125,13 @@
         HTTP.get(this.dataUri)
         .then(r=>{
            this.loading=false;
-           console.log("items",r.data.items,"headers ",this.headers);
+           console.log("Jobs items",r.data.items,"headers ",this.headers);
            this.items=r.data.items;
+           if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
         })
-     },
-     foo(props,header){
-       //console.log("value ",header)
-       if(header){
-         return  props.item[header.value]
-       }
-       return props.selected
      }
   },
+ 
   created:function(){
     console.log("qd-table");
     this.getItems();

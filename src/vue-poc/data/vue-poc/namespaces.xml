@@ -1,129 +1,159 @@
 <!-- common namespaces -->
 <namespaces  xmlns="https://github.com/Quodatum/namespaces">
-	<namespace uri="http://www.w3.org/XML/1998/namespace" prefix="xml">
-		<description>XML core features</description>
+	<namespace xml:id="http://www.w3.org/XML/1998/namespace" prefix="xml">
+		<role type="spec"/>
+		<description>XML core features
+			<dl>
+				<dt>xml:lang</dt>
+			<dd>Designed for identifying the human language used in the scope of the element to which it's attached.</dd>
+			<dt>xml:space</dt>
+			<dd>Designed to express whether or not the document's creator wishes white space to be considered as significant in the scope of the element to which it's attached.</dd>
+			
+			<dt>xml:base</dt>
+			<dd>
+			The XML Base specification (Second edition) describes a facility, similar to that of HTML BASE, 
+			for defining base URIs for parts of XML documents. 
+			It defines a single attribute, xml:base, and describes in detail the procedure for its use in 
+			processing relative URI refeferences.</dd>
+			<dt>xml:id</dt>
+			<dd>
+				The xml:id specification defines a single attribute, xml:id, known to be of type ID independently of any DTD or schema.</dd>
+			</dl>
+		</description>
+	
 	</namespace>
 
-	<namespace uri="http://www.w3.org/1999/xlink" prefix="xlink">
+	<namespace xml:id="http://www.w3.org/1999/xlink" prefix="xlink">
 		<description>XML Linking Language (XLink) namespace</description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2001/XInclude" prefix="xi">
+	<namespace xml:id="http://www.w3.org/2001/XInclude" prefix="xi">
 		<description>XML Inclusions (XInclude) </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/1999/XSL/Format" prefix="fo">
+	<namespace xml:id="http://www.w3.org/1999/XSL/Format" prefix="fo">
 		<description>XSL Formatting Objects namespace </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/1999/XSL/Transform" prefix="xsl">
+	<namespace xml:id="http://www.w3.org/1999/XSL/Transform" prefix="xsl">
 		<description>XSL Transformations namespace from the XSLT 1.0
 			Recommendation
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2005/xpath-functions/math"
+	<namespace xml:id="http://www.w3.org/2005/xpath-functions/math"
 		prefix="math">
 		<description>Xpath math </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2005/xpath-functions/map"
+	<namespace xml:id="http://www.w3.org/2005/xpath-functions/map"
 		prefix="map">
 		<description>Xpath map </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2005/xpath-functions/array"
+	<namespace xml:id="http://www.w3.org/2005/xpath-functions/array"
 		prefix="array">
 		<description>Xpath array </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2005/xqt-errors" prefix="err">
+	<namespace xml:id="http://www.w3.org/2005/xqt-errors" prefix="err">
 		<description>Xpath errors </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2010/xslt-xquery-serialization"
+	<namespace xml:id="http://www.w3.org/2010/xslt-xquery-serialization"
 		prefix="output">
 		<description>serialization parameters </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2001/XMLSchema" prefix="xsd">
+	<namespace xml:id="http://www.w3.org/2001/XMLSchema" prefix="xsd">
 		<description>XML Schema Part 1: Structures namespace. </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2001/XMLSchema-datatypes"
+	<namespace xml:id="http://www.w3.org/2001/XMLSchema-datatypes"
 		prefix="xs">
 		<description>XML Schema Part 2: Datatypes namespace. </description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2001/XMLSchema-instance"
+	<namespace xml:id="http://www.w3.org/2001/XMLSchema-instance"
 		prefix="xsi">
 		<description>Namespace for XML Schema attributes used in XML instances
 			(documents), such as xsi:type, xsi:schemaLocation, and xsi:nil.
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2005/xpath-functions"
+	<namespace xml:id="http://www.w3.org/2005/xpath-functions"
 		prefix="fn">
 		<description>XPath functions
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2005/xquery-local-functions"
+	<namespace xml:id="http://www.w3.org/2005/xquery-local-functions"
 		prefix="local">
 		<description>Xquery functions
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/2000/svg" prefix="svg">
+	<namespace xml:id="http://www.w3.org/2000/svg" prefix="svg">
 		<description>Scalable Vector Graphics namespace
 		</description>
 	</namespace>
 
-	<namespace uri="http://docbook.org/ns/docbook" prefix="d">
+	<namespace xml:id="http://docbook.org/ns/docbook" prefix="d">
 		<description>Docbook
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/1998/Math/MathML" prefix="mml">
+	<namespace xml:id="http://www.tei-c.org/ns/1.0" prefix="t">
+		<description>TEI
+		</description>
+	</namespace>
+	<namespace xml:id="http://www.w3.org/1998/Math/MathML" prefix="mml">
 		<description>Math ML
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.vraweb.org/vracore4.htm" prefix="vra">
+	<namespace xml:id="http://www.vraweb.org/vracore4.htm" prefix="vra">
 		<description>Visual Resources Association
 		</description>
 	</namespace>
 
-	<namespace uri="http://purl.oclc.org/dsdl/schematron" prefix="sch">
+	<namespace xml:id="http://purl.oclc.org/dsdl/schematron" prefix="sch">
 		<description>Schematron
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.opengis.net/kml/2.2" prefix="kml">
+	<namespace xml:id="http://www.opengis.net/kml/2.2" prefix="kml">
 		<description>Geo
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.opengis.net/gml" prefix="gml">
+	<namespace xml:id="http://www.opengis.net/gml" prefix="gml">
 		<description>GML
 		</description>
 	</namespace>
 
-	<namespace uri="http://www.w3.org/ns/xproc" prefix="xproc">
+	<namespace xml:id="http://www.w3.org/ns/xproc" prefix="xproc">
 		<description>XProc
 		</description>
 	</namespace>
-	<namespace uri="http://www.w3.org/ns/xproc-step" prefix="c">
+	<namespace xml:id="http://www.w3.org/ns/xproc-step" prefix="c">
 		<description>XProc step
 		</description>
 	</namespace>
 
-	<namespace uri="http://expath.org/ns/pkg" prefix="pkg">
+	<namespace xml:id="http://expath.org/ns/pkg" prefix="pkg">
 		<description>EXpath packaging
 		</description>
 	</namespace>
-<namespace uri="http://basex.org/modules/perm" prefix="perm">
+	
+  <namespace xml:id="http://basex.org/modules/perm" prefix="perm">
     <description>Web permissions
     </description>
   </namespace>
+
+	<namespace xml:id="urn:oasis:names:tc:entity:xmlns:xml:catalog" prefix="cat">
+		<description>XML catalogs http://xmlcatalogs.org/
+		</description>
+	</namespace>
+	
 </namespaces>

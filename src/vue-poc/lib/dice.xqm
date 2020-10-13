@@ -104,10 +104,10 @@ declare function dice:response($items,$entity as map(*))
 (:~ 
  : get data for object with key =name
  :)
-declare function dice:get($entity as map(*),$name as xs:string)
+declare function dice:get($entity as map(*),$key as xs:string, $keyfld as xs:string)
 as element(*){
     let $results:=$entity("data")()
-    return $results[$name=$entity?access?name(.)]
+    return $results[$key = $entity?access($keyfld)(.)]
 };
 
 
@@ -121,6 +121,7 @@ declare function dice:one($item,$entity as map(*))
 
 (:~ 
  : @return  json for item
+ : @param $opts fields, space delimited fieldnames
  :)
 declare function dice:one($item,$entity as map(*),$opts as map(*))
 as element(json)

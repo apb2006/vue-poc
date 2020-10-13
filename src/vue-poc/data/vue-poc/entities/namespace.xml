@@ -4,7 +4,7 @@
 	<fields>
 		<field name="xmlns" type="xs:string">
 			<description>namespace</description>
-			<xpath>@uri</xpath>
+			<xpath>@xml:id</xpath>
 		</field>
 		<field name="prefix" type="xs:string">
 			<description>commonly used namespace prefixes </description>

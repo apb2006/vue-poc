@@ -45,6 +45,10 @@
 			<description>writes</description>
 			<xpath>@writes</xpath>
 		</field>
+		<field name="isService" type="xs:boolean">
+			<description>This job is a service</description>
+			<xpath>@id = jobs:services()/@id</xpath>
+		</field>
 	</fields>
 	<views iconclass="code">
 		<view name="filter">name description</view>

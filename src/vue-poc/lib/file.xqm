@@ -80,3 +80,11 @@ as map(*)
     }
   )
 };
+
+(:~ files of type :)
+declare function ufile:list($ext as xs:string)
+as xs:string*
+{
+  let $base:=db:system()/globaloptions/webpath =>concat("/vue-poc/")
+  return file:list($base,true(),$ext)
+};

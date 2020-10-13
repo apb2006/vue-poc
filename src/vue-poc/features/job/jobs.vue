@@ -39,23 +39,27 @@
       class="elevation-1"
       no-data-text="No Jobs currently running"
     >
-    <template slot="items" slot-scope="props">
-    <td class="vtop">
-        <v-checkbox
-          primary
-          hide-details
-          v-model="props.selected"
-        ></v-checkbox>
-      </td>
-      <td class="vtop">  <router-link :to="{name: 'jobShow', params: {job: props.item.id }}">{{props.item.id}}</router-link></td>
-      <td class="vtop "><div>{{ props.item.state }}</div><div>{{ props.item.type }}</div> </td>
-      <td class="vtop " :title="props.item.registered">{{ props.item.registered | fromNow}}</td>
-      <td class="vtop " :title="props.item.start">{{ props.item.start | fromNow}}</td>
-       <td class="vtop text-xs-right">{{ props.item.duration }}</td>    
-       <td class="vtop text-xs-right">{{ props.item.writes }}</td>
-        <td class="vtop text-xs-right">{{ props.item.reads }}</td>
-      <td class="vtop text-xs-right">{{ props.item.user }}</td>
-    </template>
+    <template v-slot:item.id="{ item }">
+         <router-link :to="{name: 'job1', params: {job: item.id }}">{{ item.id }}</router-link>     
+      </template>
+      
+     <template v-slot:item.isService="{ item }">
+        <router-link v-if="item.isService" title="Service"
+                :to="{name: 'service1', params: { service: item.id }}">
+            <v-avatar color="red" size="24">
+		      <span class="white--text headline">S</span>
+		    </v-avatar>
+		</router-link>
+      </template>
+        
+     <template v-slot:item.registered="{ item }">
+         <span>{{ item.registered | formatDate}}</span>
+      </template>
+       
+      <template v-slot:item.start="{ item }">
+         <span>{{ item.start | fromNow }}</span>
+      </template>
+         
   </v-data-table>
  </v-card>
 </template>
@@ -70,8 +74,10 @@
           value: 'id'
         },
         { text: 'State', value: 'state' },
-        { text: 'Registered', value: 'registered' },
+        { text: 'Service?', value: 'isservice' }, // https://stackoverflow.com/a/58034316/3210344      
         { text: 'Start', value: 'start' },
+        { text: 'Interval', value: 'interval' },
+        { text: 'Registered', value: 'registered' },
         { text: 'Duration', value: 'duration' },
         { text: 'WriteL', value: 'writes' },
         { text: 'ReadL', value: 'reads' },
@@ -92,7 +98,7 @@
 	    HTTP.get("job")
 	    .then(r=>{
 	       this.loading=false
-	       this.items=r.data
+	       this.items=r.data.items
 	       if(this.autorefresh) this.timer=setTimeout(()=>{ this.getJobs() }, 10000);
 	    })
 	   

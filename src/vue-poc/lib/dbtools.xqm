@@ -28,7 +28,7 @@ return $zip
 };
 
 (:~
-: update or create database from file path
+: update or create database from file path, only *.xml files
 : @param $dbname name of database
 : @param $path file path contain files
 :)
@@ -40,7 +40,7 @@ declare %updating function dbtools:sync-from-path(
 {
    dbtools:sync-from-files($dbname,
                   $path,
-                  file:list($path,fn:true()),
+                  file:list($path,fn:true(),"*.xml"),
                   hof:id#1,
                   $delete-missing
                  )
