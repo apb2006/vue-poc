@@ -35,11 +35,15 @@ as map(*){{
 (:~
  : generate xquery for to return field value in the format: "name":function($_){}
  :)
-declare function bf:accessfn($f as element(ent:field)) as xs:string
+declare function bf:accessfn(
+      $f as element(ent:field)
+) as xs:string
 {
-let $type:=$f/@type/fn:string()
-return <field>
-       "{$f/@name/fn:string()}": function($_ as element()) as {$type} {{$_/{$f/ent:xpath } }}</field>
+	let $name:=$f/@name/fn:string()
+	let $resulttype:=$f/@type/fn:string()
+	let $srctype:=$f/ancestor::ent:entity/ent:data/@type/fn:string()
+	return ``[
+'`{ $name }`': function($_ as `{ $srctype }`) as `{$resulttype}` { $_! `{ $f/ent:xpath }` }]``
 };
 
 declare function bf:generate($e as element(ent:entity)) as xs:string
@@ -78,10 +82,9 @@ declare function bf:generate($e as element(ent:entity)) as xs:string
 declare function bf:entities($path as xs:string) 
 as element(ent:entity)*
 {
-let $_:=fn:trace($path,"DD")
  let $p:=fn:resolve-uri($path) || "/"
- return for $f in file:list($p,fn:true())
-        where not(ends-with(trace($f),file:dir-separator()))
+ return for $f in file:list($p,fn:true(),"*.xml")
+        where not(ends-with($f,file:dir-separator()))
         order by $f
         return fn:doc(fn:concat($p,$f))/ent:entity
 };
@@ -111,6 +114,7 @@ as xs:string
     let $opt:=fn:contains($type,"?")
     let $repeat:=fn:contains($type,"*")
     let $json-type:=bf:json-type($type)
+    let $srctype:=$f/ancestor::ent:entity/ent:data/@type/fn:string()
     let $mult:=if($repeat) then "*" else "?"
     
     let $at:=if($json-type ne "string") 
@@ -119,7 +123,7 @@ as xs:string
     (: generate json xml :)
     let $simple:=function() as xs:string{
                 <field>(: {$type} :)
-                        fn:data($_/{$f/ent:xpath })!element {$name} {{ {$at} .}} 
+                        fn:data($_!{ $f/ent:xpath })!element { $name } {{ { $at } .}} 
                 </field>
                 }
     let $array:=function() as xs:string{
@@ -138,7 +142,7 @@ as xs:string
                 } 
                     
     return <field>
-           "{$name}": function($_ as element()) as element({$name}){$mult} {{
+           "{$name}": function($_ as { $srctype }) as element({ $name }){ $mult } {{
             {if($repeat)then
              $array() 
             else if($type="element()") then 

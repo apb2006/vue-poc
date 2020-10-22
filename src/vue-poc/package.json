@@ -4,7 +4,7 @@
 	"description": "App framework experiments, Frontend vuetify, backend: basex",
 	"dependencies": {
 		"ace-builds": "1.4.12",
-		"vuetify": "2.3.13",
+		"vuetify": "2.3.14",
 		"vue": "2.6.11",
 		"vuex": "3.1.0",
 		"vue-router": "3.1.6",

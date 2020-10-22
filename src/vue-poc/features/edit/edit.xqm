@@ -17,14 +17,13 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
  :)
 declare
 %rest:GET %rest:path("/vue-poc/api/edit")
-%rest:query-param("url", "{$url}")
+%rest:query-param("url", "{ $url }")
+%rest:query-param("protocol", "{ $protocol }")
 %rest:produces("application/json")
 %output:method("json")   
-function vue-api:edit-get($url as xs:string)   
+function vue-api:edit-get($url as xs:string, $protocol as xs:string)   
 {
-  let $a:=analyze-string($url,"^\w*:")=>trace("PROTO")
-  let $protocol:=$a/fn:match/string()
-  let $protocol:=if ($protocol) then $protocol else "webfile"
+ 
   let $reader := map{
       "webfile": vue-api:get-webfile#1,
       "xmldb":   vue-api:get-basexdb#1

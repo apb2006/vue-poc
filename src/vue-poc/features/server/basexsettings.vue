@@ -13,7 +13,21 @@
   </v-toolbar>
   
   <v-card-text>
-  
+
+   <qd-table :headers="headers" data-uri="server/basexsettings2"  item-key="name"  >
+      <template v-slot:item.name="{ item }" >    
+	       <v-chip>{{ item.name }}</v-chip>
+    </template>
+    
+    <template v-slot:item.changed="{ item }" >    
+       <v-simple-checkbox v-model="item.changed" disabled></v-simple-checkbox>
+    </template>
+    
+    <template v-slot:item.description="{ item }" > 
+	     <qd-link :href="'http://docs.basex.org/wiki/Options#' + item.name.toUpperCase()">BaseX doc</qd-link>
+    </template>
+    
+   </qd-table>
      <v-data-table
     :headers="headers"
     :items="filtered"
@@ -46,7 +60,7 @@
       {text: "current", value: "current"},
       {text: "changed", value: "changed"},
       {text: "default", value: "default"},
-      {text: "description"}
+      {text: "description", value: "description"}
       ],
       pagination: {
         descending: false,
@@ -66,6 +80,13 @@
         this.items=r.data
       
         }) 
+    },
+    customFilter(value, search, item) {
+        return item.changed == this.changed &&
+        value != null &&
+        search != null &&
+        typeof value === 'string' &&
+        value.toString().indexOf(search) !== -1
     }
   },
   computed: {

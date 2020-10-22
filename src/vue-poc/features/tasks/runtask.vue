@@ -30,7 +30,7 @@
      
     <v-card-text>
       <v-container fluid>
-          <vp-paramform  v-if="!loading" ref="params" :endpoint="'tasks/'+task"></vp-paramform>
+          <vp-paramform  v-if="!loading" ref="params" :endpoint="endpoint"></vp-paramform>
       </v-container>
     </v-card-text>
       <v-snackbar    v-model="snackbar.show"
@@ -67,7 +67,7 @@
         this.loading= false
         this.id=r.data.id;
         this.snackbar= {show:true,
-                        msg: r.data && r.data.msg, 
+                        msg: r.result, 
                         context:"success"
                         };
         console.log(r)
@@ -79,17 +79,15 @@
       });
    }
   },
+  computed:{
+	  endpoint(){
+		  return 'tasks/'+this.task + (this.id? "?id=" + this.id:'')
+	  }
+  },
   watch:{
     id(v){
       this.$router.push({  query: { id: this.id }})
-      },
-      
-      $route(vnew,vold){
-         console.log("ROUTE",vnew,vold)    
-         var id=this.$route.query.id
-         this.id=id?id:null;
-         if(vnew.query.url != vold.query.url) alert("gg")
-      }
+      }   
   },
   
   created:function(){

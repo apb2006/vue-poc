@@ -1,38 +1,21 @@
-<history next-id="13" xmlns="urn:quodatum:vue-poc.history">
-	<event id="1" user="admin" when="">
-		<file mode="webfile" url="/vue-poc/app.xqm" />
-	</event>
-	<event id="2">
-		<file mode="webfile" url="/vue-poc/data/vue-poc/samples/ch4d1.xml" />
-	</event>
-	<event id="3">
-		<file mode="webfile" url="/vue-poc/static/app-gen.js" />
-	</event>
-	<event id="4">
-		<file mode="webfile" url="/vue-poc/static/app.html" />
-	</event>
-	<event id="5">
-		<file mode="webfile" url="/vue-poc/static/app.css" />
-	</event>
-	<event id="6">
-		<file mode="webfile" url="/vue-poc/logo.svg" />
-	</event>
-	<event id="7">
-		<file mode="webfile" url="/vue-poc/static/resources/semantic/sparql.rq" />
-	</event>
-	<event id="8">
-		<file mode="webfile" url="/vue-poc/static/resources/semantic/turtle.ttl" />
-	</event>
-	<event id="9">
-		<file mode="webfile" url="/vue-poc/static/resources/task.xsd" />
-	</event>
-	<event id="10">
-		<file mode="webfile" url="/vue-poc/static/resources/schematron/ark.sch" />
-	</event>
-	<event id="11">
-		<file mode="basexdb" url="/abide/abide.xml" />
-	</event>
-	<event id="12">
-		<collection mode="basexdb" url="/vue-poc" />
-	</event>
+<history xmlns="urn:quodatum:vue-poc.history" next-id="6">
+	<hist:event xmlns:hist="urn:quodatum:vue-poc.history" id="ev-5" when="2020-10-20T22:36:42.7+01:00" user="admin">
+		<task task="log.enrich" url="file:///C:/Users/andy/basex.home/webapp/vue-poc/features/tasks/task/log.enrich.xq"/>
+	</hist:event>
+	<hist:event xmlns:hist="urn:quodatum:vue-poc.history" id="ev-4" when="2020-10-20T22:36:16.206+01:00" user="admin">
+		<task task="model" url="file:///C:/Users/andy/basex.home/webapp/vue-poc/features/tasks/model.build/tx-model.xq">
+			<param name="target">C:/Users/andy/git/vue-poc/src/vue-poc/models.gen.xqm</param>
+			<param name="efolder">C:/Users/andy/git/vue-poc/src/vue-poc/data/vue-poc/entities</param>
+		</task>
+	</hist:event>
+	<hist:event xmlns:hist="urn:quodatum:vue-poc.history" id="ev-3" when="2020-10-20T22:35:57.352+01:00" user="admin">
+		<task task="primes" url="file:///C:/Users/andy/basex.home/webapp/vue-poc/tasks/primes.xq">
+			<param name="MAX">2020</param>
+		</task>
+	</hist:event>
+	<hist:event xmlns:hist="urn:quodatum:vue-poc.history" id="2" when="2020-10-14T21:50:53.073+01:00" user="admin">
+		<task task="primes" url="file:///C:/Users/andy/basex.home/webapp/vue-poc/tasks/primes.xq">
+			<param name="MAX">1000</param>
+		</task>
+	</hist:event>
 </history>

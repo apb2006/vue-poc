@@ -46,15 +46,17 @@
 	  <v-expansion-panels  v-model="panel" multiple>
 	    <v-expansion-panel  expand >
 			     <v-expansion-panel-header>
-			     <v-layout>
-		          <v-flex xs12>
-						     <v-avatar><v-icon>{{ item.iconclass }}</v-icon></v-avatar>
-						     <span class="font-weight-black">{{ item.name }}</span> 
-					         {{item.description}}
-					 </v-flex>
-			     </v-layout>        
+			       <span class="font-weight-black">{{ item.name }}</span> 
 			     </v-expansion-panel-header>
 			     <v-expansion-panel-content>
+				      <v-layout>
+				      <v-flex xs1>
+				           <v-avatar color="teal" size="62"><v-icon x-large>{{ item.iconclass }}</v-icon></v-avatar>
+				      </v-flex>
+			                <v-flex xs11>
+						         {{item.description}}
+						 </v-flex>
+				     </v-layout>       
 			          <pre v-if="xml"><code>{{ xml }}</code></pre> 
 			      </v-expansion-panel-content>
 			      <v-expansion-panel>
@@ -109,7 +111,7 @@
         {text: "description", value: "description"},
         {text: "xpath", value: "xpath"}
       ],
-      panel: [1,2]
+      panel: [0,1,2]
       }
   },
   methods:{

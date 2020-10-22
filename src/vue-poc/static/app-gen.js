@@ -1,4 +1,4 @@
-// generated 2020-10-13T11:46:19.117+01:00
+// generated 2020-10-22T21:16:24.958+01:00
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -312,6 +312,111 @@ Vue.component('qd-panel',{template:`
 
       );
       
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-perfstats.vue
+Vue.component('qd-perfstats',{template:` 
+   <div>
+    <slot name="actions" :add="add" :repeats="repeats" :reset="reset" :clip="clip"></slot>
+    <hr>
+    <slot name="table" :items="items" :headers="headers" :run="run"></slot>
+    <slot name="response" :data="response"></slot>
+    </div> 
+ `,
+      
+	props: {
+		initial: {default: function(){ return []}
+		}
+	},
+	data:  function(){
+	    return {
+	      items: [],
+	      headers: [
+	          { text: 'Action', value: 'id'},
+	          { text: 'Repeat', value: 'repeat' },
+	          { text: 'Count', value: 'count', align: 'right' },
+	          { text: 'Max', value: 'max' , align: 'right' },
+	          { text: 'Min', value: 'min' , align: 'right'},
+	          { text: 'Median', value: 'median', align: 'right' },
+	          { text: 'Last', value: 'last' , align: 'right'},
+	          { text: 'Average', value: 'avg' , align: 'right'}
+	        ],
+	      response: null
+	      }
+	},	
+  methods:{
+	  
+	    add(id,method,url){
+	    	var obj={index:this.items.length, id: id, method:method, url:url, repeat: false,
+	    			 count: 0, max: null, min: null, total:0, median:null, last:null, avg:null}
+	    	this.items.push(obj)
+	    },
+	    run(index){
+	    	this.update(this.items[index])
+	    },
+	    
+	    clear(index){
+	    	var data=this.items[index]
+	        data.count= data.total=  0
+	        data.max= data.min= data.last= data.avg= data.median= null
+	      },
+	      
+	    update (item) {
+	       var _start = performance.now();
+	      HTTP.request(item.url, {method: item.method, headers: {accept: 'application/json'}})
+	      .then(r=>{
+	        var elapsed=Math.floor(performance.now() - _start);
+	        this.response=r.data
+	        this.log(item,elapsed)
+	        if(item.repeat) this.update(item);  
+	      })
+	    },
+	    // update item stats
+	    log(item,val){
+	        item.last= val
+	        item.total+= val;
+	        item.count+= 1;
+	        if(item.count==1){
+	          item.max=val;
+	          item.min=val;
+	         item.median=val;
+	        }else{
+	          if(val<item.min)item.min=val;
+	          if(val>item.max)item.max=val;
+	        };
+	        //https://jeremykun.com/2012/06/14/streaming-median/
+	        if (item.median > val)
+	          item.median-= 1
+	        else if( item.median < val)
+	          item.median += 1;
+	          item.avg=(item.total / item.count).toFixed(2);
+	        },
+	        
+	     repeats(b){
+	        	this.$nextTick(() => {
+	        	this.items.forEach(item=>item.repeat=b)
+	        	})
+	        },
+	        
+	     reset(){
+	    	 this.items.forEach(item=>this.clear(item.index))
+	     },
+	     
+	     clip(){
+	    	 var txt=this.items.map(item=>item.id + ',' + item.avg).join("\n")
+	    	 navigator.clipboard.writeText(txt).then(function() {
+	    		  /* clipboard successfully set */
+	    		}, function() {
+	    		  alert("clipboard write failed")
+	    		});
+	     }
+  },
+  created:function(){
+      console.log("qd-perfstats:",this.initial);
+      this.initial.forEach(item=>this.add(item.id,item.method,item.url))
+    }
+}
+
+      );
+      
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-range.vue
 Vue.component('qd-range',{template:` 
   <v-menu left bottom :close-on-content-click="false">
@@ -445,12 +550,20 @@ Vue.component('qd-table',{template:`
                        </v-btn>         
                </template>
               <v-card>
-              <v-toolbar color="cyan lighten-2">
-                  <v-card-title>Actions</v-card-title>
-               </v-toolbar>
+              <v-app-bar dense color="cyan lighten-2">
+                  <v-card-title dense>Actions</v-card-title>
+               </v-app-bar>
                   
                <v-card-text>
-                  <slot name="actions"></slot>
+                  <v-list dense>
+	                  <slot name="actions"></slot>                  
+	                   <v-list-item @click="copy">
+		                    <v-list-item-avatar><v-icon>content_copy</v-icon></v-list-item-avatar>
+		                    <v-list-item-title>Copy selection</v-list-item-title>
+	                   </v-list-item>
+                  </v-list>
+                 
+           
                 </v-card-text>
               </v-card>
          </v-menu>  
@@ -498,15 +611,22 @@ Vue.component('qd-table',{template:`
       
   props: {
 	  headers: {default: [ { text: 'Name', value: 'id'} ]},
-	  dataUri:{  default: "data/dice.entity"},
+	  dataUri:{  default: null},
 	  itemKey:{ default: "id"},
 	  noDataMsg:{  default: "No data found."},
 	  title:{ default: "" },
 	  entity:{  },
 	  query: {default: function(){return {filter:null}}},
 	  showSelect: {  default: false  },
-	  multiSort: {  default: false  }
+	  multiSort: {  default: false  },
+	  customFilter: {default: function(value, search, item) {
+	        return value != null &&
+	          search != null &&
+	          typeof value === 'string' &&
+	          value.toString().indexOf(search) !== -1}
+	  }
   },
+  
   data:  function(){
     return {
       selected: [],
@@ -517,8 +637,10 @@ Vue.component('qd-table',{template:`
       autoRefreshL: false
       }
   },
+  
   methods:{
       getItems(){
+        if(this.dataUri === null) return;
         this.loading=true;
         HTTP.get(this.dataUri)
         .then(r=>{
@@ -527,6 +649,20 @@ Vue.component('qd-table',{template:`
            this.items=r.data.items;
            if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
         })
+     },
+     
+     copy(){
+    	var flds=this.headers.map(h=>h.value)
+    	var row=function(item){return flds.map(f=>item.hasOwnProperty(f)?item[f]:'').join(",")}
+    	var txt=flds.join(",")
+    	var txt=this.selected.map(item=>row(item)).join("\n")
+    	txt= txt=flds.join(",") +"\n" + txt
+    	navigator.clipboard.writeText(txt).then(function() {
+  		  /* clipboard successfully set */
+  		}, function() {
+  		  alert("clipboard write failed")
+  		});
+    	
      }
   },
  
@@ -776,13 +912,13 @@ Vue.component('vp-job',{template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/vp-notifications.vue
 Vue.component('vp-notifications',{template:` 
    <v-card>
-         <v-app-bar class="amber white--text">
-                <v-toolbar-title>Notifications </v-toolbar-title>
-                {{ $notification.nextId }}
-                 <v-btn @click="refresh" icon><v-icon>refresh</v-icon></v-btn>
-          <v-spacer></v-spacer>
-          <v-btn @click="set(false)" icon><v-icon>close</v-icon></v-btn>
+         <v-app-bar dense class="amber white--text">
+              <v-toolbar-title> {{ $notification.nextId }} Notifications </v-toolbar-title>           
+              <v-btn @click="refresh" icon><v-icon>refresh</v-icon></v-btn>
+	          <v-spacer></v-spacer>
+	          <v-btn @click="set(false)" icon><v-icon>close</v-icon></v-btn>
           </v-app-bar>
+          
           <v-card-text>
         <v-list three-line>
           <template v-for="msg in $notification.messages">
@@ -843,10 +979,10 @@ Vue.component('vp-paramform',{template:`
   <v-card>
      <v-toolbar color="blue lighten-3" dense>
        <v-card-title>{{ description }}</v-card-title>
-       <v-spacer></v-spacer>
-          <router-link :to="{name:'edit', query:{url: url}}">
-            <v-icon :title="url">history</v-icon>{{ name }}
-          </router-link>
+       <v-spacer></v-spacer>     
+              <v-btn @click="clear()" id="btn-clear">Clear</v-btn>
+		     <v-btn @click="reset()">Reset</v-btn>
+           <v-btn @click="zlog()">console</v-btn>
     </v-toolbar>
     <v-card-text>
        <v-form ref="form" lazy-validation>
@@ -872,12 +1008,7 @@ Vue.component('vp-paramform',{template:`
             </v-form>
            
        </v-card-text>
-           <v-card-actions>
-              <v-btn @click="clear()" id="btn-clear">Clear</v-btn>
-		     <v-btn @click="reset()">Reset</v-btn>
-           </v-card-actions>
-           <v-btn @click="zlog()">console</v-btn>
-           
+       
     </v-card>
  `,
       
@@ -1672,7 +1803,7 @@ const About=Vue.extend({template:`
 			<v-list-item><a href="https://developers.google.com/web/tools/workbox/" target="new">workbox</a></v-list-item>
               
               <v-list-item><a href="https://material.io/tools/icons/?style=baseline" target="new">icons (material)</a></v-list-item>
-                  
+              <v-list-item><a href="../api" target="new">wadl</a></v-list-item>    
 			 </v-list>
 			 </v-flex>
 			 <v-flex xs6>
@@ -3595,10 +3726,6 @@ const Edit=Vue.extend({template:`
       var r=type.mode
       this.mode=r?r:"text"
     },
-    onResize(){
-      var h=window.innerHeight
-      console.log("height:",h)
-    },
     leaving(event) {
       event.returnValue = "event seems to need to be set";
       //debugger;
@@ -4361,6 +4488,86 @@ const Filehistory=Vue.extend({template:`
     this.get()
     console.log("history")
   }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/history/taskhistory.vue
+const Taskhistory=Vue.extend({template:` 
+ <v-container fluid>
+ <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
+ <v-card>
+  <v-toolbar>
+  <v-toolbar-title>
+     <v-breadcrumbs>
+            <v-breadcrumbs-item to="/tasks" :exact="true">
+            Tasks
+            </v-breadcrumbs-item>
+            <v-breadcrumbs-item>
+            History
+            </v-breadcrumbs-item>
+        </v-breadcrumbs>
+       </v-toolbar-title>  
+     <v-spacer></v-spacer>
+   
+   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
+   
+   <v-spacer></v-spacer>
+   <vp-entitylink entity="quodatum.task"></vp-entitylink>    
+   </v-toolbar>
+   
+   <v-card-text>
+    <v-data-table :headers="headers" :items="items" hide-default-footer :search="q" class="elevation-1">
+  <template v-slot:item.id="{ item }"> 
+	      <router-link :to="{path: '/tasks/' + item.task + '/run', query:{ id: item.id}}">
+                 {{ item.id }}
+          </router-link>
+    </template>
+    <template v-slot:item.task="{ item }"> 
+	      <router-link :to="{path: '/tasks/' + item.task + '/run', query:{ id: item.id}}">
+                 {{ item.task }}
+          </router-link>
+    </template>
+    <template slot="no-data">
+      <v-alert :value="true" icon="warning">
+        No matching items.
+      </v-alert>
+    </template>
+  </v-data-table>
+   </v-card-text>
+    
+    </v-card>
+  
+ </v-container>
+ `,
+      
+  data(){
+    return {
+      items: [],
+      loading: false,
+      q: null,
+      headers: [   
+        { text: 'Id', value: 'id' },
+        { text: 'Task', value: 'task' },
+        { text: 'Created', value: 'created' },
+        { text: 'Summary', value: 'summary' },
+        { text: 'Params', value: 'arity' }
+        ]
+      }
+  },
+  methods:{
+    getTasks(){
+        this.loading= true;
+        HTTP.get("data/history.task")
+        .then(r=>{
+		   this.items=r.data.items;
+		   this.loading= false;
+       })
+    }
+   },
+  created(){
+    this.getTasks()
+   }
 }
 
       );
@@ -5792,15 +5999,17 @@ const Entity1=Vue.extend({template:`
 	  <v-expansion-panels v-model="panel" multiple>
 	    <v-expansion-panel expand>
 			     <v-expansion-panel-header>
-			     <v-layout>
-		          <v-flex xs12>
-						     <v-avatar><v-icon>{{ item.iconclass }}</v-icon></v-avatar>
-						     <span class="font-weight-black">{{ item.name }}</span> 
-					         {{item.description}}
-					 </v-flex>
-			     </v-layout>        
+			       <span class="font-weight-black">{{ item.name }}</span> 
 			     </v-expansion-panel-header>
 			     <v-expansion-panel-content>
+				      <v-layout>
+				      <v-flex xs1>
+				           <v-avatar color="teal" size="62"><v-icon>{{ item.iconclass }}</v-icon></v-avatar>
+				      </v-flex>
+			                <v-flex xs11>
+						         {{item.description}}
+						 </v-flex>
+				     </v-layout>       
 			          <pre v-if="xml"><code>{{ xml }}</code></pre> 
 			      </v-expansion-panel-content>
 			      <v-expansion-panel>
@@ -5853,7 +6062,7 @@ const Entity1=Vue.extend({template:`
         {text: "description", value: "description"},
         {text: "xpath", value: "xpath"}
       ],
-      panel: [1,2]
+      panel: [0,1,2]
       }
   },
   methods:{
@@ -6238,9 +6447,9 @@ const Namespace=Vue.extend({template:`
 <v-container fluid>
    <qd-table :headers="headers" data-uri="data/namespace" entity="namespace" item-key="xmlns">
     <template v-slot:item.xmlns="{ item }"> 
-	      <td><router-link :to="{name:'namespace1', query:{ id: item.xmlns}}">
+	      <router-link :to="{name:'namespace1', query:{ id: item.xmlns}}">
                  {{ item.xmlns }}
-                </router-link></td>
+          </router-link>
     </template>
       
     <template slot="no-results">
@@ -6329,76 +6538,56 @@ const Namespace1=Vue.extend({template:`
 const Dicetest=Vue.extend({template:` 
  <v-container fluid>
  <v-card>
+
  <v-toolbar>
- <v-toolbar-title>Dice entity list</v-toolbar-title>
+ <v-toolbar-title>Read json data for 1st page for entity</v-toolbar-title>
  
  <v-spacer></v-spacer>
- <v-btn @click="reset()">Reset</v-btn>
+ 
  </v-toolbar>
  <v-card-text>
-  <p>Read json data for 1st page for entity.</p>
-   <v-flex xs12 sm6>
-     <v-combobox v-model="entity" :items="entities" item-text="name" label="Select target" clearable open-on-clear>
-        <template v-slot:item="{ parent, item }">
-            <v-icon>{{ item.iconclass }}</v-icon>
-            {{ item.name }}
-        </template>
-        </v-combobox>
-      
-    </v-flex>
- <v-simple-table>
-    <template v-slot:default>
-      <thead>
-        <tr>
-          <th v-for="col in columns " class="text-left">
-            {{ col.label }}
-          </th>
-        </tr>
-      </thead>
-      <tbody>
-        <tr>
-              <td>
-              {{ entity &amp;&amp; entity.name  }}
-               </td>
-              <td>
-               <v-btn @click="get()" :disabled="!entity">
-                   Read <v-icon right>compare_arrows</v-icon> 
-                </v-btn>
-               </td>
-               <td>
-                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
-
-             </td>    
-              <td>
-                  <span>{{getValues.last}}</span>
-              </td>
-              <td>
-                  <span>{{getValues.count}}</span>
-              </td>   
-            
-              <td>
-                  <span>{{getValues.avg | round(2)}}</span>
-              </td>
-            
-              <td>
-                  <span>{{getValues.min}}</span>
-              </td>
-              <td>
-                  <span>{{getValues.max}}</span>
-              </td>
-                <td>
-                  <span>{{getValues.median}}</span>
-              </td>
-          </tr>
+ <qd-perfstats>  
+  <v-app-bar slot="actions" slot-scope="{ add , repeats, reset, clip  }">
+   <v-select v-model="selectedEntities" :items="entities" item-text="name" return-object label="Entities to test" multiple chips>
+    <template v-slot:prepend-item>
+        <v-list-item ripple @click="toggle" class="green lighten">
+          <v-list-item-action>
+            <v-icon :color="selectedEntities.length > 0 ? 'indigo darken-4' : ''">{{ icon }}</v-icon>
+          </v-list-item-action>
+          <v-list-item-content>
+            <v-list-item-title>Select All</v-list-item-title>
+          </v-list-item-content>
+        </v-list-item>
+        <v-divider class="mt-2"></v-divider>
+      </template>
+     </v-select>
+   <div v-if="selectedEntities.length">
+    <v-btn @click="setSel(add)">Set</v-btn>   
+    <v-btn @click="repeats(false)">Repeat off</v-btn>
+    <v-btn @click="repeats(true)">Repeat on</v-btn>
+    <v-btn @click="reset()">Reset</v-btn>
+    <v-btn @click="clip()" icon title="copy to clipboard"><v-icon>content_copy</v-icon></v-btn>
+    </div>
+  </v-app-bar>
   
-          
-      </tbody>
-</template>
-</v-simple-table>
-    
-     <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
-     <pre>{{ result | pretty}}</pre>
+   <v-data-table slot="table" slot-scope="{ headers, items, run }" :hide-default-footer="true" :disable-pagination="true" :headers="headers" :items="items" dense>
+    <template v-slot:item.id="{ item }"> 
+	      <v-btn @click="run(item.index)" :title="item.index">{{ item.id }}</v-btn>
+    </template>
+    <template v-slot:item.repeat="{ item }"> 
+	      <v-simple-checkbox v-model="item.repeat"></v-simple-checkbox>
+    </template>
+  </v-data-table>
+  
+  <div slot="response" slot-scope="{ data }">
+     <h3>Counter: <v-chip color="amber" text-color="white">counter</v-chip></h3>
+     <pre>{{ data | pretty}}</pre>
+  </div>
+  </qd-perfstats>
+ 
+  
     </v-card-text>
+      
     </v-card>
     
  </v-container>
@@ -6406,68 +6595,61 @@ const Dicetest=Vue.extend({template:`
       
   data:  function(){
     return {
-      getValues: new perfStat(),
-      repeat: {get:false},
-      entity: null,
+      selectedEntities: [],
       counter: 0,
-      result: null,
-      entities: null,
-      columns: [
-    	  {label:"Entity"},
-    	  {label:"Action"},
-    	  {label:"Repeat"},
-    	  {label:"Last"},
-    	  {label:"Count"},
-    	  {label:"Avg"},
-    	  {label:"min"},
-    	  {label:"max"},
-    	  {label:"Median"}
-    	  ]
+      entities: [],
+      result: null
+      
       }
   },
-  methods:{
-
-    get(){
-     var _start = performance.now();
-     console.log("entity:", this.entity)
-     HTTP.get(this.entity.datalink,axios_json)
-     .then(r=>{
-       var elapsed=Math.floor(performance.now() - _start);
-       this.counter++;
-       this.result=r.data;
-       Object.assign(this.getValues,this.getValues.log(elapsed))
-       this.$forceUpdate()
-        if(this.repeat.get){
-          this.get(); //does this leak??
-        }
-     })
-    },
-    gchange(v){
-      if(v)this.get() 
-    },
-    
-    reset(){
-      Object.assign(this.getValues,this.getValues.clear());
-      this.$forceUpdate()
-    },
+  methods:{ 
     getentities(){
       HTTP.get("data/entity",axios_json)
       .then(r=>{
-        console.log("entities: ",r.data);
+        //console.log("entities: ",r.data);
         this.entities=r.data.items
       })
-    }
+    },
+    setSel(add){
+    	console.log("setSel",this.selectedEntities)
+    	this.selectedEntities.forEach(item=>add(item.name,'GET',item.datalink))
+    },
+    toggle () {
+        this.$nextTick(() => {
+          if (this.all) {
+            this.selectedEntities = []
+          } else {
+            this.selectedEntities = this.entities.slice()
+          }
+        })
+      }
   },
+  
+  computed:{
+		  all () {
+		      return this.selectedEntities.length === this.entities.length
+		    },
+		  some () {
+		      return this.selectedEntities.length > 0 && !this.all
+		    },
+		  icon () {
+		      if (this.all) return 'mdi-close-box'
+		      if (this.some) return 'mdi-minus-box'
+		      return 'mdi-checkbox-blank-outline'
+		    }
+  },
+  
   created(){
     console.log("GET entities: ");
     this.getentities()
   },
+  
   beforeRouteLeave(to, from, next){
-    var on=this.repeat.get 
+    var on=this.some // @TODO this.repeat.get 
 
     if (on) {
       alert("running!") //<--undefined
-      return next(false)
+      return next()
     } else {
       return next()
     }
@@ -6483,162 +6665,45 @@ const Ping=Vue.extend({template:`
  <v-toolbar>
  <v-toolbar-title>Simple response counter</v-toolbar-title>
  <v-spacer></v-spacer>
- <v-btn @click="reset()">Reset</v-btn>
+ 
  </v-toolbar>
  <v-card-text>
   <p>Read or increment a database value. This measures round trip times browser-database-browser.</p>
   <h3>Value: <v-chip color="amber" text-color="white">{{counter}}</v-chip></h3>
-  <table class="v-table">
-      <thead> 
-        <tr>
-         <th class="col-md-1">Action</th>
-          <th class="col-md-1">Repeat</th>
-          <th class="col-md-1 text-right">Last</th>
-          <th class="col-md-1 text-right">Count</th>
-          <th class="col-md-1 text-right">Avg</th>
-          <th class="col-md-1 text-right">min</th>
-          <th class="col-md-1 text-right">max</th>
-          <th class="col-md-1 text-right">Median</th>
-        </tr>
-      </thead>
-      <tbody>
-
-      
-          <tr>
-              <td>
-               <v-btn @click="get()">
-                   Read Db<v-icon right>compare_arrows</v-icon> 
-                </v-btn>
-             
-               </td>
-               <td>
-                <v-switch v-on:change="gchange" v-model="repeat.get"></v-switch>
-
-             </td>    
-              <td>
-                  <p class="text-right">{{getValues.last}}</p>
-              </td>
-              <td>
-                  <p class="text-right">{{getValues.count}}</p>
-              </td>   
-            
-              <td>
-                  <p class="text-right">{{getValues.avg | round(2)}}</p>
-              </td>
-            
-              <td>
-                  <p class="text-right">{{getValues.min}}</p>
-              </td>
-              <td>
-                  <p class="text-right">{{getValues.max}}</p>
-              </td>
-                <td>
-                  <p class="text-right">{{getValues.median}}</p>
-              </td>
-          </tr>
-          
-            <tr>
-          <td>
-           <v-btn @click="update()">
-                 Write Db<v-icon right>compare_arrows</v-icon>
-            </v-btn>
-          </td>
-          
-          <td>
-           <v-switch v-on:change="pchange" v-model="repeat.post"></v-switch>
-          </td>
-           <td class="text-right">
-                <span>{{postValues.last}}</span>
-           </td>
-          <td class="text-right">
-            <span>{{postValues.count}}</span>
-          </td>
-                 
-          <td class="text-right">
-            <span>{{postValues.avg | round(2)}}</span>
-          </td>
-          
-          <td class="text-right">
-            <span>{{postValues.min}}</span>
-          </td>
-          <td class="text-right">
-              <span>{{postValues.max}}</span>
-          </td>
-            <td class="text-right">
-              <span>{{postValues.median}}</span>
-           </td>
-        </tr>
-      </tbody>
-    </table>
+  <qd-perfstats :initial="initial">
+  
+  <div slot="actions" slot-scope="{ add , repeats, reset }">
+    <v-btn @click="repeats(false)">Repeat off</v-btn>
+    <v-btn @click="reset()">Reset</v-btn>
+  </div>
+  
+   <v-data-table slot="table" slot-scope="{ headers, items, run }" :hide-default-footer="true" :headers="headers" :items="items">
+    <template v-slot:item.id="{ item }"> 
+	      <v-btn @click="run(item.index)">{{ item.id }}</v-btn>
+    </template>
+    <template v-slot:item.repeat="{ item }"> 
+	      <v-switch v-model="item.repeat"></v-switch>
+    </template>
+  </v-data-table>
+  
+  </qd-perfstats>
     </v-card-text>
     </v-card>
     
  </v-container>
  `,
       
-  data:  function(){
-    return {
-      nothingValues: new perfStat(),
-      staticValues: new perfStat(),
-      getValues: new perfStat(),
-      postValues: new perfStat(),
-      repeat: {get: false, post: false, staticx: false, nothing: false},
-      counter: "(unread)"
-      }
-  },
-  methods:{
-    update () {
-       var _start = performance.now();
-      HTTP.post("ping",axios_json)
-      .then(r=>{
-        var elapsed=Math.floor(performance.now() - _start);
-        this.counter=r.data
-        Object.assign(this.postValues,this.postValues.log(elapsed))
-        if(this.repeat.post){
-          this.update(); //does this leak??
-        }
-      })
-    },
-    
-    get(){
-     var _start = performance.now();
-     HTTP.get("ping",axios_json)
-     .then(r=>{
-       var elapsed=Math.floor(performance.now() - _start);
-       this.counter=r.data
-       Object.assign(this.getValues,this.getValues.log(elapsed))
-       this.$forceUpdate()
-        if(this.repeat.get){
-          this.get(); //does this leak??
-        }
-     })
-    },
-    nothing () {
-      var _start = performance.now();
-     HTTP.post("nothing",axios_json)
-     .then(r=>{
-       var elapsed=Math.floor(performance.now() - _start);
-       this.counter=r.data
-       Object.assign(this.nothingValues,this.nothingValues.log(elapsed))
-       if(this.repeat.nothing){
-         this.nothing(); //does this leak??
-       }
-     })
-   },
-    gchange(v){
-      if(v)this.get() 
-    },
-    pchange(v){
-      if(v)this.update() 
-    },
-    reset(){
-      Object.assign(this.getValues,this.getValues.clear());
-      Object.assign(this.postValues,this.postValues.clear());
-      this.$forceUpdate()
-    }
-  },
+	data:  function(){
+	    return {
+	    	initial:[
+	    		     { id: 'WRITE DB', method: 'POST', url: 'performance/ping'},
+			         { id: 'READ DB', method: 'GET', url: 'performance/ping'},
+			         { id: 'NO DB', method: 'GET', url: 'performance/nodb'} 
+			         ],
+	    	counter: 0}
+	},
   beforeRouteLeave(to, from, next){
-    var on=this.repeat.get || this.repeat.post
+    var on=false // @TODO this.repeat.get || this.repeat.post
 
     if (on) {
       alert("running!") //<--undefined
@@ -7135,7 +7200,21 @@ const Basexsettings=Vue.extend({template:`
   </v-toolbar>
   
   <v-card-text>
-  
+
+   <qd-table :headers="headers" data-uri="server/basexsettings2" item-key="name">
+      <template v-slot:item.name="{ item }">    
+	       <v-chip>{{ item.name }}</v-chip>
+    </template>
+    
+    <template v-slot:item.changed="{ item }">    
+       <v-simple-checkbox v-model="item.changed" disabled></v-simple-checkbox>
+    </template>
+    
+    <template v-slot:item.description="{ item }"> 
+	     <qd-link :href="'http://docs.basex.org/wiki/Options#' + item.name.toUpperCase()">BaseX doc</qd-link>
+    </template>
+    
+   </qd-table>
      <v-data-table :headers="headers" :items="filtered" class="elevation-1">
     <template slot="items" slot-scope="props">
       <td>{{ props.item.name }}</td>
@@ -7162,7 +7241,7 @@ const Basexsettings=Vue.extend({template:`
       {text: "current", value: "current"},
       {text: "changed", value: "changed"},
       {text: "default", value: "default"},
-      {text: "description"}
+      {text: "description", value: "description"}
       ],
       pagination: {
         descending: false,
@@ -7182,6 +7261,13 @@ const Basexsettings=Vue.extend({template:`
         this.items=r.data
       
         }) 
+    },
+    customFilter(value, search, item) {
+        return item.changed == this.changed &&
+        value != null &&
+        search != null &&
+        typeof value === 'string' &&
+        value.toString().indexOf(search) !== -1
     }
   },
   computed: {
@@ -7205,7 +7291,10 @@ const Repo=Vue.extend({template:`
       <router-link :to="{name: 'repo1', query: {id: item.name }}">{{ item.name }} </router-link>
    </template>
    <template v-slot:actions>
-     <v-btn>action here</v-btn>
+         <v-list-item @click="remove">
+           <v-list-item-avatar><v-icon>delete</v-icon></v-list-item-avatar>
+           <v-list-item-title>Delete</v-list-item-title>
+         </v-list-item>
    </template>
    </qd-table>
  </v-container>
@@ -7223,6 +7312,11 @@ const Repo=Vue.extend({template:`
         { text: 'Version', value: 'version' }
       ] 
       }
+  },
+  methods:{
+	remove(){
+		alert("Not yet")
+	}  
   },
   watch: {
 		"query":{
@@ -7810,7 +7904,7 @@ const Runtask=Vue.extend({template:`
      
     <v-card-text>
       <v-container fluid>
-          <vp-paramform v-if="!loading" ref="params" :endpoint="'tasks/'+task"></vp-paramform>
+          <vp-paramform v-if="!loading" ref="params" :endpoint="endpoint"></vp-paramform>
       </v-container>
     </v-card-text>
       <v-snackbar v-model="snackbar.show" :timeout="6000" :success="snackbar.context === 'success'" :error="snackbar.context === 'error'">
@@ -7842,7 +7936,7 @@ const Runtask=Vue.extend({template:`
         this.loading= false
         this.id=r.data.id;
         this.snackbar= {show:true,
-                        msg: r.data && r.data.msg, 
+                        msg: r.result, 
                         context:"success"
                         };
         console.log(r)
@@ -7854,93 +7948,20 @@ const Runtask=Vue.extend({template:`
       });
    }
   },
+  computed:{
+	  endpoint(){
+		  return 'tasks/'+this.task + (this.id? "?id=" + this.id:'')
+	  }
+  },
   watch:{
     id(v){
       this.$router.push({  query: { id: this.id }})
-      },
-      
-      $route(vnew,vold){
-         console.log("ROUTE",vnew,vold)    
-         var id=this.$route.query.id
-         this.id=id?id:null;
-         if(vnew.query.url != vold.query.url) alert("gg")
-      }
+      }   
   },
   
   created:function(){
     if(this.$route.query.id) this.id=this.$route.query.id
   }
-}
-
-      );
-      
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/tasks/taskhistory.vue
-const Taskhistory=Vue.extend({template:` 
- <v-container fluid>
- <v-progress-linear v-if="loading" v-bind:indeterminate="true"></v-progress-linear>
- <v-card>
-  <v-toolbar>
-  <v-toolbar-title>
-     <v-breadcrumbs>
-            <v-breadcrumbs-item to="/tasks" :exact="true">
-            Tasks
-            </v-breadcrumbs-item>
-            <v-breadcrumbs-item>
-            History
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
-       </v-toolbar-title>  
-     <v-spacer></v-spacer>
-   
-   <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
-   
-   <v-spacer></v-spacer>
-   <vp-entitylink entity="quodatum.task"></vp-entitylink>    
-   </v-toolbar>
-   
-   <v-card-text>
-    <v-data-table :headers="headers" :items="items" hide-default-footer :search="q" class="elevation-1">
-    <template slot="items" slot-scope="props">
-      <td>AA: <router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
-      <td>{{ props.item.description }}</td>
-    </template>
-    <template slot="no-data">
-      <v-alert :value="true" icon="warning">
-        No matching items.
-      </v-alert>
-    </template>
-  </v-data-table>
-   </v-card-text>
-    
-    </v-card>
-  
- </v-container>
- `,
-      
-  data(){
-    return {
-      items: [],
-      loading: false,
-      q: null,
-      headers: [   
-        { text: 'Task', value: 'title' },
-        { text: 'Description', value: 'description' },
-        ]
-      }
-  },
-  methods:{
-    getTasks(){
-        this.loading= true;
-        HTTP.get("tasks")
-        .then(r=>{
-		   this.items=r.data;
-		   this.loading= false;
-       })
-    }
-   },
-  created(){
-    this.getTasks()
-   }
 }
 
       );
@@ -8775,7 +8796,8 @@ const router = new VueRouter({
     },
     { path: '/history', component: { template: '<router-view/>' }
     ,children: [
-      { path: 'files', component: Filehistory, meta:{title: "File History"} }
+      { path: 'files', component: Filehistory, meta:{title: "File History"} },
+      { path: 'tasks',  name: "taskhistory", component: Taskhistory, meta:{title: "Task History"} }
       ]
     },
     { path: '/labs', component: { template: '<router-view/>' }
@@ -8805,7 +8827,6 @@ const router = new VueRouter({
     
     { path: '/tasks', component: { template: '<router-view/>' } ,  children:[
 		    { path: '', component: Tasks, meta:{title:"Runnable tasks"} },
-		    { path: 'model', component: Model, meta:{title:"build model"} },
 		    { path: 'vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
 		    { path: ':task',  props: true, component: { template: '<router-view/>' },
 		    	children:[
@@ -8999,7 +9020,7 @@ const Vuepoc=Vue.extend({template:`
         model: false,
         children: [
         	   {href: '/tasks',text: 'Task list',icon: 'assignment'},
-        	   {href: '/history/tasks',text: 'History',icon: 'history'}
+        	   {href: '/history/tasks',text: 'Run history',icon: 'history'}
       ]},
       {
           icon: 'folder_open',
@@ -9200,23 +9221,29 @@ axios.interceptors.response.use(function (response) {
 
 // errors displayed by interceptor
 const HTTP = axios.create(AXIOS_CONFIG);
-HTTP.interceptors.request.use((config) => {
-  config.qdStartTime=performance.now();
-  return config;
-});
+HTTP.interceptors.request.use(
+		(config) => {
+                config.qdStartTime=performance.now();
+                return config;}
+);
 
-HTTP.interceptors.response.use((response) => {
-  // Do something with response data
-  if( response && response.config && response.config.qdStartTime){
-    var s=Math.floor(performance.now() - response.config.qdStartTime);
-    var c=response.config;
-    var url=response.config.url + "?" + c.paramsSerializer(c.params);
-    //console.log("interceptors time:",s, response.config);
-    var b=`<a href="${url}" target="vp-notification" >${url}</a>`
-    Notification.add({html: b, elapsed: s});
-  }
-  return response;
-});
+HTTP.interceptors.response.use(
+		(response) => {
+			  // Do something with response data
+			  if( response && response.config && response.config.qdStartTime){
+				var s=Math.floor(performance.now() - response.config.qdStartTime);  
+				response.headers["X-response-ms"]= s // custom header
+				//console.log("AXIOS H:",response.headers)
+			   
+			    var c=response.config;
+			    var url=response.config.url + "?" + c.paramsSerializer(c.params);
+			    //console.log("interceptors time:",s, response.config);
+			    var b=`<a href="${url}" target="vp-notification" >${url}</a>`
+			    Notification.add({html: b, elapsed: s});
+			  }
+			  return response;
+			}
+);
 
 
 // errors hidden

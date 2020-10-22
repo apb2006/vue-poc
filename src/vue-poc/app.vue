@@ -158,7 +158,7 @@
         model: false,
         children: [
         	   {href: '/tasks',text: 'Task list',icon: 'assignment'},
-        	   {href: '/history/tasks',text: 'History',icon: 'history'}
+        	   {href: '/history/tasks',text: 'Run history',icon: 'history'}
       ]},
       {
           icon: 'folder_open',

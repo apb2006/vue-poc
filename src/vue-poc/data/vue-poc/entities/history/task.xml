@@ -1,0 +1,37 @@
+<entity name="history.task" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>vue-poc task view events </description>
+	<namespace prefix="h" uri="urn:quodatum:vue-poc.history" />
+	<fields>
+		<field name="created" type="xs:string">
+			<description>time of event</description>
+			<xpath>@when</xpath>
+		</field>
+		<field name="user" type="xs:string">
+			<description>user</description>
+			<xpath>@user</xpath>
+		</field>
+		<field name="id" type="xs:string">
+			<description>id</description>
+			<xpath>@id</xpath>
+		</field>
+		<field name="task" type="xs:string">
+			<description>name of task</description>
+			<xpath>h:task/@task</xpath>
+		</field>
+
+		<field name="url" type="xs:string">
+			<description>path</description>
+			<xpath>h:task/@url</xpath>
+		</field>
+		<field name="arity" type="xs:integer">
+			<description>number of parameters</description>
+			<xpath>count(h:task/*:param)</xpath>
+		</field>
+		<field name="summary" type="xs:string">
+			<description>Parameter summary</description>
+			<xpath>string-join(h:task/h:param/concat(string(@name),'=',string(.)),'; ')</xpath>
+		</field>
+	</fields>
+	<views iconclass="calendar_today"/>
+	<data type="element(h:event)">doc("vue-poc/history.xml")/h:history/h:event[h:task]</data>
+</entity>

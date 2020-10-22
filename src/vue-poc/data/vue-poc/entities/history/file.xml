@@ -1,5 +1,5 @@
-<entity name="taskhistory" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>vue-poc task view events </description>
+<entity name="history.file" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>vue-poc file view events </description>
 	<namespace prefix="h" uri="urn:quodatum:vue-poc.history" />
 	<fields>
 		<field name="created" type="xs:string">
@@ -25,5 +25,5 @@
 		</field>
 	</fields>
 	<views iconclass="calendar_today"/>
-	<data type="element(h:event)">doc("vue-poc/history.xml")/h:history/h:event[task]</data>
+	<data type="element(h:event)">doc("vue-poc/history.xml")/h:history/h:event[h:file]</data>
 </entity>

@@ -32,9 +32,15 @@
      :search="q"
     class="elevation-1"
   >
-    <template slot="items" slot-scope="props">
-      <td >AA: <router-link :to="'tasks/' + props.item.to" v-text="props.item.title"></router-link></td>
-      <td >{{ props.item.description }}</td>
+  <template v-slot:item.id="{ item }" > 
+	      <router-link :to="{path: '/tasks/' + item.task + '/run', query:{ id: item.id}}">
+                 {{ item.id }}
+          </router-link>
+    </template>
+    <template v-slot:item.task="{ item }" > 
+	      <router-link :to="{path: '/tasks/' + item.task + '/run', query:{ id: item.id}}">
+                 {{ item.task }}
+          </router-link>
     </template>
     <template slot="no-data">
       <v-alert :value="true" icon="warning">
@@ -56,17 +62,20 @@
       loading: false,
       q: null,
       headers: [   
-        { text: 'Task', value: 'title' },
-        { text: 'Description', value: 'description' },
+        { text: 'Id', value: 'id' },
+        { text: 'Task', value: 'task' },
+        { text: 'Created', value: 'created' },
+        { text: 'Summary', value: 'summary' },
+        { text: 'Params', value: 'arity' }
         ]
       }
   },
   methods:{
     getTasks(){
         this.loading= true;
-        HTTP.get("tasks")
+        HTTP.get("data/history.task")
         .then(r=>{
-		   this.items=r.data;
+		   this.items=r.data.items;
 		   this.loading= false;
        })
     }

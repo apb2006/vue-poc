@@ -24,23 +24,29 @@ axios.interceptors.response.use(function (response) {
 
 // errors displayed by interceptor
 const HTTP = axios.create(AXIOS_CONFIG);
-HTTP.interceptors.request.use((config) => {
-  config.qdStartTime=performance.now();
-  return config;
-});
+HTTP.interceptors.request.use(
+		(config) => {
+                config.qdStartTime=performance.now();
+                return config;}
+);
 
-HTTP.interceptors.response.use((response) => {
-  // Do something with response data
-  if( response && response.config && response.config.qdStartTime){
-    var s=Math.floor(performance.now() - response.config.qdStartTime);
-    var c=response.config;
-    var url=response.config.url + "?" + c.paramsSerializer(c.params);
-    //console.log("interceptors time:",s, response.config);
-    var b=`<a href="${url}" target="vp-notification" >${url}</a>`
-    Notification.add({html: b, elapsed: s});
-  }
-  return response;
-});
+HTTP.interceptors.response.use(
+		(response) => {
+			  // Do something with response data
+			  if( response && response.config && response.config.qdStartTime){
+				var s=Math.floor(performance.now() - response.config.qdStartTime);  
+				response.headers["X-response-ms"]= s // custom header
+				//console.log("AXIOS H:",response.headers)
+			   
+			    var c=response.config;
+			    var url=response.config.url + "?" + c.paramsSerializer(c.params);
+			    //console.log("interceptors time:",s, response.config);
+			    var b=`<a href="${url}" target="vp-notification" >${url}</a>`
+			    Notification.add({html: b, elapsed: s});
+			  }
+			  return response;
+			}
+);
 
 
 // errors hidden

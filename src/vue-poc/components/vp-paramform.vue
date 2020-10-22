@@ -7,10 +7,13 @@
   <v-card >
      <v-toolbar  color="blue lighten-3"  dense>
        <v-card-title >{{ description }}</v-card-title>
-       <v-spacer></v-spacer>
-          <router-link :to="{name:'edit', query:{url: url}}">
-            <v-icon :title="url">history</v-icon>{{ name }}
-          </router-link>
+       <v-spacer></v-spacer>     
+              <v-btn  @click="clear()" id="btn-clear"
+				 >Clear</v-btn>
+		     <v-btn  @click="reset()"
+		         >Reset</v-btn>
+           <v-btn  @click="zlog()"
+		         >console</v-btn>
     </v-toolbar>
     <v-card-text>
        <v-form ref="form"  lazy-validation>
@@ -43,15 +46,7 @@
             </v-form>
            
        </v-card-text>
-           <v-card-actions>
-              <v-btn  @click="clear()" id="btn-clear"
-				 >Clear</v-btn>
-		     <v-btn  @click="reset()"
-		         >Reset</v-btn>
-           </v-card-actions>
-           <v-btn  @click="zlog()"
-		         >console</v-btn>
-           </v-card-actions>
+       
     </v-card>
 </template>
 

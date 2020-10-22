@@ -30,12 +30,20 @@
                        </v-btn>         
                </template>
               <v-card >
-              <v-toolbar color="cyan lighten-2">
-                  <v-card-title >Actions</v-card-title>
-               </v-toolbar>
+              <v-app-bar dense color="cyan lighten-2" >
+                  <v-card-title dense>Actions</v-card-title>
+               </v-app-bar>
                   
                <v-card-text>
-                  <slot name="actions"></slot>
+                  <v-list dense>
+	                  <slot name="actions"></slot>                  
+	                   <v-list-item @click="copy">
+		                    <v-list-item-avatar><v-icon>content_copy</v-icon></v-list-item-avatar>
+		                    <v-list-item-title>Copy selection</v-list-item-title>
+	                   </v-list-item>
+                  </v-list>
+                 
+           
                 </v-card-text>
               </v-card>
          </v-menu>  
@@ -89,6 +97,7 @@
       class="elevation-1"
       :fixed-header="true"
       :no-data-text="noDataMsg"
+     
     >
    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"/></template>
    
@@ -100,15 +109,22 @@
 <script>{
   props: {
 	  headers: {default: [ { text: 'Name', value: 'id'} ]},
-	  dataUri:{  default: "data/dice.entity"},
+	  dataUri:{  default: null},
 	  itemKey:{ default: "id"},
 	  noDataMsg:{  default: "No data found."},
 	  title:{ default: "" },
 	  entity:{  },
 	  query: {default: function(){return {filter:null}}},
 	  showSelect: {  default: false  },
-	  multiSort: {  default: false  }
+	  multiSort: {  default: false  },
+	  customFilter: {default: function(value, search, item) {
+	        return value != null &&
+	          search != null &&
+	          typeof value === 'string' &&
+	          value.toString().indexOf(search) !== -1}
+	  }
   },
+  
   data:  function(){
     return {
       selected: [],
@@ -119,8 +135,10 @@
       autoRefreshL: false
       }
   },
+  
   methods:{
       getItems(){
+        if(this.dataUri === null) return;
         this.loading=true;
         HTTP.get(this.dataUri)
         .then(r=>{
@@ -129,6 +147,20 @@
            this.items=r.data.items;
            if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
         })
+     },
+     
+     copy(){
+    	var flds=this.headers.map(h=>h.value)
+    	var row=function(item){return flds.map(f=>item.hasOwnProperty(f)?item[f]:'').join(",")}
+    	var txt=flds.join(",")
+    	var txt=this.selected.map(item=>row(item)).join("\n")
+    	txt= txt=flds.join(",") +"\n" + txt
+    	navigator.clipboard.writeText(txt).then(function() {
+  		  /* clipboard successfully set */
+  		}, function() {
+  		  alert("clipboard write failed")
+  		});
+    	
      }
   },
  

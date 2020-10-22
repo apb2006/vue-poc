@@ -1,0 +1,24 @@
+<entity name="basex.database" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>BaseX databases</description>
+
+	<fields>
+		<field name="name" type="xs:string">
+			<description>database name</description>
+			<xpath>.</xpath>
+		</field>
+		<field name="documents" type="xs:integer">
+			<description>number of documents in database</description>
+			<xpath>db:property(.,'documents')</xpath>
+		</field>
+		<field name="binaries" type="xs:integer">
+            <description>non xml documents</description>
+			<xpath>db:property(.,'binaries')</xpath>
+        </field>
+		<field name="timestamp" type="xs:string">
+			<description>last update</description>
+			<xpath>db:property(.,'timestamp')</xpath>
+		</field>
+	</fields>
+	<views iconclass="library_books"/>
+	<data type="xs:string">db:list()</data>
+</entity>

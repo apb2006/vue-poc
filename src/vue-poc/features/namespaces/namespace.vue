@@ -3,9 +3,9 @@
 <v-container fluid>
    <qd-table :headers="headers" data-uri="data/namespace" entity="namespace"  item-key="xmlns">
     <template v-slot:item.xmlns="{ item }" > 
-	      <td ><router-link :to="{name:'namespace1', query:{ id: item.xmlns}}">
+	      <router-link :to="{name:'namespace1', query:{ id: item.xmlns}}">
                  {{ item.xmlns }}
-                </router-link></td>
+          </router-link>
     </template>
       
     <template slot="no-results">

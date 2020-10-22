@@ -128,7 +128,8 @@ const router = new VueRouter({
     },
     { path: '/history', component: { template: '<router-view/>' }
     ,children: [
-      { path: 'files', component: Filehistory, meta:{title: "File History"} }
+      { path: 'files', component: Filehistory, meta:{title: "File History"} },
+      { path: 'tasks',  name: "taskhistory", component: Taskhistory, meta:{title: "Task History"} }
       ]
     },
     { path: '/labs', component: { template: '<router-view/>' }
@@ -158,7 +159,6 @@ const router = new VueRouter({
     
     { path: '/tasks', component: { template: '<router-view/>' } ,  children:[
 		    { path: '', component: Tasks, meta:{title:"Runnable tasks"} },
-		    { path: 'model', component: Model, meta:{title:"build model"} },
 		    { path: 'vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
 		    { path: ':task',  props: true, component: { template: '<router-view/>' },
 		    	children:[

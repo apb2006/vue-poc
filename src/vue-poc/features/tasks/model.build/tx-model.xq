@@ -23,7 +23,7 @@ let $config:='import module namespace cfg = "quodatum:media.image.configure" at 
 
 let $src:=bf:module(bf:entities($efolder),$config)
 return (
-  prof:variables(),
+  (: prof:variables(), :)
   file:write-text($target,$src),
   update:output(<json type="object"><msg>Updated: {$target}</msg></json>)
 )

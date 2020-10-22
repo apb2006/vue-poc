@@ -10,7 +10,7 @@ declare %basex:lazy variable $ping:state as element(state):=db:open($ping:db,"/s
  :  incr counter
  :)
 declare %updating  
-%rest:POST %rest:path("/vue-poc/api/ping")
+%rest:POST %rest:path("/vue-poc/api/performance/ping")
 %output:method("text")
 function ping:dopost()
 {( 
@@ -23,7 +23,7 @@ function ping:dopost()
  :)
 declare 
 %output:method("text")  
-%rest:GET %rest:path("/vue-poc/api/ping")
+%rest:GET %rest:path("/vue-poc/api/performance/ping")
 function ping:dostate()
 {
   $ping:state/ping
@@ -34,7 +34,7 @@ function ping:dostate()
  :)
 declare 
 %output:method("text")  
-%rest:GET %rest:path("/vue-poc/api/nodb")
+%rest:GET %rest:path("/vue-poc/api/performance/nodb")
 function ping:nodb()
 {
   "ok"

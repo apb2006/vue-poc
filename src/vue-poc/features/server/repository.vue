@@ -7,7 +7,10 @@
       <router-link :to="{name: 'repo1', query: {id: item.name }}">{{ item.name }} </router-link>
    </template>
    <template v-slot:actions>
-     <v-btn>action here</v-btn>
+         <v-list-item @click="remove">
+           <v-list-item-avatar><v-icon>delete</v-icon></v-list-item-avatar>
+           <v-list-item-title>Delete</v-list-item-title>
+         </v-list-item>
    </template>
    </qd-table>
  </v-container>
@@ -26,6 +29,11 @@
         { text: 'Version', value: 'version' }
       ] 
       }
+  },
+  methods:{
+	remove(){
+		alert("Not yet")
+	}  
   },
   watch: {
 		"query":{

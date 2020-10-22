@@ -4,13 +4,13 @@
  -->
 <template id="vp-notifications">
    <v-card>
-         <v-app-bar class="amber white--text" >
-                <v-toolbar-title >Notifications </v-toolbar-title>
-                {{ $notification.nextId }}
-                 <v-btn  @click="refresh" icon><v-icon>refresh</v-icon></v-btn>
-          <v-spacer></v-spacer>
-          <v-btn  @click="set(false)" icon><v-icon>close</v-icon></v-btn>
+         <v-app-bar dense class="amber white--text" >
+              <v-toolbar-title > {{ $notification.nextId }} Notifications </v-toolbar-title>           
+              <v-btn  @click="refresh" icon><v-icon>refresh</v-icon></v-btn>
+	          <v-spacer></v-spacer>
+	          <v-btn  @click="set(false)" icon><v-icon>close</v-icon></v-btn>
           </v-app-bar>
+          
           <v-card-text>
         <v-list three-line>
           <template v-for="msg in $notification.messages" >

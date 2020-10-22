@@ -19,7 +19,8 @@ declare
 %perm:check('/vue-poc') 
 function vue-login:check-app() {
   let $user := session:get('id')
-  let $_:=trace($user,"CHECK")
+  let $m:=``[path: `{ request:path() }`, user: `{ $user }`.]``
+  let $_:=trace($m,"CHECK: ")
   return ()
 };
 

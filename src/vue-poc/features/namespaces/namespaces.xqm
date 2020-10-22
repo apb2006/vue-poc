@@ -6,7 +6,7 @@ xquery version "3.1";
 : @since oct 2019
 :)
 
-module namespace _ = 'quodatum.model.namespaces';
+module namespace _ = 'urn:quodatum:model.namespaces';
 
 
 import module namespace entity ='quodatum.models.generated' at "../../models.gen.xqm";

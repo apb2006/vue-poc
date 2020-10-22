@@ -52,7 +52,8 @@
               
               <v-list-item><a href="https://material.io/tools/icons/?style=baseline"
               target="new">icons (material)</a></v-list-item>
-                  
+              <v-list-item><a href="../api"
+              target="new">wadl</a></v-list-item>    
 			 </v-list>
 			 </v-flex>
 			 <v-flex xs6>

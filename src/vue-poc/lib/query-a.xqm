@@ -9,6 +9,7 @@
 module namespace query-a = 'vue-poc/query-a';
 
 import module namespace request = "http://exquery.org/ns/request";
+import module namespace xquery = "http://basex.org/modules/xquery";
 
 
 (:~
@@ -78,7 +79,7 @@ function query-a:run($query as xs:string,
                      $options as map(*)
                    )
 {
-let $query := xs:anyURI($query)  
+let $query := xs:anyURI($query) =>trace("query-a:run") 
 let $updating:=xquery:parse-uri($query)/@updating/boolean(.)
 return if($updating) then
        xquery:eval-update($query, $bindings, $options)

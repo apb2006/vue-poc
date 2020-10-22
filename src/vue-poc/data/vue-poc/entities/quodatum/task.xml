@@ -1,5 +1,6 @@
 <entity name="quodatum.task" xmlns="https://github.com/Quodatum/app-doc/entity">
 	<description>Predefined queries with parameters, listed in taskdef.xml </description>
+	<namespace prefix="t" uri="https://github.com/Quodatum/task" />
 	<fields>
 		<field name="to" type="xs:string">
 			<description>name for task</description>
@@ -11,13 +12,13 @@
 		</field>
 		<field name="title" type="xs:string">
 			<description>title</description>
-			<xpath>title</xpath>
+			<xpath>t:title</xpath>
 		</field>
 		<field name="description" type="xs:string">
 			<description>task description</description>
-			<xpath>fn:serialize(description/node())</xpath>
+			<xpath>fn:serialize(t:description/node())</xpath>
 		</field>
 	</fields>
 	<views iconclass="update"/>
-	<data type="element(task)">doc("tasks/taskdef.xml")/tasks/task</data>
+	<data type="element(t:task)">doc("tasks/taskdef.xml")/t:tasks/t:task</data>
 </entity>

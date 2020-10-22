@@ -275,10 +275,6 @@ v-on:annotation="annotation"></vue-ace>
       var r=type.mode
       this.mode=r?r:"text"
     },
-    onResize(){
-      var h=window.innerHeight
-      console.log("height:",h)
-    },
     leaving(event) {
       event.returnValue = "event seems to need to be set";
       //debugger;
