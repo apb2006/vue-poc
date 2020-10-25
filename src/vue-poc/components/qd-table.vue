@@ -18,7 +18,8 @@
         single-line  hide-details
         v-model="query.filter"
         clearable
-      ></v-text-field>   
+      ></v-text-field>
+      
       <v-spacer></v-spacer>
        <v-menu v-if="selected.length" offset-y left>
                <template v-slot:activator="{ on }">
@@ -87,7 +88,7 @@
     </v-toolbar>
     <v-card-text>
    <v-data-table   
-      :headers="headers"  :items="items" 
+      :headers="headers"  :items="filtered" 
       v-model="selected" :item-key="itemKey"
       :search="query.filter"
       :items-per-page="10" 
@@ -117,6 +118,7 @@
 	  query: {default: function(){return {filter:null}}},
 	  showSelect: {  default: false  },
 	  multiSort: {  default: false  },
+	  filter: { default: []},
 	  customFilter: {default: function(value, search, item) {
 	        return value != null &&
 	          search != null &&
@@ -143,7 +145,7 @@
         HTTP.get(this.dataUri)
         .then(r=>{
            this.loading=false;
-           console.log("Jobs items",r.data.items,"headers ",this.headers);
+           console.log("qd-table items:",r.data.items,"headers ",this.headers);
            this.items=r.data.items;
            if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
         })
@@ -163,7 +165,22 @@
     	
      }
   },
- 
+  
+  watch:{
+	  filter:function(nn){console.log("filter new:",nn)}
+  },
+  computed:{
+	  filtered:function(){
+		var cons=this.filter
+		console.log("filter", cons)
+		var f=function(item){
+			if(cons.length==0) return true
+			var c=cons[0]
+			return item[c.name]==c.value
+		}
+		return this.items.filter(f)  
+	  }
+  },
   created:function(){
     console.log("qd-table");
     this.getItems();

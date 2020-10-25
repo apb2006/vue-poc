@@ -14,7 +14,7 @@
   
   <v-card-text>
 
-   <qd-table :headers="headers" data-uri="server/basexsettings2"  item-key="name"  >
+   <qd-table :headers="headers" data-uri="server/basexsettings2"  item-key="name" :filter="constrain" >
       <template v-slot:item.name="{ item }" >    
 	       <v-chip>{{ item.name }}</v-chip>
     </template>
@@ -28,22 +28,7 @@
     </template>
     
    </qd-table>
-     <v-data-table
-    :headers="headers"
-    :items="filtered"
-    class="elevation-1"  
-    
-  >
-    <template slot="items" slot-scope="props">
-      <td>{{ props.item.name }}</td>
-      <td >{{ props.item.current }}</td>
-      <td >{{ props.item.changed }}</td>
-      <td class="text-xs-right">{{ props.item.default }}</td>
-      <td>
-        <qd-link :href="'http://docs.basex.org/wiki/Options#' + props.item.name.toUpperCase()">description</qd-link>
-      </td>
-    </template>
-  </v-data-table>
+   
    </v-card-text>
  
     </v-card> 
@@ -87,12 +72,18 @@
         search != null &&
         typeof value === 'string' &&
         value.toString().indexOf(search) !== -1
+    },
+    foo(){
+    	
     }
   },
   computed: {
     // a computed getter
     filtered: function () {
        return this.items.filter(item=> item.changed == this.changed)
+    },
+    constrain: function(){
+    	return this.changed?[ {name:"changed", value:true} ]:[]
     }
   },
   created:function(){

@@ -17,7 +17,7 @@
 			    <v-breadcrumbs :items="[{text:'Entities',to:'/model/entity'}]" >
 						     <template slot="item" slot-scope="props">
 					           <v-breadcrumbs-item  :to="props.item.to" :disabled="props.item.disabled" :exact="true">
-					                {{ props.item.text }}
+					              <v-icon>add</v-icon>{{ props.item.text }}
 					           </v-breadcrumbs-item>
 					       </template>
 		     </v-breadcrumbs>
@@ -40,20 +40,18 @@
           <v-flex
             v-for="item in props.items"
             :key="item.name"
-            xs12
-            sm6
-            md4
-            lg3
+            
           >
      
-        <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
+        <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
         
-          <v-toolbar  color="blue lighten-3"  dense>
+          <v-toolbar  color="blue lighten-3"  >
 		          <v-toolbar-title>
 		           <router-link :to="{path:'entity/'+ item.name}">
-		            <v-avatar>
-		             <v-icon>{{ item.iconclass }}</v-icon> 
+		            <v-avatar color="lime">
+		             <v-icon  >{{ item.iconclass }}</v-icon> 
 		            </v-avatar> {{ item.name }}
+		            </router-link>
 		            </v-toolbar-title>
 		         </v-card-title>
 		         <v-spacer></v-spacer>
@@ -61,7 +59,7 @@
 			      <span slot="badge">{{ item.nfields }}</span>
 			    </v-badge>
           </v-toolbar>
-          <v-card-text >{{ item.description }}</<v-card-text>
+          <v-card-text xs1 >{{ item.description }}</<v-card-text>
         </v-card>
       </v-flex>
       </v-layout>

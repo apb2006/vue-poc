@@ -51,7 +51,7 @@
 			     <v-expansion-panel-content>
 				      <v-layout>
 				      <v-flex xs1>
-				           <v-avatar color="teal" size="62"><v-icon x-large>{{ item.iconclass }}</v-icon></v-avatar>
+				           <v-avatar color="lime" size="62"><v-icon x-large>{{ item.iconclass }}</v-icon></v-avatar>
 				      </v-flex>
 			                <v-flex xs11>
 						         {{item.description}}

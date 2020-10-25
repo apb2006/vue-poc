@@ -1,4 +1,4 @@
-// generated 2020-10-22T21:16:24.958+01:00
+// generated 2020-10-25T12:28:22.114Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -538,7 +538,8 @@ Vue.component('qd-table',{template:`
    <v-toolbar-title>{{ title }}</v-toolbar-title>
      
    <v-spacer></v-spacer>
-    <v-text-field prepend-icon="filter_list" label="Filter..." single-line hide-details v-model="query.filter" clearable></v-text-field>   
+    <v-text-field prepend-icon="filter_list" label="Filter..." single-line hide-details v-model="query.filter" clearable></v-text-field>
+      
       <v-spacer></v-spacer>
        <v-menu v-if="selected.length" offset-y left>
                <template v-slot:activator="{ on }">
@@ -601,7 +602,7 @@ Vue.component('qd-table',{template:`
               </v-menu>
     </v-toolbar>
     <v-card-text>
-   <v-data-table :headers="headers" :items="items" v-model="selected" :item-key="itemKey" :search="query.filter" :items-per-page="10" :show-select="showSelectL" :multi-sort="multiSortL" :loading="loading" class="elevation-1" :fixed-header="true" :no-data-text="noDataMsg">
+   <v-data-table :headers="headers" :items="filtered" v-model="selected" :item-key="itemKey" :search="query.filter" :items-per-page="10" :show-select="showSelectL" :multi-sort="multiSortL" :loading="loading" class="elevation-1" :fixed-header="true" :no-data-text="noDataMsg">
    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"></slot></template>
    
   </v-data-table>
@@ -619,6 +620,7 @@ Vue.component('qd-table',{template:`
 	  query: {default: function(){return {filter:null}}},
 	  showSelect: {  default: false  },
 	  multiSort: {  default: false  },
+	  filter: { default: []},
 	  customFilter: {default: function(value, search, item) {
 	        return value != null &&
 	          search != null &&
@@ -645,7 +647,7 @@ Vue.component('qd-table',{template:`
         HTTP.get(this.dataUri)
         .then(r=>{
            this.loading=false;
-           console.log("Jobs items",r.data.items,"headers ",this.headers);
+           console.log("qd-table items:",r.data.items,"headers ",this.headers);
            this.items=r.data.items;
            if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
         })
@@ -665,7 +667,22 @@ Vue.component('qd-table',{template:`
     	
      }
   },
- 
+  
+  watch:{
+	  filter:function(nn){console.log("filter new:",nn)}
+  },
+  computed:{
+	  filtered:function(){
+		var cons=this.filter
+		console.log("filter", cons)
+		var f=function(item){
+			if(cons.length==0) return true
+			var c=cons[0]
+			return item[c.name]==c.value
+		}
+		return this.items.filter(f)  
+	  }
+  },
   created:function(){
     console.log("qd-table");
     this.getItems();
@@ -5882,7 +5899,7 @@ const Entity=Vue.extend({template:`
 			    <v-breadcrumbs :items="[{text:'Entities',to:'/model/entity'}]">
 						     <template slot="item" slot-scope="props">
 					           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
-					                {{ props.item.text }}
+					              <v-icon>add</v-icon>{{ props.item.text }}
 					           </v-breadcrumbs-item>
 					       </template>
 		     </v-breadcrumbs>
@@ -5897,24 +5914,25 @@ const Entity=Vue.extend({template:`
 	 
      <template v-slot:default="props">
         <v-layout wrap>
-          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
+          <v-flex v-for="item in props.items" :key="item.name">
      
-        <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
+        <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
         
-          <v-toolbar color="blue lighten-3" dense>
+          <v-toolbar color="blue lighten-3">
 		          <v-toolbar-title>
 		           <router-link :to="{path:'entity/'+ item.name}">
-		            <v-avatar>
+		            <v-avatar color="lime">
 		             <v-icon>{{ item.iconclass }}</v-icon> 
 		            </v-avatar> {{ item.name }}
-		            </router-link></v-toolbar-title>
+		            </router-link>
+		            </v-toolbar-title>
 		         
 		         <v-spacer></v-spacer>
 		         <v-badge>
 			      <span slot="badge">{{ item.nfields }}</span>
 			    </v-badge>
           </v-toolbar>
-          <v-card-text>{{ item.description }}<!--<v-card-text-->
+          <v-card-text xs1>{{ item.description }}<!--<v-card-text-->
         </v-card-text></v-card>
       </v-flex>
       </v-layout>
@@ -6004,7 +6022,7 @@ const Entity1=Vue.extend({template:`
 			     <v-expansion-panel-content>
 				      <v-layout>
 				      <v-flex xs1>
-				           <v-avatar color="teal" size="62"><v-icon>{{ item.iconclass }}</v-icon></v-avatar>
+				           <v-avatar color="lime" size="62"><v-icon x-large>{{ item.iconclass }}</v-icon></v-avatar>
 				      </v-flex>
 			                <v-flex xs11>
 						         {{item.description}}
@@ -7201,7 +7219,7 @@ const Basexsettings=Vue.extend({template:`
   
   <v-card-text>
 
-   <qd-table :headers="headers" data-uri="server/basexsettings2" item-key="name">
+   <qd-table :headers="headers" data-uri="server/basexsettings2" item-key="name" :filter="constrain">
       <template v-slot:item.name="{ item }">    
 	       <v-chip>{{ item.name }}</v-chip>
     </template>
@@ -7215,17 +7233,7 @@ const Basexsettings=Vue.extend({template:`
     </template>
     
    </qd-table>
-     <v-data-table :headers="headers" :items="filtered" class="elevation-1">
-    <template slot="items" slot-scope="props">
-      <td>{{ props.item.name }}</td>
-      <td>{{ props.item.current }}</td>
-      <td>{{ props.item.changed }}</td>
-      <td class="text-xs-right">{{ props.item.default }}</td>
-      <td>
-        <qd-link :href="'http://docs.basex.org/wiki/Options#' + props.item.name.toUpperCase()">description</qd-link>
-      </td>
-    </template>
-  </v-data-table>
+   
    </v-card-text>
  
     </v-card> 
@@ -7268,12 +7276,18 @@ const Basexsettings=Vue.extend({template:`
         search != null &&
         typeof value === 'string' &&
         value.toString().indexOf(search) !== -1
+    },
+    foo(){
+    	
     }
   },
   computed: {
     // a computed getter
     filtered: function () {
        return this.items.filter(item=> item.changed == this.changed)
+    },
+    constrain: function(){
+    	return this.changed?[ {name:"changed", value:true} ]:[]
     }
   },
   created:function(){
