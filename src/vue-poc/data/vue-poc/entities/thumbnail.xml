@@ -38,7 +38,7 @@
     </field>
 	</fields>
 	
-	<views iconclass="fa fa-file">
+	<views iconclass="topic">
 		<view name="filter">name</view>
 	</views>
 	<data type="element(image)">collection($cfg:DB-IMAGE || "/image")/image</data>

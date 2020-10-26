@@ -1,4 +1,4 @@
-// generated 2020-10-25T12:28:22.114Z
+// generated 2020-10-25T22:11:28.368Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -5914,7 +5914,7 @@ const Entity=Vue.extend({template:`
 	 
      <template v-slot:default="props">
         <v-layout wrap>
-          <v-flex v-for="item in props.items" :key="item.name">
+          <v-flex v-for="item in props.items" :key="item.name" align-items="flex-start">
      
         <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
         

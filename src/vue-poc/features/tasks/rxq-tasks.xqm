@@ -68,14 +68,27 @@ function vue-rest:runtask($task)
                { map:keys($params)!<param name="{.}">{map:get($params,.)}</param> }
             </task>
   return (
-      query-a:run($url, $params, map{}),
+    query-a:run($url, $params, map{}),
     hlog:save($log),
-    let $a:=update:cache(true())
-    let $r:=<json type="object">
-	            <result>{$a[1]}</result>
+    vue-rest:result()
+  )
+};
+
+(:~ massage update:output 
+ update:cache = (results,id) 
+ :)
+declare 
+%updating
+function vue-rest:result(){
+ let $a:=update:cache(true())
+ let $r:=$a[1]
+ let $r:=typeswitch($r)
+         case element(json) return <result type="{$r/@type}">{$r/*}</result>
+         default return <result>{$r}</result>
+          
+ let $r:=<json type="object">
+	            {$r}
 	            <id>{$a[2]}</id>
             </json>
     return update:output($r)
-  )
-};
-    
+};    
