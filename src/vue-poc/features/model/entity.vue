@@ -39,8 +39,7 @@
         <v-layout wrap >
           <v-flex 
             v-for="item in props.items"
-            :key="item.name"  align-items="flex-start"
-          >
+            :key="item.name"            >
      
         <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
         

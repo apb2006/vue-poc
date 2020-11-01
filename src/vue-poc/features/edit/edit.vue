@@ -280,20 +280,27 @@ v-on:annotation="annotation"></vue-ace>
       //debugger;
       console.log("Leaving...");
       if(this.dirty)event.preventDefault();
-  }
+    },
+    onResize(){
+        var h=window.innerHeight
+        //console.log("height:",h)
+      }
   },
+  
   computed:{
     icon(){
       return (this.protocol=="xmldb")?"account_balance":"folder"
     }
   },
+     
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
     document.addEventListener('beforeunload', this.leaving);
-  this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
+    this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
     var url=this.$route.query.url
     if(url) this.fetch(url)
   },
+  
   beforeRouteEnter (to, from, next) {
     Settings.getItem('settings/ace')
     .then( v =>{

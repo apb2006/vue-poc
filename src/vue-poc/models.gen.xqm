@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2020-10-20T22:43:25.275+01:00 
+ : auto generated from xml files in entities folder at: 2020-10-26T12:23:41.567Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';

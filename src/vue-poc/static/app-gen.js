@@ -1,4 +1,4 @@
-// generated 2020-10-25T22:11:28.368Z
+// generated 2020-11-01T22:01:41.739Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -1660,8 +1660,10 @@ Vue.use(Fullscreen);
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/mimetypes.js
 // Mimetype info as vue extension. defines $MimeTypes
-// $MimeTypes.mode 
-// 
+
+// $MimeTypes.mode(acemode) ->{icon,formatfn}
+//  $MimeTypes.contentType(mimetype) ->{mode}
+
 const MimeTypes=new function(){
   var formatdom= t=>html_beautify(t, { indent_size: 3 ,indent_inner_html:true});
   var formatjs= t=>js_beautify(t, { indent_size: 2 });
@@ -3748,20 +3750,27 @@ const Edit=Vue.extend({template:`
       //debugger;
       console.log("Leaving...");
       if(this.dirty)event.preventDefault();
-  }
+    },
+    onResize(){
+        var h=window.innerHeight
+        //console.log("height:",h)
+      }
   },
+  
   computed:{
     icon(){
       return (this.protocol=="xmldb")?"account_balance":"folder"
     }
   },
+     
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
     document.addEventListener('beforeunload', this.leaving);
-  this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
+    this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
     var url=this.$route.query.url
     if(url) this.fetch(url)
   },
+  
   beforeRouteEnter (to, from, next) {
     Settings.getItem('settings/ace')
     .then( v =>{
@@ -5914,7 +5923,7 @@ const Entity=Vue.extend({template:`
 	 
      <template v-slot:default="props">
         <v-layout wrap>
-          <v-flex v-for="item in props.items" :key="item.name" align-items="flex-start">
+          <v-flex v-for="item in props.items" :key="item.name">
      
         <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
         
