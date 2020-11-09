@@ -7,6 +7,7 @@ module namespace vue-api = 'quodatum:vue.api';
 import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace session = "http://basex.org/modules/session";
 import module namespace ufile = 'vue-poc/file' at "../../lib/file.xqm";
+import module namespace  resolve = 'urn:quodatum:resolve' at "../../lib/resolve.xqm";
 
 import module namespace mt = 'urn:quodatum:data:mimetype' at "../../lib/mimetype.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
@@ -18,19 +19,17 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
 declare
 %rest:GET %rest:path("/vue-poc/api/edit")
 %rest:query-param("url", "{ $url }")
-%rest:query-param("protocol", "{ $protocol }")
 %rest:produces("application/json")
 %output:method("json")   
-function vue-api:edit-get($url as xs:string, $protocol as xs:string)   
+function vue-api:edit-get($url as xs:string)   
 {
- 
-  let $reader := map{
-      "webfile": vue-api:get-webfile#1,
-      "xmldb":   vue-api:get-basexdb#1
-      }
-    let $reader:=trace($reader)
-    let $fn:=($reader($protocol),vue-api:get-webfile#1)[1]
-   return $fn($url)
+  let $u:=resolve:uri($url)
+   return <json type="object">{
+		        element protocol{ $u?protocol},
+		        element uri { $u?uri },
+		        element mimetype { fetch:content-type($u?uri) },
+            element data { $u?fnGet() }
+          }</json>
 };
 
 (:~

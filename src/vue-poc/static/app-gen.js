@@ -1,4 +1,4 @@
-// generated 2020-11-01T22:01:41.739Z
+// generated 2020-11-07T23:04:20.292Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -617,10 +617,11 @@ Vue.component('qd-table',{template:`
 	  noDataMsg:{  default: "No data found."},
 	  title:{ default: "" },
 	  entity:{  },
+	  initItems: { default: function(){return []}},
 	  query: {default: function(){return {filter:null}}},
 	  showSelect: {  default: false  },
 	  multiSort: {  default: false  },
-	  filter: { default: []},
+	  filter: { default: function(){return []}},
 	  customFilter: {default: function(value, search, item) {
 	        return value != null &&
 	          search != null &&
@@ -631,9 +632,9 @@ Vue.component('qd-table',{template:`
   
   data:  function(){
     return {
+      items: [],
       selected: [],
       loading: false,
-      items: [],
       showSelectL: this.showSelect,
       multiSortL: this.multiSort,
       autoRefreshL: false
@@ -642,15 +643,18 @@ Vue.component('qd-table',{template:`
   
   methods:{
       getItems(){
-        if(this.dataUri === null) return;
-        this.loading=true;
-        HTTP.get(this.dataUri)
-        .then(r=>{
-           this.loading=false;
-           console.log("qd-table items:",r.data.items,"headers ",this.headers);
-           this.items=r.data.items;
-           if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
-        })
+        if(this.dataUri === null) {
+        	 this.items= this.initItems
+        } else {
+	        this.loading=true;
+	        HTTP.get(this.dataUri)
+	        .then(r=>{
+	           this.loading=false;
+	           console.log("qd-table items:",r.data.items,"headers ",this.headers);
+	           this.items=r.data.items;
+	           if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
+	        })
+        }
      },
      
      copy(){
@@ -1683,7 +1687,7 @@ const MimeTypes=new function(){
     "image/svg+xml":{ mode:"svg"}
  };
 
-  
+  // mode to {icon, format function}
   this.mode={
     "text": {
       "icon": "library_books"
@@ -1705,11 +1709,29 @@ const MimeTypes=new function(){
       "icon": "spa"
     }
   };
+  this.modeForMime=function(mimetype){
+	  var r= this.contentType[mimetype] && this.contentType[mimetype].mode
+	  return r || 'text'
+  };
+  
+  this.headers= [
+	        { text: 'Name', value: 'name'},
+	        { text: 'Ace Mode', value: 'mode' },
+	        { text: 'Icon', value: 'icon' },
+	        { text: 'Format', value: 'format' }
+	  ];
+	      
   // return [{name:.. mode:..}..]
   this.list=function(){
     var that=this
     var h= Object.keys(this.contentType).map(
-        function(k){ return {name: k, mode: that.contentType[k].mode}}
+        function(k){ var mode=that.modeForMime(k)
+        	         return {name: k, 
+        	                 mode: mode,
+        	                 icon: that.icon(mode),
+        	                 format: !!that.mode[mode]
+        	                 }
+                   }
         )
     return h
   };
@@ -3615,10 +3637,9 @@ const Edit=Vue.extend({template:`
    <v-progress-linear v-if="busy" v-bind:indeterminate="true"></v-progress-linear>
 
 <v-card-text v-if="!busy">
-<v-flex xs12 style="height:70vh" fill-height>
-  
-    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :settings="aceSettings" :events="events" v-resize="onResize" :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
- </v-flex> 
+	<v-flex xs12 style="height:70vh" fill-height>
+	    <vue-ace :content="contentA" :mode="mode" :wrap="wrap" :settings="aceSettings" :events="events" v-resize="onResize" :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets" v-on:change-content="changeContentA" v-on:annotation="annotation"></vue-ace>
+	 </v-flex> 
 </v-card-text>
 </v-card>
  <qd-confirm v-model="clearDialog" @confirm="reset">Delete all edit text?</qd-confirm>
@@ -3632,7 +3653,6 @@ const Edit=Vue.extend({template:`
 };`,
       mode: 'xquery',
       url: '',
-      protocol: 'webfile',
       name: '',
       path: [],
       mimetype: "",
@@ -3669,10 +3689,11 @@ const Edit=Vue.extend({template:`
       this.url=url
       this.name=a.pop()
       this.path=a
-      HTTP.get("edit",{params: {url:url,protocol:this.protocol}})
+      HTTP.get("edit",{params: {url:url}})
       .then(r=>{
         //console.log(r)
-        this.setMode(r.data.mimetype)
+        this.mimetype=r.data.mimetype
+        this.mode= this.$MimeTypes.modeForMime(this.mimetype)
         this.contentA=r.data.data
        
         this.busy=false
@@ -3700,7 +3721,6 @@ const Edit=Vue.extend({template:`
     save(){
       alert("TODO save: "+this.url);
       var data= {
-            protocol:this.protocol,
             url: this.url, //gave the values directly for testing
             data: this.contentA
             }
@@ -3758,6 +3778,9 @@ const Edit=Vue.extend({template:`
   },
   
   computed:{
+	 protocol(){
+	      return this.url.split(':').shift()
+	 }, 
     icon(){
       return (this.protocol=="xmldb")?"account_balance":"folder"
     }
@@ -3766,7 +3789,6 @@ const Edit=Vue.extend({template:`
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
     document.addEventListener('beforeunload', this.leaving);
-    this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
     var url=this.$route.query.url
     if(url) this.fetch(url)
   },
@@ -5482,7 +5504,9 @@ const Jobs=Vue.extend({template:`
       <template v-slot:item.start="{ item }">
          <span>{{ item.start | fromNow }}</span>
       </template>
-         
+       <template v-slot:item.writes="{ item }">
+         <span>*{{ item.writes }}</span>
+      </template>  
   </v-data-table>
  </v-card>
  `,
@@ -5922,12 +5946,12 @@ const Entity=Vue.extend({template:`
 	 </template>
 	 
      <template v-slot:default="props">
-        <v-layout wrap>
-          <v-flex v-for="item in props.items" :key="item.name">
+        <v-row align-content="start">
+          <v-col v-for="item in props.items" :key="item.name">
      
         <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
         
-          <v-toolbar color="blue lighten-3">
+          <v-toolbar color="orange lighten-3">
 		          <v-toolbar-title>
 		           <router-link :to="{path:'entity/'+ item.name}">
 		            <v-avatar color="lime">
@@ -5943,8 +5967,8 @@ const Entity=Vue.extend({template:`
           </v-toolbar>
           <v-card-text xs1>{{ item.description }}<!--<v-card-text-->
         </v-card-text></v-card>
-      </v-flex>
-      </v-layout>
+      </v-col>
+      </v-row>
       </template>
     </v-data-iterator>
   </v-container>
@@ -6199,59 +6223,25 @@ const Entity1data=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/model/mimetype.vue
 const Mimetype=Vue.extend({template:` 
 <v-container fluid grid-list-md>
-  
-    <v-data-iterator :items="items" :items-per-page.sync="itemsPerPage" :search="q" hide-default-footer select-all :value="selected">
-    
-     <template v-slot:header>
-       <v-toolbar>
-			 <v-toolbar-title> 
-			 mimetype TODO
-			    <v-breadcrumbs :items="[{text:'Entities',to:'/entity'}]">
-						     <template slot="item" slot-scope="props">
-					           <v-breadcrumbs-item :to="props.item.to" :disabled="props.item.disabled" :exact="true">
-					                {{ props.item.text }}
-					           </v-breadcrumbs-item>
-					       </template>
-		     </v-breadcrumbs>
-		   </v-toolbar-title>
-			  <v-spacer></v-spacer> 
-			 <v-text-field prepend-icon="filter_list" label="Filter..." v-model="q" type="search" hide-details single-line @keyup.enter="setfilter" clearable></v-text-field>
-		   <v-spacer></v-spacer>
-			 <v-btn @click="getItems" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
-		   <vp-entitylink entity="mimetype"></vp-entitylink>
-	 </v-toolbar>
-	 </template>
-	 
-     <template v-slot:default="props">
-        <v-layout wrap>
-          <v-flex v-for="item in props.items" :key="item.name" xs12 sm6 md4 lg3>
-     
-        <v-card :hover="true" active-class="default-class qd-active" height="200px" max-height="200px">
-        
-          <v-toolbar color="blue lighten-3" dense>
-		          <v-toolbar-title>
-		           <router-link :to="{path:'entity/'+ item.name}">
-		            <v-avatar>
-		             <v-icon>{{ item.iconclass }}</v-icon> 
-		            </v-avatar> {{ item.name }}
-		            </router-link></v-toolbar-title>
-		         
-		         <v-spacer></v-spacer>
-		         <v-badge>
-			      <span slot="badge">{{ item.nfields }}</span>
-			    </v-badge>
-          </v-toolbar>
-          <v-card-text>{{ item.description }}<!--<v-card-text-->
-        </v-card-text></v-card>
-      </v-flex>
-      </v-layout>
-      </template>
-    </v-data-iterator>
+  <qd-table :headers="$MimeTypes.headers" :init-items="items" item-key="name" :show-select="false">
+   <template v-slot:item.name="{ item }">
+     <span>{{ item.name }} </span>
+   </template>
+   <template v-slot:actions>
+         <v-list-item @click="remove">
+           <v-list-item-avatar><v-icon>delete</v-icon></v-list-item-avatar>
+           <v-list-item-title>Delete todo</v-list-item-title>
+         </v-list-item>
+   </template>
+   </qd-table>
+   
+   
   </v-container>
  `,
       
   data:  function(){
     return {
+   	
    	  itemsPerPage: 100,
       page: 1,
       items:[],
@@ -6264,15 +6254,9 @@ const Mimetype=Vue.extend({template:`
   },
   methods:{
     getItems(){
-      this.loading=true
-      HTTP.get("data/entity",{params:{q:this.q}})
-      .then(r=>{
-        this.loading=false
-        //console.log(r.data)
-        //var items=r.data.items.filter(item=>{return item.text!="[GET] http://localhost:8984/vue-poc/api/log"})
-        this.items=r.data.items
-        }) 
+        this.items=this.$MimeTypes.list()
     },
+    
     setfilter(){
       console.log("TODO",this.q);
       this.$router.push({ query: {url: this.url,

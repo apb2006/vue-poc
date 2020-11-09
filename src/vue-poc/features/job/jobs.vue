@@ -59,7 +59,9 @@
       <template v-slot:item.start="{ item }">
          <span>{{ item.start | fromNow }}</span>
       </template>
-         
+       <template v-slot:item.writes="{ item }">
+         <span>*{{ item.writes }}</span>
+      </template>  
   </v-data-table>
  </v-card>
 </template>

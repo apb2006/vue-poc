@@ -4,6 +4,8 @@
 module namespace vue-rest = 'quodatum:vue.tasks';
 import module namespace query-a = 'vue-poc/query-a' at "../../lib/query-a.xqm";
 import module namespace hlog = 'quodatum.data.history' at '../../lib/history.xqm';
+import module namespace  resolve = 'urn:quodatum:resolve'  at '../../lib/resolve.xqm';
+
 declare namespace hist="urn:quodatum:vue-poc.history";
 
 (:~
@@ -39,18 +41,19 @@ function vue-rest:task($task,$id)
 {
   let $taskdef:=doc("taskdef.xml")/tasks/task[@name=$task]
   let $url:=resolve-uri($taskdef/@url)
-  let $info:=query-a:inspect($url) 
-
   let $h:=if($id) then hlog:get($id) else ()
-  return  if($h) then (: use old values :)
+  let $info:= query-a:inspect($url) 
+  let $info:= if($h) then (: use old values :)
               let $v:=<values type="object">{
                        $h/hist:task/hist:param!element{@name}{string(.)}
                      }</values> =>trace("O/P")
  			  return $info transform with {replace node ./values with $v}
  		 else
  		      $info
+ 	return $info transform with { insert node <url2>{ resolve:special($url) }</url2> into . }
 };
-  
+ 
+
 (:~
  :   Run the named task and log history 
  :)

@@ -12,11 +12,11 @@ declare variable $vue-login:SESSION-KEY := "id";
 declare variable $vue-login:SESSION-VALUE := session:get($vue-login:SESSION-KEY);
 
 (:~
- : Permission check: Area for logged-in users.
- : Checks if a session id exists for the current user; if not, redirects to the login page.
+ : Permission check: 
+ : @todo something useful
  :)
 declare 
-%perm:check('/vue-poc') 
+%perm:check('/vue-poc/api') 
 function vue-login:check-app() {
   let $user := session:get('id')
   let $m:=``[path: `{ request:path() }`, user: `{ $user }`.]``

@@ -24,21 +24,21 @@ let $updating:=xquery:parse-uri($mod)/@updating/string()
 let $d:=inspect:module($mod)
 let $vars:=$d/variable[@external="true"]
 return <json type="object">
-   <description>{ $d/description/string() }</description>
-   <updating type="boolean" >{  $updating }</updating>
-    <url >{  $mod }</url>
-  <fields type="array">{  
-  $vars!
-        <_ type="object">
-         <model>{ @name/string() }</model>
-         <label>{ description/string() }</label>
-         <type>{ @type/string() }</type>
-        </_> 
-  }</fields>
-   <values type="object">{
-   $vars!element{@name}{default_tag/string()}
-   }</values>
-   </json>
+		   <description>{ $d/description/string() }</description>
+		   <updating type="boolean" >{  $updating }</updating>
+		    <url >{  $mod }</url>
+		    <fields type="array">{  
+				  $vars!
+				        <_ type="object">
+				         <model>{ @name/string() }</model>
+				         <label>{ description/string() }</label>
+				         <type>{ @type/string() }</type>
+				        </_> 
+		   }</fields>
+		   <values type="object">{
+		   		$vars!element{@name}{default_tag/string()}
+		   }</values>
+      </json>
 };
 
 (:~ 

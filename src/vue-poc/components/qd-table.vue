@@ -115,10 +115,11 @@
 	  noDataMsg:{  default: "No data found."},
 	  title:{ default: "" },
 	  entity:{  },
+	  initItems: { default: function(){return []}},
 	  query: {default: function(){return {filter:null}}},
 	  showSelect: {  default: false  },
 	  multiSort: {  default: false  },
-	  filter: { default: []},
+	  filter: { default: function(){return []}},
 	  customFilter: {default: function(value, search, item) {
 	        return value != null &&
 	          search != null &&
@@ -129,9 +130,9 @@
   
   data:  function(){
     return {
+      items: [],
       selected: [],
       loading: false,
-      items: [],
       showSelectL: this.showSelect,
       multiSortL: this.multiSort,
       autoRefreshL: false
@@ -140,15 +141,18 @@
   
   methods:{
       getItems(){
-        if(this.dataUri === null) return;
-        this.loading=true;
-        HTTP.get(this.dataUri)
-        .then(r=>{
-           this.loading=false;
-           console.log("qd-table items:",r.data.items,"headers ",this.headers);
-           this.items=r.data.items;
-           if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
-        })
+        if(this.dataUri === null) {
+        	 this.items= this.initItems
+        } else {
+	        this.loading=true;
+	        HTTP.get(this.dataUri)
+	        .then(r=>{
+	           this.loading=false;
+	           console.log("qd-table items:",r.data.items,"headers ",this.headers);
+	           this.items=r.data.items;
+	           if(this.autoRefreshL) this.timer=setTimeout(()=>{ this.getItems() }, 10000);
+	        })
+        }
      },
      
      copy(){

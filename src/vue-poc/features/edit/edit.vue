@@ -141,13 +141,12 @@
    <v-progress-linear v-if="busy" v-bind:indeterminate="true" ></v-progress-linear>
 
 <v-card-text v-if="!busy">
-<v-flex xs12 style="height:70vh"  fill-height>
-  
-    <vue-ace  :content="contentA" :mode="mode" :wrap="wrap"  :settings="aceSettings"
-    :events="events" v-resize="onResize"   :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets"
-v-on:change-content="changeContentA" 
-v-on:annotation="annotation"></vue-ace>
- </v-flex> 
+	<v-flex xs12 style="height:70vh"  fill-height>
+	    <vue-ace  :content="contentA" :mode="mode" :wrap="wrap"  :settings="aceSettings"
+	    :events="events" v-resize="onResize"   :completer="$aceExtras.basexCompleter" :snippets="$aceExtras.snippets"
+		v-on:change-content="changeContentA" 
+		v-on:annotation="annotation"></vue-ace>
+	 </v-flex> 
 </v-card-text>
 </v-card>
  <qd-confirm v-model="clearDialog" @confirm="reset">Delete all edit text?</qd-confirm>
@@ -162,7 +161,6 @@ v-on:annotation="annotation"></vue-ace>
 };`,
       mode: 'xquery',
       url: '',
-      protocol: 'webfile',
       name: '',
       path: [],
       mimetype: "",
@@ -199,10 +197,11 @@ v-on:annotation="annotation"></vue-ace>
       this.url=url
       this.name=a.pop()
       this.path=a
-      HTTP.get("edit",{params: {url:url,protocol:this.protocol}})
+      HTTP.get("edit",{params: {url:url}})
       .then(r=>{
         //console.log(r)
-        this.setMode(r.data.mimetype)
+        this.mimetype=r.data.mimetype
+        this.mode= this.$MimeTypes.modeForMime(this.mimetype)
         this.contentA=r.data.data
        
         this.busy=false
@@ -230,7 +229,6 @@ v-on:annotation="annotation"></vue-ace>
     save(){
       alert("TODO save: "+this.url);
       var data= {
-            protocol:this.protocol,
             url: this.url, //gave the values directly for testing
             data: this.contentA
             }
@@ -288,6 +286,9 @@ v-on:annotation="annotation"></vue-ace>
   },
   
   computed:{
+	 protocol(){
+	      return this.url.split(':').shift()
+	 }, 
     icon(){
       return (this.protocol=="xmldb")?"account_balance":"folder"
     }
@@ -296,7 +297,6 @@ v-on:annotation="annotation"></vue-ace>
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
     document.addEventListener('beforeunload', this.leaving);
-    this.protocol=this.$route.query.protocol?this.$route.query.protocol:this.protocol
     var url=this.$route.query.url
     if(url) this.fetch(url)
   },

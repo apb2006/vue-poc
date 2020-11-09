@@ -36,14 +36,14 @@
 	 </template>
 	 
      <template v-slot:default="props">
-        <v-layout wrap >
-          <v-flex 
+        <v-row align-content="start"  >
+          <v-col
             v-for="item in props.items"
-            :key="item.name"            >
+            :key="item.name"           >
      
         <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
         
-          <v-toolbar  color="blue lighten-3"  >
+          <v-toolbar  color="orange lighten-3"  >
 		          <v-toolbar-title>
 		           <router-link :to="{path:'entity/'+ item.name}">
 		            <v-avatar color="lime">
@@ -59,8 +59,8 @@
           </v-toolbar>
           <v-card-text xs1 >{{ item.description }}</<v-card-text>
         </v-card>
-      </v-flex>
-      </v-layout>
+      </v-col>
+      </v-row>
       </template>
     </v-data-iterator>
   </v-container>

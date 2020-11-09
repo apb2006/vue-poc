@@ -22,7 +22,7 @@ const MimeTypes=new function(){
     "image/svg+xml":{ mode:"svg"}
  };
 
-  
+  // mode to {icon, format function}
   this.mode={
     "text": {
       "icon": "library_books"
@@ -44,11 +44,29 @@ const MimeTypes=new function(){
       "icon": "spa"
     }
   };
+  this.modeForMime=function(mimetype){
+	  var r= this.contentType[mimetype] && this.contentType[mimetype].mode
+	  return r || 'text'
+  };
+  
+  this.headers= [
+	        { text: 'Name', value: 'name'},
+	        { text: 'Ace Mode', value: 'mode' },
+	        { text: 'Icon', value: 'icon' },
+	        { text: 'Format', value: 'format' }
+	  ];
+	      
   // return [{name:.. mode:..}..]
   this.list=function(){
     var that=this
     var h= Object.keys(this.contentType).map(
-        function(k){ return {name: k, mode: that.contentType[k].mode}}
+        function(k){ var mode=that.modeForMime(k)
+        	         return {name: k, 
+        	                 mode: mode,
+        	                 icon: that.icon(mode),
+        	                 format: !!that.mode[mode]
+        	                 }
+                   }
         )
     return h
   };
