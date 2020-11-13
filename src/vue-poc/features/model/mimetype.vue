@@ -6,6 +6,14 @@
    <template v-slot:item.name="{ item }">
      <span>{{ item.name }} </span>
    </template>
+   <template v-slot:item.icon="{ item }">
+    <v-chip label>
+      <v-icon left>
+       {{item.icon }}
+      </v-icon>
+       {{item.icon }}
+    </v-chip>
+   </template>
    <template v-slot:actions>
          <v-list-item @click="remove">
            <v-list-item-avatar><v-icon>delete</v-icon></v-list-item-avatar>

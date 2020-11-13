@@ -1,4 +1,4 @@
-// generated 2020-11-07T23:04:20.292Z
+// generated 2020-11-13T11:31:22.679Z
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -2882,7 +2882,7 @@ const Files=Vue.extend({template:`
   methods:{
     file (val) {
    // with query, resulting in /register?plan=private
-      router.push({ path: 'edit', query: { url: this.url+"/"+val,protocol:this.protocol  }})
+      router.push({ path: 'edit', query: { url: this.fullurl(val)  }})
     },
     folder (item) {
       this.url=this.url+item.name+"/"
@@ -2945,9 +2945,13 @@ const Files=Vue.extend({template:`
      },
     selectNone(){
        this.items.forEach(item=>{item.selected=false})
-     }
+     },
+     fullurl(val){
+  	   return this.protocol + ":" +this.url+"/"+val
+     },
   },
   computed: {
+   
    icon(){
         return (this.protocol=="xmldb")?"developer_mode":"folder"
       },
@@ -3496,7 +3500,7 @@ created:function(){
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/edit/edit.vue
 const Edit=Vue.extend({template:` 
-<v-container>
+<v-container fluid>
       <v-snackbar top color="error" v-model="snackbar">
       {{ message }}
       <v-btn text @click="snackbar = false"><v-icon>highlight_off</v-icon></v-btn>
@@ -6226,6 +6230,14 @@ const Mimetype=Vue.extend({template:`
   <qd-table :headers="$MimeTypes.headers" :init-items="items" item-key="name" :show-select="false">
    <template v-slot:item.name="{ item }">
      <span>{{ item.name }} </span>
+   </template>
+   <template v-slot:item.icon="{ item }">
+    <v-chip label>
+      <v-icon left>
+       {{item.icon }}
+      </v-icon>
+       {{item.icon }}
+    </v-chip>
    </template>
    <template v-slot:actions>
          <v-list-item @click="remove">

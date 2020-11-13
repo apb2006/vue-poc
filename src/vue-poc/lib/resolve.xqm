@@ -43,19 +43,25 @@ as map(*){
                     
                 default 
                      return $protocol
-                   
+  let $_:=trace($protocol,"protocol: ")                 
   let $getfn:= switch ($protocol) 
 			   case "xmldb" 
-			         return function(){ doc($uri)}
+			         return  function(){ doc($uri)}
 			         
 			   default 
-			       return function(){ fetch:text($uri)}
-				   
+			         return  function(){  fetch:text($uri)}
+ let $getct:= switch ($protocol) 
+			   case "xmldb" 
+			         return  function(){ "text/xml" }
+			         
+			   default 
+			         return  function(){  fetch:content-type($uri)}				   
   return map{
      "protocol": $protocol,
      "uri": $uri,
      "isDrive": $isDrive,
-     "fnGet": $getfn
+     "fnGet": $getfn,
+     "fnMime": $getct
   }
 };
 

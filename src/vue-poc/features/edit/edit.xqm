@@ -23,12 +23,12 @@ declare
 %output:method("json")   
 function vue-api:edit-get($url as xs:string)   
 {
-  let $u:=resolve:uri($url)
+  let $u:=resolve:uri($url)=>trace("RESOLVE: ")
    return <json type="object">{
 		        element protocol{ $u?protocol},
 		        element uri { $u?uri },
-		        element mimetype { fetch:content-type($u?uri) },
-            element data { $u?fnGet() }
+		        element mimetype { $u?fnMime() },
+                element data { $u?fnGet() =>serialize()}
           }</json>
 };
 

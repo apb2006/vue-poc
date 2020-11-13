@@ -177,7 +177,7 @@
   methods:{
     file (val) {
    // with query, resulting in /register?plan=private
-      router.push({ path: 'edit', query: { url: this.url+"/"+val,protocol:this.protocol  }})
+      router.push({ path: 'edit', query: { url: this.fullurl(val)  }})
     },
     folder (item) {
       this.url=this.url+item.name+"/"
@@ -240,9 +240,13 @@
      },
     selectNone(){
        this.items.forEach(item=>{item.selected=false})
-     }
+     },
+     fullurl(val){
+  	   return this.protocol + ":" +this.url+"/"+val
+     },
   },
   computed: {
+   
    icon(){
         return (this.protocol=="xmldb")?"developer_mode":"folder"
       },
