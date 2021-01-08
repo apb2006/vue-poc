@@ -20,7 +20,7 @@
           </v-btn>
 
           <v-btn value="edit" v-if="data">
-            <router-link :to="{name: 'edit',  query:{url: data.url} }"  > <v-icon>edit</v-icon>Edit</router-link>
+            <router-link :to="{name: 'edit',  query:{url: data.url2} }"  > <v-icon>edit</v-icon>Edit</router-link>
           </v-btn>
 
           <v-btn value="history">

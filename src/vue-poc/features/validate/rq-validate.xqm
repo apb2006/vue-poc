@@ -20,7 +20,7 @@ declare
 function tx:run( )
 {
   let $url:= resolve-uri("tx-validate.xq")
-  return query-a:run-json($url,query-a:params($url))
+  return query-a:run-json($url,query-a:request-bindings($url))
 };
 
 (:~ validation settings 

@@ -97,7 +97,8 @@ declare function dice:response($items,
  : sort, slice, return json
  :)
 declare function dice:response($items,$entity as map(*))
-{
+ as element(json)
+ {
     dice:response($items,$entity,map{})
 };
 

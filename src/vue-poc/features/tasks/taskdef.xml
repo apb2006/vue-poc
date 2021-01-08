@@ -1,4 +1,8 @@
 <tasks >
+	<task name="test" url="task/test.xq">
+		<title>Parameter handling test</title>
+		<description>Contains all parameter types</description>
+	</task>
 	<task name="model" url="model.build/tx-model.xq">
 		<title>Generate model.gen.xqm</title>
 		<description> Generate <code>model.gen.xqm</code> from files in entity folder

@@ -71,7 +71,7 @@ const GEditTabs={
       },
       
       restore(){
-        that=this
+        var that=this
         this.restored=Settings.getItem('edit/items')
         .then(function (v){
            //console.log("items ",v)

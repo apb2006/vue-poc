@@ -2,19 +2,13 @@
 <template id="namespace1">
 <v-card>
 	<v-toolbar >
-	 <v-toolbar-title> 
+	
    <v-breadcrumbs >
-            <v-breadcrumbs-item  :to="{name: 'namespace'}" :exact="true">
-            Namespaces
-            </v-breadcrumbs-item>
-            
-              <v-breadcrumbs-item  >
-            {{ xmlns }}
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
-   </v-toolbar-title>
-	 <v-toolbar-title>
-
+       <v-breadcrumbs-item  :to="{name: 'namespace'}" :exact="true">Namespaces</v-breadcrumbs-item>
+       <v-breadcrumbs-divider  >/</v-breadcrumbs-divider>     
+       <v-breadcrumbs-item  ><v-toolbar-title>{{ xmlns }}</v-toolbar-title></v-breadcrumbs-item>
+   </v-breadcrumbs>
+  
 	 <v-spacer></v-spacer>
 	 <v-btn @click="getItem" icon
 	  :loading="loading"
@@ -47,7 +41,7 @@
       HTTP.get("data/namespace/item",{params: {id: this.xmlns}})
       .then(r=>{
         this.loading=false;
-        console.log(r.data)
+        //console.log(r.data)
         this.item= r.data
         }) 
     }

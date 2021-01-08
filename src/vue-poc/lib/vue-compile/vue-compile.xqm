@@ -105,8 +105,10 @@ let $feats:=$files!vue:feature-build(.,false())
 let $files:= fw:directory-list($COMPONENTS,map{"include-filter":".*\.vue"})
              //c:file/@name/resolve-uri(.,base-uri(.))
 let $comps:=$files!vue:feature-build(.,true())
-
-let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;"
+let $extra:="import { parseISO, formatDistanceToNow,  format } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
+console.log(formatDistanceToNow(new Date(2014, 1, 11), {}))
+"
+let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;" || $extra
 return file:write-text($DEST,string-join(($comment,
                                          $comps,
                                          $js!vue:js-test(.),

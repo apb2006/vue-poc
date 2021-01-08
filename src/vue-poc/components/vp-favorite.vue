@@ -64,7 +64,7 @@ display button that invokes a  save favorite form
     },
     favorite(){
       this.$store.commit('increment')
-      console.log(this.$store.state.count)
+      console.log("vp-inc: ",this.$store.state.count)
        this.exists= !this.exists
       alert("save");
     }

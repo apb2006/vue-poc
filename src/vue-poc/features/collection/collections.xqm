@@ -12,19 +12,6 @@ import module namespace dice = 'quodatum.web.dice/v4' at "../../lib/dice.xqm";
 import module namespace web = 'quodatum.web.utils4' at "../../lib/webutils.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
-(:~
- : history list 
- :)
-declare
-%rest:GET %rest:path("/vue-poc/api/history")
-%rest:produces("application/json")
-%output:method("json")   
-function vue-api:history( )   
-{
- let $entity:=$entity:list("filehistory")
-  let $items:= $entity("data")()
- return dice:response($items,$entity,web:dice())
-};
 
 (:~
  : xqdoc list 

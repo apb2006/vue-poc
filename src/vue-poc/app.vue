@@ -268,7 +268,7 @@
         }) 
       },
       showAlert(msg){
-        this.alert.msg=moment().format()+" "+ msg
+        this.alert.msg=format(new Date())+" "+ msg
         this.alert.show=true
       }
   },
@@ -317,15 +317,17 @@
     HTTP.get("status")
     .then(r=>{
       //console.log("status",r)
-      this.$auth=Object.assign(this.$auth,r.data);
+      this.$auth.update(r.data);
       console.log("AFTER: ",this.$auth);
       //this.$forceUpdate()
     })
     EditTabs.restore();
   },
-  
+  beforeCreate() {
+		this.$store.commit('initialiseStore');
+  },
   beforeDestroy(){
-    console.log("destory-----------")
+    console.log("destroy-----------")
     
   }
   }

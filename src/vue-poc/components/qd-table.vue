@@ -8,9 +8,10 @@
 <template id="qd-table">
   <v-card >
    <v-toolbar color="blue lighten-4">
-   <vp-entitylink v-if="entity" :entity="entity"></vp-entitylink>
-   <v-toolbar-title>{{ title }}</v-toolbar-title>
-     
+    <slot name="title">
+		   <vp-entitylink v-if="entity" :entity="entity"></vp-entitylink>
+		   <v-toolbar-title>{{ title }}</v-toolbar-title>
+    </slot>  
    <v-spacer></v-spacer>
     <v-text-field
         prepend-icon="filter_list"

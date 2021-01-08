@@ -38,7 +38,7 @@ let $user:=session:get("id","")
 let $role:=if($user and user:exists($user)) then user:list-details($user)/@permission/string() else ""
 return  <json   type="object" >
             <user>{ if($user) then $user else "guest" }</user>
-            <permission>{$role}</permission>
+            <role>{$role}</role>
             <session>{session:id()}</session>
             <created>{session:created()}</created>
             <login>{ $remember }</login>

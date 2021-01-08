@@ -20,7 +20,7 @@
               </v-list-item-avatar>
               
              <v-list-item-content>
-              <v-list-item-title>{{  msg.created | fromNow("from") }}</v-list-item-title>
+              <v-list-item-title>{{  msg.created | fromNow }}</v-list-item-title>
               <v-list-item-subtitle v-html="msg.html">msg</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action-text>

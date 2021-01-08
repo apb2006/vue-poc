@@ -1,4 +1,6 @@
-// generated 2020-11-13T11:31:22.679Z
+// generated 2021-01-04T22:50:16.06Z
+import { parseISO, formatDistanceToNow,  format } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
+console.log(formatDistanceToNow(new Date(2014, 1, 11), {}))
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/qd-autoheight.vue
 Vue.component('qd-autoheight',{template:` 
@@ -534,9 +536,10 @@ Vue.component('qd-search',{template:`
 Vue.component('qd-table',{template:` 
   <v-card>
    <v-toolbar color="blue lighten-4">
-   <vp-entitylink v-if="entity" :entity="entity"></vp-entitylink>
-   <v-toolbar-title>{{ title }}</v-toolbar-title>
-     
+    <slot name="title">
+		   <vp-entitylink v-if="entity" :entity="entity"></vp-entitylink>
+		   <v-toolbar-title>{{ title }}</v-toolbar-title>
+    </slot>  
    <v-spacer></v-spacer>
     <v-text-field prepend-icon="filter_list" label="Filter..." single-line hide-details v-model="query.filter" clearable></v-text-field>
       
@@ -860,7 +863,7 @@ Vue.component('vp-favorite',{template:`
     },
     favorite(){
       this.$store.commit('increment')
-      console.log(this.$store.state.count)
+      console.log("vp-inc: ",this.$store.state.count)
        this.exists= !this.exists
       alert("save");
     }
@@ -949,7 +952,7 @@ Vue.component('vp-notifications',{template:`
               </v-list-item-avatar>
               
              <v-list-item-content>
-              <v-list-item-title>{{  msg.created | fromNow("from") }}</v-list-item-title>
+              <v-list-item-title>{{  msg.created | fromNow }}</v-list-item-title>
               <v-list-item-subtitle v-html="msg.html">msg</v-list-item-subtitle>
             </v-list-item-content>
             <v-list-item-action-text>
@@ -1006,7 +1009,7 @@ Vue.component('vp-paramform',{template:`
            <v-btn @click="zlog()">console</v-btn>
     </v-toolbar>
     <v-card-text>
-       <v-form ref="form" lazy-validation>
+       <v-form ref="form" v-model="valid" lazy-validation>
 
               <v-layout row>
               
@@ -1014,6 +1017,8 @@ Vue.component('vp-paramform',{template:`
 	              <v-flex v-for="field in fields" :key="field.model">
 	              
 	              <v-text-field v-if="field.type === 'xs:anyURI'" v-model="params[field.model]" :label="field.label &amp;&amp; field.model" clearable :rules="fieldrules(field)" filled append-outer-icon="send" @click:append-outer="source(field)"></v-text-field>
+	              
+	               <v-text-field v-else-if="field.type === 'xs:integer'" type="number" v-model.number="params[field.model]" :label="field.label &amp;&amp; field.model" clearable :rules="fieldrules(field)" filled></v-text-field>
 	              
 	              <v-switch v-else-if="field.type === 'xs:boolean'" :label="field.label" v-model="params[field.model]">
 	              </v-switch>
@@ -1023,7 +1028,7 @@ Vue.component('vp-paramform',{template:`
 	              </v-flex>
 	             
 	              </v-layout>
-               <v-layout column>TODO
+               <v-layout column>TODO <span>{{valid}}</span>
                </v-layout> 
               </v-layout>
             </v-form>
@@ -1040,6 +1045,7 @@ Vue.component('vp-paramform',{template:`
       params: null,
       description: null,
       updating: false,
+      valid: true,
       url: null,
       rules: {
         required: value => !!value || 'Required.'
@@ -1070,10 +1076,9 @@ Vue.component('vp-paramform',{template:`
        return [this.rules.required];
      },
      submit(){
-       return HTTP.post(this.endpoint, Qs.stringify(this.params));
-     },
-     valid(){
-       return this.$refs.form.validate()
+       if(this.$refs.form.validate()){
+    	   return HTTP.post(this.endpoint, Qs.stringify(this.params));
+       }
      }
   },
   computed: {
@@ -1164,7 +1169,7 @@ Vue.component('vp-selectpath',{template:`
       this.$emit('selectpath', {
           type:this.protocols[this.type],
           uri: this.xmldb,
-          name: "doc" + moment().format("YYYY-MM-DDThh:mm:ss") ,
+          name: "doc" + format(new Date(),"yyyy-MM-DDThh:mm:ss") ,
           text:"Some text"
           })
     }
@@ -1448,14 +1453,26 @@ const Auth={
     role: null,
     session: null,
     created: null,
+    remember: null, 
+    
+    update(data){
+        Auth.user=data.user;
+    	Auth.role=data.role
+    	Auth.session=data.session
+    	Auth.created=data.created
+    	
+    	Auth.remember=data.login
+    },
+    
+    logout(){
+      Auth.user="guest";
+      Auth.role=null;
+    },
+    
     install: function(Vue){
         Object.defineProperty(Vue.prototype, '$auth', {
           get () { return Auth }
       })  
-    },
-    logout(){
-      Auth.user="guest";
-      Auth.role=null;
     }
 };
 Vue.use(Auth);
@@ -1535,7 +1552,7 @@ const GEditTabs={
       },
       
       restore(){
-        that=this
+        var that=this
         this.restored=Settings.getItem('edit/items')
         .then(function (v){
            //console.log("items ",v)
@@ -1566,7 +1583,7 @@ const GEditTabs={
 
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/components/filters.js
 /**
- * some vue filters, requires moment
+ * some vue filters, requires date-fns
  *  formatDate
  *  fromNow
  *  readablizeBytes
@@ -1575,11 +1592,13 @@ const GEditTabs={
 
 //Define the date time format filter
 Vue.filter("formatDate", function(date) {
-    return moment(date).format("MMMM D, YYYY")
+	var d=(date instanceof Date)?date:parseISO(date)
+    return  format(d, "MMM d, yyyy")
 });
 
 Vue.filter("fromNow", function(date) {
-  return moment(date).fromNow()
+  var d=(date instanceof Date)?date:parseISO(date)
+  return formatDistanceToNow(d)
 });
 
 Vue.filter('readablizeBytes', function (bytes,decimals) {
@@ -2371,7 +2390,7 @@ const Basexlogdate1=Vue.extend({template:`
 </v-card>
  </v-container>
  `,
-      
+      	
   data:function(){
     return {
 
@@ -4072,7 +4091,7 @@ const Tabs=Vue.extend({template:`
     
     onResize(){
       var el=this.$refs["ace"];
-      for (e of el){
+      for (let e of el){
       //console.log("top",e.offsetTop)
       var h=Math.max(1,window.innerHeight - e.offsetTop -200) 
       // console.log("h",h)
@@ -4596,6 +4615,7 @@ const Taskhistory=Vue.extend({template:`
   data(){
     return {
       items: [],
+      task: null,
       loading: false,
       q: null,
       headers: [   
@@ -4610,7 +4630,8 @@ const Taskhistory=Vue.extend({template:`
   methods:{
     getTasks(){
         this.loading= true;
-        HTTP.get("data/history.task")
+        let params= this.task ?{params:{task: this.task}}:{}
+        HTTP.get("data/history.task",params)
         .then(r=>{
 		   this.items=r.data.items;
 		   this.loading= false;
@@ -4618,6 +4639,8 @@ const Taskhistory=Vue.extend({template:`
     }
    },
   created(){
+	this.task= this.$route.query.task
+	console.log("TASK: ", this.task)
     this.getTasks()
    }
 }
@@ -6469,6 +6492,7 @@ const Taxonomy=Vue.extend({template:`
 const Namespace=Vue.extend({template:` 
 <v-container fluid>
    <qd-table :headers="headers" data-uri="data/namespace" entity="namespace" item-key="xmlns">
+    <template v-slot:title>AAA</template> 
     <template v-slot:item.xmlns="{ item }"> 
 	      <router-link :to="{name:'namespace1', query:{ id: item.xmlns}}">
                  {{ item.xmlns }}
@@ -6503,22 +6527,16 @@ const Namespace=Vue.extend({template:`
 const Namespace1=Vue.extend({template:` 
 <v-card>
 	<v-toolbar>
-	 <v-toolbar-title> 
+	
    <v-breadcrumbs>
-            <v-breadcrumbs-item :to="{name: 'namespace'}" :exact="true">
-            Namespaces
-            </v-breadcrumbs-item>
-            
-              <v-breadcrumbs-item>
-            {{ xmlns }}
-            </v-breadcrumbs-item>
-        </v-breadcrumbs>
-   </v-toolbar-title>
-	 <v-toolbar-title>
-
+       <v-breadcrumbs-item :to="{name: 'namespace'}" :exact="true">Namespaces</v-breadcrumbs-item>
+       <v-breadcrumbs-divider>/</v-breadcrumbs-divider>     
+       <v-breadcrumbs-item><v-toolbar-title>{{ xmlns }}</v-toolbar-title></v-breadcrumbs-item>
+   </v-breadcrumbs>
+  
 	 <v-spacer></v-spacer>
 	 <v-btn @click="getItem" icon :loading="loading" :disabled="loading"><v-icon>refresh</v-icon></v-btn>
-	 </v-toolbar-title></v-toolbar>
+	 </v-toolbar>
 
   <v-container fluid grid-list-md>
   
@@ -6544,7 +6562,7 @@ const Namespace1=Vue.extend({template:`
       HTTP.get("data/namespace/item",{params: {id: this.xmlns}})
       .then(r=>{
         this.loading=false;
-        console.log(r.data)
+        //console.log(r.data)
         this.item= r.data
         }) 
     }
@@ -7502,7 +7520,7 @@ const Session=Vue.extend({template:`
         <td>session</td><td>{{ $auth.session }}</td>
         </tr>
         <tr>
-        <td>permision</td><td>{{ $auth.permission }}</td>
+        <td>permision</td><td>{{ $auth.role }}</td>
         </tr>
         </tbody>
         </table>
@@ -7529,7 +7547,7 @@ const Session=Vue.extend({template:`
       HTTP.get("status")
       .then(r=>{
         console.log("status",r)
-        this.$auth=Object.assign(this.$auth,r.data);
+        this.$auth.update(r.data);
         //this.$forceUpdate()
       })  
     },
@@ -7948,10 +7966,11 @@ const Runtask=Vue.extend({template:`
     }
   },
   methods:{
-    submit(){
+    submit(){   
+      var p=this.$refs.params.submit()     
+      if(!p)return
       this.loading=true;
-      this.$refs.params.submit()
-      .then(r=>{
+      p.then(r=>{
         this.loading= false
         this.id=r.data.id;
         this.snackbar= {show:true,
@@ -8078,7 +8097,7 @@ const Tasks1=Vue.extend({template:`
           </v-btn>
 
           <v-btn value="edit" v-if="data">
-            <router-link :to="{name: 'edit',  query:{url: data.url} }"> <v-icon>edit</v-icon>Edit</router-link>
+            <router-link :to="{name: 'edit',  query:{url: data.url2} }"> <v-icon>edit</v-icon>Edit</router-link>
           </v-btn>
 
           <v-btn value="history">
@@ -9149,7 +9168,7 @@ const Vuepoc=Vue.extend({template:`
         }) 
       },
       showAlert(msg){
-        this.alert.msg=moment().format()+" "+ msg
+        this.alert.msg=format(new Date())+" "+ msg
         this.alert.show=true
       }
   },
@@ -9198,15 +9217,17 @@ const Vuepoc=Vue.extend({template:`
     HTTP.get("status")
     .then(r=>{
       //console.log("status",r)
-      this.$auth=Object.assign(this.$auth,r.data);
+      this.$auth.update(r.data);
       console.log("AFTER: ",this.$auth);
       //this.$forceUpdate()
     })
     EditTabs.restore();
   },
-  
+  beforeCreate() {
+		this.$store.commit('initialiseStore');
+  },
   beforeDestroy(){
-    console.log("destory-----------")
+    console.log("destroy-----------")
     
   }
   }

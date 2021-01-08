@@ -59,6 +59,7 @@
   data(){
     return {
       items: [],
+      task: null,
       loading: false,
       q: null,
       headers: [   
@@ -73,7 +74,8 @@
   methods:{
     getTasks(){
         this.loading= true;
-        HTTP.get("data/history.task")
+        let params= this.task ?{params:{task: this.task}}:{}
+        HTTP.get("data/history.task",params)
         .then(r=>{
 		   this.items=r.data.items;
 		   this.loading= false;
@@ -81,6 +83,8 @@
     }
    },
   created(){
+	this.task= this.$route.query.task
+	console.log("TASK: ", this.task)
     this.getTasks()
    }
 }

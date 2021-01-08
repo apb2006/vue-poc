@@ -16,7 +16,7 @@
 		         >console</v-btn>
     </v-toolbar>
     <v-card-text>
-       <v-form ref="form"  lazy-validation>
+       <v-form ref="form" v-model="valid" lazy-validation>
 
               <v-layout row>
               
@@ -27,6 +27,12 @@
 	                v-model="params[field.model]" :label="field.label && field.model" 
 	                clearable  :rules="fieldrules(field)" filled
 	                append-outer-icon="send" @click:append-outer="source(field)"
+	              ></v-text-field>
+	              
+	               <v-text-field  v-else-if="field.type === 'xs:integer'"
+	                 type="number" 
+	                v-model.number="params[field.model]" :label="field.label && field.model" 
+	                clearable  :rules="fieldrules(field)" filled           
 	              ></v-text-field>
 	              
 	              <v-switch  v-else-if="field.type === 'xs:boolean'"  
@@ -40,7 +46,7 @@
 	              </v-flex>
 	             
 	              </v-layout>
-               <v-layout column >TODO
+               <v-layout column >TODO <span>{{valid}}</span>
                </v-layout> 
               </v-layout>
             </v-form>
@@ -58,6 +64,7 @@
       params: null,
       description: null,
       updating: false,
+      valid: true,
       url: null,
       rules: {
         required: value => !!value || 'Required.'
@@ -88,10 +95,9 @@
        return [this.rules.required];
      },
      submit(){
-       return HTTP.post(this.endpoint, Qs.stringify(this.params));
-     },
-     valid(){
-       return this.$refs.form.validate()
+       if(this.$refs.form.validate()){
+    	   return HTTP.post(this.endpoint, Qs.stringify(this.params));
+       }
      }
   },
   computed: {

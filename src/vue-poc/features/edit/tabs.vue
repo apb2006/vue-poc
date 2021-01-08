@@ -267,7 +267,7 @@
     
     onResize(){
       var el=this.$refs["ace"];
-      for (e of el){
+      for (let e of el){
       //console.log("top",e.offsetTop)
       var h=Math.max(1,window.innerHeight - e.offsetTop -200) 
       // console.log("h",h)

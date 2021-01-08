@@ -25,7 +25,7 @@
         <td>session</td><td>{{ $auth.session }}</td>
         </tr>
         <tr>
-        <td>permision</td><td>{{ $auth.permission }}</td>
+        <td>permision</td><td>{{ $auth.role }}</td>
         </tr>
         </tbody>
         </table>
@@ -54,7 +54,7 @@
       HTTP.get("status")
       .then(r=>{
         console.log("status",r)
-        this.$auth=Object.assign(this.$auth,r.data);
+        this.$auth.update(r.data);
         //this.$forceUpdate()
       })  
     },

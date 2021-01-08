@@ -60,10 +60,11 @@
     }
   },
   methods:{
-    submit(){
+    submit(){   
+      var p=this.$refs.params.submit()     
+      if(!p)return
       this.loading=true;
-      this.$refs.params.submit()
-      .then(r=>{
+      p.then(r=>{
         this.loading= false
         this.id=r.data.id;
         this.snackbar= {show:true,

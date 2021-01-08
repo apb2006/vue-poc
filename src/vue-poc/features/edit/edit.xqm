@@ -7,7 +7,7 @@ module namespace vue-api = 'quodatum:vue.api';
 import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace session = "http://basex.org/modules/session";
 import module namespace ufile = 'vue-poc/file' at "../../lib/file.xqm";
-import module namespace  resolve = 'urn:quodatum:resolve' at "../../lib/resolve.xqm";
+import module namespace  resolve = 'urn:quodatum:resolve' (: at "../../lib/resolve.xqm" :) ;
 
 import module namespace mt = 'urn:quodatum:data:mimetype' at "../../lib/mimetype.xqm";
 declare namespace c="http://www.w3.org/ns/xproc-step";
@@ -23,10 +23,10 @@ declare
 %output:method("json")   
 function vue-api:edit-get($url as xs:string)   
 {
-  let $u:=resolve:uri($url)=>trace("RESOLVE: ")
+  let $u:=resolve:parse($url)=>trace("RESOLVE: ")
    return <json type="object">{
 		        element protocol{ $u?protocol},
-		        element uri { $u?uri },
+		        element path { $u?path },
 		        element mimetype { $u?fnMime() },
                 element data { $u?fnGet() =>serialize()}
           }</json>

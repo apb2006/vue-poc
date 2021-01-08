@@ -2,6 +2,7 @@
 <template id="namespace">
 <v-container fluid>
    <qd-table :headers="headers" data-uri="data/namespace" entity="namespace"  item-key="xmlns">
+    <template v-slot:title >AAA</template> 
     <template v-slot:item.xmlns="{ item }" > 
 	      <router-link :to="{name:'namespace1', query:{ id: item.xmlns}}">
                  {{ item.xmlns }}

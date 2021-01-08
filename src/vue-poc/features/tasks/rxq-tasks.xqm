@@ -4,7 +4,7 @@
 module namespace vue-rest = 'quodatum:vue.tasks';
 import module namespace query-a = 'vue-poc/query-a' at "../../lib/query-a.xqm";
 import module namespace hlog = 'quodatum.data.history' at '../../lib/history.xqm';
-import module namespace  resolve = 'urn:quodatum:resolve'  at '../../lib/resolve.xqm';
+import module namespace  resolve = 'urn:quodatum:resolve' (: at '../../lib/resolve.xqm' :);
 
 declare namespace hist="urn:quodatum:vue-poc.history";
 
@@ -40,17 +40,17 @@ declare
 function vue-rest:task($task,$id)   
 {
   let $taskdef:=doc("taskdef.xml")/tasks/task[@name=$task]
-  let $url:=resolve-uri($taskdef/@url)
-  let $h:=if($id) then hlog:get($id) else ()
-  let $info:= query-a:inspect($url) 
-  let $info:= if($h) then (: use old values :)
-              let $v:=<values type="object">{
-                       $h/hist:task/hist:param!element{@name}{string(.)}
-                     }</values> =>trace("O/P")
- 			  return $info transform with {replace node ./values with $v}
- 		 else
- 		      $info
- 	return $info transform with { insert node <url2>{ resolve:special($url) }</url2> into . }
+  let $url:=resolve-uri($taskdef/@url,base-uri($taskdef))
+  let $info:= query-a:inspect($url)
+  let $url2:=resolve:local($url) =>trace("resolve: ")
+  return $info transform with {if($id) then 
+	                               let $parms:=hlog:get($id)/hist:task/hist:param
+	                               for $v in ./values/*,$p in $parms
+	                               where name($v)=$p/@name
+	                               return replace value of node $v with $p 
+				               else (),
+				               
+                               insert node <url2>{ $url2 }</url2> into . }
 };
  
 
@@ -66,9 +66,11 @@ function vue-rest:runtask($task)
 {
   let $taskdef:=doc("taskdef.xml")/tasks/task[@name=$task]
   let $url:=resolve-uri($taskdef/@url)=>trace("RUNTASK")
-  let $params:=query-a:params($url)
+ 
+  let $params:= query-a:request-bindings($url)
+  
   let $log:=<task task="{ $task }" url="{ $url }">
-               { map:keys($params)!<param name="{.}">{map:get($params,.)}</param> }
+               { map:for-each($params,function($k,$v){<param name="{ $k }">{ $v }</param> }) }
             </task>
   return (
     query-a:run($url, $params, map{}),

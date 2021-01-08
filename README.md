@@ -33,7 +33,7 @@ RESTXQERRORS = false
 GZIP = true
 ```
 ### Other 
-Global `settings` provides `getItem(name)` and `setItem(name.value)`
+Global `settings` provides `getItem(name)` and `setItem(name,value)`
 Example usage
 ```
  created: function () {

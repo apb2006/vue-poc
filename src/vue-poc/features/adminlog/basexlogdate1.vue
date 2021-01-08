@@ -97,7 +97,7 @@
  </v-container>
 </template>
 
-<script>{
+<script>{	
   data:function(){
     return {
 

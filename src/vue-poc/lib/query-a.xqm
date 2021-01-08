@@ -1,7 +1,7 @@
 (:~
  : XQuery evaluation of uri helper library
  :    query-a:inspect($mod as xs:anyURI) return {description:.., updating:.., url:.., fields:[{model:..,label:..,type:..}]}
- :    query-a:params($mod as xs:anyURI)
+ :    request-bindings($mod as xs:anyURI)
  :    query-a:run($query as xs:anyURI,$params as map(*))
  :
  : @author Andy Bunce, 2018
@@ -36,37 +36,49 @@ return <json type="object">
 				        </_> 
 		   }</fields>
 		   <values type="object">{
-		   		$vars!element{@name}{default_tag/string()}
+		   		$vars!element{@name}{ query-a:param-json( @type ), default_tag/string()}
 		   }</values>
       </json>
 };
 
 (:~ 
- :convert type
+ :convert value to XQuery for given type
 :)
 declare function query-a:cast($val as item(),$type as xs:string)
 as item() 
 {
   switch($type)
    case "xs:boolean" return $val="true"
+   case "xs:integer" return xs:int($val)
    case "xs:anyURI" return xs:anyURI($val)
    default          return $val
 };
 
+(:~ 
+ :json type for xs type
+:)
+declare function query-a:param-json($type as xs:string)
+as attribute(type)?
+{
+  switch($type)
+   case "xs:boolean" return attribute type {"boolean"}
+   case "xs:integer" return  attribute type {"number"}
+   default          return ()
+};
 
 (:~
- : @return map of request parameter names typed
+ : @return map of request parameter names that are external variables, map{name:..,value}
  :)
 declare 
-function query-a:params($mod as xs:anyURI)
+function query-a:request-bindings($mod as xs:anyURI)
 as map(*)
 {
-  let $vars:=inspect:module($mod=>trace("params"))/variable[@external="true"]
-  return map:merge(
-          $vars[@name=request:parameter-names()]!
-              map:entry(@name,query-a:cast(request:parameter(@name/string()),@type))
-
-           )
+  let $vars:=inspect:module($mod)/variable[@external="true"]
+  let $f:=function($name, $type){ map:entry($name,
+                                            query-a:cast(request:parameter($name/string()),$type)
+                                            )}
+  return 
+          $vars[@name=request:parameter-names()]! $f(@name,@type)=>map:merge()             
 };
 
 (:~ 
