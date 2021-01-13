@@ -12,7 +12,7 @@ declare namespace functx = "http://www.functx.com";
 
 declare variable $vue:FEATURES:="features/";
 declare variable $vue:COMPONENTS:="components/";
-declare variable $vue:CORE:="components/core.js";
+
 declare variable $vue:FILTERS:="components/filters.js";
 declare variable $vue:DEST:="static/app-gen.js";
 
@@ -96,7 +96,7 @@ let $js:=vue:filelist(file:resolve-path("components/",$proj),".*\.js")
 let $CORE:="core.js"=>file:resolve-path($proj)
 let $ROUTER:="router.js"=>file:resolve-path($proj)
 let $APP:="app.vue"=>file:resolve-path($proj)
-
+let $imports:="imports.js"=>file:resolve-path($proj)
 let $DEST:="static/app-gen.js"=>file:resolve-path($proj)
 
 let $files:=vue:feature-files($proj)
@@ -105,17 +105,16 @@ let $feats:=$files!vue:feature-build(.,false())
 let $files:= fw:directory-list($COMPONENTS,map{"include-filter":".*\.vue"})
              //c:file/@name/resolve-uri(.,base-uri(.))
 let $comps:=$files!vue:feature-build(.,true())
-let $extra:="import { parseISO, formatDistanceToNow,  format } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
-console.log(formatDistanceToNow(new Date(2014, 1, 11), {}))
-"
-let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;" || $extra
+
+let $comment:="// generated " || current-dateTime() || "&#xA;&#xD;" 
 return file:write-text($DEST,string-join(($comment,
+                                         vue:js-text($imports), 
                                          $comps,
-                                         $js!vue:js-test(.),
+                                         $js!vue:js-text(.),
                                          $feats,
-                                         vue:js-test($ROUTER),
+                                         vue:js-text($ROUTER),
                                          $APP!vue:feature-build(.,false()),
-                                         vue:js-test($CORE))))
+                                         vue:js-text($CORE))))
 };
 
 (:~
@@ -130,7 +129,7 @@ return file:write-text($DEST,string-join(($comment,
 (:~
  : javascript source with comment
  :)
-declare function vue:js-test($url as xs:string)
+declare function vue:js-text($url as xs:string)
 {
  ``[
 // src: `{ $url }`

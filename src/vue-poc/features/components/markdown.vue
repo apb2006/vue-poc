@@ -7,30 +7,60 @@ https://github.com/miaolz123/vue-markdown
  <v-card>
  <v-toolbar class="lime darken-1">
 	 <v-card-title >Markdown</v-card-title>
-	<v-btn-toggle v-model="toc">
-          <v-btn>
-            TOC
-          </v-btn>
-      </v-btn-toggle>
-	   <v-checkbox  v-model="toc" label="toc" ></v-checkbox>
+	 <qd-link href="https://github.com/miaolz123/vue-markdown">vue-markdown@2.2.4</qd-link>
 	 <v-spacer></v-spacer>
-	    <qd-link href="https://github.com/miaolz123/vue-markdown">vue-markdown@2.2.4</qd-link>
+	   
 	      <v-menu :close-on-content-click="false" offset-y left>
                <template v-slot:activator="{ on }">
                   <v-btn icon v-on="on"><v-icon>settings</v-icon></v-btn>
                </template>
-              <v-card >
-                    <v-toolbar class="lime darken-1">
+              <v-card  >
+                    <v-toolbar  class="lime darken-1">
 				          <v-card-title >Markdown Settings</v-card-title>
 				          </v-toolbar>
 				        <v-card-text>
-				        <ul>
-					 <li><v-checkbox  v-model="html" label="html" ></v-checkbox></li>
-					 <li><v-checkbox  v-model="breaks" label="breaks" ></v-checkbox></li>
-					  <li><v-checkbox  v-model="linkify" label="linkify" ></v-checkbox></li>
-					  <li><v-checkbox  v-model="emoji" label="emoji" ></v-checkbox></li>
-					  <li> <v-checkbox  v-model="typographer" label="typographer" ></v-checkbox></li>
-					   </ul>
+				         <v-list dense>
+				           <v-list-item>
+					         <v-list-item-action>					      
+					           <v-checkbox v-model="show"  label="show" />
+					          </v-list-item-action>				        
+					      </v-list-item>
+					       <v-list-item>
+					         <v-list-item-action>					      
+					           <v-checkbox v-model="toc"  label="toc" />
+					          </v-list-item-action>				        
+					      </v-list-item>
+					        <v-list-item>
+					         <v-list-item-action>					      
+					           <v-checkbox v-model="html"  label="html" />
+					          </v-list-item-action>				        
+					      </v-list-item>
+					      <v-list-item>
+					         <v-list-item-action>					       
+					           <v-checkbox v-model="breaks"  label="breaks" />
+					          </v-list-item-action>					        
+					      </v-list-item>
+					      
+					      <v-list-item>
+					        <v-list-item-action>
+					          <v-checkbox v-model="linkify"  label="linkify" />
+					        </v-list-item-action>					        
+					      </v-list-item>
+					      
+					      <v-list-item>
+					        <v-list-item-action>
+					          <v-checkbox  v-model="emoji" label="emoji" >
+					        </v-list-item-action>					        
+					      </v-list-item>
+					      
+					        <v-list-item>
+					        <v-list-item-action>
+					          <v-checkbox  v-model="typographer" label="typographer" ></v-checkbox>
+					        </v-list-item-action>					        
+					      </v-list-item>
+					      
+					    </v-list>
+				       
 				        </v-card-text>
 	        </v-card>
 	      </v-menu>
@@ -43,13 +73,13 @@ https://github.com/miaolz123/vue-markdown
           outlined
           tile
         >
-          <div v-html="tochtml"></div>
+          <div v-html="tochtml" style="position:fixed"></div>
         </v-card>
       </v-col>
        <v-col cols="1" style="min-width: 100px; max-width: 100%;" 
        class="flex-grow-1 flex-shrink-0" color="orange lighten-2">
        <vue-markdown :watches="['show','html','breaks','linkify','emoji','typographer','toc']"
-          :source="source" :show="show" :html="html" :breaks="breaks" :linkify="linkify"
+          :source="markdown" :show="show" :html="html" :breaks="breaks" :linkify="linkify"
           :emoji="emoji" :typographer="typographer" :toc="toc" v-on:rendered="allRight"
           v-on:toc-rendered="tocAllRight" toc-id="toc"> 
  </vue-markdown>
@@ -65,8 +95,9 @@ https://github.com/miaolz123/vue-markdown
 
 <script>{
 	data(){
-	    return { 
-	        source: "",
+	    return {
+	    	url: "md-sample.md",
+	        markdown: "",
 	        show: true,
 	        html: false,
 	        breaks: true,
@@ -74,7 +105,8 @@ https://github.com/miaolz123/vue-markdown
 	        emoji: true,
 	        typographer: true,
 	        toc: false,
-	        tochtml: null
+	        tochtml: null,
+	        opts: []
 	      }
 	    },
 	      methods: {
@@ -91,7 +123,7 @@ https://github.com/miaolz123/vue-markdown
 		    HTTP.get("components/markdown")
 		    .then(r=>{      
 		          //console.log("data::::",r.data);
-		          this.source=r.data;
+		          this.markdown=r.data;
 		          })
 		    .catch(err=> {
 		            console.log(err);

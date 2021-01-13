@@ -187,9 +187,9 @@
       this.busy=true
       HTTP.get("collection",{params:{url:url,protocol:this.protocol}})
       .then(r=>{
-        this.items=r.data.items
-        this.q=null
-        this.busy=false
+	    	this.busy=false 
+	        this.items=r.data.items
+	        this.q=null       
         })
         .catch(error=> {
           console.log(error);

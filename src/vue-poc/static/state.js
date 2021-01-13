@@ -3,24 +3,28 @@ const store = new Vuex.Store({
   state: {
 	     count: 92,
         
-         "edit/currentId": "?",
-         "edit/query": "todo edit/query",
-         
-         "features/serviceworker": false,
-         "images/thumbtask":`
-  <thumbnail>
-      <size width="200" height="200"/>
-      <filters>             
-          <colorize color="green" alpha=".5"/>      
-          <caption position="CENTER">Some Text here</caption>
-          <rotate angle="15"/>
-          <canvas height="300" width="300" position="TOP_LEFT" color="yellow"/> 
-      </filters>
-      <output format="gif"/>         
+         edit:{ 
+        	 currentId: "?",
+             query: "todo edit/query"
+         },      
+         "features":{
+            "serviceworker": false
+          },
+         "images": {
+        	 thumbtask :`<thumbnail>
+  <size width="200" height="200"/>
+  <filters>             
+      <colorize color="green" alpha=".5"/>      
+      <caption position="CENTER">Some Text here</caption>
+      <rotate angle="15"/>
+      <canvas height="300" width="300" position="TOP_LEFT" color="yellow"/> 
+  </filters>
+  <output format="gif"/>         
   </thumbnail>
-  `,
-  
-		 "settings/ace": {
+  `
+       },
+       "settings": {
+	      "ace": {
 		     theme: "github",
 		     themeDark: "chaos",
 		     keybinding: "ace",
@@ -29,7 +33,11 @@ const store = new Vuex.Store({
 		     enableBasicAutocompletion:true,
 		     enableLiveAutocompletion:true
 		     },
-		  "settings/dark": false
+		  "dark": false
+		  },
+	 "markdown":{
+	   "toc": true
+	 }
   },
   
   mutations: {

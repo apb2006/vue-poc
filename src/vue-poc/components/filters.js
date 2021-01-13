@@ -8,13 +8,15 @@
 
 //Define the date time format filter
 Vue.filter("formatDate", function(date) {
+	if(''===date)return;
 	var d=(date instanceof Date)?date:parseISO(date)
     return  format(d, "MMM d, yyyy")
 });
 
 Vue.filter("fromNow", function(date) {
-  var d=(date instanceof Date)?date:parseISO(date)
-  return formatDistanceToNow(d)
+	if(''===date)return;
+	var d=(date instanceof Date)?date:parseISO(date)
+	return formatDistanceToNow(d)
 });
 
 Vue.filter('readablizeBytes', function (bytes,decimals) {

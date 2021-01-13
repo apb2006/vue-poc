@@ -117,10 +117,7 @@
 },
 props: ['date'],
 methods:{
-  fit(){
-    this.Events.$emit('fit');
-  },
-  
+   
   select(sel){  
     var hit=this.data.find(item => item.id==sel )
     var h=JSON.stringify(hit,null,2)
@@ -169,7 +166,7 @@ methods:{
         var start=moment(this.date + "T" + this.query.from)
         var first=moment(this.data[0].start);
         var w=Number(this.query.window);
-        first1=roundDate(first,moment.duration(w, "seconds"), "floor");
+        var first1=roundDate(first,moment.duration(w, "seconds"), "floor");
         console.log("Ab",first,this.query,first1,this.data);
         return;
         

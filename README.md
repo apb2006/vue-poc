@@ -1,37 +1,17 @@
-# vue-poc
+# Vue-poc
 
-A test of using https://vuetifyjs.com/en/ as UI
+An experiment using https://vuetifyjs.com/en/ as UI for BaseX
 Includes:
 
 * material design (using `vuetify`)
 * ace editor
 * localforage for persistence
 
-## Icons
-* https://material.io/resources/icons/?style=baseline
-* https://vuetifyjs.com/en/customization/icons/
-
-## Tests
-
-### Cypress
-
-https://github.com/cypress-io/cypress
-```
-cd ~\git\vue-poc\tests>
-npx cypress open
-
-or...
-
-npx cypress run
-```
-## Settings
-Required BaseX options https://docs.basex.org/wiki/Options
-```
-CHOP = false
-LOGTRACE = false
-RESTXQERRORS = false
-GZIP = true
-```
+## Topics
+* [Basex requirements](doc/basex.md)
+* [Testing](doc/testing.md)
+* [Vuetify](doc/vuetify.md)
+* [data](doc/data.md)
 ### Other 
 Global `settings` provides `getItem(name)` and `setItem(name,value)`
 Example usage
