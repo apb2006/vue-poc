@@ -17,7 +17,8 @@ event fired cmd outline
           'settings',
           'minLines',
           'completer',
-          'snippets'
+          'snippets',
+          'placeholder'
           ],
   data () {
     return {
@@ -28,9 +29,9 @@ event fired cmd outline
           themeDark: "chaos",
           keybinding: "ace",
           fontsize: 16,
-          enableSnippets:true,
-          enableBasicAutocompletion:true,
-          enableLiveAutocompletion:true
+          enableSnippets: true,
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true
           },
           
       annots:{
@@ -98,10 +99,10 @@ event fired cmd outline
     },
     
     applySettings(aceSettings){
-      var theme=this.$vuetify.theme.dark?aceSettings.themeDark:aceSettings.theme;
-      this.editor.setTheme(`ace/theme/${theme}`)
+      this.editor.setTheme()
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
+      this.editor.setOption("placeholder", this.placeholder)
       this.editor.setOptions({ 
                           enableSnippets : aceSettings.enableSnippets,
                           enableBasicAutocompletion : aceSettings.enableBasicAutocompletion,
@@ -110,6 +111,7 @@ event fired cmd outline
                           useSoftTabs: true
                           });
     }
+    
   },
   
  
@@ -166,6 +168,9 @@ event fired cmd outline
       //console.log("token",token);
       this.$emit('token', token);
     });
+    
+    //this.editor.on("input", this.update);
+    //setTimeout(this.update, 100);
     
     if(this.events){
       this.events.$on('eventFired', (cmd) => {

@@ -16,8 +16,27 @@ const router = new VueRouter({
   },
   routes: [
     { path: '/', component: Home, meta:{title:"Home"} },
-    { path: '/session', component: Session ,meta: {title:"Session"}},
- 
+    
+    { path: '/about', component: { template: '<router-view/>' }  ,children:[
+        {path: '', component: About, meta:{title:"About Vue-poc"} },
+        {path: 'package', component: Package, meta:{title:"Javascript components"} },
+        {path: 'routes', component: Routes, meta:{title:"Routes"} },
+        {path: 'routes2', name: 'routes', component: Routes2, meta:{title:"Routes2"} },
+        {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
+     ]},
+     
+    { path: '/components', component: Components,meta:{title:"Components"},props:{protocol:"xmldb"} },
+    
+    { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
+    { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
+    { path: '/documentation/xqdoc', component: Xqdocs, meta:{title:"XQdoc"} },
+    
+    { path: '/edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
+    { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
+    { path: '/eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
+    
+    { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
+    
     {path: '/images', component: { template: '<router-view/>' }, 
     	children: [
 		    {path: '', redirect: 'item' },		
@@ -31,8 +50,7 @@ const router = new VueRouter({
     ]},
     
     
-    { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
-    { path: '/documentation/xqdoc', component: Xqdocs, meta:{title:"XQdoc"} },
+  
     
     { path: '/logdate', component: Basexlogdate, meta:{title:"log files"} },
     { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
@@ -58,15 +76,13 @@ const router = new VueRouter({
 	          ]
 		    } 
          ]},
-         
+    { path: '/session', component: Session ,meta: {title:"Session"}},  
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },
-  
-    { path: '/edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
- 
-    { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
-    { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
+    
+
+
     { path: '/login', component: Login,meta:{title:"login"} },
     
     { path: '/settings', component: { template: '<router-view/>' }
@@ -89,10 +105,10 @@ const router = new VueRouter({
     },
     
     { path: '/performance', component: { template: '<router-view/>' }
-    ,children: [
-		    	{ path: 'ping', component: Ping, meta:{title:"Ping"} },
-		        { path: 'dicetest', component: Dicetest, meta:{title: "Dice test"} }
-               ]
+	    ,children: [
+			    	{ path: 'ping', component: Ping, meta:{title:"Ping"} },
+			        { path: 'dicetest', component: Dicetest, meta:{title: "Dice test"} }
+	               ]
     },
     
     { path: '/server', component: { template: '<router-view/>' }
@@ -152,8 +168,7 @@ const router = new VueRouter({
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     
-    { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
-    { path: '/eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
+
     
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
     
@@ -170,13 +185,7 @@ const router = new VueRouter({
    
     { path: '/map', component: Leaflet,meta:{title:"map"} },     
     
-    { path: '/about', component: { template: '<router-view/>' }  ,children:[
-      {path: '', component: About, meta:{title:"About Vue-poc"} },
-      {path: 'package', component: Package, meta:{title:"Javascript components"} },
-      {path: 'routes', component: Routes, meta:{title:"Routes"} },
-      {path: 'routes2', name: 'routes', component: Routes2, meta:{title:"Routes2"} },
-      {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
-   ]},
+
    
    { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],

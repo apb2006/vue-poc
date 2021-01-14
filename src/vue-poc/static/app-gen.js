@@ -1,4 +1,4 @@
-// generated 2021-01-13T18:11:28.088Z
+// generated 2021-01-14T23:08:56.115Z
 
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\imports.js
 import { parseISO, formatDistanceToNow,  format, roundToNearestMinutes, addSeconds } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
@@ -766,6 +766,7 @@ Vue.component('vis-time-line',{template:`
   data(){
     return {timeline:Object}
   },
+  
   methods:{
     select(properties){
       this.$emit('select',properties.items);
@@ -777,6 +778,7 @@ Vue.component('vis-time-line',{template:`
         this.timeline.fit(true)
     }
   },
+  
   watch:{
 	  items(newItems){
 		  console.log("vis-time-line: new items:" + newItems.length)
@@ -786,8 +788,8 @@ Vue.component('vis-time-line',{template:`
 		  console.log("opts: ",newOpts)
 	  }
   },
+  
   mounted: function () {
-   
     var options = this.options;
     var groups = this.groups;
     var items = new vis.DataSet(this.items);
@@ -1212,7 +1214,8 @@ Vue.component('vue-ace',{template:`
           'settings',
           'minLines',
           'completer',
-          'snippets'
+          'snippets',
+          'placeholder'
           ],
   data () {
     return {
@@ -1223,9 +1226,9 @@ Vue.component('vue-ace',{template:`
           themeDark: "chaos",
           keybinding: "ace",
           fontsize: 16,
-          enableSnippets:true,
-          enableBasicAutocompletion:true,
-          enableLiveAutocompletion:true
+          enableSnippets: true,
+          enableBasicAutocompletion: true,
+          enableLiveAutocompletion: true
           },
           
       annots:{
@@ -1293,10 +1296,10 @@ Vue.component('vue-ace',{template:`
     },
     
     applySettings(aceSettings){
-      var theme=this.$vuetify.theme.dark?aceSettings.themeDark:aceSettings.theme;
-      this.editor.setTheme(`ace/theme/${theme}`)
+      this.editor.setTheme()
       //this.editor.setKeyboardHandler(`ace/keyboard//${aceSettings.keybinding}`)
       this.editor.setFontSize(parseInt(aceSettings.fontsize,10))
+      this.editor.setOption("placeholder", this.placeholder)
       this.editor.setOptions({ 
                           enableSnippets : aceSettings.enableSnippets,
                           enableBasicAutocompletion : aceSettings.enableBasicAutocompletion,
@@ -1305,6 +1308,7 @@ Vue.component('vue-ace',{template:`
                           useSoftTabs: true
                           });
     }
+    
   },
   
  
@@ -1361,6 +1365,9 @@ Vue.component('vue-ace',{template:`
       //console.log("token",token);
       this.$emit('token', token);
     });
+    
+    //this.editor.on("input", this.update);
+    //setTimeout(this.update, 100);
     
     if(this.events){
       this.events.$on('eventFired', (cmd) => {
@@ -2681,6 +2688,42 @@ const Log=Vue.extend({template:`
     this.autorefresh=false;
     if(this.timer) clearTimeout(this.timer);
     return next()
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/components.vue
+const Components=Vue.extend({template:` 
+ <v-container fluid>
+   <qd-table :headers="headers" data-uri="data/quodatum.cmpx" entity="quodatum.cmpx" item-key="name">
+    <template v-slot:title>AAA</template> 
+    <template v-slot:item.home="{ item }"> 
+	      <a :href=" item.home" target="cmpx">
+                 {{ item.home }}
+          </a>
+    </template>
+      
+    <template slot="no-results">
+        No matching results.
+    </template>
+    
+    <template slot="no-data">
+        No matching items.
+    </template>
+   </qd-table>
+ </v-container>
+  `,
+      
+  data:  function(){
+    return {
+      headers: [
+        { text: 'name', value: 'name'},
+        { text: 'type', value: 'type' },
+        { text: 'home', value: 'home' },
+        { text: 'description', value: 'description' }
+      ] 
+      }
   }
 }
 
@@ -4014,7 +4057,7 @@ const Tabs=Vue.extend({template:`
 	    <v-card>
         <div style="height:200px" ref="ace" v-resize="onResize">
         <v-flex xs12 fill-height>
-			    <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
+			    <vue-ace :content="item.text" v-on:change-content="changeContent" :events="events" :mode="item.mode" :wrap="wrap" :settings="aceSettings" v-on:annotation="annotation" placeholder="Type.."></vue-ace>
 			  </v-flex>
         </div> 
       </v-card>
@@ -4246,7 +4289,7 @@ const Eval=Vue.extend({template:`
    </v-toolbar>
    <v-card-text>
     <v-flex xs12 style="height:200px" fill-height>
-		  <vue-ace :content="xq" mode="xquery" wrap="true" :settings="aceSettings" v-on:change-content="onChange"></vue-ace>
+		  <vue-ace :content="xq" mode="xquery" wrap="true" :settings="aceSettings" v-on:change-content="onChange" placeholder="Type XQuery here then click run.."></vue-ace>
     </v-flex>
     <vp-job v-if="showJob" :job="job" :waiting="waiting" :job-state="jobState" :elapsed="elapsed"></vp-job>
      </v-card-text>
@@ -4270,7 +4313,7 @@ const Eval=Vue.extend({template:`
 
   data:  function(){
     return {
-      xq: '(: type your XQuery :)\n',
+      xq: null,
       result: '',
       done: false,
       elapsed: null,
@@ -4392,6 +4435,7 @@ const Eval=Vue.extend({template:`
   },
   computed: { 
   },
+  
   beforeRouteEnter (to, from, next) {
     Settings.getItem('settings/ace')
     .then( v =>{
@@ -4401,9 +4445,15 @@ const Eval=Vue.extend({template:`
         vm.aceSettings = v;
         })})
      },
+     
+     beforeRouteLeave (to, from, next) {
+    	 localforage.setItem('eval/xq',this.xq);
+    	 next()
+     },
+    	  
   created:function(){
       console.log("eval: creatd");
-      localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
+      localforage.getItem('eval/xq').then((value) => { this.xq= value || this.xq});
   },
   beforeDestroy:function(){
     this.destroyed=true;
@@ -4652,8 +4702,8 @@ const Taskhistory=Vue.extend({template:`
       q: null,
       headers: [   
         { text: 'Id', value: 'id' },
-        { text: 'Task', value: 'task' },
         { text: 'Created', value: 'created' },
+        { text: 'Task', value: 'task' },
         { text: 'Summary', value: 'summary' },
         { text: 'Params', value: 'arity' }
         ]
@@ -6005,26 +6055,28 @@ const Entity=Vue.extend({template:`
 	 </template>
 	 
      <template v-slot:default="props">
-        <v-row align-content="start">
-          <v-col v-for="item in props.items" :key="item.name">
+        <v-row align-content="start" no-gutters>
+          <v-col v-for="item in props.items" :key="item.name" class="ma-2" no-gutters>
      
-        <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
+        <v-card :to="{path:'entity/'+ item.name}" :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em" height="15em">
         
-          <v-toolbar color="orange lighten-3">
+          <v-toolbar color="blue-grey lighten-3">
 		          <v-toolbar-title>
-		           <router-link :to="{path:'entity/'+ item.name}">
-		            <v-avatar color="lime">
+		          
+		            <v-avatar tile color="lime">
 		             <v-icon>{{ item.iconclass }}</v-icon> 
-		            </v-avatar> {{ item.name }}
-		            </router-link>
+		            </v-avatar> {{ item.name }}	           
 		            </v-toolbar-title>
 		         
-		         <v-spacer></v-spacer>
-		         <v-badge>
-			      <span slot="badge">{{ item.nfields }}</span>
-			    </v-badge>
           </v-toolbar>
           <v-card-text xs1>{{ item.description }}<!--<v-card-text-->
+          <v-divider></v-divider>
+          <v-card-actions>
+	          <v-chip color="green" text-color="white">Fields: {{ item.nfields }}</v-chip>
+	          <v-spacer></v-spacer>
+			  <v-btn icon>Xml</v-btn>
+              <v-btn icon>Json</v-btn>
+             </v-card-actions>
         </v-card-text></v-card>
       </v-col>
       </v-row>
@@ -6048,7 +6100,7 @@ const Entity=Vue.extend({template:`
   methods:{
     getItems(){
       this.loading=true
-      HTTP.get("data/entity",{params:{q:this.q}})
+      HTTP.get("data/entity",{params:{q:this.q, sort:'name'}})
       .then(r=>{
         this.loading=false
         //console.log(r.data)
@@ -8754,8 +8806,27 @@ const router = new VueRouter({
   },
   routes: [
     { path: '/', component: Home, meta:{title:"Home"} },
-    { path: '/session', component: Session ,meta: {title:"Session"}},
- 
+    
+    { path: '/about', component: { template: '<router-view/>' }  ,children:[
+        {path: '', component: About, meta:{title:"About Vue-poc"} },
+        {path: 'package', component: Package, meta:{title:"Javascript components"} },
+        {path: 'routes', component: Routes, meta:{title:"Routes"} },
+        {path: 'routes2', name: 'routes', component: Routes2, meta:{title:"Routes2"} },
+        {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
+     ]},
+     
+    { path: '/components', component: Components,meta:{title:"Components"},props:{protocol:"xmldb"} },
+    
+    { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
+    { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
+    { path: '/documentation/xqdoc', component: Xqdocs, meta:{title:"XQdoc"} },
+    
+    { path: '/edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
+    { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
+    { path: '/eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
+    
+    { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
+    
     {path: '/images', component: { template: '<router-view/>' }, 
     	children: [
 		    {path: '', redirect: 'item' },		
@@ -8769,8 +8840,7 @@ const router = new VueRouter({
     ]},
     
     
-    { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
-    { path: '/documentation/xqdoc', component: Xqdocs, meta:{title:"XQdoc"} },
+  
     
     { path: '/logdate', component: Basexlogdate, meta:{title:"log files"} },
     { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
@@ -8796,15 +8866,13 @@ const router = new VueRouter({
 	          ]
 		    } 
          ]},
-         
+    { path: '/session', component: Session ,meta: {title:"Session"}},  
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
     { path: '/tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },
-  
-    { path: '/edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
- 
-    { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
-    { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
+    
+
+
     { path: '/login', component: Login,meta:{title:"login"} },
     
     { path: '/settings', component: { template: '<router-view/>' }
@@ -8827,10 +8895,10 @@ const router = new VueRouter({
     },
     
     { path: '/performance', component: { template: '<router-view/>' }
-    ,children: [
-		    	{ path: 'ping', component: Ping, meta:{title:"Ping"} },
-		        { path: 'dicetest', component: Dicetest, meta:{title: "Dice test"} }
-               ]
+	    ,children: [
+			    	{ path: 'ping', component: Ping, meta:{title:"Ping"} },
+			        { path: 'dicetest', component: Dicetest, meta:{title: "Dice test"} }
+	               ]
     },
     
     { path: '/server', component: { template: '<router-view/>' }
@@ -8890,8 +8958,7 @@ const router = new VueRouter({
     { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
     { path: '/validate', component: Validate, meta:{title:"Validate"} },
     
-    { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
-    { path: '/eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
+
     
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
     
@@ -8908,13 +8975,7 @@ const router = new VueRouter({
    
     { path: '/map', component: Leaflet,meta:{title:"map"} },     
     
-    { path: '/about', component: { template: '<router-view/>' }  ,children:[
-      {path: '', component: About, meta:{title:"About Vue-poc"} },
-      {path: 'package', component: Package, meta:{title:"Javascript components"} },
-      {path: 'routes', component: Routes, meta:{title:"Routes"} },
-      {path: 'routes2', name: 'routes', component: Routes2, meta:{title:"Routes2"} },
-      {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
-   ]},
+
    
    { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],
@@ -8974,7 +9035,7 @@ const Vuepoc=Vue.extend({template:`
     <router-view name="helper" class="view ma-3"></router-view>
  </v-navigation-drawer>
   
- <v-app-bar app :clipped-left="$vuetify.breakpoint.lgAndUp" color="blue darken-3" dense dark>
+ <v-app-bar app :clipped-left="$vuetify.breakpoint.lgAndUp" :collapse-on-scroll="true" color="blue darken-3" dense dark>
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
   <v-toolbar-title class="hidden-sm-and-down">    
     {{$route.meta.title}}</v-toolbar-title>
@@ -9037,7 +9098,7 @@ const Vuepoc=Vue.extend({template:`
             </v-list-item>
         </v-list>
      </v-menu>
-      
+     
 </v-app-bar>
  
  <v-main> 
@@ -9048,7 +9109,9 @@ const Vuepoc=Vue.extend({template:`
       <router-view class="view ma-3"></router-view>
       </transition>
   </v-main>
-
+  <v-btn v-scroll="onScroll" v-show="fab" fab dark fixed bottom right color="primary" @click="toTop">
+            <v-icon>keyboard_arrow_up</v-icon>
+          </v-btn>
 </v-app>
  `,
       
@@ -9066,6 +9129,7 @@ const Vuepoc=Vue.extend({template:`
     drawer: true,
     showNotifications: false,
     mini: false,
+    fab: false,
     alert: {show:false,msg:"Hello"},
     frmfav: false,
   
@@ -9099,6 +9163,7 @@ const Vuepoc=Vue.extend({template:`
           children: [
          {href: '/database', text: 'Databases',icon: 'developer_mode' },
          {href: '/files', text: 'File system',icon: 'folder' },
+         {href: '/components', text: 'Component library',icon: 'engineering' },
          {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
          {href: '/history/files',text: 'history',icon: 'history'}
         ]},
@@ -9202,7 +9267,15 @@ const Vuepoc=Vue.extend({template:`
       showAlert(msg){
         this.alert.msg=format(new Date())+" "+ msg
         this.alert.show=true
-      }
+      },
+      onScroll (e) {
+          if (typeof window === 'undefined') return
+          const top = window.pageYOffset ||   e.target.scrollTop || 0
+          this.fab = top > 20
+        },
+        toTop () {
+          this.$vuetify.goTo(0)
+        }
   },
   watch: {
 	    showNotifications: function (val) {

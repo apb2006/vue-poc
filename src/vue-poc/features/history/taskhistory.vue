@@ -64,8 +64,8 @@
       q: null,
       headers: [   
         { text: 'Id', value: 'id' },
-        { text: 'Task', value: 'task' },
         { text: 'Created', value: 'created' },
+        { text: 'Task', value: 'task' },
         { text: 'Summary', value: 'summary' },
         { text: 'Params', value: 'arity' }
         ]

@@ -1,5 +1,5 @@
 <entity name="basex.database" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>BaseX databases</description>
+	<description>A BaseX database of the running server. From db:list()</description>
 
 	<fields>
 		<field name="name" type="xs:string">

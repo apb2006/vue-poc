@@ -1,5 +1,5 @@
 (: entity access maps 
- : auto generated from xml files in entities folder at: 2020-11-27T21:35:19.672Z 
+ : auto generated from xml files in entities folder at: 2021-01-13T22:12:01.894Z 
  :)
 
 module namespace entity = 'quodatum.models.generated';
@@ -8,6 +8,7 @@ declare namespace ent='https://github.com/Quodatum/app-doc/entity';
 declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace xqdoc='http://www.xqdoc.org/1.0';
 declare namespace qns='https://github.com/Quodatum/namespaces';
+declare namespace cmpx='urn:quodatum:qd-cmpx:component';
 declare namespace t='https://github.com/Quodatum/task';
 declare namespace c='http://www.w3.org/ns/xproc-step';
           
@@ -734,6 +735,44 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
        "views": map{ 
        'filter': 'name description'
+       }
+   },
+  "quodatum.cmpx": map{
+     "name": "quodatum.cmpx",
+     "description": "Cmpx library components ",
+     "access": map{ 
+'description': function($_ as element(cmpx:cmp)) as xs:string { $_! cmpx:description },
+'home': function($_ as element(cmpx:cmp)) as xs:string { $_! cmpx:home },
+'name': function($_ as element(cmpx:cmp)) as xs:string { $_! @name },
+'type': function($_ as element(cmpx:cmp)) as xs:string { $_! cmpx:type } },
+    
+     "filter": function($item,$q) as xs:boolean{ 
+         some $e in ( ) satisfies
+         fn:contains($e,$q, 'http://www.w3.org/2005/xpath-functions/collation/html-ascii-case-insensitive')
+      },
+       "json":   map{ 
+           "description": function($_ as element(cmpx:cmp)) as element(description)? {
+            (: xs:string :)
+                        fn:data($_!cmpx:description)!element description {  .} 
+                 },
+           "home": function($_ as element(cmpx:cmp)) as element(home)? {
+            (: xs:string :)
+                        fn:data($_!cmpx:home)!element home {  .} 
+                 },
+           "name": function($_ as element(cmpx:cmp)) as element(name)? {
+            (: xs:string :)
+                        fn:data($_!@name)!element name {  .} 
+                 },
+           "type": function($_ as element(cmpx:cmp)) as element(type)? {
+            (: xs:string :)
+                        fn:data($_!cmpx:type)!element type {  .} 
+                 } },
+       
+      "data": function() as element(cmpx:cmp)*
+       { collection('~qd-cmpx')/cmpx:cmp },
+       
+       "views": map{ 
+       
        }
    },
   "quodatum.logfile": map{

@@ -157,7 +157,8 @@
         <div style="height:200px" ref="ace" v-resize="onResize" >
         <v-flex xs12  fill-height >
 			    <vue-ace  :content="item.text"  v-on:change-content="changeContent"  :events="events"
-			    :mode="item.mode" :wrap="wrap"  :settings="aceSettings" v-on:annotation="annotation"></vue-ace>
+			    :mode="item.mode" :wrap="wrap"  :settings="aceSettings" v-on:annotation="annotation"
+			    placeholder="Type.."></vue-ace>
 			  </v-flex>
         </div> 
       </v-card>

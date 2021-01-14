@@ -63,7 +63,7 @@
    <v-card-text>
     <v-flex xs12 style="height:200px"  fill-height>
 		  <vue-ace  :content="xq" mode="xquery" wrap="true"
-		     :settings="aceSettings" v-on:change-content="onChange" 
+		     :settings="aceSettings" v-on:change-content="onChange" placeholder="Type XQuery here then click run.."
 		    ></vue-ace>
     </v-flex>
     <vp-job  v-if="showJob" :job="job" :waiting="waiting" :job-state="jobState" :elapsed="elapsed"></vp-job>
@@ -74,7 +74,8 @@
     
      <v-card-text v-if="showResult">
 		     <v-flex xs12 style="height:200px"  fill-height>
-		        <vue-ace  :content="result" mode="text" wrap="false" read-only="true" :settings="aceSettings"
+		        <vue-ace  :content="result" mode="text" wrap="false" read-only="true" 
+		        :settings="aceSettings" 
 		        ></vue-ace>
         </v-flex> 
      </v-card-text>
@@ -90,7 +91,7 @@
 
   data:  function(){
     return {
-      xq: '(: type your XQuery :)\n',
+      xq: null,
       result: '',
       done: false,
       elapsed: null,
@@ -212,6 +213,7 @@
   },
   computed: { 
   },
+  
   beforeRouteEnter (to, from, next) {
     Settings.getItem('settings/ace')
     .then( v =>{
@@ -221,9 +223,15 @@
         vm.aceSettings = v;
         })})
      },
+     
+     beforeRouteLeave (to, from, next) {
+    	 localforage.setItem('eval/xq',this.xq);
+    	 next()
+     },
+    	  
   created:function(){
       console.log("eval: creatd");
-      localforage.getItem('eval/xq').then((value) => { this.xq=value || this.xq});
+      localforage.getItem('eval/xq').then((value) => { this.xq= value || this.xq});
   },
   beforeDestroy:function(){
     this.destroyed=true;

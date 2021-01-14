@@ -1,11 +1,12 @@
 <entity name="dice.entity" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>List of Entities i.e. things described in this framework
+	<description>List of Entities i.e. things described in this framework. 
+		The name may be dot delimited to indicate the package structure.
 	</description>
 	<namespace prefix="ent"
 		uri="https://github.com/Quodatum/app-doc/entity" />
 	<fields>
 		<field name="name" type="xs:string">
-			<description>name</description>
+			<description>Unique name of the entitty e.g."dice.entity" </description>
 			<xpath>@name</xpath>
 		</field>
 		<field name="type" type="xs:string">

@@ -10,6 +10,7 @@ for vis-time-line http://visjs.org/docs/graph2d/
   data(){
     return {timeline:Object}
   },
+  
   methods:{
     select(properties){
       this.$emit('select',properties.items);
@@ -21,6 +22,7 @@ for vis-time-line http://visjs.org/docs/graph2d/
         this.timeline.fit(true)
     }
   },
+  
   watch:{
 	  items(newItems){
 		  console.log("vis-time-line: new items:" + newItems.length)
@@ -30,8 +32,8 @@ for vis-time-line http://visjs.org/docs/graph2d/
 		  console.log("opts: ",newOpts)
 	  }
   },
+  
   mounted: function () {
-   
     var options = this.options;
     var groups = this.groups;
     var items = new vis.DataSet(this.items);

@@ -1,0 +1,24 @@
+<entity name="quodatum.cmpx" xmlns="https://github.com/Quodatum/app-doc/entity">
+	<description>Cmpx library components </description>
+	<namespace prefix="cmpx" uri="urn:quodatum:qd-cmpx:component" />
+	<fields>
+		<field name="name" type="xs:string">
+			<description>name of component</description>
+			<xpath>@name</xpath>
+		</field>
+		<field name="type" type="xs:string">
+			<description>browser or ??</description>
+			<xpath>cmpx:type</xpath>
+		</field>
+		<field name="home" type="xs:string">
+			<description>url for component</description>
+			<xpath>cmpx:home</xpath>
+		</field>
+		<field name="description" type="xs:string">
+			<description>description of component</description>
+			<xpath>cmpx:description</xpath>
+		</field>
+	</fields>
+	<views iconclass="library_books"/>
+	<data type="element(cmpx:cmp)">collection('~qd-cmpx')/cmpx:cmp</data>
+</entity>

@@ -39,7 +39,7 @@
     <router-view name="helper" class="view ma-3"></router-view>
  </v-navigation-drawer>
   
- <v-app-bar  app  :clipped-left="$vuetify.breakpoint.lgAndUp"
+ <v-app-bar  app  :clipped-left="$vuetify.breakpoint.lgAndUp"  :collapse-on-scroll="true"
       color="blue darken-3" dense  
       dark >
       <v-app-bar-nav-icon @click.stop="drawer = !drawer"  ></v-app-bar-nav-icon>
@@ -104,7 +104,7 @@
             </v-list-item>
         </v-list>
      </v-menu>
-      
+     
 </v-app-bar>
  
  <v-main> 
@@ -115,7 +115,19 @@
       <router-view class="view ma-3"></router-view>
       </transition>
   </v-main>
-
+  <v-btn
+            v-scroll="onScroll"
+            v-show="fab"
+            fab
+            dark
+            fixed
+            bottom
+            right
+            color="primary"
+            @click="toTop"
+          >
+            <v-icon>keyboard_arrow_up</v-icon>
+          </v-btn>
 </v-app>
 </template>
 
@@ -134,6 +146,7 @@
     drawer: true,
     showNotifications: false,
     mini: false,
+    fab: false,
     alert: {show:false,msg:"Hello"},
     frmfav: false,
   
@@ -167,6 +180,7 @@
           children: [
          {href: '/database', text: 'Databases',icon: 'developer_mode' },
          {href: '/files', text: 'File system',icon: 'folder' },
+         {href: '/components', text: 'Component library',icon: 'engineering' },
          {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
          {href: '/history/files',text: 'history',icon: 'history'}
         ]},
@@ -270,7 +284,15 @@
       showAlert(msg){
         this.alert.msg=format(new Date())+" "+ msg
         this.alert.show=true
-      }
+      },
+      onScroll (e) {
+          if (typeof window === 'undefined') return
+          const top = window.pageYOffset ||   e.target.scrollTop || 0
+          this.fab = top > 20
+        },
+        toTop () {
+          this.$vuetify.goTo(0)
+        }
   },
   watch: {
 	    showNotifications: function (val) {

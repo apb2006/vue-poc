@@ -36,28 +36,30 @@
 	 </template>
 	 
      <template v-slot:default="props">
-        <v-row align-content="start"  >
-          <v-col
-            v-for="item in props.items"
-            :key="item.name"           >
+        <v-row align-content="start" no-gutters >
+          <v-col v-for="item in props.items" :key="item.name" 
+             class="ma-2"    no-gutters   >
      
-        <v-card :hover="true" active-class="default-class qd-active" max-width="20em" min-width="20em">
+        <v-card :to="{path:'entity/'+ item.name}" :hover="true" 
+        active-class="default-class qd-active" max-width="20em" min-width="20em" height="15em">
         
-          <v-toolbar  color="orange lighten-3"  >
+          <v-toolbar   color="blue-grey lighten-3"  >
 		          <v-toolbar-title>
-		           <router-link :to="{path:'entity/'+ item.name}">
-		            <v-avatar color="lime">
+		          
+		            <v-avatar tile color="lime" >
 		             <v-icon  >{{ item.iconclass }}</v-icon> 
-		            </v-avatar> {{ item.name }}
-		            </router-link>
+		            </v-avatar> {{ item.name }}	           
 		            </v-toolbar-title>
 		         </v-card-title>
-		         <v-spacer></v-spacer>
-		         <v-badge >
-			      <span slot="badge">{{ item.nfields }}</span>
-			    </v-badge>
           </v-toolbar>
           <v-card-text xs1 >{{ item.description }}</<v-card-text>
+          <v-divider ></v-divider>
+          <v-card-actions >
+	          <v-chip color="green" text-color="white">Fields: {{ item.nfields }}</v-chip>
+	          <v-spacer></v-spacer>
+			  <v-btn icon>Xml</v-btn>
+              <v-btn icon>Json</v-btn>
+             </v-card-actions>
         </v-card>
       </v-col>
       </v-row>
@@ -82,7 +84,7 @@
   methods:{
     getItems(){
       this.loading=true
-      HTTP.get("data/entity",{params:{q:this.q}})
+      HTTP.get("data/entity",{params:{q:this.q, sort:'name'}})
       .then(r=>{
         this.loading=false
         //console.log(r.data)
