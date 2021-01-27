@@ -1,19 +1,35 @@
 <!DOCTYPE html>
 <!-- 
  A form to manage parameters for query
- including  submit form function via POST 
+  <vp-paramform  v-if="!loading" ref="params" :endpoint="endpoint"></vp-paramform>
+ @param endpoint
+ to  submit form function via POST  
+ this.$refs.params.submit() 
  -->
 <template id="vp-paramform">
   <v-card >
      <v-toolbar  color="blue lighten-3"  dense>
        <v-card-title >{{ description }}</v-card-title>
-       <v-spacer></v-spacer>     
-              <v-btn  @click="clear()" id="btn-clear"
-				 >Clear</v-btn>
-		     <v-btn  @click="reset()"
-		         >Reset</v-btn>
-           <v-btn  @click="zlog()"
-		         >console</v-btn>
+       <v-spacer></v-spacer>
+       <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn v-bind="attrs"  v-on="on" icon>
+              <v-icon>more_vert</v-icon>
+        </v-btn>
+      </template>
+      <v-list>     
+         <v-list-item @click="reset()">
+          <v-list-item-title>Set default values</v-list-item-title>
+        </v-list-item>
+         <v-list-item @click="clear()">
+          <v-list-item-title>Clear all</v-list-item-title>
+        </v-list-item>
+        <v-divider ></v-divider>
+         <v-list-item @click="zlog()">
+          <v-list-item-title>Console test</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>     
     </v-toolbar>
     <v-card-text>
        <v-form ref="form" v-model="valid" lazy-validation>

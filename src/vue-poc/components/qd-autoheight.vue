@@ -19,7 +19,7 @@
         var el=this.$refs["auto"];
         var e=el;
        // console.log("top",e.offsetTop,e.getBoundingClientRect().top,window.innerHeight);
-        var h=window.innerHeight - e.getBoundingClientRect().top -10;
+        var h=window.innerHeight - e.getBoundingClientRect().top -20;
         h=Math.max(1,h) ;
         // console.log("h",h)
         e.style.height=h +"px"; 

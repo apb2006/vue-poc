@@ -53,12 +53,12 @@ const store = new Vuex.Store({
 				Object.assign(state, JSON.parse(s))
 			);
 		}
-    	console.log("initialiseStore: ",s)
+    	//console.log("initialiseStore: ",s)
 	}
   }
 })
 store.subscribe((mutation, state) => {
 	// Store the state object as a JSON string
 	localStorage.setItem('store', JSON.stringify(state));
-	console.log("store subscribe")
+	//console.log("store subscribe")
 });

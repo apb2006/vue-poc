@@ -1,4 +1,4 @@
-// generated 2021-01-14T23:08:56.115Z
+// generated 2021-01-27T22:20:43.86Z
 
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\imports.js
 import { parseISO, formatDistanceToNow,  format, roundToNearestMinutes, addSeconds } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
@@ -19,7 +19,7 @@ Vue.component('qd-autoheight',{template:`
         var el=this.$refs["auto"];
         var e=el;
        // console.log("top",e.offsetTop,e.getBoundingClientRect().top,window.innerHeight);
-        var h=window.innerHeight - e.getBoundingClientRect().top -10;
+        var h=window.innerHeight - e.getBoundingClientRect().top -20;
         h=Math.max(1,h) ;
         // console.log("h",h)
         e.style.height=h +"px"; 
@@ -1006,10 +1006,26 @@ Vue.component('vp-paramform',{template:`
   <v-card>
      <v-toolbar color="blue lighten-3" dense>
        <v-card-title>{{ description }}</v-card-title>
-       <v-spacer></v-spacer>     
-              <v-btn @click="clear()" id="btn-clear">Clear</v-btn>
-		     <v-btn @click="reset()">Reset</v-btn>
-           <v-btn @click="zlog()">console</v-btn>
+       <v-spacer></v-spacer>
+       <v-menu offset-y>
+      <template v-slot:activator="{ on, attrs }">
+        <v-btn v-bind="attrs" v-on="on" icon>
+              <v-icon>more_vert</v-icon>
+        </v-btn>
+      </template>
+      <v-list>     
+         <v-list-item @click="reset()">
+          <v-list-item-title>Set default values</v-list-item-title>
+        </v-list-item>
+         <v-list-item @click="clear()">
+          <v-list-item-title>Clear all</v-list-item-title>
+        </v-list-item>
+        <v-divider></v-divider>
+         <v-list-item @click="zlog()">
+          <v-list-item-title>Console test</v-list-item-title>
+        </v-list-item>
+      </v-list>
+    </v-menu>     
     </v-toolbar>
     <v-card-text>
        <v-form ref="form" v-model="valid" lazy-validation>
@@ -3587,6 +3603,106 @@ methods: {
 created:function(){
   this.load()
 }
+
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/components/viewsvg.vue
+const Viewsvg=Vue.extend({template:` 
+  <v-card>
+  <v-toolbar dense class="lime darken-1">
+    <v-card-title>SVG</v-card-title>
+       <v-toolbar-items>
+	      <v-combobox v-model="url" :items="svgs" label="Select svg" prefix="webfile" single-line clearable open-on-clear></v-combobox>
+	   </v-toolbar-items>
+	   <v-spacer></v-spacer>
+	   <v-toolbar-items>
+		  <v-btn @click="view.reset()">Reset</v-btn>
+		   <v-btn @click="size()">Size</v-btn>
+	       <v-btn @click="load()">set</v-btn>
+       </v-toolbar-items>
+	</v-toolbar>
+	<v-card-text>
+	<qd-autoheight>
+	    <div ref="svgcanvas" style="width:100%;height:100%;background-color:yellow;"></div>
+	 </qd-autoheight>
+   </v-card-text>
+    </v-card>
+ `,
+      
+  data: function() {
+    return {
+      canvasd3:null,
+      view:null,
+      url:"/vue-poc/ui/resources/svg/butterfly.svg",
+      
+      svgs:["/vue-poc/ui/resources/svg/butterfly.svg",
+            "/vue-poc/ui/resources/svg/tiger.svg",
+            "/static/xqdoc/dba/imports.svg"]
+    };
+  },
+  methods:{
+    size(){
+      this.view.width(200).height(200).render();
+    },
+    
+    load(){
+      var that=this;
+      d3.xml(this.url,
+          function(error, xml) {
+        if (error) {
+          //alert("load err");
+          throw error;
+        }
+        var d=d3.select(xml.documentElement)
+        that.view.setItem(d);
+    });
+    },
+    
+    onResize(){
+      var el=this.$refs["panel"];
+       
+      //console.log("top",e.offsetTop)
+      var h=Math.max(1,window.innerHeight - el.offsetTop -10);
+      var w=Math.max(1,window.innerWidth- el.offsetLeft ) 
+      console.log("resize:",w,h)
+      el.style.height=h +"px";
+      if(this.view ){
+        this.view.height(h-20);
+       this.view.render();
+      }
+    }
+
+  },
+  
+  watch:{
+    url(v){
+      this.$router.push({  query: { url: this.url }})
+      },
+      $route(vnew,vold){
+        //console.log("ROUTE",vnew,vold)    
+        var url=this.$route.query.url
+        this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
+        if(vnew.query.url != vold.query.url) this.load() 
+      }
+  },
+  
+  mounted: function() {
+    var url=this.$route.query.url
+    this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
+    this.canvasd3 = d3.select(this.$refs.svgcanvas);
+    /** RUN SCRIPT **/
+    var canvasWidth = 800;
+
+    var canvas = d3.demo.canvas().width(canvasWidth).height(400);
+    this.view=canvas;
+    this.canvasd3.call(canvas);
+    
+    this.load();
+   
+
+  }
 
 }
 
@@ -7537,6 +7653,7 @@ const Upload=Vue.extend({template:`
  <v-card>
  <v-card-title>File transfers</v-card-title>
  <v-card-text>
+ <p>Currently files are saved to <code>db:option('dbpath') || '/.vue-poc'</code></p>
  <v-file-input v-model="file" label="File input"></v-file-input>
  <v-btn @click="post()" :disabled="!file">submit</v-btn>
  </v-card-text>
@@ -7551,9 +7668,6 @@ const Upload=Vue.extend({template:`
       }
   },
   methods:{
-    upit:function(s){
-      this.snack=true;
-    },
     post(){
     	let rawData = {
                 name: this.name,
@@ -7561,15 +7675,16 @@ const Upload=Vue.extend({template:`
                 dob: this.dob
               }
         rawData = JSON.stringify(rawData)
+        
+        this.snack = false
     	let formData = new FormData()
         formData.append('avatar', this.file, this.file.name)
-        formData.append('data', rawData)
         let response = HTTP.post('upload2', formData, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
          }).then(r=>{
-        	console.log("upload: ",r)	 
+        	 this.snack=true; 
          })
     }
   }
@@ -8815,17 +8930,22 @@ const router = new VueRouter({
         {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
      ]},
      
+     { path: '/action', component: { template: '<router-view/>' }  ,children:[
+    	 { path: 'edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
+    	 { path: 'eval', component: Eval, meta:{title:"Evaluate XQuery"} },
+    	 { path: 'eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
+    	 { path: 'tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },   
+    	 { path: 'transform', component: Transform, meta:{title:"XSLT2 Transform"} },
+    	 { path: 'validate', component: Validate, meta:{title:"Validate"} },    	    
+    	 
+     ]},
     { path: '/components', component: Components,meta:{title:"Components"},props:{protocol:"xmldb"} },
     
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
     { path: '/documentation/xqdoc', component: Xqdocs, meta:{title:"XQdoc"} },
     
-    { path: '/edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
-    { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
-    { path: '/eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
-    
-    { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
+    { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} }, 
     
     {path: '/images', component: { template: '<router-view/>' }, 
     	children: [
@@ -8869,7 +8989,7 @@ const router = new VueRouter({
     { path: '/session', component: Session ,meta: {title:"Session"}},  
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
-    { path: '/tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },
+  
     
 
 
@@ -8954,14 +9074,9 @@ const router = new VueRouter({
     
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/html', component: Testhtml, meta:{title:"HTML test"} },
-    
-    { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
-    { path: '/validate', component: Validate, meta:{title:"Validate"} },
-    
-
-    
+      
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
-    
+    { path: '/map', component: Leaflet,meta:{title:"map"} },     
     { path: '/tasks', component: { template: '<router-view/>' } ,  children:[
 		    { path: '', component: Tasks, meta:{title:"Runnable tasks"} },
 		    { path: 'vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
@@ -8971,18 +9086,19 @@ const router = new VueRouter({
 		    	{path: "run", component: Runtask, props: true,  meta:{title:"Run task"} },
 		    	]}
     ]},  
-   
-   
-    { path: '/map', component: Leaflet,meta:{title:"map"} },     
-    
-
+    { path: '/view', component: { template: '<router-view/>' } ,  children:[
+    	    { path: 'svg', component: Viewsvg, meta:{title:"SVG test"} }
+    	    ]},
    
    { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],
 });
+
 router.afterEach(function(route) {
   document.title = (route.meta.title?route.meta.title:"") + " VUE-Poc";
 });
+
+
 
 router.beforeEach((to, from, next) => {
   //console.log("before: ",to)
@@ -9137,15 +9253,15 @@ const Vuepoc=Vue.extend({template:`
       {href: '/',text: 'Dashboard', icon: 'home'    },
       {
         icon: 'input',
-        text: 'Actions' ,
+        text: 'Action' ,
         model: false,
         children: [
-      {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
-   
-      {href: '/edit',text: 'Edit',icon: 'mode_edit'},
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
-      {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
-      {href: '/transform',text: 'XSLT Transform',icon: 'forward'}
+			      {href: '/action/eval',text: 'Query',icon: 'play_circle_outline'},  
+			      {href: '/action/edit',text: 'Edit',icon: 'mode_edit'},
+			      {href: '/action/tabs',text: 'Tabs',icon: 'switch_camera'},  
+			      {href: '/action/validate',text: 'Validate',icon: 'playlist_add_check'},
+			      {href: '/action/transform',text: 'XSLT Transform',icon: 'forward'},
+			      {href: '/view/svg',text: 'SVG test',icon: 'preview'}
       ]},
       
       {

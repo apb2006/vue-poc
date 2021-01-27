@@ -25,17 +25,22 @@ const router = new VueRouter({
         {path: 'vue-cmps', component: VueComps, meta:{title:"Vue components"} },
      ]},
      
+     { path: '/action', component: { template: '<router-view/>' }  ,children:[
+    	 { path: 'edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
+    	 { path: 'eval', component: Eval, meta:{title:"Evaluate XQuery"} },
+    	 { path: 'eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
+    	 { path: 'tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },   
+    	 { path: 'transform', component: Transform, meta:{title:"XSLT2 Transform"} },
+    	 { path: 'validate', component: Validate, meta:{title:"Validate"} },    	    
+    	 
+     ]},
     { path: '/components', component: Components,meta:{title:"Components"},props:{protocol:"xmldb"} },
     
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
     { path: '/documentation/xqdoc', component: Xqdocs, meta:{title:"XQdoc"} },
     
-    { path: '/edit', name: "edit",component: Edit,meta:{title:"Ace editor"} },
-    { path: '/eval', component: Eval, meta:{title:"Evaluate XQuery"} },
-    { path: '/eval/:id', component: Evalid, props: true, meta:{title:"Run details"} },
-    
-    { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} },
+    { path: '/files', component: Files,meta:{title:"File system"},props:{protocol:"webfile"} }, 
     
     {path: '/images', component: { template: '<router-view/>' }, 
     	children: [
@@ -79,7 +84,7 @@ const router = new VueRouter({
     { path: '/session', component: Session ,meta: {title:"Session"}},  
     { path: '/select', component: Select, meta:{title:"Select"} },
     { path: '/search', component: Search, meta:{title:"Search"} },
-    { path: '/tabs', name: "multi-edit", component: Tabs,meta:{title:"tab test"} },
+  
     
 
 
@@ -164,14 +169,9 @@ const router = new VueRouter({
     
     { path: '/puzzle', component: Puzzle, meta:{title:"Jigsaw"} },
     { path: '/html', component: Testhtml, meta:{title:"HTML test"} },
-    
-    { path: '/transform', component: Transform, meta:{title:"XSLT2 Transform"} },
-    { path: '/validate', component: Validate, meta:{title:"Validate"} },
-    
-
-    
+      
     { path: '/logs', component: Log, meta:{title:"Server logs"} },
-    
+    { path: '/map', component: Leaflet,meta:{title:"map"} },     
     { path: '/tasks', component: { template: '<router-view/>' } ,  children:[
 		    { path: '', component: Tasks, meta:{title:"Runnable tasks"} },
 		    { path: 'vuecompile', component: Vuecompile, meta:{title:"vue compile"} },
@@ -181,18 +181,19 @@ const router = new VueRouter({
 		    	{path: "run", component: Runtask, props: true,  meta:{title:"Run task"} },
 		    	]}
     ]},  
-   
-   
-    { path: '/map', component: Leaflet,meta:{title:"map"} },     
-    
-
+    { path: '/view', component: { template: '<router-view/>' } ,  children:[
+    	    { path: 'svg', component: Viewsvg, meta:{title:"SVG test"} }
+    	    ]},
    
    { path: '*', component: Notfound, meta:{title:"Page not found"} }
   ],
 });
+
 router.afterEach(function(route) {
   document.title = (route.meta.title?route.meta.title:"") + " VUE-Poc";
 });
+
+
 
 router.beforeEach((to, from, next) => {
   //console.log("before: ",to)

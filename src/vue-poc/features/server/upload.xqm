@@ -13,14 +13,13 @@ declare variable $_:DBA-DIRECTORY := (
   )
 );
 (:~
- : sample form i/p
+ : save upload to filesystem
  :)
 declare %updating  
 %rest:POST %rest:path("/vue-poc/api/upload2")
-%rest:form-param("data", "{ $data }")
 %rest:form-param("avatar", "{ $file }")
 %output:method("text")
-function _:upload($data, $file)
+function _:upload( $file)
 {
   for $name    in map:keys($file)
   let $content := $file($name)

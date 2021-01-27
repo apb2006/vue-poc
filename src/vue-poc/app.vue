@@ -154,15 +154,15 @@
       {href: '/',text: 'Dashboard', icon: 'home'    },
       {
         icon: 'input',
-        text: 'Actions' ,
+        text: 'Action' ,
         model: false,
         children: [
-      {href: '/eval',text: 'Query',icon: 'play_circle_outline'},
-   
-      {href: '/edit',text: 'Edit',icon: 'mode_edit'},
-      {href: '/tabs',text: 'Tabs',icon: 'switch_camera'},  
-      {href: '/validate',text: 'Validate',icon: 'playlist_add_check'},
-      {href: '/transform',text: 'XSLT Transform',icon: 'forward'}
+			      {href: '/action/eval',text: 'Query',icon: 'play_circle_outline'},  
+			      {href: '/action/edit',text: 'Edit',icon: 'mode_edit'},
+			      {href: '/action/tabs',text: 'Tabs',icon: 'switch_camera'},  
+			      {href: '/action/validate',text: 'Validate',icon: 'playlist_add_check'},
+			      {href: '/action/transform',text: 'XSLT Transform',icon: 'forward'},
+			      {href: '/view/svg',text: 'SVG test',icon: 'preview'}
       ]},
       
       {
