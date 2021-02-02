@@ -1,4 +1,4 @@
-// generated 2021-01-27T22:20:43.86Z
+// generated 2021-02-02T10:00:11.019Z
 
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\imports.js
 import { parseISO, formatDistanceToNow,  format, roundToNearestMinutes, addSeconds } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
@@ -542,7 +542,7 @@ Vue.component('qd-table',{template:`
 		   <v-toolbar-title>{{ title }}</v-toolbar-title>
     </slot>  
    <v-spacer></v-spacer>
-    <v-text-field prepend-icon="filter_list" label="Filter..." single-line hide-details v-model="query.filter" clearable></v-text-field>
+    <v-text-field prepend-icon="filter_list" label="Filter..." single-line hide-details v-model="queryL.filter" clearable></v-text-field>
       
       <v-spacer></v-spacer>
        <v-menu v-if="selected.length" offset-y left>
@@ -606,7 +606,7 @@ Vue.component('qd-table',{template:`
               </v-menu>
     </v-toolbar>
     <v-card-text>
-   <v-data-table :headers="headers" :items="filtered" v-model="selected" :item-key="itemKey" :search="query.filter" :items-per-page="10" :show-select="showSelectL" :multi-sort="multiSortL" :loading="loading" class="elevation-1" :fixed-header="true" :no-data-text="noDataMsg">
+   <v-data-table :headers="headers" :items="filtered" v-model="selected" :item-key="itemKey" :search="queryL.filter" :items-per-page="10" :show-select="showSelectL" :multi-sort="multiSortL" :loading="loading" class="elevation-1" :fixed-header="true" :no-data-text="noDataMsg">
    <template v-for="(_, slot) of $scopedSlots" v-slot:[slot]="scope"><slot :name="slot" v-bind="scope"></slot></template>
    
   </v-data-table>
@@ -641,6 +641,7 @@ Vue.component('qd-table',{template:`
       loading: false,
       showSelectL: this.showSelect,
       multiSortL: this.multiSort,
+      queryL: Object.assign({}, this.query),
       autoRefreshL: false
       }
   },
@@ -673,11 +674,39 @@ Vue.component('qd-table',{template:`
   		  alert("clipboard write failed")
   		});
     	
-     }
+     },
+     addParamsToLocation(params) {
+    	  history.pushState(
+    	    {},
+    	    null,
+    	    this.$router.options.base + this.$route.path +
+    	      '?' +
+    	      Object.keys(params)
+    	        .map(key => {
+    	          if (params[key])
+    	          return (
+    	            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+    	          )
+    	        })
+    	        .join('&')
+    	  )
+    	}
   },
   
   watch:{
-	  filter:function(nn){console.log("filter new:",nn)}
+	  queryL:{
+		  handler: function(nn){
+								 
+				    console.log("filter new:", this.$router.path, this.queryL)
+				  this.addParamsToLocation(this.queryL)
+				  this.getItems();
+				  },
+		  deep: true
+	  },
+	  initItems: function(n,o){
+		  this.items=n
+		  console.log("INIT-ITEMS: ",n)
+	  }
   },
   computed:{
 	  filtered:function(){
@@ -693,6 +722,8 @@ Vue.component('qd-table',{template:`
   },
   created:function(){
     console.log("qd-table");
+    var q= this.$route.query
+    if(q){this.queryL= q}
     this.getItems();
   }
 }
@@ -1259,16 +1290,17 @@ Vue.component('vue-ace',{template:`
         this.editor.setValue(value, 1)
       }
     },
+    
     'mode' (value) {
         var session=this.editor.getSession()
-        session.setMode(`ace/mode/${value}`)
-
-      
+        session.setMode(`ace/mode/${value}`) 
     },
+    
     'wrap' (value) {
       var session=this.editor.getSession()
       session.setUseWrapMode(value)
     },
+    
     "settings":{
       handler:function(vnew,vold){
         //console.log("aCe settings:",vnew,this)
@@ -1877,7 +1909,8 @@ const About=Vue.extend({template:`
            <v-layout row wrap>
           <v-flex xs6>
           <v-list dense>
-		 	     
+		 	  <v-list-item> <a href="/vue-poc/api?scope=/vue-poc" target="new">WADL (xml)</a></v-list-item>
+		 	  <v-list-item> <a href="/static/Swadl-master/wadl.html" target="new">WADL (html static)</a></v-list-item>     
 	          <v-list-item> <a href="https://vuejs.org/" target="new">vue.js</a></v-list-item>
               
 			<v-list-item><a href="https://vuetifyjs.com/vuetify/quick-start" target="new">vuetifyjs</a></v-list-item>
@@ -1957,15 +1990,16 @@ const About=Vue.extend({template:`
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/about/package.vue
 const Package=Vue.extend({template:`  
 <v-container>
-<v-card hover raised> 
-    <v-toolbar> 
-    <v-card-title> 
-      <qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/about', text:'about'}, {text: '3rd party components', disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
-     </v-card-title>
-	<v-spacer></v-spacer> 
-	</v-toolbar>
-	 <v-data-table :headers="headers" :items="pack" :items-per-page="100" class="elevation-1"></v-data-table> 
-</v-card> 
+   <qd-table :headers="headers" :init-items="pack" item-key="name">
+	    <template v-slot:title>
+	    	<qd-breadcrumbs @todo="showmenu= ! showmenu" :crumbs="[{to: '/about', text:'about'}, {text: 'Client components', disabled: false, menu: 'todo'}]">crumbs</qd-breadcrumbs> 
+	    </template> 
+	    <template v-slot:item.name="{ item }"> 
+		      <router-link :to="{name:'namespace1', query:{ id: item.name}}">
+	                 {{ item.name }}
+	          </router-link>
+	    </template>   
+   </qd-table> 
 </v-container> 
  `,
       
@@ -2709,23 +2743,19 @@ const Log=Vue.extend({template:`
 
       );
       
-// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/components.vue
-const Components=Vue.extend({template:` 
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/component1.vue
+const Component1=Vue.extend({template:` 
  <v-container fluid>
    <qd-table :headers="headers" data-uri="data/quodatum.cmpx" entity="quodatum.cmpx" item-key="name">
-    <template v-slot:title>AAA</template> 
+   <template v-slot:item.name="{ item }"> 
+	     <router-link v-if="item" :to="{name:'component1', query:{ name: item.name}}">
+                 {{ item.name }}
+          </router-link>
+    </template>
     <template v-slot:item.home="{ item }"> 
 	      <a :href=" item.home" target="cmpx">
                  {{ item.home }}
           </a>
-    </template>
-      
-    <template slot="no-results">
-        No matching results.
-    </template>
-    
-    <template slot="no-data">
-        No matching items.
     </template>
    </qd-table>
  </v-container>
@@ -2738,6 +2768,41 @@ const Components=Vue.extend({template:`
         { text: 'type', value: 'type' },
         { text: 'home', value: 'home' },
         { text: 'description', value: 'description' }
+      ] 
+      }
+  }
+}
+
+      );
+      
+// src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/collection/components.vue
+const Components=Vue.extend({template:` 
+ <v-container fluid>
+   <qd-table :headers="headers" data-uri="data/quodatum.cmpx" entity="quodatum.cmpx" item-key="name">
+   
+  <template v-slot:item.name="{ item }"> 
+	     <router-link :to="{name:'component1',params: {name: item.name}}">
+                 {{ item.name }}
+          </router-link>
+    </template> 
+    
+    <template v-slot:item.home="{ item }"> 
+	      <a :href=" item.home" target="cmpx">
+                 {{ item.home }}
+          </a>
+    </template>
+    
+   </qd-table>
+ </v-container>
+  `,
+      
+  data:  function(){
+    return {
+      headers: [
+        { text: 'name', value: 'name'},
+        { text: 'description', value: 'description' },
+        { text: 'type', value: 'type' },
+        { text: 'home', value: 'home' },
       ] 
       }
   }
@@ -6690,24 +6755,15 @@ const Taxonomy=Vue.extend({template:`
       
 // src: file:///C:/Users/andy/git/vue-poc/src/vue-poc/features/namespaces/namespace.vue
 const Namespace=Vue.extend({template:` 
-<v-container fluid>
+ <v-container fluid>
    <qd-table :headers="headers" data-uri="data/namespace" entity="namespace" item-key="xmlns">
-    <template v-slot:title>AAA</template> 
     <template v-slot:item.xmlns="{ item }"> 
 	      <router-link :to="{name:'namespace1', query:{ id: item.xmlns}}">
                  {{ item.xmlns }}
           </router-link>
     </template>
-      
-    <template slot="no-results">
-        No matching results.
-    </template>
-    
-    <template slot="no-data">
-        No matching items.
-    </template>
    </qd-table>
- </v-container>
+  </v-container>
   `,
       
   data:  function(){
@@ -7678,8 +7734,8 @@ const Upload=Vue.extend({template:`
         
         this.snack = false
     	let formData = new FormData()
-        formData.append('avatar', this.file, this.file.name)
-        let response = HTTP.post('upload2', formData, {
+        formData.append('file', this.file, this.file.name)
+        let response = HTTP.post('upload', formData, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }
@@ -8939,7 +8995,11 @@ const router = new VueRouter({
     	 { path: 'validate', component: Validate, meta:{title:"Validate"} },    	    
     	 
      ]},
-    { path: '/components', component: Components,meta:{title:"Components"},props:{protocol:"xmldb"} },
+    { path: '/components',component: { template: '<router-view/>' }, 
+     	children: [ 
+    	  {path:'', component: Components,meta:{title:"Components"}, props:{protocol:"xmldb"} },
+    	  {path:':name', name:"component1", component: Component1, meta:{title:"Component"}, props: true },
+     ]},
     
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },

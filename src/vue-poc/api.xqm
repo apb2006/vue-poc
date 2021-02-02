@@ -72,13 +72,27 @@ something
 };
 
 (:~
- : Returns wadl.
+ Description of the Rest API as a wadl document
+  @return wadl sorted and groups by path
+  @param scope regexp to select paths
  :)
 declare
 %rest:path("/vue-poc/api")
-function vue-api:wadl()   
+%rest:query-param("scope", "{$scope}","")
+%output:method("xml")
+function vue-api:wadl($scope as xs:string?)   
 {
- rest:wadl()
+ let $w:=rest:wadl()
+
+let $absolute:=function($path as xs:string){ concat(if (matches($path,"^/")) then "" else "/",$path)}
+let $rg:=for $r in $w/wadl:resources/wadl:resource[matches(@path,"^" || $scope)]
+         group by $p:=$absolute($r/@path)
+         order by $p
+        return element wadl:resource {attribute path {$p}, $r/*}
+        
+return element wadl:application {
+  element wadl:resources {$w/wadl:resources/@base, $rg}
+  }
 };
 
 (:~

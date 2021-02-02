@@ -17,7 +17,7 @@
         prepend-icon="filter_list"
         label="Filter..."
         single-line  hide-details
-        v-model="query.filter"
+        v-model="queryL.filter"
         clearable
       ></v-text-field>
       
@@ -91,7 +91,7 @@
    <v-data-table   
       :headers="headers"  :items="filtered" 
       v-model="selected" :item-key="itemKey"
-      :search="query.filter"
+      :search="queryL.filter"
       :items-per-page="10" 
       :show-select="showSelectL"
       :multi-sort="multiSortL"
@@ -136,6 +136,7 @@
       loading: false,
       showSelectL: this.showSelect,
       multiSortL: this.multiSort,
+      queryL: Object.assign({}, this.query),
       autoRefreshL: false
       }
   },
@@ -168,11 +169,40 @@
   		  alert("clipboard write failed")
   		});
     	
-     }
+     },
+     // @todo global
+     addParamsToLocation(params) {
+    	  history.pushState(
+    	    {},
+    	    null,
+    	    this.$router.options.base + this.$route.path +
+    	      '?' +
+    	      Object.keys(params)
+    	        .map(key => {
+    	          if (params[key])
+    	          return (
+    	            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+    	          )
+    	        })
+    	        .join('&')
+    	  )
+    	}
   },
   
   watch:{
-	  filter:function(nn){console.log("filter new:",nn)}
+	  queryL:{
+		  handler: function(nn){
+								 
+				    console.log("filter new:", this.$router.path, this.queryL)
+				  this.addParamsToLocation(this.queryL)
+				  this.getItems();
+				  },
+		  deep: true
+	  },
+	  initItems: function(n,o){
+		  this.items=n
+		  console.log("INIT-ITEMS: ",n)
+	  }
   },
   computed:{
 	  filtered:function(){
@@ -188,6 +218,8 @@
   },
   created:function(){
     console.log("qd-table");
+    var q= this.$route.query
+    if(q){this.queryL= q}
     this.getItems();
   }
 }

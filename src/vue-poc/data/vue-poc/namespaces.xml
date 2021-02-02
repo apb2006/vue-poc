@@ -156,4 +156,8 @@
 		</description>
 	</namespace>
 	
+	<namespace xml:id="http://wadl.dev.java.net/2009/02" prefix="wadl">
+		<description>https://en.wikipedia.org/wiki/Web_Application_Description_Language
+		</description>
+	</namespace>
 </namespaces>

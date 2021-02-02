@@ -46,16 +46,17 @@ event fired cmd outline
         this.editor.setValue(value, 1)
       }
     },
+    
     'mode' (value) {
         var session=this.editor.getSession()
-        session.setMode(`ace/mode/${value}`)
-
-      
+        session.setMode(`ace/mode/${value}`) 
     },
+    
     'wrap' (value) {
       var session=this.editor.getSession()
       session.setUseWrapMode(value)
     },
+    
     "settings":{
       handler:function(vnew,vold){
         //console.log("aCe settings:",vnew,this)

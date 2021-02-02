@@ -1,24 +1,21 @@
 <!DOCTYPE html>
 <template id="package"> 
 <v-container >
-<v-card hover raised> 
-    <v-toolbar> 
-    <v-card-title> 
-      <qd-breadcrumbs @todo="showmenu= ! showmenu" 
-         :crumbs="[{to: '/about', text:'about'}, {text: '3rd party components', disabled: false, menu: 'todo'}]"
-         >crumbs</qd-breadcrumbs> 
-     </v-card-title>
-	<v-spacer></v-spacer> 
-	</v-toolbar>
-	 <v-data-table
-    :headers="headers"
-    :items="pack"
-    :items-per-page="100"
-    class="elevation-1"
-  ></v-data-table> 
-</v-card> 
+   <qd-table :headers="headers" :init-items="pack"   item-key="name">
+	    <template v-slot:title >
+	    	<qd-breadcrumbs @todo="showmenu= ! showmenu" 
+	         :crumbs="[{to: '/about', text:'about'}, {text: 'Client components', disabled: false, menu: 'todo'}]"
+	         >crumbs</qd-breadcrumbs> 
+	    </template> 
+	    <template v-slot:item.name="{ item }" > 
+		      <router-link :to="{name:'namespace1', query:{ id: item.name}}">
+	                 {{ item.name }}
+	          </router-link>
+	    </template>   
+   </qd-table> 
 </v-container> 
 </template>
+
 <script>{
   data:  function(){
     return { 

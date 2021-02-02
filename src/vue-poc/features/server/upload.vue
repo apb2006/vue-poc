@@ -31,8 +31,8 @@
         
         this.snack = false
     	let formData = new FormData()
-        formData.append('avatar', this.file, this.file.name)
-        let response = HTTP.post('upload2', formData, {
+        formData.append('file', this.file, this.file.name)
+        let response = HTTP.post('upload', formData, {
               headers: {
                 'Content-Type': 'multipart/form-data'
               }

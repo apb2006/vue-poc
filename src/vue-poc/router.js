@@ -34,7 +34,11 @@ const router = new VueRouter({
     	 { path: 'validate', component: Validate, meta:{title:"Validate"} },    	    
     	 
      ]},
-    { path: '/components', component: Components,meta:{title:"Components"},props:{protocol:"xmldb"} },
+    { path: '/components',component: { template: '<router-view/>' }, 
+     	children: [ 
+    	  {path:'', component: Components,meta:{title:"Components"}, props:{protocol:"xmldb"} },
+    	  {path:':name', name:"component1", component: Component1, meta:{title:"Component"}, props: true },
+     ]},
     
     { path: '/database', component: Files,meta:{title:"Databases"},props:{protocol:"xmldb"} },
     { path: '/documentation', component: Documentation, meta:{title:"documentation"} },
