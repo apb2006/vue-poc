@@ -1,4 +1,4 @@
-// generated 2021-02-02T10:00:11.019Z
+// generated 2021-02-04T22:53:40.235Z
 
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\imports.js
 import { parseISO, formatDistanceToNow,  format, roundToNearestMinutes, addSeconds } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
@@ -674,31 +674,15 @@ Vue.component('qd-table',{template:`
   		  alert("clipboard write failed")
   		});
     	
-     },
-     addParamsToLocation(params) {
-    	  history.pushState(
-    	    {},
-    	    null,
-    	    this.$router.options.base + this.$route.path +
-    	      '?' +
-    	      Object.keys(params)
-    	        .map(key => {
-    	          if (params[key])
-    	          return (
-    	            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-    	          )
-    	        })
-    	        .join('&')
-    	  )
-    	}
+     }
+ 
   },
   
   watch:{
 	  queryL:{
-		  handler: function(nn){
-								 
-				    console.log("filter new:", this.$router.path, this.queryL)
-				  this.addParamsToLocation(this.queryL)
+		  handler: function(nn){			 
+				  console.log("filter new:", this.$router.path, this.queryL)
+				  this.$route.addParamsToLocation(this.queryL)
 				  this.getItems();
 				  },
 		  deep: true
@@ -2928,7 +2912,7 @@ const Files=Vue.extend({template:`
 	    <v-subheader inset>
 	         <span>Folders ({{ xfolders.length }})</span> 
 	     </v-subheader>
-	      <v-list-item v-for="item in xfolders" v-bind:key="item.name" v-model="item.selected" @click="folder(item)">
+	      <v-list-item v-for="item in xfolders" v-bind:key="item.name" v-model="item.selected" @click="open(item)">
 	        <v-list-item-avatar @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-item-avatar>
@@ -2954,7 +2938,7 @@ const Files=Vue.extend({template:`
 	        <v-list-item-avatar avatar @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-item-avatar>
-	        <v-list-item-content @click="file(item.name)">
+	        <v-list-item-content @click="open(item)">
 	          <v-list-item-title>{{ item.name }}</v-list-item-title>
 	           <v-list-item-subtitle>modified:  {{item.modified | formatDate}},
 												            size:  {{item.size|readablizeBytes }},
@@ -3006,30 +2990,28 @@ const Files=Vue.extend({template:`
             showInfo: false,
             clipboard: null,
           
-						buttons: [ 
-						    {method: this.todo, icon: "view_quilt"},
+			buttons: [ 
+					  {method: this.todo, icon: "view_quilt"},
 			          {method: this.add, icon: "add"},
-						    {method: this.todo, icon: "sort"},
-						    {method: this.selectAll, icon: "select_all"}     
+					  {method: this.todo, icon: "sort"},
+					  {method: this.selectAll, icon: "select_all"}     
 						],
-						selopts: [
-						    {method: this.todo, icon: "delete"},
-						    {method: this.clip, icon: "content_copy"},
-						    {method: this.clip, icon: "content_cut"},
-						    {method: this.todo, icon: "text_format"},
-						    {method: this.todo, icon: "info"},
-						    {method: this.todo, icon: "share"}
-						 ]
+			selopts: [
+			    {method: this.todo, icon: "delete"},
+			    {method: this.clip, icon: "content_copy"},
+			    {method: this.clip, icon: "content_cut"},
+			    {method: this.todo, icon: "text_format"},
+			    {method: this.todo, icon: "info"},
+			    {method: this.todo, icon: "share"}
+			 ]
     }
   },
   methods:{
-    file (val) {
-   // with query, resulting in /register?plan=private
-      router.push({ path: 'edit', query: { url: this.fullurl(val)  }})
-    },
-    folder (item) {
-      this.url=this.url+item.name+"/"
-    },
+	open(item){
+		console.log("open ",item.name)
+		this.url=this.url+item.name+"/"		
+	},
+	   
     load(){
       var url=this.url
       this.busy=true
@@ -3037,7 +3019,7 @@ const Files=Vue.extend({template:`
       .then(r=>{
 	    	this.busy=false 
 	        this.items=r.data.items
-	        this.q=null       
+	        this.q=null
         })
         .catch(error=> {
           console.log(error);
@@ -3092,6 +3074,23 @@ const Files=Vue.extend({template:`
      fullurl(val){
   	   return this.protocol + ":" +this.url+"/"+val
      },
+     addParamsToLocation(params) {
+   	  console.log("router.addParamsToLocation: ",params)
+   	  history.pushState(
+   	    {},
+   	    null,
+   	    this.$router.options.base + this.$route.path +
+   	      '?' +
+   	      Object.keys(params)
+   	        .map(key => {
+   	          if (params[key])
+   	          return (
+   	            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+   	          )
+   	        })
+   	        .join('&')
+   	  )
+   	}
   },
   computed: {
    
@@ -3118,11 +3117,15 @@ const Files=Vue.extend({template:`
       }
   },
   watch:{
-    url(v){
-      this.$router.push({  query: { url: this.url }})
+    url(v,old){
+    	console.log("watch URL: ", this.url, old, this.hasOwnProperty("$router"))
+    	 console.log("filter new:", this.$router.path, this.queryL)
+		this.addParamsToLocation({url:this.url})
+    	this.load()
       },
+      
       $route(vnew,vold){
-        //console.log("ROUTE",vnew,vold)    
+        console.log("ROUTE",vnew,vold)    
         var url=this.$route.query.url
         this.url=url?url:"/";
         if(vnew.query.url != vold.query.url) this.load() 
@@ -4068,6 +4071,7 @@ const Edit=Vue.extend({template:`
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
     document.addEventListener('beforeunload', this.leaving);
+    console.log("basexlogdate1 query: ",this.$route.url)
     var url=this.$route.query.url
     if(url) this.fetch(url)
   },
@@ -9018,10 +9022,7 @@ const router = new VueRouter({
 		    { path: 'dates', component: Dates, meta:{title:"Image dates"} },
 		    { path: 'people', component: People, meta:{title:"Image people"} }
     ]},
-    
-    
-  
-    
+        
     { path: '/logdate', component: Basexlogdate, meta:{title:"log files"} },
     { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
     
@@ -9154,12 +9155,12 @@ const router = new VueRouter({
   ],
 });
 
+// set page title
 router.afterEach(function(route) {
   document.title = (route.meta.title?route.meta.title:"") + " VUE-Poc";
 });
 
-
-
+// req auth?
 router.beforeEach((to, from, next) => {
   //console.log("before: ",to)
   if (to.matched.some(record => record.meta.requiresAuth)) {
@@ -9178,6 +9179,25 @@ router.beforeEach((to, from, next) => {
     next() // make sure to always call next()!
   }
 });
+
+// update browser url to have query from params
+router.addParamsToLocation=function(params) {
+	  console.log("router.addParamsToLocation: ",params)
+	  history.pushState(
+	    {},
+	    null,
+	    this.$router.options.base + this.$route.path +
+	      '?' +
+	      Object.keys(params)
+	        .map(key => {
+	          if (params[key])
+	          return (
+	            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+	          )
+	        })
+	        .join('&')
+	  )
+	}
 
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\app.vue
 const Vuepoc=Vue.extend({template:` 

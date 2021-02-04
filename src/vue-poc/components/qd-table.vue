@@ -169,32 +169,15 @@
   		  alert("clipboard write failed")
   		});
     	
-     },
-     // @todo global
-     addParamsToLocation(params) {
-    	  history.pushState(
-    	    {},
-    	    null,
-    	    this.$router.options.base + this.$route.path +
-    	      '?' +
-    	      Object.keys(params)
-    	        .map(key => {
-    	          if (params[key])
-    	          return (
-    	            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
-    	          )
-    	        })
-    	        .join('&')
-    	  )
-    	}
+     }
+ 
   },
   
   watch:{
 	  queryL:{
-		  handler: function(nn){
-								 
-				    console.log("filter new:", this.$router.path, this.queryL)
-				  this.addParamsToLocation(this.queryL)
+		  handler: function(nn){			 
+				  console.log("filter new:", this.$router.path, this.queryL)
+				  this.$route.addParamsToLocation(this.queryL)
 				  this.getItems();
 				  },
 		  deep: true

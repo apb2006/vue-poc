@@ -1,4 +1,8 @@
 <!DOCTYPE html>
+<!-- 
+Properties
+protocol: xmldb or file
+ -->
 <template id="files">
  <v-container fluid>
  
@@ -79,7 +83,7 @@
 	         <span >Folders ({{ xfolders.length }})</span> 
 	     </v-subheader>
 	      <v-list-item v-for="item in xfolders" v-bind:key="item.name" 
-	      v-model="item.selected" @click="folder(item)"  >
+	      v-model="item.selected" @click="open(item)"  >
 	        <v-list-item-avatar   @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-item-avatar>
@@ -105,7 +109,7 @@
 	        <v-list-item-avatar avatar  @click.prevent.stop="item.selected =! item.selected ">
 	          <v-icon v-bind:class="[itemClass(item)]">{{ itemIcon(item) }}</v-icon>
 	        </v-list-item-avatar>
-	        <v-list-item-content @click="file(item.name)">
+	        <v-list-item-content @click="open(item)">
 	          <v-list-item-title >{{ item.name }}</v-list-item-title>
 	           <v-list-item-subtitle>modified:  {{item.modified | formatDate}},
 												            size:  {{item.size|readablizeBytes }},
@@ -158,30 +162,28 @@
             showInfo: false,
             clipboard: null,
           
-						buttons: [ 
-						    {method: this.todo, icon: "view_quilt"},
+			buttons: [ 
+					  {method: this.todo, icon: "view_quilt"},
 			          {method: this.add, icon: "add"},
-						    {method: this.todo, icon: "sort"},
-						    {method: this.selectAll, icon: "select_all"}     
+					  {method: this.todo, icon: "sort"},
+					  {method: this.selectAll, icon: "select_all"}     
 						],
-						selopts: [
-						    {method: this.todo, icon: "delete"},
-						    {method: this.clip, icon: "content_copy"},
-						    {method: this.clip, icon: "content_cut"},
-						    {method: this.todo, icon: "text_format"},
-						    {method: this.todo, icon: "info"},
-						    {method: this.todo, icon: "share"}
-						 ]
+			selopts: [
+			    {method: this.todo, icon: "delete"},
+			    {method: this.clip, icon: "content_copy"},
+			    {method: this.clip, icon: "content_cut"},
+			    {method: this.todo, icon: "text_format"},
+			    {method: this.todo, icon: "info"},
+			    {method: this.todo, icon: "share"}
+			 ]
     }
   },
   methods:{
-    file (val) {
-   // with query, resulting in /register?plan=private
-      router.push({ path: 'edit', query: { url: this.fullurl(val)  }})
-    },
-    folder (item) {
-      this.url=this.url+item.name+"/"
-    },
+	open(item){
+		console.log("open ",item.name)
+		this.url=this.url+item.name+"/"		
+	},
+	   
     load(){
       var url=this.url
       this.busy=true
@@ -189,7 +191,7 @@
       .then(r=>{
 	    	this.busy=false 
 	        this.items=r.data.items
-	        this.q=null       
+	        this.q=null
         })
         .catch(error=> {
           console.log(error);
@@ -244,6 +246,23 @@
      fullurl(val){
   	   return this.protocol + ":" +this.url+"/"+val
      },
+     addParamsToLocation(params) {
+   	  console.log("router.addParamsToLocation: ",params)
+   	  history.pushState(
+   	    {},
+   	    null,
+   	    this.$router.options.base + this.$route.path +
+   	      '?' +
+   	      Object.keys(params)
+   	        .map(key => {
+   	          if (params[key])
+   	          return (
+   	            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+   	          )
+   	        })
+   	        .join('&')
+   	  )
+   	}
   },
   computed: {
    
@@ -270,11 +289,15 @@
       }
   },
   watch:{
-    url(v){
-      this.$router.push({  query: { url: this.url }})
+    url(v,old){
+    	console.log("watch URL: ", this.url, old, this.hasOwnProperty("$router"))
+    	 console.log("filter new:", this.$router.path, this.queryL)
+		this.addParamsToLocation({url:this.url})
+    	this.load()
       },
+      
       $route(vnew,vold){
-        //console.log("ROUTE",vnew,vold)    
+        console.log("ROUTE",vnew,vold)    
         var url=this.$route.query.url
         this.url=url?url:"/";
         if(vnew.query.url != vold.query.url) this.load() 

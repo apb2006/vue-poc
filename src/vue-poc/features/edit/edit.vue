@@ -297,6 +297,7 @@
   created(){
     //https://forum.vuejs.org/t/detect-browser-close/5001/3 @fixme
     document.addEventListener('beforeunload', this.leaving);
+    console.log("basexlogdate1 query: ",this.$route.url)
     var url=this.$route.query.url
     if(url) this.fetch(url)
   },

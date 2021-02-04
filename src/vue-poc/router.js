@@ -57,10 +57,7 @@ const router = new VueRouter({
 		    { path: 'dates', component: Dates, meta:{title:"Image dates"} },
 		    { path: 'people', component: People, meta:{title:"Image people"} }
     ]},
-    
-    
-  
-    
+        
     { path: '/logdate', component: Basexlogdate, meta:{title:"log files"} },
     { path: '/logdate/:date', component: Basexlogdate1, props:true, meta:{title:"log files"} },
     
@@ -193,12 +190,12 @@ const router = new VueRouter({
   ],
 });
 
+// set page title
 router.afterEach(function(route) {
   document.title = (route.meta.title?route.meta.title:"") + " VUE-Poc";
 });
 
-
-
+// req auth?
 router.beforeEach((to, from, next) => {
   //console.log("before: ",to)
   if (to.matched.some(record => record.meta.requiresAuth)) {
@@ -217,3 +214,22 @@ router.beforeEach((to, from, next) => {
     next() // make sure to always call next()!
   }
 });
+
+// update browser url to have query from params
+router.addParamsToLocation=function(params) {
+	  console.log("router.addParamsToLocation: ",params)
+	  history.pushState(
+	    {},
+	    null,
+	    this.$router.options.base + this.$route.path +
+	      '?' +
+	      Object.keys(params)
+	        .map(key => {
+	          if (params[key])
+	          return (
+	            encodeURIComponent(key) + '=' + encodeURIComponent(params[key])
+	          )
+	        })
+	        .join('&')
+	  )
+	}
