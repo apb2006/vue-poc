@@ -1,0 +1,17 @@
+<jobs>
+  <job base-uri="file:///mnt/sda1/home/basex.versions/data/.dba/" id="cleanup" interval="PT10M">let $msg:='abc'
+	return admin:write-log("cleanup: " || $msg,"cleanup")</job>
+  <job base-uri="file:///C:/Users/andy/basex.home/webapp/vue-poc/features/images/tasks/" id="meta" interval="PT1M">
+  let $showtime:=function($a, $start){
+	                   out:format(" (time %d ms)",prof:current-ms()-$start)
+			        }(?,prof:current-ms())
+    let $xq:= 'file:///C:/Users/andy/basex.home/webapp/vue-poc/features/images/tasks/pics-02-store-meta.xq'
+
+	return try {
+	         admin:write-log("start","meta"),
+	         xquery:eval-update(xs:anyURI($xq),map{"CHUNK": 200}),
+	        admin:write-log("state200: " || update:cache() || $showtime(""),"meta")
+			}catch * {
+			 admin:write-log("err: " || $err:description,"meta")
+			}</job>
+</jobs>

@@ -1,7 +1,7 @@
 <package xmlns="http://expath.org/ns/pkg" name="https://github.com/apb2006/vue-poc"
-	abbrev="vue-poc" version=" 0.5.4" spec="1.0">
+	abbrev="vue-poc" version=" 0.5.5" spec="1.0">
 	<title>vue-poc test of vue.js.</title>
 	<dependency name="file-walker" version="0.5.2" />
-	<dependency name="ex-thumbnailator" version="6.0.2" />
+	<dependency name="ex-thumbnailator" version="8.0.1" />
 	<dependency name="qd-resolve" version="0.0.9" />
 </package>

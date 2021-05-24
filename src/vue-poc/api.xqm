@@ -8,12 +8,11 @@ module namespace vue-api = 'quodatum:vue.api';
 import module namespace rest = "http://exquery.org/ns/restxq";
 import module namespace session = "http://basex.org/modules/session";
 import module namespace entity = 'quodatum.models.generated' at "models.gen.xqm";
-
+import module namespace  wadlx='http://quodatum.com/ns/wadl' at "lib/wadl/wadl.xqm";
 
 
 declare namespace c="http://www.w3.org/ns/xproc-step";
 
-declare namespace wadl="http://wadl.dev.java.net/2009/02";
 
 (:~
  : get status
@@ -78,21 +77,11 @@ something
  :)
 declare
 %rest:path("/vue-poc/api")
-%rest:query-param("scope", "{$scope}","")
-%output:method("xml")
-function vue-api:wadl($scope as xs:string?)   
+%rest:query-param("scope", "{ $scope }","")
+%rest:query-param("format", "{ $format }","")
+function vue-api:wadl($scope as xs:string?,$format as xs:string?)   
 {
- let $w:=rest:wadl()
-
-let $absolute:=function($path as xs:string){ concat(if (matches($path,"^/")) then "" else "/",$path)}
-let $rg:=for $r in $w/wadl:resources/wadl:resource[matches(@path,"^" || $scope)]
-         group by $p:=$absolute($r/@path)
-         order by $p
-        return element wadl:resource {attribute path {$p}, $r/*}
-        
-return element wadl:application {
-  element wadl:resources {$w/wadl:resources/@base, $rg}
-  }
+  wadlx:get(rest:wadl(),$scope,$format)
 };
 
 (:~

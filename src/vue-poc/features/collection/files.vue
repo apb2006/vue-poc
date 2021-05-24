@@ -251,7 +251,7 @@ protocol: xmldb or file
    	  history.pushState(
    	    {},
    	    null,
-   	    this.$router.options.base + this.$route.path +
+   	    this.$router.options.base + this.$route.path.substring(1) +
    	      '?' +
    	      Object.keys(params)
    	        .map(key => {

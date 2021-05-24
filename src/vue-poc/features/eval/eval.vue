@@ -63,7 +63,9 @@
    <v-card-text>
     <v-flex xs12 style="height:200px"  fill-height>
 		  <vue-ace  :content="xq" mode="xquery" wrap="true"
-		     :settings="aceSettings" v-on:change-content="onChange" placeholder="Type XQuery here then click run.."
+		     :settings="aceSettings" v-on:change-content="onChange" 
+		     :completer="[$aceExtras.basexCompleter, $aceExtras.rhymeCompleter]" 
+		     placeholder="Type XQuery here then click run.."
 		    ></vue-ace>
     </v-flex>
     <vp-job  v-if="showJob" :job="job" :waiting="waiting" :job-state="jobState" :elapsed="elapsed"></vp-job>

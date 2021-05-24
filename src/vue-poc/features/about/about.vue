@@ -37,7 +37,8 @@
           <v-flex xs6>
           <v-list dense >
 		 	  <v-list-item> <a href="/vue-poc/api?scope=/vue-poc" target="new">WADL (xml)</a></v-list-item>
-		 	  <v-list-item> <a href="/static/Swadl-master/wadl.html" target="new">WADL (html static)</a></v-list-item>     
+		 	  <v-list-item> <a href="/vue-poc/api?scope=/vue-poc&amp;format=html" target="new">WADL (html)</a></v-list-item>
+		 	  <v-list-item> <a href="/static/Swadl/wadl.html" target="new">WADL (html static)</a></v-list-item>     
 	          <v-list-item> <a href="https://vuejs.org/" target="new">vue.js</a></v-list-item>
               
 			<v-list-item><a href="https://vuetifyjs.com/vuetify/quick-start"

@@ -16,6 +16,7 @@ event fired cmd outline
           'events',  // event bus if set handles "eventFired",cmd 
           'settings',
           'minLines',
+          'maxLines',
           'completer',
           'snippets',
           'placeholder'
@@ -127,11 +128,12 @@ event fired cmd outline
     this.applySettings(this.aceSettings)
     this.editor.$blockScrolling = Infinity
    //console.log("setValue: ",this.content)
-    this.editor.setValue((this.content == null)?"NULL":this.content, 1);
-    this.editor.setOptions({ readOnly:this.readOnly });
-    if(this.minLines){
-      this.editor.setOptions({ minLines: this.minLines})
-    };
+    this.editor.setValue((this.content == null)?"":this.content, 1);
+    
+    this.editor.setOptions(
+    		{ minLines: this.minLines,  maxLines: this.maxLines,
+    	      readOnly:this.readOnly}
+    );
     var session=this.editor.getSession()
     session.setMode(`ace/mode/${mode}`)
     session.setUseWrapMode(wrap)
@@ -183,7 +185,7 @@ event fired cmd outline
     
     if(this.completer){
 	    var langTools = ace.require("ace/ext/language_tools");
-	    langTools.addCompleter(this.completer);  
+	    this.completer.forEach(c=>langTools.addCompleter(c))
     }
     
     if(this.snippets){
