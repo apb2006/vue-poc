@@ -9,18 +9,21 @@
           <span v-text="elapsed"></span>ms. Height: 
           <span v-text="height"></span>
             <v-spacer></v-spacer>
-           <v-btn-toggle v-model="showOptions" multiple>
+           <v-btn-toggle v-model="showOptions" multiple :title=" 2+2 ">
            <v-icon>visibility</v-icon>
-              <v-btn text value="result" >
-                <span :class="resultValid?'':'red'">Result</span>
-              </v-btn>
               <v-btn text value="xml">
                <span :class="xmlValid?'':'red'">XML</span>
               </v-btn>
+              
               <v-btn text value="xslt">
                  <span :class="xslValid?'':'red'">XSLT</span>
               </v-btn>
+              
+               <v-btn text value="result" >
+                <span :class="resultValid?'':'red'">Result</span>
+              </v-btn>
             </v-btn-toggle>
+            
               <v-menu offset-y left>
                <template v-slot:activator="{ on }">
                   <v-btn icon dark v-on="on"><v-icon>settings</v-icon></v-btn>
@@ -39,22 +42,22 @@
     <v-card-text  class="amber" >
        <qd-autoheight>
 
-      <v-flex  v-if="showOptions.includes('result')" fill-height xs12 >
-        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
-      </v-flex>
- 
-      <v-flex v-if="showOptions.includes('xml')"    fill-height >
+      <v-col v-if="showOptions.includes('xml')"   fill-height  >
 	      <vue-ace  :content="xml" mode="xml" wrap="true" 
 	      v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 && a.warning===0"
 	     :settings="aceSettings"></vue-ace>
-     </v-flex>
+     </v-col>
      
-       <v-flex v-if="showOptions.includes('xslt')"   fill-height >
+       <v-col v-if="showOptions.includes('xslt')"  fill-height >
 	       <vue-ace  :content="xslt" mode="xml" wrap="true" 
 	       v-on:change-content="v => this.xslt=v"  v-on:annotation="a => this.xslValid=a.error===0 && a.warning===0"
 	      :settings="aceSettings"></vue-ace>
-      </v-flex>
+      </v-col>
       
+       <v-col  v-if="showOptions.includes('result')"  fill-height  >
+        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
+      </v-col>
+
      </qd-autoheight>
       </v-card-text>
       </v-card>
@@ -83,7 +86,7 @@
     transform(){
       localforage.setItem('transform/xml', this.xml)
       localforage.setItem('transform/xslt', this.xslt)
-      if(!this.showOptions.includes("result"))this.showOptions.push("result")
+      if(!this.showOptions.includes("result"))this.showOptions=["result"]
       this.loading=true
       this.resultValid=true
       this.start = performance.now();

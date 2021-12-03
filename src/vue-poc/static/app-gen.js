@@ -1,4 +1,4 @@
-// generated 2021-04-28T21:03:51.306+01:00
+// generated 2021-11-28T23:28:30.92Z
 
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\imports.js
 import { parseISO, formatDistanceToNow,  format, roundToNearestMinutes, addSeconds } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
@@ -3396,12 +3396,11 @@ const Svg2=Vue.extend({template:`
 	     <v-select v-model="url" combobox clearable open-on-clear :items="svgs"></v-select>
 	   
 	    <v-btn @click="load()">set</v-btn>
-	</v-toolbar>
-	<div id="viewport" style="width:600px; height:400px; background-color:yellow;">
-	  <div id="map"></div>
-	  <div id="minimap" style="position: absolute;right:5px; top:5px;  border:1px solid black; background-color: lime;"></div>
-</div>
-	
+  </v-toolbar>
+  <div id="viewport" style="width:600px; height:400px; background-color:yellow;">
+	 <div id="map"></div>
+	 <div id="minimap" style="position: absolute;right:5px; top:5px;  border:1px solid black; background-color: lime;"></div>
+  </div>	
 </div>
  `,
       
@@ -3490,9 +3489,6 @@ const Svg2=Vue.extend({template:`
   mounted: function() {
     var url=this.$route.query.url
     this.url=url?url:"/vue-poc/ui/resources/svg/butterfly.svg";
-    this.canvasd3 = d3.select(this.$refs.svgcanvas);
-   
-    
     this.go();
    
 
@@ -8880,18 +8876,21 @@ const Transform=Vue.extend({template:`
           <span v-text="elapsed"></span>ms. Height: 
           <span v-text="height"></span>
             <v-spacer></v-spacer>
-           <v-btn-toggle v-model="showOptions" multiple>
+           <v-btn-toggle v-model="showOptions" multiple :title=" 2+2 ">
            <v-icon>visibility</v-icon>
-              <v-btn text value="result">
-                <span :class="resultValid?'':'red'">Result</span>
-              </v-btn>
               <v-btn text value="xml">
                <span :class="xmlValid?'':'red'">XML</span>
               </v-btn>
+              
               <v-btn text value="xslt">
                  <span :class="xslValid?'':'red'">XSLT</span>
               </v-btn>
+              
+               <v-btn text value="result">
+                <span :class="resultValid?'':'red'">Result</span>
+              </v-btn>
             </v-btn-toggle>
+            
               <v-menu offset-y left>
                <template v-slot:activator="{ on }">
                   <v-btn icon dark v-on="on"><v-icon>settings</v-icon></v-btn>
@@ -8909,19 +8908,20 @@ const Transform=Vue.extend({template:`
           
     <v-card-text class="amber">
        <qd-autoheight>
-
-      <v-flex v-if="showOptions.includes('result')" fill-height xs12>
-        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
-      </v-flex>
- 
-      <v-flex v-if="showOptions.includes('xml')" fill-height>
+       
+	
+      <v-col v-if="showOptions.includes('xml')" fill-height>
 	      <vue-ace :content="xml" mode="xml" wrap="true" v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
-     </v-flex>
+     </v-col>
      
-       <v-flex v-if="showOptions.includes('xslt')" fill-height>
+       <v-col v-if="showOptions.includes('xslt')" fill-height>
 	       <vue-ace :content="xslt" mode="xml" wrap="true" v-on:change-content="v => this.xslt=v" v-on:annotation="a => this.xslValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
-      </v-flex>
+      </v-col>
       
+       <v-col v-if="showOptions.includes('result')" fill-height>
+        <vue-ace :content="result" mode="xml" wrap="true" :settings="aceSettings"></vue-ace>
+      </v-col>
+
      </qd-autoheight>
       </v-card-text>
       </v-card>
@@ -8949,7 +8949,7 @@ const Transform=Vue.extend({template:`
     transform(){
       localforage.setItem('transform/xml', this.xml)
       localforage.setItem('transform/xslt', this.xslt)
-      if(!this.showOptions.includes("result"))this.showOptions.push("result")
+      if(!this.showOptions.includes("result"))this.showOptions=["result"]
       this.loading=true
       this.resultValid=true
       this.start = performance.now();

@@ -1,10 +1,10 @@
 {
 	"name": "vue-poc",
-	"version": "0.5.4@2021-01-04",
+	"version": "0.5.5@2021-10-10",
 	"description": "App framework experiments, Frontend vuetify, backend: basex",
 	"dependencies": {
 		"ace-builds": "1.4.12",
-		"vuetify": "2.4.3",
+		"vuetify": "2.5.14",
 		"vue": "2.6.11",
 		"vuex": "3.6.0",
 		"vue-router": "3.4.9",
