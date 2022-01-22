@@ -4,7 +4,7 @@ xquery version "3.1";
 : can read parameters from request: sort,start,limit.
 : @requires basex 8.6 for map:merge
 : @author andy bunce
-: @since mar 2013
+: @since mar 2013 
 :)
 
 module namespace dice = 'quodatum.web.dice/v4';
