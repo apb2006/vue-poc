@@ -15,7 +15,7 @@ declare namespace c="http://www.w3.org/ns/xproc-step";
 declare function ufile:web($file as xs:string)
 as xs:string
 {
-  let $file:=if(starts-with($file,"/")) then 
+  let $file:= if(starts-with($file,"/")) then 
                 substring($file,2) 
             else 
                 error(xs:QName('ufile:badpath'),"leading slash")
