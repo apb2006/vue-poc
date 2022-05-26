@@ -1,4 +1,4 @@
-// generated 2021-11-28T23:28:30.92Z
+// generated 2022-05-26T21:16:26.339+01:00
 
 // src: C:\Users\andy\git\vue-poc\src\vue-poc\imports.js
 import { parseISO, formatDistanceToNow,  format, roundToNearestMinutes, addSeconds } from 'https://cdn.jsdelivr.net/npm/date-fns@2.16.1/+esm';
@@ -8908,8 +8908,7 @@ const Transform=Vue.extend({template:`
           
     <v-card-text class="amber">
        <qd-autoheight>
-       
-	
+
       <v-col v-if="showOptions.includes('xml')" fill-height>
 	      <vue-ace :content="xml" mode="xml" wrap="true" v-on:change-content="v => this.xml=v" v-on:annotation="a => this.xmlValid=a.error===0 &amp;&amp; a.warning===0" :settings="aceSettings"></vue-ace>
      </v-col>

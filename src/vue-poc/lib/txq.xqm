@@ -22,7 +22,7 @@ import module namespace xquery = "http://basex.org/modules/xquery";
 declare function render($template as xs:string,$map as map(*))
 {
     let $map:=map:merge(($map,map{"partial": partial(?,?,?,$map,$template)}))
-    return xquery:invoke($template,$map)
+    return xquery:eval($template,$map)
 };
  
 (:~

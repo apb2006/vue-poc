@@ -20,7 +20,7 @@ declare function query-a:inspect($mod as xs:string)
 as element(json)
 {
 let $mod:= xs:anyURI($mod)
-let $updating:=xquery:parse-uri($mod)/@updating/string()
+let $updating:=xquery:parse($mod)/@updating/string()
 let $d:=inspect:module($mod)
 let $vars:=$d/variable[@external="true"]
 return <json type="object">
@@ -92,12 +92,12 @@ function query-a:run($query as xs:string,
                    )
 {
 let $query := xs:anyURI($query) =>trace("query-a:run") 
-let $updating:=xquery:parse-uri($query)/@updating/boolean(.)
+let $updating:=xquery:parse($query)/@updating/boolean(.)
 return if($updating) then
        xquery:eval-update($query, $bindings, $options)
      else 
        <json type="object">
-               <res>{ xquery:invoke($query, $bindings, $options)}</res>
+               <res>{ xquery:eval($query, $bindings, $options)}</res>
                <params>todo</params>
        </json>=>update:output()
 };
@@ -106,7 +106,7 @@ declare
 %updating  
 function query-a:run-json($query as xs:anyURI,$params as map(*))
 { 
-  xquery:invoke($query,$params)=>update:output()
+  xquery:eval($query,$params)=>update:output()
 };
 
 
@@ -114,6 +114,6 @@ declare
 %updating 
 function query-a:update($query as xs:anyURI,$params as map(*))
 {
-    xquery:invoke-update($query,$params)
+    xquery:eval-update($query,$params)
 };
 

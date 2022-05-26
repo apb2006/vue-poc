@@ -1,4 +1,4 @@
-(:
+(: 
     In the URI authority, the order of all substrings separated by dots is reversed.
     Dots in the authority and the path are replaced by slashes. If no path exists, a single slash is appended.
     If the resulting string ends with a slash, the index string is appended.
@@ -11,7 +11,7 @@ declare function local:rew($p){
 
 let $a:="http://expkg-zone58.github.io/ex-dotml"
 return (
-  Q{java:org.basex.util.Strings}uri2path($a),
+  (: Q{java:org.basex.util.Strings}uri2path($a), :)
 for $r in repo:list()
 let $r:= $r/@name/string()
 return local:rew($r)
