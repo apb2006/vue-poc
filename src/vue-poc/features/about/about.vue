@@ -4,7 +4,7 @@
     <v-container >
     <v-card hover raised> 
     <v-toolbar>
-<v-card-title >VUE-POC </v-card-title>
+<v-card-title >the VUE-POC </v-card-title>
  <span v-if="pack"> {{ pack.version }}</span>
 <v-spacer></v-spacer>
 

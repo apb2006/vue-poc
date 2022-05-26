@@ -2,136 +2,164 @@
 <!-- main ui
  -->
 <template id="vuepoc">
- <v-app app id="app"  >
-  <v-navigation-drawer
-     stateless 
+  <v-app app id="app">
+    <v-navigation-drawer
+      stateless
       v-model="showNotifications"
       right
-     :disable-route-watcher="true"
+      :disable-route-watcher="true"
       app
       width="500"
     >
-    <vp-notifications :show-notifications.sync="showNotifications"></vp-notifications>
-  </v-navigation-drawer>
-  
- <v-navigation-drawer  app :mini-variant.sync="mini" v-model="drawer"   :clipped="$vuetify.breakpoint.lgAndUp">  
-     <v-list class="pa-0">
-          <v-list-item  tag="div">
-            <v-list-item-avatar >
-              <v-btn icon @click="session">
+      <vp-notifications
+        :show-notifications.sync="showNotifications"
+      ></vp-notifications>
+    </v-navigation-drawer>
+
+    <v-navigation-drawer
+      app
+      :mini-variant.sync="mini"
+      v-model="drawer"
+      :clipped="$vuetify.breakpoint.lgAndUp"
+    >
+      <v-list class="pa-0">
+        <v-list-item tag="div">
+          <v-list-item-avatar>
+            <v-btn icon @click="session">
               <v-avatar size="36">
-              <img src="/vue-poc/ui/quodatum.gif" alt="Vue-poc logo"/>
+                <img src="/vue-poc/ui/quodatum.gif" alt="Vue-poc logo" />
               </v-avatar>
-              </v-btn>
-            </v-list-item-avatar>
-            <v-list-item-content>
-              <v-list-item-title>Vue PoC</v-list-item-title>
-            </v-list-item-content>
-            <v-list-item-action>
-              <v-btn icon @click.stop="mini = !mini">
-                <v-icon>chevron_left</v-icon>
-              </v-btn>
+            </v-btn>
+          </v-list-item-avatar>
+          <v-list-item-content>
+            <v-list-item-title>Vue PoC</v-list-item-title>
+          </v-list-item-content>
+          <v-list-item-action>
+            <v-btn icon @click.stop="mini = !mini">
+              <v-icon>chevron_left</v-icon>
+            </v-btn>
+          </v-list-item-action>
+        </v-list-item>
+      </v-list>
+      <qd-navlist2 :items="items" :mini="mini"></qd-navlist2>
+      <router-view name="helper" class="view ma-3"></router-view>
+    </v-navigation-drawer>
+
+    <v-app-bar
+      app
+      :clipped-left="$vuetify.breakpoint.lgAndUp"
+      :collapse-on-scroll="true"
+      color="blue darken-3"
+      dense
+      dark
+    >
+      <v-app-bar-nav-icon @click.stop="drawer = !drawer"></v-app-bar-nav-icon>
+      <v-toolbar-title class="hidden-sm-and-down">
+        {{ $route.meta.title }}</v-toolbar-title
+      >
+      <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
+      <v-spacer></v-spacer>
+      <v-toolbar-items>
+        <qd-search></qd-search>
+      </v-toolbar-items>
+      <v-spacer></v-spacer>
+
+      <v-btn
+        @click.stop="showNotifications = !showNotifications"
+        icon
+        text
+        title="Notifications"
+      >
+        <v-badge overlap color="orange">
+          <span slot="badge" v-if="$notification.unseen">{{
+            $notification.unseen
+          }}</span>
+          <v-icon>notifications</v-icon>
+        </v-badge>
+      </v-btn>
+
+      <v-menu bottom left min-width="300px">
+        <template v-slot:activator="{ on }">
+          <v-btn icon v-on="on">
+            <v-icon>more_vert</v-icon>
+          </v-btn>
+        </template>
+        <v-list>
+          <v-list-item>
+            <v-list-item-title>Full screen</v-list-item-title>
+            <v-list-item-action
+              ><qd-fullscreen></qd-fullscreen
+            ></v-list-item-action>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title>Dark theme</v-list-item-title>
+            <v-list-item-action
+              ><v-switch v-model="$vuetify.theme.dark"></v-switch>
             </v-list-item-action>
           </v-list-item>
-
-      </v-list>
-    <qd-navlist2  :items="items" :mini="mini"></qd-navlist2>
-    <router-view name="helper" class="view ma-3"></router-view>
- </v-navigation-drawer>
-  
- <v-app-bar  app  :clipped-left="$vuetify.breakpoint.lgAndUp"  :collapse-on-scroll="true"
-      color="blue darken-3" dense  
-      dark >
-      <v-app-bar-nav-icon @click.stop="drawer = !drawer"  ></v-app-bar-nav-icon>
-  <v-toolbar-title class="hidden-sm-and-down" >    
-    {{$route.meta.title}}</v-toolbar-title>
-    <vp-favorite :frmfav.sync="frmfav"></vp-favorite>
-  <v-spacer></v-spacer>
-  <v-toolbar-items>
-    <qd-search></qd-search>
-  </v-toolbar-items>
-  <v-spacer></v-spacer>
-  
-  
-       <v-btn  @click.stop="showNotifications = ! showNotifications" icon text title="Notifications">
-       <v-badge   overlap color="orange">
-      <span slot="badge" v-if=" $notification.unseen" >{{ $notification.unseen }}</span>
-       <v-icon>notifications</v-icon>
-       </v-badge>
-   </v-btn>
-   
-    <v-menu bottom  left min-width="300px">
-	       <template v-slot:activator="{ on }">
-	         <v-btn icon v-on="on" >
-              <v-icon>more_vert</v-icon>
-            </v-btn>
-           </template>
-            <v-list>
-              <v-list-item  >
-                <v-list-item-title>Full screen</v-list-item-title>
-                <v-list-item-action ><qd-fullscreen></qd-fullscreen></v-list-item-action>
-              </v-list-item>
-              <v-list-item  >
-                <v-list-item-title>Dark theme</v-list-item-title>
-                 <v-list-item-action ><v-switch  v-model="$vuetify.theme.dark"></v-switch> </v-list-item-action>
-              </v-list-item>
-              <v-divider ></v-divider>
-               <v-list-item  >
-               <v-list-item-title>Server hot load:</v-list-item-title> 
-                <v-list-item-action ><v-btn @click="init">.init</v-btn></v-list-item-action>
-              </v-list-item>
-            </v-list>
-        </v-menu>
-        
-	 <v-menu left  transition="v-fade-transition">
-	   <template v-slot:activator="{ on }">
-	      <v-btn dark icon v-on="on">
-	        {{$auth.user}}
-	      </v-btn>
-	    </template >   
-        <v-list>
-            <v-list-item to="/session"   ripple>
-              <v-list-item-title >Session</v-list-item-title>
-            </v-list-item>
-            <v-list-item @click="logout()">
-              <v-list-item-title >logout</v-list-item-title>
-            </v-list-item>
-             <v-list-item>
-              <v-list-item-title >permission: {{$auth.permission}}</v-list-item-title>
-            </v-list-item>
+          <v-divider></v-divider>
           <v-list-item>
-              <v-list-item-title >$route.path: {{$route.path}}</v-list-item-title>
-            </v-list-item>
+            <v-list-item-title>Server hot load:</v-list-item-title>
+            <v-list-item-action
+              ><v-btn @click="init">.init</v-btn></v-list-item-action
+            >
+          </v-list-item>
         </v-list>
-     </v-menu>
-     
-</v-app-bar>
- 
- <v-main> 
- <v-alert color="error" value="true" dismissible v-model="alert.show">
-      <pre style="overflow:auto;">{{ alert.msg }}</pre>
-    </v-alert>   
-    <transition name="fade" mode="out-in">
-      <router-view class="view ma-3"></router-view>
-      </transition>
-  </v-main>
-  <v-btn
-            v-scroll="onScroll"
-            v-show="fab"
-            fab
-            dark
-            fixed
-            bottom
-            right
-            color="primary"
-            @click="toTop"
-          >
-            <v-icon>keyboard_arrow_up</v-icon>
+      </v-menu>
+
+      <v-menu left transition="v-fade-transition">
+        <template v-slot:activator="{ on }">
+          <v-btn dark icon v-on="on">
+            {{ $auth.user }}
           </v-btn>
-</v-app>
+        </template>
+        <v-list>
+          <v-list-item to="/session" ripple>
+            <v-list-item-title>Session</v-list-item-title>
+          </v-list-item>
+          <v-list-item @click="logout()">
+            <v-list-item-title>logout</v-list-item-title>
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title
+              >permission: {{ $auth.permission }}</v-list-item-title
+            >
+          </v-list-item>
+          <v-list-item>
+            <v-list-item-title
+              >$route.path: {{ $route.path }}</v-list-item-title
+            >
+          </v-list-item>
+        </v-list>
+      </v-menu>
+    </v-app-bar>
+
+    <v-main>
+      <v-alert color="error" value="true" dismissible v-model="alert.show">
+        <pre style="overflow: auto">{{ alert.msg }}</pre>
+      </v-alert>
+      <transition name="fade" mode="out-in">
+        <router-view class="view ma-3"></router-view>
+      </transition>
+    </v-main>
+    <v-btn
+      v-scroll="onScroll"
+      v-show="fab"
+      fab
+      dark
+      fixed
+      bottom
+      right
+      color="primary"
+      @click="toTop"
+    >
+      <v-icon>keyboard_arrow_up</v-icon>
+    </v-btn>
+  </v-app>
 </template>
 
-<script>{
+<script>
+{
   router,
   store,
   vuetify: new Vuetify({ theme: {dark: false},
@@ -149,7 +177,7 @@
     fab: false,
     alert: {show:false,msg:"Hello"},
     frmfav: false,
-  
+
     items: [
       {href: '/',text: 'Dashboard', icon: 'home'    },
       {
@@ -157,14 +185,14 @@
         text: 'Action' ,
         model: false,
         children: [
-			      {href: '/action/eval',text: 'Query',icon: 'play_circle_outline'},  
+			      {href: '/action/eval',text: 'Query',icon: 'play_circle_outline'},
 			      {href: '/action/edit',text: 'Edit',icon: 'mode_edit'},
-			      {href: '/action/tabs',text: 'Tabs',icon: 'switch_camera'},  
+			      {href: '/action/tabs',text: 'Tabs',icon: 'switch_camera'},
 			      {href: '/action/validate',text: 'Validate',icon: 'playlist_add_check'},
 			      {href: '/action/transform',text: 'XSLT Transform',icon: 'forward'},
 			      {href: '/view/svg',text: 'SVG test',icon: 'preview'}
       ]},
-      
+
       {
         icon: 'add_task',
         text: 'Tasks' ,
@@ -181,37 +209,37 @@
          {href: '/database', text: 'Databases',icon: 'developer_mode' },
          {href: '/files', text: 'File system',icon: 'folder' },
          {href: '/components', text: 'Component library',icon: 'engineering' },
-         {href: '/documentation', text: 'Documentation',icon: 'library_books' },   
+         {href: '/documentation', text: 'Documentation',icon: 'library_books' },
          {href: '/history/files',text: 'history',icon: 'history'}
         ]},
       {
         icon: 'memory',
         text: 'Models' ,
         model: false,
-        children: [             
+        children: [
           {href: '/model/entity', text: 'Entities',icon: 'redeem' },
           {href: '/model/namespace', text: 'Namespaces',icon: 'dns' },
           {href: '/model/schema', text: 'Schemas',icon: 'verified' },
           {href: '/model/taxonomy', text: 'Taxonomies',icon: 'local_offer' },
           {href: '/model/mimetype', text: 'Mimetypes',icon: 'assignment' },
       ]},
-      
+
       {
         icon: 'cast_connected',
         text: 'Server' ,
         model: false,
         children: [
           {href: '/server/jobs',text: 'Running jobs',icon: 'dashboard'},
-          {href: '/server/services',text: 'Services',icon: 'dashboard'},   
+          {href: '/server/services',text: 'Services',icon: 'dashboard'},
           {href: '/server/logs',text: 'Server logs',icon: 'dns'},
           {href: '/server/users',text: 'Users',icon: 'supervisor_account'},
           {href: '/server/repo',text: 'Package repository',icon: 'local_library'},
-        
+
           {href: '/server/upload',text: 'Upload to server',icon: 'file_upload'},
-         
+
           {href: '/server/settings',text: 'Server settings',icon: 'settings_applications'}
       ]},
-      
+
       {
           icon: 'hourglass_empty',
           text: 'Performance' ,
@@ -232,10 +260,10 @@
           {href: '/images/dates',text: 'Date taken',icon: 'date_range'},
           {href: '/images/thumbnail',text: 'Thumbnail',icon: 'touch_app'},
           {href: '/images/people',text: 'People',icon: 'people'},
-          {href: '/map',text: 'Map',icon: 'place'}, 
+          {href: '/map',text: 'Map',icon: 'place'},
           {href: '/images/report',text: 'Reports',icon: 'report'}
           ]},
-          
+
       {
         icon: 'more_horiz',
         text: 'More' ,
@@ -261,7 +289,7 @@
       {href: '/labs/markdown',text: 'Markdown',icon: 'receipt'},
       ]},
       {href: '/settings',text: 'Settings',icon: 'settings'  },
-      {href: '/about',text: 'About' , icon: 'help'    }, 
+      {href: '/about',text: 'About' , icon: 'help'    },
     ]
 
   }},
@@ -273,13 +301,13 @@
       session(){
         this.$router.push({path: '/about'})
       },
-      
+
       logout(){
         HTTP.get("logout").then(r=>{
           this.$auth.role=null;
           this.$auth.user="guest";
           this.$router.push({path: '/'});
-        }) 
+        })
       },
       showAlert(msg){
         this.alert.msg=format(new Date())+" "+ msg
@@ -299,12 +327,12 @@
 	      console.log("showNotifications",val);
 	      if(!val)this.$notification.unseen=0;
 	    },
-	   
+
     },
-    
+
   created(){
     console.log("create-----------", this.items);
-		
+
     var that=this
     window.addEventListener('error', function (err) {
       var msg=JSON.stringify(err)
@@ -319,7 +347,7 @@
         that.showAlert("vue error:\n"+msg)
         //alert("vue error");
    };
-   
+
 // Add a response interceptor
    HTTP.interceptors.response.use(
    (response)=> {
@@ -335,7 +363,7 @@
   }else if(460 != error.response.status)this.showAlert("http error:\n"+error.response.data)
      return Promise.reject(error);
    });
-   
+
     HTTP.get("status")
     .then(r=>{
       //console.log("status",r)
@@ -350,7 +378,7 @@
   },
   beforeDestroy(){
     console.log("destroy-----------")
-    
+
   }
   }
 </script>
