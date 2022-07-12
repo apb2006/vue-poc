@@ -1,29 +1,30 @@
 (: folder date fix
-locate files that belong else where based on file name
+report or move files that belong elsewhere based on file name for given year
  :)
-declare variable $date-folder:="2021-01-22";
-declare variable $base:="P:\pictures\Pictures\2021\";
+declare variable $year:="2022";
+declare variable $base:="P:\pictures\Pictures\2022\";
 declare variable $folders:=file:list($base)!(if(ends-with(.,"\"))then substring(.,1,10) else ());
-declare variable $reDate:=".*2021-?(\d{2})-?(\d{2}).*";
+
 
 (:~ 
- return 2021-mm-dd or empty
+ return "$year-mm-dd" if date in filename or empty
 :)
-declare function local:extract($file as xs:string)
+declare function local:extract($filename as xs:string,$year as xs:string)
 as xs:string?{
-if(matches($file,$reDate)) 
-then replace($file,$reDate,"2021-$1-$2")
-else () 
+ let  $reDate:=".*" || $year || "-?(\d{2})-?(\d{2}).*"
+ return if(matches($filename,$reDate)) 
+        then replace($filename,$reDate, $year ||"-$1-$2")
+        else () 
 };
 
 (:~ 
   files in $base folder with a date in filename that does not match date-folder name 
 :)
-declare function local:date-wrong($base as xs:string,$date-folder as xs:string)
+declare function local:date-wrong($date-folder as xs:string, $year as xs:string)
 as map(*)*
 {
  for $f in file:list($base || $date-folder)
- let $target:=local:extract($f)
+ let $target:=local:extract($f, $year )
  where $target and $target ne $date-folder
  let $original:=  ".picasaoriginals\"  || $f
  let $files:=($f,if(file:exists($base || $date-folder || "\" || $original )) then $original else ())
@@ -43,10 +44,16 @@ declare function local:print($src as xs:string, $dest as xs:string)
  concat($src,"->", $dest)
 };
 
-for $date-folder in $folders
-let $actions:= (local:print#2,local:move#2)=>head()
-for $target in local:date-wrong($base , $date-folder),
-    $f in $target?files
-let $src:= $base || $date-folder || "\" || $f
-let $dest:= $base || $target?key || "\" || $f
-return $actions!.($src,$dest)
+declare function local:do()
+  for $date-folder in $folders
+  let $actions:= (local:print#2,local:move#2)=>head()
+  for $target in local:date-wrong( $date-folder, $year),
+      $f in $target?files
+  let $src:= $base || $date-folder || "\" || $f
+  let $dest:= $base || $target?key || "\" || $f
+  return $actions!.($src,$dest)
+};
+let $moved:=local:do()
+return if(exists($moved))
+       then $moved
+       else "No targets found"
