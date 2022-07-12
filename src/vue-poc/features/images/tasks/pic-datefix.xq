@@ -44,16 +44,16 @@ declare function local:print($src as xs:string, $dest as xs:string)
  concat($src,"->", $dest)
 };
 
-declare function local:do()
+declare function local:do($actions){
   for $date-folder in $folders
-  let $actions:= (local:print#2,local:move#2)=>head()
   for $target in local:date-wrong( $date-folder, $year),
       $f in $target?files
   let $src:= $base || $date-folder || "\" || $f
   let $dest:= $base || $target?key || "\" || $f
   return $actions!.($src,$dest)
 };
-let $moved:=local:do()
+
+let $moved:=(local:print#2,local:move#2)=>head()=>local:do()
 return if(exists($moved))
        then $moved
        else "No targets found"
