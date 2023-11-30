@@ -19,9 +19,9 @@
 		</field>
 		<field name="running" type="xs:boolean">
 			<description>service is running</description>
-			<xpath>(@id = jobs:list-details()/@id)</xpath>
+			<xpath>(@id = job:list-details()/@id)</xpath>
 		</field>
 	</fields>
 	<views iconclass="shop" />
-	<data type="element(job)">jobs:services()</data>
+	<data type="element(job)">job:services()</data>
 </entity>

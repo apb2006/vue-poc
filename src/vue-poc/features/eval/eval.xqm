@@ -62,7 +62,7 @@ function vue-api:submit($xq )
 {
  let $bindings:=map{}
  let $opts:=map{"cache":true()}
- let $r:=jobs:eval($xq,$bindings,$opts)
+ let $r:=job:eval($xq,$bindings,$opts)
  return vue-api:response($r,$xq)
 };
 
@@ -98,7 +98,7 @@ function vue-api:invoke($path )
  let $xq:=fetch:text($path)
  let $bindings:=map{}
  let $opts:=map{"base-uri":$path,"cache":true()}
- let $r:=jobs:eval($xq,$bindings,$opts)
+ let $r:=job:eval($xq,$bindings,$opts)
 
  return update:output(
  <json   type="object" >
@@ -128,7 +128,7 @@ declare
 %output:method("json") 
 function vue-api:result($id) 
 {
-  let $r:=jobs:result($id)
+  let $r:=job:result($id)
    return <json   type="object" >
             <result>{util:display($r)}</result>
   </json>

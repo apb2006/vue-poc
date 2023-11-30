@@ -3,7 +3,8 @@
  :)
 
 module namespace entity = 'quodatum.models.generated';
-import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";declare namespace bmk='urn:quodatum:vue-poc.favourite';
+import module namespace cfg = "quodatum:media.image.configure" at "features/images/config.xqm";
+declare namespace bmk='urn:quodatum:vue-poc.favourite';
 declare namespace ent='https://github.com/Quodatum/app-doc/entity';
 declare namespace h='urn:quodatum:vue-poc.history';
 declare namespace xqdoc='http://www.xqdoc.org/1.0';
@@ -53,12 +54,12 @@ declare variable $entity:list:=map {
    },
   "basex.job": map{
      "name": "basex.job",
-     "description": "Active BaseX jobs on the server. From jobs:list-details",
+     "description": "Active BaseX jobs on the server. From job:list-details",
      "access": map{ 
 'duration': function($_ as element(job)) as xs:string { $_! @duration },
 'id': function($_ as element(job)) as xs:string { $_! @id },
 'interval': function($_ as element(job)) as xs:string { $_! @interval },
-'isService': function($_ as element(job)) as xs:boolean { $_! @id = jobs:services()/@id },
+'isService': function($_ as element(job)) as xs:boolean { $_! @id = job:services()/@id },
 'reads': function($_ as element(job)) as xs:string { $_! @reads },
 'registered': function($_ as element(job)) as xs:string { $_! @time },
 'start': function($_ as element(job)) as xs:string { $_! @start },
@@ -87,7 +88,7 @@ declare variable $entity:list:=map {
                  },
            "isService": function($_ as element(job)) as element(isService)? {
             (: xs:boolean :)
-                        fn:data($_!@id = jobs:services()/@id)!element isService { attribute type {'boolean'}, .} 
+                        fn:data($_!@id = job:services()/@id)!element isService { attribute type {'boolean'}, .} 
                  },
            "reads": function($_ as element(job)) as element(reads)? {
             (: xs:string :)
@@ -123,7 +124,7 @@ declare variable $entity:list:=map {
                  } },
        
       "data": function() as element(job)*
-       { jobs:list()[. != jobs:current()] !jobs:list-details(.)=>reverse()
+       { job:list()[. != job:current()] !job:list-details(.)=>reverse()
 	 },
        
        "views": map{ 
@@ -227,7 +228,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
 'id': function($_ as element(job)) as xs:string { $_! @id },
 'interval': function($_ as element(job)) as xs:string { $_! @interval },
 'query': function($_ as element(job)) as xs:string { $_! . },
-'running': function($_ as element(job)) as xs:boolean { $_! (@id = jobs:list-details()/@id) } },
+'running': function($_ as element(job)) as xs:boolean { $_! (@id = job:list-details()/@id) } },
     
      "filter": function($item,$q) as xs:boolean{ 
          some $e in ( ) satisfies
@@ -252,11 +253,11 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  },
            "running": function($_ as element(job)) as element(running)? {
             (: xs:boolean :)
-                        fn:data($_!(@id = jobs:list-details()/@id))!element running { attribute type {'boolean'}, .} 
+                        fn:data($_!(@id = job:list-details()/@id))!element running { attribute type {'boolean'}, .} 
                  } },
        
       "data": function() as element(job)*
-       { jobs:services() },
+       { job:services() },
        
        "views": map{ 
        
@@ -652,7 +653,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
        
       "data": function() as element(entry)*
        { 
-		db:open("vue-poc","/logs/")[1]/entries/entry (: test data  1st doc :)
+		db:get("vue-poc","/logs/")[1]/entries/entry (: test data  1st doc :)
 	 },
        
        "views": map{ 
@@ -686,7 +687,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
                  } },
        
       "data": function() as element(qns:namespace)*
-       { db:open("vue-poc","namespaces.xml")/qns:namespaces/qns:namespace
+       { db:get("vue-poc","namespaces.xml")/qns:namespaces/qns:namespace
 	 },
        
        "views": map{ 
@@ -815,7 +816,7 @@ hof:top-k-by(admin:logs(), string#1, 2)
        { 
 		let $hrs:=(0 to 23)!format-number(., "00")
 		for $item in db:dir("vue-poc","logs")
-		let $es:=db:open("vue-poc","logs/" || $item)/entries/entry
+		let $es:=db:get("vue-poc","logs/" || $item)/entries/entry
 		let $max:=round(max($es/@ms) div 1000)
 		let $times:=(for $e in $es
 		group by $hr:=substring($e/@time,1,2)

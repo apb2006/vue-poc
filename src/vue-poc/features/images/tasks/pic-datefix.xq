@@ -1,10 +1,9 @@
 (: folder date fix
 report or move files that belong elsewhere based on file name for given year
  :)
-declare variable $year:="2022";
-declare variable $base:="P:\pictures\Pictures\2022\";
-declare variable $folders:=file:list($base)!(if(ends-with(.,"\"))then substring(.,1,10) else ());
-
+declare variable $year:="2023";
+declare variable $base:="P:\pictures\Pictures\" || $year || "\";
+declare variable $folders:=file:list($base)[matches(.,"\d{4}-\d{2}-\d{2}\\")]! substring(.,1,10);
 
 (:~ 
  return "$year-mm-dd" if date in filename or empty

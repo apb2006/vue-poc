@@ -1,5 +1,5 @@
 <entity name="basex.job" xmlns="https://github.com/Quodatum/app-doc/entity">
-	<description>Active BaseX jobs on the server. From <code>jobs:list-details</code></description>
+	<description>Active BaseX jobs on the server. From <code>job:list-details</code></description>
 	<fields>
 		<field name="id" type="xs:string">
 			<description>Job id</description>
@@ -47,12 +47,12 @@
 		</field>
 		<field name="isService" type="xs:boolean">
 			<description>This job is a service</description>
-			<xpath>@id = jobs:services()/@id</xpath>
+			<xpath>@id = job:services()/@id</xpath>
 		</field>
 	</fields>
 	<views iconclass="code">
 		<view name="filter">name description</view>
 	</views>
-	<data type="element(job)">jobs:list()[. != jobs:current()] !jobs:list-details(.)=>reverse()
+	<data type="element(job)">job:list()[. != job:current()] !job:list-details(.)=>reverse()
 	</data>
 </entity>

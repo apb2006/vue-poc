@@ -14,7 +14,7 @@ declare function local:queue-tests($dir as xs:string,$opts as map(*)){
                    $password)
    ! client:execute(.,'TEST `{$dir}`')
   ]``
-  return jobs:eval($q,
+  return job:eval($q,
                    map{"password":$opts?password},
                    map { 'cache': true()}
                  )

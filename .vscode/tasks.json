@@ -12,7 +12,25 @@
             },
             "group": {
                 "kind": "build"
-              }
-            }   
-        ]
-    }
+            }
+        },
+        {
+            "label": "Deploy to webapp",
+            "type": "shell",
+            "command": "xcopy",
+            "args": [
+                "src\\vue-poc",
+                "C:\\Users\\mrwhe\\Desktop\\basex.home\\basex.11b\\webapp\\vue-poc\\",
+                "/s",
+                "/f",
+                "/y"
+            ],
+            "options": {
+                "cwd": "${workspaceFolder}/"
+            },
+            "group": {
+                "kind": "build"
+            }
+        }
+    ]
+}

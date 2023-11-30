@@ -1,8 +1,8 @@
 
-declare option db:catfile 'schemas/catalog.xml';
+declare option db:catalog 'schemas/catalog.xml';
 declare option db:intparse 'false';
 declare option db:dtd 'true';
-declare option db:chop 'false';
+declare option db:stripws 'false';
 
 declare variable $input1 := file:resolve-path('input1.xml');
 declare variable $xsl := file:resolve-path('transform.xsl');
@@ -12,9 +12,9 @@ declare variable $xsl := file:resolve-path('transform.xsl');
 doc('input1.xml'),
 '## transform with XSLT',
 try {
-  (# db:catfile schemas/catalog.xml #)
+  (# db:catalog schemas/catalog.xml #)
   (# db:intparse false #)
   (# db:dtd true #)
-  (# db:chop false #)
+  (# db:stripws false #)
   { xslt:transform('input1.xml', 'transform.xsl')//inlinegraphic }
 } catch * { $err:description }

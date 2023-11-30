@@ -30,7 +30,7 @@
     </v-menu>
       <v-spacer></v-spacer>
     <v-btn  @click="submit" >
-      <v-icon>play_circle_outline</v-icon>jobs:run
+      <v-icon>play_circle_outline</v-icon>job:run
       </v-btn>
     <v-menu offset-y left>
       <template v-slot:activator="{ on }">
